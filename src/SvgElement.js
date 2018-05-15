@@ -9,7 +9,7 @@ const styles = {
   fill: "none"
 };
 
-const svgPath = (paths, command) => {
+const svgPath = (paths, strokeColor, command) => {
   // build the d attributes by looping over the paths
   const d = paths.reduce(
     (acc, path, i, a) =>
@@ -20,7 +20,7 @@ const svgPath = (paths, command) => {
           `${acc} ${command(path, i, a)}`,
     ""
   );
-  return <path d={d} fill="none" stroke="black" />;
+  return <path d={d} fill="none" stroke={strokeColor} />;
 };
 
 const line = (pointA, pointB) => {
@@ -74,8 +74,8 @@ const bezierCommand = (point, i, a) => {
   )}`;
 };
 
-const Path = ({ paths }) => {
-  return svgPath(paths, bezierCommand);
+const Path = ({ paths, strokeColor }) => {
+  return svgPath(paths, strokeColor, bezierCommand);
 };
 
 const SvgElement = ({ paths, width, height, strokeColor, strokeWidth }) => (
@@ -87,12 +87,13 @@ const SvgElement = ({ paths, width, height, strokeColor, strokeWidth }) => (
     viewBox={`0 0 ${width} ${height}`}
     xmlns="http://www.w3.org/2000/svg"
     style={{
-      strokeColor,
       strokeWidth,
       ...styles
     }}
   >
-    {paths.map((path, index) => <Path key={index} paths={path} />)}
+    {paths.map((path, index) => (
+      <Path key={index} strokeColor={strokeColor} paths={path} />
+    ))}
   </svg>
 );
 

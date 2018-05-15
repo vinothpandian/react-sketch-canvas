@@ -85,8 +85,8 @@ const SvgSketchCanvas = class extends React.Component {
 SvgSketchCanvas.defaultProps = {
   width: 600,
   height: 400,
-  strokeColor: "black",
-  strokeWidth: 3
+  strokeColor: "red",
+  strokeWidth: 8
 };
 
 SvgSketchCanvas.propTypes = {
