@@ -22,6 +22,12 @@ or with yarn
 yarn add react-svg-sketch
 ```
 
+For Javascript Script tag use
+
+```html
+<script type="text/javascript" src="https://unpkg.com/react-svg-sketch@1.0.0/umd/react-svg-sketch.min.js"></script>
+```
+
 ## Example
 
 Common usage example
@@ -107,7 +113,7 @@ Smooth curves - thanks to François Romain's [tutorial][smooth-curve-tutorial]
 [build-badge]: https://img.shields.io/travis/user/repo/master.png?style=flat-square
 [build]: https://travis-ci.org/user/repo
 [npm-badge]: https://img.shields.io/npm/v/npm-package.png?style=flat-square
-[npm]: https://www.npmjs.org/package/npm-package
+[npm]: https://www.npmjs.com/package/react-svg-sketch
 [coveralls-badge]: https://img.shields.io/coveralls/user/repo/master.png?style=flat-square
 [coveralls]: https://coveralls.io/github/user/repo
 [based-on]: https://pspdfkit.com/blog/2017/how-to-build-free-hand-drawing-using-react/
