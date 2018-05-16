@@ -1,10 +1,96 @@
 # React SVG Sketch canvas
 
-## Freehand drawing tool for React using SVG
+## Freehand vector drawing tool for React using SVG as canvas
 
 [![Travis][build-badge]][build]
 [![npm package][npm-badge]][npm]
 [![Coveralls][coveralls-badge]][coveralls]
+
+---
+
+## Installation
+
+If you use npm
+
+```sh
+npm i react-svg-sketch
+```
+
+or with yarn
+
+```sh
+yarn add react-svg-sketch
+```
+
+## Example
+
+Common usage example
+
+```javascript
+import React from "react";
+
+const styles = {
+  border: "0.0625rem solid #9c9c9c",
+  borderRadius: "0.25rem"
+};
+
+const Canvas = () => {
+  return (
+    <SvgSketchCanvas
+      style={styles}
+      width={600}
+      height={400}
+      strokeWidth={4}
+      strokeColor="red"
+    />
+  );
+};
+```
+
+To export Data URL of your sketch use ref
+
+```javascript
+import React from "react";
+
+const styles = {
+  border: "0.0625rem solid #9c9c9c",
+  borderRadius: "0.25rem"
+};
+
+const Canvas = class extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.handleClick = this.handleClick.bind(this);
+    this.canvas = null;
+  }
+
+  handleClick(event) {
+    const dataUrl = this.canvas.exportDataUri();
+
+    // To check data url value
+    console.log(dataUrl);
+  }
+
+  render() {
+    return (
+      <div>
+        <SvgSketchCanvas
+          ref={element => {
+            this.canvas = element;
+          }}
+          style={styles}
+          width={600}
+          height={400}
+          strokeWidth={4}
+          strokeColor="red"
+        />
+        <button onClick={this.handleClick}>Export Image</button>
+      </div>
+    );
+  }
+};
+```
 
 ---
 

@@ -13,7 +13,7 @@ const Demo = class extends React.Component {
   render() {
     return (
       <div>
-        <h1>react-svg-sketch Demo</h1>
+        <h1>React SVG Sketch Demo</h1>
         <SvgSketchCanvas
           ref={element => {
             this.canvas = element;
@@ -32,4 +32,5 @@ const Demo = class extends React.Component {
     );
   }
 };
+
 render(<Demo />, document.querySelector("#demo"));
