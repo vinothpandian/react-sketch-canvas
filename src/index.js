@@ -1,8 +1,7 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { List, Map } from 'immutable';
-import PropTypes from 'prop-types';
-import SvgElement from './SvgElement';
+import React from "react";
+import { List, Map } from "immutable";
+import PropTypes from "prop-types";
+import Paths from "./Paths";
 
 const SvgSketchCanvas = class extends React.Component {
   constructor(props) {
@@ -10,7 +9,7 @@ const SvgSketchCanvas = class extends React.Component {
 
     this.state = {
       isDrawing: false,
-      paths: new List(),
+      paths: new List()
     };
 
     this.handleMouseDown = this.handleMouseDown.bind(this);
@@ -19,22 +18,21 @@ const SvgSketchCanvas = class extends React.Component {
     this.getCoordinates = this.getCoordinates.bind(this);
     this.exportDataUri = this.exportDataUri.bind(this);
     this.svgCanvas = null;
-    this.svgElement = null;
   }
 
   componentDidMount() {
-    document.addEventListener('mouseup', this.handleMouseUp);
+    document.addEventListener("mouseup", this.handleMouseUp);
   }
 
   componentWillUnmount() {
-    document.removeEventListener('mouseup', this.handleMouseUp);
+    document.removeEventListener("mouseup", this.handleMouseUp);
   }
 
   getCoordinates(mouseEvent) {
     const boundingArea = this.svgCanvas.getBoundingClientRect();
     return new Map({
       x: mouseEvent.clientX - boundingArea.left,
-      y: mouseEvent.clientY - boundingArea.top,
+      y: mouseEvent.clientY - boundingArea.top
     });
   }
 
@@ -45,16 +43,14 @@ const SvgSketchCanvas = class extends React.Component {
 
     this.setState(prevState => ({
       isDrawing: true,
-      paths: prevState.paths.push(new List([mousePoint])),
+      paths: prevState.paths.push(new List([mousePoint]))
     }));
   }
 
   exportDataUri() {
-    const element = ReactDOM.findDOMNode(this.svgElement).outerHTML;
+    const data = `data:image/svg+xml;base64,${btoa(this.svgCanvas.innerHTML)}`;
 
-    const data = `data:image/svg+xml;base64,${btoa(element)}`;
-
-    this.props.exportDataUri(data);
+    return data;
   }
 
   handleMouseMove(mouseEvent) {
@@ -63,7 +59,9 @@ const SvgSketchCanvas = class extends React.Component {
     const mousePoint = this.getCoordinates(mouseEvent);
 
     this.setState(prevState => ({
-      paths: prevState.paths.updateIn([prevState.paths.size - 1], path => path.push(mousePoint)),
+      paths: prevState.paths.updateIn([prevState.paths.size - 1], path =>
+        path.push(mousePoint)
+      )
     }));
   }
 
@@ -71,27 +69,36 @@ const SvgSketchCanvas = class extends React.Component {
     if (mouseEvent.button !== 0) return;
 
     this.setState({
-      isDrawing: false,
+      isDrawing: false
     });
   }
 
   render() {
+    const { width, height, strokeColor, strokeWidth, styles } = this.props;
+
     return (
       <div
-        role="none"
-        ref={(element) => {
+        role="presentation"
+        ref={element => {
           this.svgCanvas = element;
         }}
+        style={{ width, height, ...styles }}
         onMouseDown={this.handleMouseDown}
         onMouseMove={this.handleMouseMove}
       >
-        <SvgElement
-          ref={(element) => {
-            this.svgElement = element;
+        <svg
+          version="1.1"
+          baseProfile="full"
+          width={width}
+          height={height}
+          viewBox={`0 0 ${width} ${height}`}
+          xmlns="http://www.w3.org/2000/svg"
+          style={{
+            strokeWidth
           }}
-          {...this.props}
-          paths={this.state.paths}
-        />
+        >
+          <Paths strokeColor={strokeColor} paths={this.state.paths} />
+        </svg>
       </div>
     );
   }
@@ -100,9 +107,12 @@ const SvgSketchCanvas = class extends React.Component {
 SvgSketchCanvas.defaultProps = {
   width: 600,
   height: 400,
-  strokeColor: 'red',
-  strokeWidth: 8,
-  exportDataUri: () => {},
+  strokeColor: "black",
+  strokeWidth: 4,
+  styles: {
+    border: "0.0625rem solid #9c9c9c",
+    borderRadius: "0.25rem"
+  }
 };
 
 SvgSketchCanvas.propTypes = {
@@ -110,7 +120,7 @@ SvgSketchCanvas.propTypes = {
   height: PropTypes.number,
   strokeColor: PropTypes.string,
   strokeWidth: PropTypes.number,
-  exportDataUri: PropTypes.func,
+  styles: PropTypes.objectOf(PropTypes.string)
 };
 
 export default SvgSketchCanvas;
