@@ -1,7 +1,7 @@
-import React, { Component } from "react";
-import { render } from "react-dom";
+import React, { Component } from 'react';
+import { render } from 'react-dom';
 
-import SvgSketchCanvas from "../../src";
+import SvgSketchCanvas from '../../src';
 
 const Demo = class extends React.Component {
   constructor(props) {
@@ -15,7 +15,7 @@ const Demo = class extends React.Component {
       <div>
         <h1>React SVG Sketch Demo</h1>
         <SvgSketchCanvas
-          ref={element => {
+          ref={(element) => {
             this.canvas = element;
           }}
           strokeWidth={4}
@@ -24,11 +24,11 @@ const Demo = class extends React.Component {
         <button
           onClick={() => {
             this.canvas
-              .exportAsImage("png")
-              .then(data => {
+              .exportAsImage('png')
+              .then((data) => {
                 console.log(data);
               })
-              .catch(e => {
+              .catch((e) => {
                 console.log(e);
               });
           }}
@@ -40,4 +40,4 @@ const Demo = class extends React.Component {
   }
 };
 
-render(<Demo />, document.querySelector("#demo"));
+render(<Demo />, document.querySelector('#demo'));

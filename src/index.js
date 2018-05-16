@@ -1,7 +1,7 @@
-import React from "react";
-import { List, Map } from "immutable";
-import PropTypes from "prop-types";
-import Paths from "./Paths";
+import React from 'react';
+import { List, Map } from 'immutable';
+import PropTypes from 'prop-types';
+import Paths from './Paths';
 
 const SvgSketchCanvas = class extends React.Component {
   constructor(props) {
@@ -9,7 +9,7 @@ const SvgSketchCanvas = class extends React.Component {
 
     this.state = {
       isDrawing: false,
-      paths: new List()
+      paths: new List(),
     };
 
     this.handleMouseDown = this.handleMouseDown.bind(this);
@@ -23,11 +23,11 @@ const SvgSketchCanvas = class extends React.Component {
   }
 
   componentDidMount() {
-    document.addEventListener("mouseup", this.handleMouseUp);
+    document.addEventListener('mouseup', this.handleMouseUp);
   }
 
   componentWillUnmount() {
-    document.removeEventListener("mouseup", this.handleMouseUp);
+    document.removeEventListener('mouseup', this.handleMouseUp);
   }
 
   // Converts mouse coordinates to relative coordinate based on the absolute position of svg
@@ -35,7 +35,7 @@ const SvgSketchCanvas = class extends React.Component {
     const boundingArea = this.svgCanvas.getBoundingClientRect();
     return new Map({
       x: mouseEvent.clientX - boundingArea.left,
-      y: mouseEvent.clientY - boundingArea.top
+      y: mouseEvent.clientY - boundingArea.top,
     });
   }
 
@@ -46,7 +46,7 @@ const SvgSketchCanvas = class extends React.Component {
 
     this.setState(prevState => ({
       isDrawing: true,
-      paths: prevState.paths.push(new List([mousePoint]))
+      paths: prevState.paths.push(new List([mousePoint])),
     }));
   }
 
@@ -54,18 +54,14 @@ const SvgSketchCanvas = class extends React.Component {
   exportAsImage(imageType) {
     return new Promise((resolve, reject) => {
       try {
-        const img = document.createElement("img");
+        const img = document.createElement('img');
         img.src = `data:image/svg+xml;base64,${btoa(this.svgCanvas.innerHTML)}`;
 
-        let pngDataUrl = null;
-
-        img.onload = function() {
-          const ctx = this.rawCanvas.getContext("2d");
-          ctx.fillStyle = "white";
-          ctx.drawImage(img, 0, 0);
+        img.onload = () => {
+          this.rawCanvas.getContext('2d').drawImage(img, 0, 0);
 
           resolve(this.rawCanvas.toDataURL(`image/${imageType}`));
-        }.bind(this);
+        };
       } catch (e) {
         reject(e);
       }
@@ -88,9 +84,7 @@ const SvgSketchCanvas = class extends React.Component {
     const mousePoint = this.getCoordinates(mouseEvent);
 
     this.setState(prevState => ({
-      paths: prevState.paths.updateIn([prevState.paths.size - 1], path =>
-        path.push(mousePoint)
-      )
+      paths: prevState.paths.updateIn([prevState.paths.size - 1], path => path.push(mousePoint)),
     }));
   }
 
@@ -98,18 +92,20 @@ const SvgSketchCanvas = class extends React.Component {
     if (mouseEvent.button !== 0) return;
 
     this.setState({
-      isDrawing: false
+      isDrawing: false,
     });
   }
 
   render() {
-    const { width, height, strokeColor, strokeWidth, styles } = this.props;
+    const {
+      width, height, strokeColor, strokeWidth, styles,
+    } = this.props;
 
     return (
       <React.Fragment>
         <div
           role="presentation"
-          ref={element => {
+          ref={(element) => {
             this.svgCanvas = element;
           }}
           style={{ width, height, ...styles }}
@@ -124,7 +120,7 @@ const SvgSketchCanvas = class extends React.Component {
             viewBox={`0 0 ${width} ${height}`}
             xmlns="http://www.w3.org/2000/svg"
             style={{
-              strokeWidth
+              strokeWidth,
             }}
           >
             <rect width="100%" height="100%" fill={this.props.canvasColor} />
@@ -134,10 +130,10 @@ const SvgSketchCanvas = class extends React.Component {
 
         {/* Canvas used for converting svg to image */}
         <canvas
-          style={{ display: "none" }}
+          style={{ display: 'none' }}
           width={width}
           height={height}
-          ref={element => {
+          ref={(element) => {
             this.rawCanvas = element;
           }}
         />
@@ -149,13 +145,13 @@ const SvgSketchCanvas = class extends React.Component {
 SvgSketchCanvas.defaultProps = {
   width: 600,
   height: 400,
-  canvasColor: "white",
-  strokeColor: "black",
+  canvasColor: 'white',
+  strokeColor: 'black',
   strokeWidth: 4,
   styles: {
-    border: "0.0625rem solid #9c9c9c",
-    borderRadius: "0.25rem"
-  }
+    border: '0.0625rem solid #9c9c9c',
+    borderRadius: '0.25rem',
+  },
 };
 
 SvgSketchCanvas.propTypes = {
@@ -164,7 +160,7 @@ SvgSketchCanvas.propTypes = {
   strokeColor: PropTypes.string,
   canvasColor: PropTypes.string,
   strokeWidth: PropTypes.number,
-  styles: PropTypes.objectOf(PropTypes.string)
+  styles: PropTypes.objectOf(PropTypes.string),
 };
 
 export default SvgSketchCanvas;
