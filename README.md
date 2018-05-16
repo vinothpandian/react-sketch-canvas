@@ -34,6 +34,7 @@ Common usage example
 
 ```javascript
 import React from "react";
+import SvgSketchCanvas from "react-svg-sketch";
 
 const styles = {
   border: "0.0625rem solid #9c9c9c",
@@ -57,6 +58,7 @@ To export Data URL of your sketch use ref
 
 ```javascript
 import React from "react";
+import SvgSketchCanvas from "react-svg-sketch";
 
 const styles = {
   border: "0.0625rem solid #9c9c9c",
@@ -67,15 +69,7 @@ const Canvas = class extends React.Component {
   constructor(props) {
     super(props);
 
-    this.handleClick = this.handleClick.bind(this);
     this.canvas = null;
-  }
-
-  handleClick(event) {
-    const dataUrl = this.canvas.exportDataUri();
-
-    // To check data url value
-    console.log(dataUrl);
   }
 
   render() {
@@ -85,18 +79,49 @@ const Canvas = class extends React.Component {
           ref={element => {
             this.canvas = element;
           }}
-          style={styles}
-          width={600}
-          height={400}
-          strokeWidth={4}
-          strokeColor="red"
+          strokeWidth={5}
+          strokeColor="black"
         />
-        <button onClick={this.handleClick}>Export Image</button>
+        <button
+          onClick={() => {
+            this.canvas
+              .exportAsImage("png")
+              .then(data => {
+                console.log(data);
+              })
+              .catch(e => {
+                console.log(e);
+              });
+          }}
+        >
+          Get Image
+        </button>
       </div>
     );
   }
 };
 ```
+
+## List of Props
+
+| Props       | Expected datatype |
+| ----------- | ----------------- |
+| width       | PropTypes.number  |
+| height      | PropTypes.number  |
+| strokeColor | PropTypes.string  |
+| canvasColor | PropTypes.string  |
+| strokeWidth | PropTypes.number  |
+
+You can pass a CSS in JS style object to style the element
+
+## Functions
+
+You can export the sketch as an image or as a svg
+
+_Use ref to access the element and call the following functions to export image_
+
+* exportSvg() : returns a Promise which resolves to an inline SVG element.
+* exportAsImage(imageType) : Accepts an image type as argument (ex. jpeg, png) and returns a Promise which resolves to base64 data url of the sketch.
 
 ---
 

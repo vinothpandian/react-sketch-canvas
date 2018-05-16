@@ -16,8 +16,10 @@ const SvgSketchCanvas = class extends React.Component {
     this.handleMouseMove = this.handleMouseMove.bind(this);
     this.handleMouseUp = this.handleMouseUp.bind(this);
     this.getCoordinates = this.getCoordinates.bind(this);
-    this.exportDataUri = this.exportDataUri.bind(this);
+    this.exportAsImage = this.exportAsImage.bind(this);
+    this.exportSvg = this.exportSvg.bind(this);
     this.svgCanvas = null;
+    this.rawCanvas = null;
   }
 
   componentDidMount() {
@@ -28,6 +30,7 @@ const SvgSketchCanvas = class extends React.Component {
     document.removeEventListener("mouseup", this.handleMouseUp);
   }
 
+  // Converts mouse coordinates to relative coordinate based on the absolute position of svg
   getCoordinates(mouseEvent) {
     const boundingArea = this.svgCanvas.getBoundingClientRect();
     return new Map({
@@ -47,10 +50,36 @@ const SvgSketchCanvas = class extends React.Component {
     }));
   }
 
-  exportDataUri() {
-    const data = `data:image/svg+xml;base64,${btoa(this.svgCanvas.innerHTML)}`;
+  // Creates a image from SVG and renders it on canvas, then exports the canvas as image
+  exportAsImage(imageType) {
+    return new Promise((resolve, reject) => {
+      try {
+        const img = document.createElement("img");
+        img.src = `data:image/svg+xml;base64,${btoa(this.svgCanvas.innerHTML)}`;
 
-    return data;
+        let pngDataUrl = null;
+
+        img.onload = function() {
+          const ctx = this.rawCanvas.getContext("2d");
+          ctx.fillStyle = "white";
+          ctx.drawImage(img, 0, 0);
+
+          resolve(this.rawCanvas.toDataURL(`image/${imageType}`));
+        }.bind(this);
+      } catch (e) {
+        reject(e);
+      }
+    });
+  }
+
+  exportSvg() {
+    return new Promise((resolve, reject) => {
+      try {
+        resolve(this.svgCanvas.innerHTML);
+      } catch (e) {
+        reject(e);
+      }
+    });
   }
 
   handleMouseMove(mouseEvent) {
@@ -77,29 +106,42 @@ const SvgSketchCanvas = class extends React.Component {
     const { width, height, strokeColor, strokeWidth, styles } = this.props;
 
     return (
-      <div
-        role="presentation"
-        ref={element => {
-          this.svgCanvas = element;
-        }}
-        style={{ width, height, ...styles }}
-        onMouseDown={this.handleMouseDown}
-        onMouseMove={this.handleMouseMove}
-      >
-        <svg
-          version="1.1"
-          baseProfile="full"
+      <React.Fragment>
+        <div
+          role="presentation"
+          ref={element => {
+            this.svgCanvas = element;
+          }}
+          style={{ width, height, ...styles }}
+          onMouseDown={this.handleMouseDown}
+          onMouseMove={this.handleMouseMove}
+        >
+          <svg
+            version="1.1"
+            baseProfile="full"
+            width={width}
+            height={height}
+            viewBox={`0 0 ${width} ${height}`}
+            xmlns="http://www.w3.org/2000/svg"
+            style={{
+              strokeWidth
+            }}
+          >
+            <rect width="100%" height="100%" fill={this.props.canvasColor} />
+            <Paths strokeColor={strokeColor} paths={this.state.paths} />
+          </svg>
+        </div>
+
+        {/* Canvas used for converting svg to image */}
+        <canvas
+          style={{ display: "none" }}
           width={width}
           height={height}
-          viewBox={`0 0 ${width} ${height}`}
-          xmlns="http://www.w3.org/2000/svg"
-          style={{
-            strokeWidth
+          ref={element => {
+            this.rawCanvas = element;
           }}
-        >
-          <Paths strokeColor={strokeColor} paths={this.state.paths} />
-        </svg>
-      </div>
+        />
+      </React.Fragment>
     );
   }
 };
@@ -107,6 +149,7 @@ const SvgSketchCanvas = class extends React.Component {
 SvgSketchCanvas.defaultProps = {
   width: 600,
   height: 400,
+  canvasColor: "white",
   strokeColor: "black",
   strokeWidth: 4,
   styles: {
@@ -119,6 +162,7 @@ SvgSketchCanvas.propTypes = {
   width: PropTypes.number,
   height: PropTypes.number,
   strokeColor: PropTypes.string,
+  canvasColor: PropTypes.string,
   strokeWidth: PropTypes.number,
   styles: PropTypes.objectOf(PropTypes.string)
 };

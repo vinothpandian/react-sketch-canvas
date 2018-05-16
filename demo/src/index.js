@@ -22,8 +22,15 @@ const Demo = class extends React.Component {
           strokeColor="red"
         />
         <button
-          onClick={event => {
-            console.log(this.canvas.exportDataUri());
+          onClick={() => {
+            this.canvas
+              .exportAsImage("png")
+              .then(data => {
+                console.log(data);
+              })
+              .catch(e => {
+                console.log(e);
+              });
           }}
         >
           Get Image
