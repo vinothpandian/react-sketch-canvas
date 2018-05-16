@@ -1,35 +1,33 @@
-import React from "react";
-import Immutable from "immutable";
-import PropTypes from "prop-types";
-import { Map } from "immutable";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { List } from 'immutable';
 
 const styles = {
-  border: "0.0625rem solid #9c9c9c",
-  borderRadius: "0.25rem",
-  fill: "none"
+  border: '0.0625rem solid #9c9c9c',
+  borderRadius: '0.25rem',
 };
 
 const svgPath = (paths, strokeColor, command) => {
   // build the d attributes by looping over the paths
   const d = paths.reduce(
     (acc, path, i, a) =>
-      i === 0
+      (i === 0
         ? // if first path
-          `M ${path.get("x")},${path.get("y")}`
+        `M ${path.get('x')},${path.get('y')}`
         : // else
-          `${acc} ${command(path, i, a)}`,
-    ""
+        `${acc} ${command(path, i, a)}`),
+    '',
   );
-  return <path d={d} fill="none" stroke={strokeColor} />;
+  return <path d={d} fill="none" strokeLinecap="round" stroke={strokeColor} />;
 };
 
 const line = (pointA, pointB) => {
-  const lengthX = pointB.get("x") - pointA.get("x");
-  const lengthY = pointB.get("y") - pointA.get("y");
+  const lengthX = pointB.get('x') - pointA.get('x');
+  const lengthY = pointB.get('y') - pointA.get('y');
 
   return {
-    length: Math.sqrt(Math.pow(lengthX, 2) + Math.pow(lengthY, 2)),
-    angle: Math.atan2(lengthY, lengthX)
+    length: Math.sqrt(lengthX ** 2 + lengthY ** 2),
+    angle: Math.atan2(lengthY, lengthX),
   };
 };
 
@@ -44,8 +42,8 @@ const controlPoint = (current, previous, next, reverse) => {
   const angle = o.angle + (reverse ? Math.PI : 0);
   const length = o.length * smoothing;
 
-  const x = current.get("x") + Math.cos(angle) * length;
-  const y = current.get("y") + Math.sin(angle) * length;
+  const x = current.get('x') + Math.cos(angle) * length;
+  const y = current.get('y') + Math.sin(angle) * length;
 
   return [x, y];
 };
@@ -69,32 +67,48 @@ const bezierCommand = (point, i, a) => {
 
   // end control point
   const [cpeX, cpeY] = controlPoint(point, a.get(i - 1), a.get(i + 1), true);
-  return `C ${cpsX},${cpsY} ${cpeX},${cpeY} ${point.get("x")},${point.get(
-    "y"
-  )}`;
+  return `C ${cpsX},${cpsY} ${cpeX},${cpeY} ${point.get('x')},${point.get('y')}`;
 };
 
-const Path = ({ paths, strokeColor }) => {
-  return svgPath(paths, strokeColor, bezierCommand);
+const Path = ({ paths, strokeColor }) => svgPath(paths, strokeColor, bezierCommand);
+
+const SvgElement = class extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.svgElement = null;
+  }
+
+  render() {
+    const {
+      paths, width, height, strokeColor, strokeWidth,
+    } = this.props;
+
+    return (
+      <svg
+        version="1.1"
+        baseProfile="full"
+        width={width}
+        height={height}
+        viewBox={`0 0 ${width} ${height}`}
+        xmlns="http://www.w3.org/2000/svg"
+        style={{
+          strokeWidth,
+          ...styles,
+        }}
+      >
+        {paths.map((path, index) => <Path key={index} strokeColor={strokeColor} paths={path} />)}
+      </svg>
+    );
+  }
 };
 
-const SvgElement = ({ paths, width, height, strokeColor, strokeWidth }) => (
-  <svg
-    version="1.1"
-    baseProfile="full"
-    width={width}
-    height={height}
-    viewBox={`0 0 ${width} ${height}`}
-    xmlns="http://www.w3.org/2000/svg"
-    style={{
-      strokeWidth,
-      ...styles
-    }}
-  >
-    {paths.map((path, index) => (
-      <Path key={index} strokeColor={strokeColor} paths={path} />
-    ))}
-  </svg>
-);
+SvgElement.propTypes = {
+  width: PropTypes.number.isRequired,
+  height: PropTypes.number.isRequired,
+  strokeColor: PropTypes.string.isRequired,
+  strokeWidth: PropTypes.number.isRequired,
+  paths: PropTypes.instanceOf(List).isRequired,
+};
 
 export default SvgElement;

@@ -1,15 +1,18 @@
-import React, {Component} from 'react'
-import {render} from 'react-dom'
+import React, { Component } from 'react';
+import { render } from 'react-dom';
 
-import Example from '../../src'
+import Example from '../../src';
 
-class Demo extends Component {
-  render() {
-    return <div>
-      <h1>react-svg-sketch Demo</h1>
-      <Example/>
-    </div>
-  }
-}
-
-render(<Demo/>, document.querySelector('#demo'))
+const Demo = () => (
+  <div>
+    <h1>react-svg-sketch Demo</h1>
+    <Example
+      strokeWidth={7}
+      strokeColor="green"
+      exportDataUri={(data) => {
+        console.log(data);
+      }}
+    />
+  </div>
+);
+render(<Demo />, document.querySelector('#demo'));
