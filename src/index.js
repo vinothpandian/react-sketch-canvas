@@ -138,7 +138,7 @@ const SvgSketchCanvas = class extends React.Component {
 
   render() {
     const {
-      width, height, strokeColor, strokeWidth, styles,
+      width, height, strokeColor, strokeWidth, style,
     } = this.props;
 
     return (
@@ -148,19 +148,18 @@ const SvgSketchCanvas = class extends React.Component {
           ref={(element) => {
             this.svgCanvas = element;
           }}
-          style={{ width, height, ...styles }}
+          style={{ width, height, ...style }}
           onMouseDown={this.handleMouseDown}
           onMouseMove={this.handleMouseMove}
         >
           <svg
             version="1.1"
             baseProfile="full"
-            width={width}
-            height={height}
-            viewBox={`0 0 ${width} ${height}`}
             xmlns="http://www.w3.org/2000/svg"
             style={{
               strokeWidth,
+              width: '100%',
+              height: '100%',
             }}
           >
             <rect width="100%" height="100%" fill={this.props.canvasColor} />
@@ -188,7 +187,7 @@ SvgSketchCanvas.defaultProps = {
   canvasColor: 'white',
   strokeColor: 'black',
   strokeWidth: 4,
-  styles: {
+  style: {
     border: '0.0625rem solid #9c9c9c',
     borderRadius: '0.25rem',
   },
@@ -200,7 +199,7 @@ SvgSketchCanvas.propTypes = {
   strokeColor: PropTypes.string,
   canvasColor: PropTypes.string,
   strokeWidth: PropTypes.number,
-  styles: PropTypes.objectOf(PropTypes.string),
+  style: PropTypes.objectOf(PropTypes.string),
 };
 
 export default SvgSketchCanvas;
