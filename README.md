@@ -2,6 +2,8 @@
 
 ## Freehand vector drawing tool for React using SVG as canvas
 
+### Supports Desktop and Mobile browser
+
 [![Travis][build-badge]][build]
 [![npm package][npm-badge]][npm]
 [![Coveralls][coveralls-badge]][coveralls]
@@ -45,8 +47,8 @@ const Canvas = () => {
   return (
     <SvgSketchCanvas
       style={styles}
-      width={600}
-      height={400}
+      width="600"
+      height="400"
       strokeWidth={4}
       strokeColor="red"
     />
@@ -104,13 +106,21 @@ const Canvas = class extends React.Component {
 
 ## List of Props
 
-| Props       | Expected datatype |
-| ----------- | ----------------- |
-| width       | PropTypes.number  |
-| height      | PropTypes.number  |
-| strokeColor | PropTypes.string  |
-| canvasColor | PropTypes.string  |
-| strokeWidth | PropTypes.number  |
+| Props       | Expected datatype | Default value |
+| ----------- | ----------------- | ------------- |
+| width       | PropTypes.string  | 100%          |
+| height      | PropTypes.string  | 100%          |
+| strokeColor | PropTypes.string  | white         |
+| canvasColor | PropTypes.string  | black         |
+| strokeWidth | PropTypes.number  | 4             |
+
+You can specify width and height values in em or rem. It fills the parent element space if width and height are not set
+
+Example
+
+```javascript
+<SvgSketchCanvas width="25em" height="10rem" />
+```
 
 You can pass a CSS in JS style object to style the element
 

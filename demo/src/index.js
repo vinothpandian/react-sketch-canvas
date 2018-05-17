@@ -20,8 +20,6 @@ const Demo = class extends React.Component {
           }}
           strokeWidth={4}
           strokeColor="red"
-          width={400}
-          height={400}
         />
         <button
           onClick={() => {
