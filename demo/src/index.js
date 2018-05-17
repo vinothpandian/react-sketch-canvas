@@ -23,6 +23,27 @@ const Demo = class extends React.Component {
         />
         <button
           onClick={() => {
+            this.canvas.undo();
+          }}
+        >
+          Undo
+        </button>
+        <button
+          onClick={() => {
+            this.canvas.redo();
+          }}
+        >
+          Redo
+        </button>
+        <button
+          onClick={() => {
+            this.canvas.clearCanvas();
+          }}
+        >
+          Reset canvas
+        </button>
+        <button
+          onClick={() => {
             this.canvas
               .exportAsImage('png')
               .then((data) => {

@@ -120,12 +120,15 @@ You can export the sketch as an image or as a svg
 
 _Use ref to access the element and call the following functions to export image_
 
-* exportSvg() : returns a Promise which resolves to an inline SVG element.
-* exportAsImage(imageType) : Accepts an image type as argument (ex. jpeg, png) and returns a Promise which resolves to base64 data url of the sketch.
+| Props                    | Expected datatype                                                                                                        |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------ |
+| undo()                   | Undo the last action.                                                                                                    |
+| redo()                   | Redo the previous action.                                                                                                |
+| clearCanvas()            | Clears the canvas.                                                                                                       |
+| exportSvg()              | returns a Promise which resolves to an inline SVG element.                                                               |
+| exportAsImage(imageType) | Accepts an image type as argument (ex. jpeg, png) and returns a Promise which resolves to base64 data url of the sketch. |
 
----
-
-### Thanks to
+## Thanks to
 
 ---
 
