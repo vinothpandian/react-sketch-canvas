@@ -1,4 +1,4 @@
-# React SVG Sketch canvas
+# React Sketch canvas
 
 ## Freehand vector drawing tool for React using SVG as canvas
 
@@ -13,19 +13,19 @@
 If you use npm
 
 ```sh
-npm i react-svg-sketch
+npm i react-sketch-canvas
 ```
 
 or with yarn
 
 ```sh
-yarn add react-svg-sketch
+yarn add react-sketch-canvas
 ```
 
 For Javascript Script tag use
 
 ```html
-<script type="text/javascript" src="https://unpkg.com/react-svg-sketch@1.0.0/umd/react-svg-sketch.min.js"></script>
+<script type="text/javascript" src="https://unpkg.com/react-sketch-canvas@1.0.0/umd/react-sketch-canvas.min.js"></script>
 ```
 
 ## Example
@@ -34,7 +34,7 @@ Common usage example
 
 ```javascript
 import React from "react";
-import SvgSketchCanvas from "react-svg-sketch";
+import SvgSketchCanvas from "react-sketch-canvas";
 
 const styles = {
   border: "0.0625rem solid #9c9c9c",
@@ -58,7 +58,7 @@ To export Data URL of your sketch use ref
 
 ```javascript
 import React from "react";
-import SvgSketchCanvas from "react-svg-sketch";
+import SvgSketchCanvas from "react-sketch-canvas";
 
 const styles = {
   border: "0.0625rem solid #9c9c9c",
@@ -140,7 +140,7 @@ _Use ref to access the element and call the following functions to export image_
 [build-badge]: https://img.shields.io/travis/user/repo/master.png?style=flat-square
 [build]: https://travis-ci.org/user/repo
 [npm-badge]: https://img.shields.io/npm/v/npm-package.png?style=flat-square
-[npm]: https://www.npmjs.com/package/react-svg-sketch
+[npm]: https://www.npmjs.com/package/react-sketch-canvas
 [coveralls-badge]: https://img.shields.io/coveralls/user/repo/master.png?style=flat-square
 [coveralls]: https://coveralls.io/github/user/repo
 [based-on]: https://pspdfkit.com/blog/2017/how-to-build-free-hand-drawing-using-react/
