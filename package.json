@@ -1,6 +1,6 @@
 {
   "name": "react-sketch-canvas",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "react-sketch-canvas - React component",
   "main": "lib/index.js",
   "module": "es/index.js",

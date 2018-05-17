@@ -9,7 +9,6 @@ const SvgSketchCanvas = class extends React.Component {
 
     this.state = {
       isDrawing: false,
-      history: new List(),
       redoStore: new List(),
       currentPaths: new List(),
     };
@@ -46,22 +45,13 @@ const SvgSketchCanvas = class extends React.Component {
 
   clearCanvas() {
     this.setState(prevState => ({
-      history: prevState.currentPaths,
+      redoStore: prevState.currentPaths,
       currentPaths: new List(),
     }));
   }
 
   undo() {
-    if (this.state.currentPaths.isEmpty()) {
-      if (this.state.history.isEmpty()) return;
-
-      this.setState(prevState => ({
-        history: new List(),
-        currentPaths: prevState.history,
-      }));
-
-      return;
-    }
+    if (this.state.currentPaths.isEmpty()) return;
 
     this.setState(prevState => ({
       redoStore: prevState.redoStore.push(prevState.currentPaths.get(-1)),
@@ -85,10 +75,11 @@ const SvgSketchCanvas = class extends React.Component {
 
     this.setState(prevState => ({
       isDrawing: true,
+      redoStore: new List(),
       currentPaths: prevState.currentPaths.push(new List([mousePoint])),
     }));
   }
-
+// 
   // Creates a image from SVG and renders it on canvas, then exports the canvas as image
   exportAsImage(imageType) {
     return new Promise((resolve, reject) => {
