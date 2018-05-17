@@ -132,9 +132,8 @@ _Use ref to access the element and call the following functions to export image_
 
 ---
 
-Based on Philipp Spiess' [tutorial][based-on]
-
-Smooth curves - thanks to François Romain's [tutorial][smooth-curve-tutorial]
+* Philipp Spiess' [tutorial][based-on]
+* Draws smooth curves, thanks to François Romain's [tutorial][smooth-curve-tutorial]
 
 ---
 
