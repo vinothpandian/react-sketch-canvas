@@ -9,6 +9,8 @@ const SvgSketchCanvas = class extends React.Component {
 
     this.state = {
       isDrawing: false,
+      reset: false,
+      resetStore: new List(),
       redoStore: new List(),
       currentPaths: new List(),
     };
@@ -23,6 +25,7 @@ const SvgSketchCanvas = class extends React.Component {
     this.getTouchCoordinates = this.getTouchCoordinates.bind(this);
     this.exportAsImage = this.exportAsImage.bind(this);
     this.exportSvg = this.exportSvg.bind(this);
+    this.exportPaths = this.exportPaths.bind(this);
     this.clearCanvas = this.clearCanvas.bind(this);
     this.undo = this.undo.bind(this);
     this.redo = this.redo.bind(this);
@@ -59,27 +62,37 @@ const SvgSketchCanvas = class extends React.Component {
   }
 
   clearCanvas() {
-    this.setState(prevState => ({
-      redoStore: prevState.currentPaths,
+    this.setState(state => ({
+      reset: true,
+      resetStore: state.currentPaths,
       currentPaths: new List(),
     }));
   }
 
   undo() {
+    if (this.state.reset) {
+      this.setState(state => ({
+        reset: false,
+        resetStore: new List(),
+        currentPaths: state.resetStore,
+      }));
+      return;
+    }
+
     if (this.state.currentPaths.isEmpty()) return;
 
-    this.setState(prevState => ({
-      redoStore: prevState.redoStore.push(prevState.currentPaths.get(-1)),
-      currentPaths: prevState.currentPaths.pop(),
+    this.setState(state => ({
+      redoStore: state.redoStore.push(state.currentPaths.get(-1)),
+      currentPaths: state.currentPaths.pop(),
     }));
   }
 
   redo() {
     if (this.state.redoStore.isEmpty()) return;
 
-    this.setState(prevState => ({
-      redoStore: prevState.redoStore.pop(),
-      currentPaths: prevState.currentPaths.push(prevState.redoStore.get(-1)),
+    this.setState(state => ({
+      redoStore: state.redoStore.pop(),
+      currentPaths: state.currentPaths.push(state.redoStore.get(-1)),
     }));
   }
 
@@ -88,20 +101,20 @@ const SvgSketchCanvas = class extends React.Component {
 
     const mousePoint = this.getCoordinates(mouseEvent);
 
-    this.setState(prevState => ({
+    this.setState(state => ({
       isDrawing: true,
       redoStore: new List(),
-      currentPaths: prevState.currentPaths.push(new List([mousePoint])),
+      currentPaths: state.currentPaths.push(new List([mousePoint])),
     }));
   }
 
   handleTouchStart(touchEvent) {
     const mousePoint = this.getTouchCoordinates(touchEvent);
 
-    this.setState(prevState => ({
+    this.setState(state => ({
       isDrawing: true,
       redoStore: new List(),
-      currentPaths: prevState.currentPaths.push(new List([mousePoint])),
+      currentPaths: state.currentPaths.push(new List([mousePoint])),
     }));
   }
 
@@ -136,13 +149,23 @@ const SvgSketchCanvas = class extends React.Component {
     });
   }
 
+  exportPaths() {
+    return new Promise((resolve, reject) => {
+      try {
+        resolve(this.state.currentPaths);
+      } catch (e) {
+        reject(e);
+      }
+    });
+  }
+
   handleMouseMove(mouseEvent) {
     if (!this.state.isDrawing) return;
 
     const mousePoint = this.getCoordinates(mouseEvent);
 
-    this.setState(prevState => ({
-      currentPaths: prevState.currentPaths.updateIn([prevState.currentPaths.size - 1], path =>
+    this.setState(state => ({
+      currentPaths: state.currentPaths.updateIn([state.currentPaths.size - 1], path =>
         path.push(mousePoint)),
     }));
   }
@@ -152,8 +175,8 @@ const SvgSketchCanvas = class extends React.Component {
 
     const mousePoint = this.getTouchCoordinates(touchEvent);
 
-    this.setState(prevState => ({
-      currentPaths: prevState.currentPaths.updateIn([prevState.currentPaths.size - 1], path =>
+    this.setState(state => ({
+      currentPaths: state.currentPaths.updateIn([state.currentPaths.size - 1], path =>
         path.push(mousePoint)),
     }));
   }
