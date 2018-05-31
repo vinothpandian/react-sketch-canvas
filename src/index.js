@@ -80,7 +80,6 @@ const SvgSketchCanvas = class extends React.Component {
     this.setState(state => ({
       isDrawing: true,
       redoStore: new List(),
-      // currentPaths: state.currentPaths.push(new List([mousePoint])),
       currentPaths: state.currentPaths.push(new Map({
         drawMode: this.state.drawMode,
         paths: new List([mousePoint]),
@@ -117,7 +116,10 @@ const SvgSketchCanvas = class extends React.Component {
     this.setState(state => ({
       isDrawing: true,
       redoStore: new List(),
-      currentPaths: state.currentPaths.push(new List([mousePoint])),
+      currentPaths: state.currentPaths.push(new Map({
+        drawMode: this.state.drawMode,
+        paths: new List([mousePoint]),
+      })),
     }));
   }
 
@@ -127,8 +129,8 @@ const SvgSketchCanvas = class extends React.Component {
     const mousePoint = this.getTouchCoordinates(touchEvent);
 
     this.setState(state => ({
-      currentPaths: state.currentPaths.updateIn([state.currentPaths.size - 1], path =>
-        path.push(mousePoint)),
+      currentPaths: state.currentPaths.updateIn([state.currentPaths.size - 1], pathMap =>
+        pathMap.updateIn(['paths'], list => list.push(mousePoint))),
     }));
   }
 

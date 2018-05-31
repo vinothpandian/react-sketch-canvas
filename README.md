@@ -4,6 +4,8 @@
 
 ### Supports Desktop and Mobile browser
 
+#### Depends on [Immutable.js][immutable]
+
 [![npm package][npm-badge]][npm]
 
 ---
@@ -108,9 +110,10 @@ const Canvas = class extends React.Component {
 | ----------- | ----------------- | ------------- |
 | width       | PropTypes.string  | 100%          |
 | height      | PropTypes.string  | 100%          |
-| strokeColor | PropTypes.string  | white         |
-| canvasColor | PropTypes.string  | black         |
+| canvasColor | PropTypes.string  | white         |
+| strokeColor | PropTypes.string  | black         |
 | strokeWidth | PropTypes.number  | 4             |
+| eraserWidth | PropTypes.number  | 8             |
 
 You can specify width and height values in em or rem. It fills the parent element space if width and height are not set
 
@@ -120,7 +123,26 @@ Example
 <SvgSketchCanvas width="25em" height="10rem" />
 ```
 
-You can pass a CSS in JS style object to style the element
+## Styling
+
+You can pass a CSS in JS style object to style the element. By default it has a border with following properties
+
+```css
+canvas {
+  border: 0.0625rem solid #9c9c9c;
+  border-radius: 0.25rem;
+}
+```
+
+Example
+
+```javascript
+<SvgSketchCanvas
+  style={{
+    border: "0.0625rem solid #9c9c9c"
+  }}
+/>
+```
 
 ## Functions
 
@@ -128,13 +150,16 @@ You can export the sketch as an image or as a svg
 
 _Use ref to access the element and call the following functions to export image_
 
-| Props                  | Expected datatype                                                                                                        |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| undo()                 | Undo the last action.                                                                                                    |
-| redo()                 | Redo the previous action.                                                                                                |
-| clearCanvas()          | Clears the canvas.                                                                                                       |
-| exportSvg()            | returns a Promise which resolves to an inline SVG element.                                                               |
-| exportImage(imageType) | Accepts an image type as argument (ex. jpeg, png) and returns a Promise which resolves to base64 data url of the sketch. |
+| Props                        | Expected datatype                                                                                                        |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| eraseMode(boolean)           | Switch to eraser mode by passing true. You can switch back to pen mode by passing false                                  |
+| clearCanvas()                | Clears the canvas.                                                                                                       |
+| undo()                       | Undo the last action.                                                                                                    |
+| redo()                       | Redo the previous action.                                                                                                |
+| exportImage(imageTypeString) | Accepts an image type as argument (ex. jpeg, png) and returns a Promise which resolves to base64 data url of the sketch. |
+| exportSvg()                  | returns a Promise which resolves to an inline SVG element.                                                               |
+| exportPaths()                | returns a Promise which resolves to an instance of Immutable.js [List][immutable-list].                                  |
+| loadPaths(ImmutableList)     | Accepts an Immutable [List][immutable-list] exported from exportPaths() and loads it on the canvas.                      |
 
 ## Thanks to
 
@@ -142,14 +167,13 @@ _Use ref to access the element and call the following functions to export image_
 
 * Philipp Spiess' [tutorial][based-on]
 * Draws smooth curves, thanks to François Romain's [tutorial][smooth-curve-tutorial]
+* Immutable.js [link][immutable]
 
 ---
 
-[build-badge]: https://img.shields.io/travis/user/repo/master.png?style=flat-square
-[build]: https://travis-ci.org/user/repo
 [npm-badge]: https://img.shields.io/npm/v/npm-package.png?style=flat-square
 [npm]: https://www.npmjs.com/package/react-sketch-canvas
-[coveralls-badge]: https://img.shields.io/coveralls/user/repo/master.png?style=flat-square
-[coveralls]: https://coveralls.io/github/user/repo
 [based-on]: https://pspdfkit.com/blog/2017/how-to-build-free-hand-drawing-using-react/
 [smooth-curve-tutorial]: https://medium.com/@francoisromain/smooth-a-svg-path-with-cubic-bezier-curves-e37b49d46c74
+[immutable]: https://facebook.github.io/immutable-js/
+[immutable-list]: https://facebook.github.io/immutable-js/docs/#/List
