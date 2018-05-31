@@ -64,6 +64,7 @@ const SvgSketchCanvas = class extends React.Component {
   getTouchCoordinates(touchEvent) {
     const boundingArea = this.svgCanvas.getBoundingClientRect();
     return new Map({
+      drawMode: this.state.drawMode,
       x: touchEvent.touches[0].clientX - boundingArea.left,
       y: touchEvent.touches[0].clientY - boundingArea.top,
     });
@@ -235,7 +236,7 @@ const SvgSketchCanvas = class extends React.Component {
 
   render() {
     const {
-      width, height, canvasColor, strokeColor, strokeWidth, style,
+      width, height, canvasColor, strokeColor, strokeWidth, eraserWidth, style,
     } = this.props;
 
     return (
@@ -266,20 +267,10 @@ const SvgSketchCanvas = class extends React.Component {
           <g id="svgCanvasPenStrokes">
             <Paths
               strokeWidth={strokeWidth}
+              eraserWidth={eraserWidth}
+              paths={this.state.currentPaths}
               strokeColor={strokeColor}
-              paths={this.state.currentPaths
-                .filter(pathMap => pathMap.get('drawMode'))
-                .map(pathMap => pathMap.get('paths'))}
-            />
-          </g>
-
-          <g id="svgCanvasEraserStrokes">
-            <Paths
-              strokeWidth={strokeWidth * 1.5}
-              strokeColor={canvasColor}
-              paths={this.state.currentPaths
-                .filter(pathMap => !pathMap.get('drawMode'))
-                .map(pathMap => pathMap.get('paths'))}
+              canvasColor={canvasColor}
             />
           </g>
         </svg>
@@ -296,6 +287,7 @@ SvgSketchCanvas.defaultProps = {
   canvasColor: 'white',
   strokeColor: 'black',
   strokeWidth: 4,
+  eraserWidth: 8,
   style: {
     border: '0.0625rem solid #9c9c9c',
     borderRadius: '0.25rem',
@@ -310,6 +302,7 @@ SvgSketchCanvas.propTypes = {
   strokeColor: PropTypes.string,
   canvasColor: PropTypes.string,
   strokeWidth: PropTypes.number,
+  eraserWidth: PropTypes.number,
   style: PropTypes.objectOf(PropTypes.string),
 };
 
