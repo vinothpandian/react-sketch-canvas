@@ -1,6 +1,6 @@
 {
   "name": "react-sketch-canvas",
-  "version": "1.1.1",
+  "version": "2.0.0",
   "description": "react-sketch-canvas - Freehand vector drawing tool for React using SVG as canvas",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -34,5 +34,5 @@
   "homepage": "https://github.com/vinothpandian/react-sketch-canvas",
   "license": "MIT",
   "repository": "https://github.com/vinothpandian/react-sketch-canvas.git",
-  "keywords": ["react-component"]
+  "keywords": ["react-component", "sketch", "canvas", "drawing", "freehand", "vector", "svg-canvas", "react-sketch"]
 }

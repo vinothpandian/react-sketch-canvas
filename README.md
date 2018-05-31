@@ -161,9 +161,22 @@ _Use ref to access the element and call the following functions to export image_
 | exportPaths()                | returns a Promise which resolves to an instance of Immutable.js [List][immutable-list].                                  |
 | loadPaths(ImmutableList)     | Accepts an Immutable [List][immutable-list] exported from exportPaths() and loads it on the canvas.                      |
 
-## Thanks to
+## Changelog
+
+### Version 2.0.0
+
+#### Breaking change
+
+* Rename exportAsImage() to exportImage() for naming consistency
+
+#### Added features
+
+* Export and load paths
+* Erase mode and eraser width
 
 ---
+
+## Thanks to
 
 * Philipp Spiess' [tutorial][based-on]
 * Draws smooth curves, thanks to François Romain's [tutorial][smooth-curve-tutorial]
