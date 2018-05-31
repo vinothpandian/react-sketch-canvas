@@ -32,6 +32,13 @@ const Demo = class extends React.Component {
         </button>
         <button
           onClick={() => {
+            this.canvas.eraseMode(true);
+          }}
+        >
+          Erase
+        </button>
+        <button
+          onClick={() => {
             this.canvas.redo();
           }}
         >
@@ -47,7 +54,7 @@ const Demo = class extends React.Component {
         <button
           onClick={() => {
             this.canvas
-              .exportAsImage('png')
+              .exportImage('png')
               .then((data) => {
                 console.log(data);
               })

@@ -4,9 +4,7 @@
 
 ### Supports Desktop and Mobile browser
 
-[![Travis][build-badge]][build]
 [![npm package][npm-badge]][npm]
-[![Coveralls][coveralls-badge]][coveralls]
 
 ---
 
@@ -87,7 +85,7 @@ const Canvas = class extends React.Component {
         <button
           onClick={() => {
             this.canvas
-              .exportAsImage("png")
+              .exportImage("png")
               .then(data => {
                 console.log(data);
               })
@@ -130,13 +128,13 @@ You can export the sketch as an image or as a svg
 
 _Use ref to access the element and call the following functions to export image_
 
-| Props                    | Expected datatype                                                                                                        |
-| ------------------------ | ------------------------------------------------------------------------------------------------------------------------ |
-| undo()                   | Undo the last action.                                                                                                    |
-| redo()                   | Redo the previous action.                                                                                                |
-| clearCanvas()            | Clears the canvas.                                                                                                       |
-| exportSvg()              | returns a Promise which resolves to an inline SVG element.                                                               |
-| exportAsImage(imageType) | Accepts an image type as argument (ex. jpeg, png) and returns a Promise which resolves to base64 data url of the sketch. |
+| Props                  | Expected datatype                                                                                                        |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| undo()                 | Undo the last action.                                                                                                    |
+| redo()                 | Redo the previous action.                                                                                                |
+| clearCanvas()          | Clears the canvas.                                                                                                       |
+| exportSvg()            | returns a Promise which resolves to an inline SVG element.                                                               |
+| exportImage(imageType) | Accepts an image type as argument (ex. jpeg, png) and returns a Promise which resolves to base64 data url of the sketch. |
 
 ## Thanks to
 

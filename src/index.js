@@ -8,6 +8,7 @@ const SvgSketchCanvas = class extends React.Component {
     super(props);
 
     this.state = {
+      drawMode: true,
       isDrawing: false,
       reset: false,
       resetStore: new List(),
@@ -18,21 +19,27 @@ const SvgSketchCanvas = class extends React.Component {
     this.handleMouseDown = this.handleMouseDown.bind(this);
     this.handleMouseMove = this.handleMouseMove.bind(this);
     this.handleMouseUp = this.handleMouseUp.bind(this);
+    this.getCoordinates = this.getCoordinates.bind(this);
+
     this.handleTouchStart = this.handleTouchStart.bind(this);
     this.handleTouchMove = this.handleTouchMove.bind(this);
     this.handleTouchUp = this.handleTouchUp.bind(this);
-    this.getCoordinates = this.getCoordinates.bind(this);
     this.getTouchCoordinates = this.getTouchCoordinates.bind(this);
-    this.exportAsImage = this.exportAsImage.bind(this);
+
+    this.exportImage = this.exportImage.bind(this);
     this.exportSvg = this.exportSvg.bind(this);
     this.exportPaths = this.exportPaths.bind(this);
+
+    this.eraseMode = this.eraseMode.bind(this);
     this.clearCanvas = this.clearCanvas.bind(this);
     this.undo = this.undo.bind(this);
     this.redo = this.redo.bind(this);
+
     this.svgCanvas = null;
-    this.rawCanvas = null;
   }
 
+  /* Add event listener to Mouse up and Touch up to
+      release drawing even when point goes out of canvas */
   componentDidMount() {
     document.addEventListener('mouseup', this.handleMouseUp);
     document.addEventListener('touchup', this.handleTouchUp);
@@ -58,6 +65,84 @@ const SvgSketchCanvas = class extends React.Component {
     return new Map({
       x: touchEvent.touches[0].clientX - boundingArea.left,
       y: touchEvent.touches[0].clientY - boundingArea.top,
+    });
+  }
+
+  /* Mouse Handlers - Mouse down, move and up */
+
+  handleMouseDown(mouseEvent) {
+    if (mouseEvent.button !== 0) return;
+
+    const mousePoint = this.getCoordinates(mouseEvent);
+
+    this.setState(state => ({
+      isDrawing: true,
+      redoStore: new List(),
+      // currentPaths: state.currentPaths.push(new List([mousePoint])),
+      currentPaths: state.currentPaths.push(new Map({
+        drawMode: this.state.drawMode,
+        paths: new List([mousePoint]),
+      })),
+    }));
+  }
+
+  handleMouseMove(mouseEvent) {
+    if (!this.state.isDrawing) return;
+
+    const mousePoint = this.getCoordinates(mouseEvent);
+
+    this.setState(state => ({
+      currentPaths: state.currentPaths.updateIn([state.currentPaths.size - 1], pathMap =>
+        pathMap.updateIn(['paths'], list => list.push(mousePoint))),
+    }));
+  }
+
+  handleMouseUp(mouseEvent) {
+    if (mouseEvent.button !== 0) return;
+
+    this.setState({
+      isDrawing: false,
+    });
+  }
+
+  /* Mouse Handlers ends */
+
+  /* Touch handler for touch screen devices - touch start, move and up */
+
+  handleTouchStart(touchEvent) {
+    const mousePoint = this.getTouchCoordinates(touchEvent);
+
+    this.setState(state => ({
+      isDrawing: true,
+      redoStore: new List(),
+      currentPaths: state.currentPaths.push(new List([mousePoint])),
+    }));
+  }
+
+  handleTouchMove(touchEvent) {
+    if (!this.state.isDrawing) return;
+
+    const mousePoint = this.getTouchCoordinates(touchEvent);
+
+    this.setState(state => ({
+      currentPaths: state.currentPaths.updateIn([state.currentPaths.size - 1], path =>
+        path.push(mousePoint)),
+    }));
+  }
+
+  handleTouchUp() {
+    this.setState({
+      isDrawing: false,
+    });
+  }
+
+  /* Touch handler ends */
+
+  /* Canvas operations */
+
+  eraseMode(erase) {
+    this.setState({
+      drawMode: !erase,
     });
   }
 
@@ -96,30 +181,10 @@ const SvgSketchCanvas = class extends React.Component {
     }));
   }
 
-  handleMouseDown(mouseEvent) {
-    if (mouseEvent.button !== 0) return;
-
-    const mousePoint = this.getCoordinates(mouseEvent);
-
-    this.setState(state => ({
-      isDrawing: true,
-      redoStore: new List(),
-      currentPaths: state.currentPaths.push(new List([mousePoint])),
-    }));
-  }
-
-  handleTouchStart(touchEvent) {
-    const mousePoint = this.getTouchCoordinates(touchEvent);
-
-    this.setState(state => ({
-      isDrawing: true,
-      redoStore: new List(),
-      currentPaths: state.currentPaths.push(new List([mousePoint])),
-    }));
-  }
+  /* Exporting options */
 
   // Creates a image from SVG and renders it on canvas, then exports the canvas as image
-  exportAsImage(imageType) {
+  exportImage(imageType) {
     return new Promise((resolve, reject) => {
       try {
         const img = document.createElement('img');
@@ -159,45 +224,11 @@ const SvgSketchCanvas = class extends React.Component {
     });
   }
 
-  handleMouseMove(mouseEvent) {
-    if (!this.state.isDrawing) return;
-
-    const mousePoint = this.getCoordinates(mouseEvent);
-
-    this.setState(state => ({
-      currentPaths: state.currentPaths.updateIn([state.currentPaths.size - 1], path =>
-        path.push(mousePoint)),
-    }));
-  }
-
-  handleTouchMove(touchEvent) {
-    if (!this.state.isDrawing) return;
-
-    const mousePoint = this.getTouchCoordinates(touchEvent);
-
-    this.setState(state => ({
-      currentPaths: state.currentPaths.updateIn([state.currentPaths.size - 1], path =>
-        path.push(mousePoint)),
-    }));
-  }
-
-  handleMouseUp(mouseEvent) {
-    if (mouseEvent.button !== 0) return;
-
-    this.setState({
-      isDrawing: false,
-    });
-  }
-
-  handleTouchUp() {
-    this.setState({
-      isDrawing: false,
-    });
-  }
+  /* Finally!!! Render method */
 
   render() {
     const {
-      width, height, strokeColor, strokeWidth, style,
+      width, height, canvasColor, strokeColor, strokeWidth, style,
     } = this.props;
 
     return (
@@ -217,18 +248,40 @@ const SvgSketchCanvas = class extends React.Component {
           baseProfile="full"
           xmlns="http://www.w3.org/2000/svg"
           style={{
-            strokeWidth,
             width: '100%',
             height: '100%',
           }}
         >
-          <rect width="100%" height="100%" fill={this.props.canvasColor} />
-          <Paths strokeColor={strokeColor} paths={this.state.currentPaths} />
+          <g id="svgCanvasBackground">
+            <rect width="100%" height="100%" fill={canvasColor} />
+          </g>
+
+          <g id="svgCanvasPenStrokes">
+            <Paths
+              strokeWidth={strokeWidth}
+              strokeColor={strokeColor}
+              paths={this.state.currentPaths
+                .filter(pathMap => pathMap.get('drawMode'))
+                .map(pathMap => pathMap.get('paths'))}
+            />
+          </g>
+
+          <g id="svgCanvasEraserStrokes">
+            <Paths
+              strokeWidth={strokeWidth * 1.5}
+              strokeColor={canvasColor}
+              paths={this.state.currentPaths
+                .filter(pathMap => !pathMap.get('drawMode'))
+                .map(pathMap => pathMap.get('paths'))}
+            />
+          </g>
         </svg>
       </div>
     );
   }
 };
+
+/* Default settings */
 
 SvgSketchCanvas.defaultProps = {
   width: '100%',
@@ -241,6 +294,8 @@ SvgSketchCanvas.defaultProps = {
     borderRadius: '0.25rem',
   },
 };
+
+/* Props validation */
 
 SvgSketchCanvas.propTypes = {
   width: PropTypes.string,
