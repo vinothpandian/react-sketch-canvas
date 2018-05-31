@@ -7,6 +7,11 @@ const Demo = class extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      penMode: true,
+      exportedPaths: null,
+    };
+
     this.canvas = null;
   }
 
@@ -32,17 +37,24 @@ const Demo = class extends React.Component {
         </button>
         <button
           onClick={() => {
-            this.canvas.eraseMode(true);
-          }}
-        >
-          Erase
-        </button>
-        <button
-          onClick={() => {
             this.canvas.redo();
           }}
         >
           Redo
+        </button>
+        <button
+          onClick={() => {
+            this.canvas.eraseMode(false);
+          }}
+        >
+          Pen
+        </button>
+        <button
+          onClick={() => {
+            this.canvas.eraseMode(true);
+          }}
+        >
+          Erase
         </button>
         <button
           onClick={() => {
@@ -70,7 +82,9 @@ const Demo = class extends React.Component {
             this.canvas
               .exportPaths()
               .then((data) => {
-                console.log(data);
+                this.setState({
+                  exportedPaths: data,
+                });
               })
               .catch((e) => {
                 console.log(e);
@@ -78,6 +92,14 @@ const Demo = class extends React.Component {
           }}
         >
           Get Paths
+        </button>
+        <button
+          disabled={this.state.exportedPaths === null}
+          onClick={() => {
+            this.canvas.loadPaths(this.state.exportedPaths);
+          }}
+        >
+          Load Paths
         </button>
       </div>
     );

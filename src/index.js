@@ -29,6 +29,7 @@ const SvgSketchCanvas = class extends React.Component {
     this.exportImage = this.exportImage.bind(this);
     this.exportSvg = this.exportSvg.bind(this);
     this.exportPaths = this.exportPaths.bind(this);
+    this.loadPaths = this.loadPaths.bind(this);
 
     this.eraseMode = this.eraseMode.bind(this);
     this.clearCanvas = this.clearCanvas.bind(this);
@@ -222,6 +223,12 @@ const SvgSketchCanvas = class extends React.Component {
         reject(e);
       }
     });
+  }
+
+  loadPaths(paths) {
+    this.setState(prevState => ({
+      currentPaths: paths.concat(prevState.currentPaths),
+    }));
   }
 
   /* Finally!!! Render method */
