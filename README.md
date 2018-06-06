@@ -2,7 +2,11 @@
 
 ## Freehand vector drawing tool for React using SVG as canvas
 
-### Supports Desktop and Mobile browser
+### Supports Desktop and Mobile.
+
+### Accepts input from Mouse, touch, and graphic tablets
+
+#### <span style="color:red">**Requires React 16.4**</span>
 
 #### Depends on [Immutable.js][immutable]
 
@@ -164,30 +168,36 @@ _Use ref to access the element and call the following functions to export image_
 
 ## Changelog
 
+### Version 2.1.0
+
+#### Added features
+
+- Switched to pointer events
+
 ### Version 2.0.1
 
 #### Added features
 
-* Add SVG background using CSS
+- Add SVG background using CSS
 
 ### Version 2.0.0
 
 #### Breaking change
 
-* Rename exportAsImage() to exportImage() for naming consistency
+- Rename exportAsImage() to exportImage() for naming consistency
 
 #### Added features
 
-* Export and load paths
-* Erase mode and eraser width
+- Export and load paths
+- Erase mode and eraser width
 
 ---
 
 ## Thanks to
 
-* Philipp Spiess' [tutorial][based-on]
-* Draws smooth curves, thanks to François Romain's [tutorial][smooth-curve-tutorial]
-* Immutable.js [link][immutable]
+- Philipp Spiess' [tutorial][based-on]
+- Draws smooth curves, thanks to François Romain's [tutorial][smooth-curve-tutorial]
+- Immutable.js [link][immutable]
 
 ---
 

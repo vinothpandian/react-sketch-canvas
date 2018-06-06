@@ -16,15 +16,10 @@ const SvgSketchCanvas = class extends React.Component {
       currentPaths: new List(),
     };
 
-    this.handleMouseDown = this.handleMouseDown.bind(this);
-    this.handleMouseMove = this.handleMouseMove.bind(this);
-    this.handleMouseUp = this.handleMouseUp.bind(this);
+    this.handlePointerDown = this.handlePointerDown.bind(this);
+    this.handlePointerMove = this.handlePointerMove.bind(this);
+    this.handlePointerUp = this.handlePointerUp.bind(this);
     this.getCoordinates = this.getCoordinates.bind(this);
-
-    this.handleTouchStart = this.handleTouchStart.bind(this);
-    this.handleTouchMove = this.handleTouchMove.bind(this);
-    this.handleTouchUp = this.handleTouchUp.bind(this);
-    this.getTouchCoordinates = this.getTouchCoordinates.bind(this);
 
     this.exportImage = this.exportImage.bind(this);
     this.exportSvg = this.exportSvg.bind(this);
@@ -42,64 +37,52 @@ const SvgSketchCanvas = class extends React.Component {
   /* Add event listener to Mouse up and Touch up to
       release drawing even when point goes out of canvas */
   componentDidMount() {
-    document.addEventListener('mouseup', this.handleMouseUp);
-    document.addEventListener('touchup', this.handleTouchUp);
+    document.addEventListener('pointerup', this.handlePointerUp);
   }
 
   componentWillUnmount() {
-    document.removeEventListener('mouseup', this.handleMouseUp);
-    document.removeEventListener('touchup', this.handleTouchUp);
+    document.removeEventListener('pointercancel', this.handlePointerUp);
   }
 
   // Converts mouse coordinates to relative coordinate based on the absolute position of svg
-  getCoordinates(mouseEvent) {
+  getCoordinates(pointerEvent) {
     const boundingArea = this.svgCanvas.getBoundingClientRect();
     return new Map({
-      x: mouseEvent.clientX - boundingArea.left,
-      y: mouseEvent.clientY - boundingArea.top,
-    });
-  }
-
-  // Converts touch coordinates to relative coordinate based on the absolute position of svg
-  getTouchCoordinates(touchEvent) {
-    const boundingArea = this.svgCanvas.getBoundingClientRect();
-    return new Map({
-      drawMode: this.state.drawMode,
-      x: touchEvent.touches[0].clientX - boundingArea.left,
-      y: touchEvent.touches[0].clientY - boundingArea.top,
+      x: pointerEvent.pageX - boundingArea.left,
+      y: pointerEvent.pageY - boundingArea.top,
     });
   }
 
   /* Mouse Handlers - Mouse down, move and up */
 
-  handleMouseDown(mouseEvent) {
-    if (mouseEvent.button !== 0) return;
+  handlePointerDown(pointerEvent) {
+    if (pointerEvent.pointerType === 'mouse' && pointerEvent.button !== 0) return;
 
-    const mousePoint = this.getCoordinates(mouseEvent);
+    const point = this.getCoordinates(pointerEvent);
 
     this.setState(state => ({
       isDrawing: true,
       redoStore: new List(),
       currentPaths: state.currentPaths.push(new Map({
         drawMode: this.state.drawMode,
-        paths: new List([mousePoint]),
+        paths: new List([point]),
       })),
     }));
   }
 
-  handleMouseMove(mouseEvent) {
+  handlePointerMove(pointerEvent) {
     if (!this.state.isDrawing) return;
 
-    const mousePoint = this.getCoordinates(mouseEvent);
+    const point = this.getCoordinates(pointerEvent);
 
     this.setState(state => ({
       currentPaths: state.currentPaths.updateIn([state.currentPaths.size - 1], pathMap =>
-        pathMap.updateIn(['paths'], list => list.push(mousePoint))),
+        pathMap.updateIn(['paths'], list => list.push(point))),
     }));
   }
 
-  handleMouseUp(mouseEvent) {
-    if (mouseEvent.button !== 0) return;
+  handlePointerUp(pointerEvent) {
+    if (pointerEvent.pointerType === 'mouse' && pointerEvent.button !== 0) return;
 
     this.setState({
       isDrawing: false,
@@ -107,40 +90,6 @@ const SvgSketchCanvas = class extends React.Component {
   }
 
   /* Mouse Handlers ends */
-
-  /* Touch handler for touch screen devices - touch start, move and up */
-
-  handleTouchStart(touchEvent) {
-    const mousePoint = this.getTouchCoordinates(touchEvent);
-
-    this.setState(state => ({
-      isDrawing: true,
-      redoStore: new List(),
-      currentPaths: state.currentPaths.push(new Map({
-        drawMode: this.state.drawMode,
-        paths: new List([mousePoint]),
-      })),
-    }));
-  }
-
-  handleTouchMove(touchEvent) {
-    if (!this.state.isDrawing) return;
-
-    const mousePoint = this.getTouchCoordinates(touchEvent);
-
-    this.setState(state => ({
-      currentPaths: state.currentPaths.updateIn([state.currentPaths.size - 1], pathMap =>
-        pathMap.updateIn(['paths'], list => list.push(mousePoint))),
-    }));
-  }
-
-  handleTouchUp() {
-    this.setState({
-      isDrawing: false,
-    });
-  }
-
-  /* Touch handler ends */
 
   /* Canvas operations */
 
@@ -255,14 +204,14 @@ const SvgSketchCanvas = class extends React.Component {
           this.svgCanvas = element;
         }}
         style={{
+          touchAction: 'none',
           width,
           height,
           ...style,
         }}
-        onMouseDown={this.handleMouseDown}
-        onMouseMove={this.handleMouseMove}
-        onTouchStart={this.handleTouchStart}
-        onTouchMove={this.handleTouchMove}
+        onPointerDown={this.handlePointerDown}
+        onPointerMove={this.handlePointerMove}
+        onPointerUp={this.handlePointerUp}
       >
         <svg
           version="1.1"
