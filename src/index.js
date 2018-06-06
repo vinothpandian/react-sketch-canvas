@@ -238,7 +238,14 @@ const SvgSketchCanvas = class extends React.Component {
 
   render() {
     const {
-      width, height, canvasColor, strokeColor, strokeWidth, eraserWidth, style,
+      width,
+      height,
+      canvasColor,
+      background,
+      strokeColor,
+      strokeWidth,
+      eraserWidth,
+      style,
     } = this.props;
 
     return (
@@ -247,7 +254,11 @@ const SvgSketchCanvas = class extends React.Component {
         ref={(element) => {
           this.svgCanvas = element;
         }}
-        style={{ width, height, ...style }}
+        style={{
+          width,
+          height,
+          ...style,
+        }}
         onMouseDown={this.handleMouseDown}
         onMouseMove={this.handleMouseMove}
         onTouchStart={this.handleTouchStart}
@@ -260,12 +271,9 @@ const SvgSketchCanvas = class extends React.Component {
           style={{
             width: '100%',
             height: '100%',
+            background: `${background} ${canvasColor}`,
           }}
         >
-          <g id="svgCanvasBackground">
-            <rect width="100%" height="100%" fill={canvasColor} />
-          </g>
-
           <g id="svgCanvasPenStrokes">
             <Paths
               strokeWidth={strokeWidth}
@@ -288,6 +296,7 @@ SvgSketchCanvas.defaultProps = {
   height: '100%',
   canvasColor: 'white',
   strokeColor: 'black',
+  background: '',
   strokeWidth: 4,
   eraserWidth: 8,
   style: {
@@ -303,6 +312,7 @@ SvgSketchCanvas.propTypes = {
   height: PropTypes.string,
   strokeColor: PropTypes.string,
   canvasColor: PropTypes.string,
+  background: PropTypes.string,
   strokeWidth: PropTypes.number,
   eraserWidth: PropTypes.number,
   style: PropTypes.objectOf(PropTypes.string),

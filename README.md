@@ -6,7 +6,7 @@
 
 #### Depends on [Immutable.js][immutable]
 
-[![npm package][npm-badge]][npm]
+[![npm version](https://badge.fury.io/js/react-sketch-canvas.svg)](https://badge.fury.io/js/react-sketch-canvas)
 
 ---
 
@@ -27,7 +27,7 @@ yarn add react-sketch-canvas
 For Javascript Script tag use
 
 ```html
-<script type="text/javascript" src="https://unpkg.com/react-sketch-canvas@1.0.0/umd/react-sketch-canvas.min.js"></script>
+<script type="text/javascript" src="https://unpkg.com/react-sketch-canvas@2.0.1/umd/react-sketch-canvas.min.js"></script>
 ```
 
 ## Example
@@ -106,14 +106,15 @@ const Canvas = class extends React.Component {
 
 ## List of Props
 
-| Props       | Expected datatype | Default value |
-| ----------- | ----------------- | ------------- |
-| width       | PropTypes.string  | 100%          |
-| height      | PropTypes.string  | 100%          |
-| canvasColor | PropTypes.string  | white         |
-| strokeColor | PropTypes.string  | black         |
-| strokeWidth | PropTypes.number  | 4             |
-| eraserWidth | PropTypes.number  | 8             |
+| Props       | Expected datatype | Default value                                           |
+| ----------- | ----------------- | ------------------------------------------------------- |
+| width       | PropTypes.string  | 100%                                                    |
+| height      | PropTypes.string  | 100%                                                    |
+| canvasColor | PropTypes.string  | white                                                   |
+| background  | PropTypes.string  | Set SVG background using CSS [background][css-bg] value |
+| strokeColor | PropTypes.string  | black                                                   |
+| strokeWidth | PropTypes.number  | 4                                                       |
+| eraserWidth | PropTypes.number  | 8                                                       |
 
 You can specify width and height values in em or rem. It fills the parent element space if width and height are not set
 
@@ -163,6 +164,12 @@ _Use ref to access the element and call the following functions to export image_
 
 ## Changelog
 
+### Version 2.0.1
+
+#### Added features
+
+* Add SVG background using CSS
+
 ### Version 2.0.0
 
 #### Breaking change
@@ -184,9 +191,8 @@ _Use ref to access the element and call the following functions to export image_
 
 ---
 
-[npm-badge]: https://img.shields.io/npm/v/npm-package.png?style=flat-square
-[npm]: https://www.npmjs.com/package/react-sketch-canvas
 [based-on]: https://pspdfkit.com/blog/2017/how-to-build-free-hand-drawing-using-react/
 [smooth-curve-tutorial]: https://medium.com/@francoisromain/smooth-a-svg-path-with-cubic-bezier-curves-e37b49d46c74
 [immutable]: https://facebook.github.io/immutable-js/
 [immutable-list]: https://facebook.github.io/immutable-js/docs/#/List
+[css-bg]: https://developer.mozilla.org/en-US/docs/Web/CSS/background
