@@ -41,7 +41,7 @@ const SvgSketchCanvas = class extends React.Component {
   }
 
   componentWillUnmount() {
-    document.removeEventListener('pointercancel', this.handlePointerUp);
+    document.removeEventListener('pointerup', this.handlePointerUp);
   }
 
   // Converts mouse coordinates to relative coordinate based on the absolute position of svg
