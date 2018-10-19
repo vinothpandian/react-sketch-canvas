@@ -58,31 +58,41 @@ const SvgSketchCanvas = class extends React.Component {
   handlePointerDown(pointerEvent) {
     if (pointerEvent.pointerType === 'mouse' && pointerEvent.button !== 0) return;
 
+    // Pick only pen events
+    if (pointerEvent.pointerType !== 'pen') return;
+
     const point = this.getCoordinates(pointerEvent);
 
     this.setState(state => ({
       isDrawing: true,
       redoStore: new List(),
-      currentPaths: state.currentPaths.push(new Map({
-        drawMode: this.state.drawMode,
-        paths: new List([point]),
-      })),
+      currentPaths: state.currentPaths.push(
+        new Map({
+          drawMode: this.state.drawMode,
+          paths: new List([point]),
+        }),
+      ),
     }));
   }
 
   handlePointerMove(pointerEvent) {
     if (!this.state.isDrawing) return;
 
+    // Pick only pen events
+    if (pointerEvent.pointerType !== 'pen') return;
+
     const point = this.getCoordinates(pointerEvent);
 
     this.setState(state => ({
-      currentPaths: state.currentPaths.updateIn([state.currentPaths.size - 1], pathMap =>
-        pathMap.updateIn(['paths'], list => list.push(point))),
+      currentPaths: state.currentPaths.updateIn([state.currentPaths.size - 1], pathMap => pathMap.updateIn(['paths'], list => list.push(point))),
     }));
   }
 
   handlePointerUp(pointerEvent) {
     if (pointerEvent.pointerType === 'mouse' && pointerEvent.button !== 0) return;
+
+    // Pick only pen events
+    if (pointerEvent.pointerType !== 'pen') return;
 
     this.setState({
       isDrawing: false,
