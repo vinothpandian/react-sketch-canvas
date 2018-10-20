@@ -56,11 +56,13 @@ const SvgSketchCanvas = class extends React.Component {
   /* Mouse Handlers - Mouse down, move and up */
 
   handlePointerDown(pointerEvent) {
+    // Allow only chosen pointer type
+    const { allowOnlyPointerType } = this.props;
+    if (allowOnlyPointerType !== 'all' && pointerEvent.pointerType !== allowOnlyPointerType) return;
+
     if (pointerEvent.pointerType === 'mouse' && pointerEvent.button !== 0) return;
 
-    // Pick only pen events
-    if (pointerEvent.pointerType !== 'pen') return;
-
+    const { drawMode } = this.state;
     const point = this.getCoordinates(pointerEvent);
 
     this.setState(state => ({
@@ -68,7 +70,7 @@ const SvgSketchCanvas = class extends React.Component {
       redoStore: new List(),
       currentPaths: state.currentPaths.push(
         new Map({
-          drawMode: this.state.drawMode,
+          drawMode,
           paths: new List([point]),
         }),
       ),
@@ -76,10 +78,13 @@ const SvgSketchCanvas = class extends React.Component {
   }
 
   handlePointerMove(pointerEvent) {
-    if (!this.state.isDrawing) return;
+    const { isDrawing } = this.state;
 
-    // Pick only pen events
-    if (pointerEvent.pointerType !== 'pen') return;
+    if (!isDrawing) return;
+
+    // Allow only chosen pointer type
+    const { allowOnlyPointerType } = this.props;
+    if (allowOnlyPointerType !== 'all' && pointerEvent.pointerType !== allowOnlyPointerType) return;
 
     const point = this.getCoordinates(pointerEvent);
 
@@ -91,8 +96,9 @@ const SvgSketchCanvas = class extends React.Component {
   handlePointerUp(pointerEvent) {
     if (pointerEvent.pointerType === 'mouse' && pointerEvent.button !== 0) return;
 
-    // Pick only pen events
-    if (pointerEvent.pointerType !== 'pen') return;
+    // Allow only chosen pointer type
+    const { allowOnlyPointerType } = this.props;
+    if (allowOnlyPointerType !== 'all' && pointerEvent.pointerType !== allowOnlyPointerType) return;
 
     this.setState({
       isDrawing: false,
@@ -118,7 +124,9 @@ const SvgSketchCanvas = class extends React.Component {
   }
 
   undo() {
-    if (this.state.reset) {
+    const { reset, currentPaths } = this.state;
+
+    if (reset) {
       this.setState(state => ({
         reset: false,
         resetStore: new List(),
@@ -127,7 +135,7 @@ const SvgSketchCanvas = class extends React.Component {
       return;
     }
 
-    if (this.state.currentPaths.isEmpty()) return;
+    if (currentPaths.isEmpty()) return;
 
     this.setState(state => ({
       redoStore: state.redoStore.push(state.currentPaths.get(-1)),
@@ -136,7 +144,9 @@ const SvgSketchCanvas = class extends React.Component {
   }
 
   redo() {
-    if (this.state.redoStore.isEmpty()) return;
+    const { redoStore } = this.state;
+
+    if (redoStore.isEmpty()) return;
 
     this.setState(state => ({
       redoStore: state.redoStore.pop(),
@@ -178,9 +188,11 @@ const SvgSketchCanvas = class extends React.Component {
   }
 
   exportPaths() {
+    const { currentPaths } = this.state;
+
     return new Promise((resolve, reject) => {
       try {
-        resolve(this.state.currentPaths);
+        resolve(currentPaths);
       } catch (e) {
         reject(e);
       }
@@ -206,6 +218,8 @@ const SvgSketchCanvas = class extends React.Component {
       eraserWidth,
       style,
     } = this.props;
+
+    const { currentPaths } = this.state;
 
     return (
       <div
@@ -237,7 +251,7 @@ const SvgSketchCanvas = class extends React.Component {
             <Paths
               strokeWidth={strokeWidth}
               eraserWidth={eraserWidth}
-              paths={this.state.currentPaths}
+              paths={currentPaths}
               strokeColor={strokeColor}
               canvasColor={canvasColor}
             />
@@ -258,6 +272,7 @@ SvgSketchCanvas.defaultProps = {
   background: '',
   strokeWidth: 4,
   eraserWidth: 8,
+  allowOnlyPointerType: 'pen',
   style: {
     border: '0.0625rem solid #9c9c9c',
     borderRadius: '0.25rem',
@@ -274,6 +289,7 @@ SvgSketchCanvas.propTypes = {
   background: PropTypes.string,
   strokeWidth: PropTypes.number,
   eraserWidth: PropTypes.number,
+  allowOnlyPointerType: PropTypes.string,
   style: PropTypes.objectOf(PropTypes.string),
 };
 

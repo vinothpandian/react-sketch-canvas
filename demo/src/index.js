@@ -3,6 +3,13 @@ import { render } from 'react-dom';
 
 import SvgSketchCanvas from '../../src';
 
+const modes = {
+  0: 'mouse',
+  1: 'touch',
+  2: 'pen',
+  3: 'all',
+};
+
 const Demo = class extends React.Component {
   constructor(props) {
     super(props);
@@ -10,12 +17,24 @@ const Demo = class extends React.Component {
     this.state = {
       penMode: true,
       exportedPaths: null,
+      allowOnlyPointerType: 0,
     };
 
     this.canvas = null;
+    this.getNextMode = this.getNextMode.bind(this);
+  }
+
+  getNextMode() {
+    this.setState(prevState => ({
+      allowOnlyPointerType: (prevState.allowOnlyPointerType + 1) % 4,
+    }));
   }
 
   render() {
+    const { exportedPaths, allowOnlyPointerType } = this.state;
+
+    const mode = modes[allowOnlyPointerType];
+
     return (
       <div>
         <h1>React SVG Sketch Demo</h1>
@@ -27,8 +46,10 @@ const Demo = class extends React.Component {
           height="400px"
           strokeWidth={4}
           strokeColor="red"
+          allowOnlyPointerType={mode}
         />
         <button
+          type="button"
           onClick={() => {
             this.canvas.undo();
           }}
@@ -36,6 +57,7 @@ const Demo = class extends React.Component {
           Undo
         </button>
         <button
+          type="button"
           onClick={() => {
             this.canvas.redo();
           }}
@@ -43,6 +65,7 @@ const Demo = class extends React.Component {
           Redo
         </button>
         <button
+          type="button"
           onClick={() => {
             this.canvas.eraseMode(false);
           }}
@@ -50,6 +73,7 @@ const Demo = class extends React.Component {
           Pen
         </button>
         <button
+          type="button"
           onClick={() => {
             this.canvas.eraseMode(true);
           }}
@@ -57,6 +81,7 @@ const Demo = class extends React.Component {
           Erase
         </button>
         <button
+          type="button"
           onClick={() => {
             this.canvas.clearCanvas();
           }}
@@ -64,6 +89,7 @@ const Demo = class extends React.Component {
           Reset canvas
         </button>
         <button
+          type="button"
           onClick={() => {
             this.canvas
               .exportImage('png')
@@ -78,6 +104,7 @@ const Demo = class extends React.Component {
           Get Image
         </button>
         <button
+          type="button"
           onClick={() => {
             this.canvas
               .exportPaths()
@@ -94,12 +121,17 @@ const Demo = class extends React.Component {
           Get Paths
         </button>
         <button
-          disabled={this.state.exportedPaths === null}
+          type="button"
+          disabled={exportedPaths === null}
           onClick={() => {
-            this.canvas.loadPaths(this.state.exportedPaths);
+            this.canvas.loadPaths(exportedPaths);
           }}
         >
           Load Paths
+        </button>
+        <span>{`Current allowed mode: ${mode}`}</span>
+        <button type="button" onClick={this.getNextMode}>
+          Switch mode
         </button>
       </div>
     );
