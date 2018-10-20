@@ -110,15 +110,18 @@ const Canvas = class extends React.Component {
 
 ## List of Props
 
-| Props       | Expected datatype | Default value                                           |
-| ----------- | ----------------- | ------------------------------------------------------- |
-| width       | PropTypes.string  | 100%                                                    |
-| height      | PropTypes.string  | 100%                                                    |
-| canvasColor | PropTypes.string  | white                                                   |
-| background  | PropTypes.string  | Set SVG background using CSS [background][css-bg] value |
-| strokeColor | PropTypes.string  | black                                                   |
-| strokeWidth | PropTypes.number  | 4                                                       |
-| eraserWidth | PropTypes.number  | 8                                                       |
+| Props                | Expected datatype | Default value | Description                                             |
+| -------------------- | ----------------- | ------------- | ------------------------------------------------------- |
+| width                | PropTypes.string  | 100%          | canvas width (em/rem/px)                                |
+| height               | PropTypes.string  | 100%          | canvas width (em/rem/px)                                |
+| canvasColor          | PropTypes.string  | white         | canvas color (HTML colors)                              |
+| background           | PropTypes.string  | ''            | Set SVG background using CSS [background][css-bg] value |
+| strokeColor          | PropTypes.string  | black         | Pen color                                               |
+| strokeWidth          | PropTypes.number  | 4             | Pen stroke size                                         |
+| eraserWidth          | PropTypes.number  | 8             | Erase size                                              |
+| allowOnlyPointerType | PropTypes.string  | all           | allow pointer type ("all"/"mouse"/"pen"/"touch")        |
+
+Set SVG background using CSS [background][css-bg] value
 
 You can specify width and height values in em or rem. It fills the parent element space if width and height are not set
 
@@ -167,6 +170,12 @@ _Use ref to access the element and call the following functions to export image_
 | loadPaths(ImmutableList)     | Accepts an Immutable [List][immutable-list] exported from exportPaths() and loads it on the canvas.                      |
 
 ## Changelog
+
+### Version 2.2.0
+allowOnlyPointerType
+#### Added features
+
+- Added "allowOnlyPointerType" use-case. Now single pointer type can be targetted
 
 ### Version 2.1.0
 

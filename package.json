@@ -1,6 +1,6 @@
 {
   "name": "react-sketch-canvas",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "description": "react-sketch-canvas - Freehand vector drawing tool for React using SVG as canvas",
   "main": "lib/index.js",
   "module": "es/index.js",
