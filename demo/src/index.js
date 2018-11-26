@@ -22,6 +22,11 @@ const Demo = class extends React.Component {
 
     this.canvas = null;
     this.getNextMode = this.getNextMode.bind(this);
+    this.onUpdate = this.onUpdate.bind(this);
+  }
+
+  onUpdate(paths) {
+    console.log(paths);
   }
 
   getNextMode() {
@@ -47,6 +52,7 @@ const Demo = class extends React.Component {
           strokeWidth={4}
           strokeColor="red"
           allowOnlyPointerType={mode}
+          onUpdate={this.onUpdate}
         />
         <button
           type="button"

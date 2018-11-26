@@ -35,9 +35,19 @@ const SvgSketchCanvas = class extends React.Component {
   }
 
   /* Add event listener to Mouse up and Touch up to
-      release drawing even when point goes out of canvas */
+  release drawing even when point goes out of canvas */
   componentDidMount() {
     document.addEventListener('pointerup', this.handlePointerUp);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    const { currentPaths } = nextState;
+    const { onUpdate } = this.props;
+
+    // Return currentPaths to parent on update
+    onUpdate(currentPaths);
+
+    return true;
   }
 
   componentWillUnmount() {
@@ -277,6 +287,7 @@ SvgSketchCanvas.defaultProps = {
     border: '0.0625rem solid #9c9c9c',
     borderRadius: '0.25rem',
   },
+  onUpdate: () => {},
 };
 
 /* Props validation */
@@ -291,6 +302,7 @@ SvgSketchCanvas.propTypes = {
   eraserWidth: PropTypes.number,
   allowOnlyPointerType: PropTypes.string,
   style: PropTypes.objectOf(PropTypes.string),
+  onUpdate: PropTypes.func,
 };
 
 export default SvgSketchCanvas;

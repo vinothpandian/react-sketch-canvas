@@ -31,7 +31,10 @@ yarn add react-sketch-canvas
 For Javascript Script tag use
 
 ```html
-<script type="text/javascript" src="https://unpkg.com/react-sketch-canvas@2.0.1/umd/react-sketch-canvas.min.js"></script>
+<script
+  type="text/javascript"
+  src="https://unpkg.com/react-sketch-canvas@2.3.0/umd/react-sketch-canvas.min.js"
+></script>
 ```
 
 ## Example
@@ -120,6 +123,7 @@ const Canvas = class extends React.Component {
 | strokeWidth          | PropTypes.number  | 4             | Pen stroke size                                         |
 | eraserWidth          | PropTypes.number  | 8             | Erase size                                              |
 | allowOnlyPointerType | PropTypes.string  | all           | allow pointer type ("all"/"mouse"/"pen"/"touch")        |
+| onUpdate             | PropTypes.func    | all           | Returns the current sketch path on every update         |
 
 Set SVG background using CSS [background][css-bg] value
 
@@ -171,8 +175,18 @@ _Use ref to access the element and call the following functions to export image_
 
 ## Changelog
 
+### Version 2.3.0
+
+onUpdate
+
+#### Added features
+
+- Added onUpdate property to get the current sketch paths after every update
+
 ### Version 2.2.0
+
 allowOnlyPointerType
+
 #### Added features
 
 - Added "allowOnlyPointerType" use-case. Now single pointer type can be targetted
