@@ -14,6 +14,8 @@
 
 ---
 
+### Demo [https://vinoth.info/react-sketch-canvas]
+
 ## Installation
 
 If you use npm
@@ -33,7 +35,7 @@ For Javascript Script tag use
 ```html
 <script
   type="text/javascript"
-  src="https://unpkg.com/react-sketch-canvas@2.3.0/umd/react-sketch-canvas.min.js"
+  src="https://unpkg.com/react-sketch-canvas@3.0.0/umd/react-sketch-canvas.min.js"
 ></script>
 ```
 
@@ -78,22 +80,20 @@ const Canvas = class extends React.Component {
   constructor(props) {
     super(props);
 
-    this.canvas = null;
+    this.canvas = React.createRef();
   }
 
   render() {
     return (
       <div>
         <SvgSketchCanvas
-          ref={element => {
-            this.canvas = element;
-          }}
+          ref={this.canvas}
           strokeWidth={5}
           strokeColor="black"
         />
         <button
           onClick={() => {
-            this.canvas
+            this.canvas.current.
               .exportImage("png")
               .then(data => {
                 console.log(data);
@@ -175,9 +175,22 @@ _Use ref to access the element and call the following functions to export image_
 
 ## Changelog
 
+### Version 3.0.0
+
+Removed onUpdate feature and made the system modular
+
+#### Added features
+
+- Made Canvas as a separate module. Now event handlers can be hooked with Canvas
+  class to update paths from server. (For Collaboration use case)
+
+#### Breaking changes
+
+- Removed onUpdate feature and instead made Canvas module
+
 ### Version 2.3.0
 
-onUpdate
+onUpdate feature
 
 #### Added features
 

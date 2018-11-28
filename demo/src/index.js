@@ -1,5 +1,6 @@
 import React from 'react';
 import { render } from 'react-dom';
+import './index.css';
 
 import SvgSketchCanvas from '../../src';
 
@@ -18,15 +19,14 @@ const Demo = class extends React.Component {
       penMode: true,
       exportedPaths: null,
       allowOnlyPointerType: 0,
+      strokeColor: '#000000',
+      canvasColor: '#FFFFFF',
+      strokeWidth: 4,
+      eraserWidth: 5,
     };
 
-    this.canvas = null;
+    this.canvas = React.createRef();
     this.getNextMode = this.getNextMode.bind(this);
-    this.onUpdate = this.onUpdate.bind(this);
-  }
-
-  onUpdate(paths) {
-    console.log(paths);
   }
 
   getNextMode() {
@@ -36,109 +36,154 @@ const Demo = class extends React.Component {
   }
 
   render() {
-    const { exportedPaths, allowOnlyPointerType } = this.state;
+    const {
+      exportedPaths,
+      allowOnlyPointerType,
+      penMode,
+      strokeColor,
+      canvasColor,
+      eraserWidth,
+      strokeWidth,
+    } = this.state;
 
     const mode = modes[allowOnlyPointerType];
 
     return (
-      <div>
-        <h1>React SVG Sketch Demo</h1>
-        <SvgSketchCanvas
-          ref={(element) => {
-            this.canvas = element;
-          }}
-          width="600px"
-          height="400px"
-          strokeWidth={4}
-          strokeColor="red"
-          allowOnlyPointerType={mode}
-          onUpdate={this.onUpdate}
-        />
-        <button
-          type="button"
-          onClick={() => {
-            this.canvas.undo();
-          }}
-        >
-          Undo
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            this.canvas.redo();
-          }}
-        >
-          Redo
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            this.canvas.eraseMode(false);
-          }}
-        >
-          Pen
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            this.canvas.eraseMode(true);
-          }}
-        >
-          Erase
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            this.canvas.clearCanvas();
-          }}
-        >
-          Reset canvas
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            this.canvas
-              .exportImage('png')
-              .then((data) => {
-                console.log(data);
-              })
-              .catch((e) => {
-                console.log(e);
-              });
-          }}
-        >
-          Get Image
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            this.canvas
-              .exportPaths()
-              .then((data) => {
+      <div id="root">
+        <h1 id="header">React SVG Sketch Demo</h1>
+        <div id="wrapper">
+          <div id="canvasWrapper">
+            <SvgSketchCanvas
+              ref={this.canvas}
+              strokeWidth={strokeWidth}
+              strokeColor={strokeColor}
+              canvasColor={canvasColor}
+              eraserWidth={eraserWidth}
+              allowOnlyPointerType={mode}
+            />
+          </div>
+          <div id="buttonPanel">
+            <button
+              type="button"
+              onClick={() => {
+                this.canvas.current.undo();
+              }}
+            >
+              Undo
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                this.canvas.current.redo();
+              }}
+            >
+              Redo
+            </button>
+            <hr />
+            <span>{`Current sketch mode: ${penMode ? 'Pen' : 'Eraser'}`}</span>
+            <div className="colorPanel">
+              <span>Pen Color: </span>
+              <input
+                type="color"
+                value={strokeColor}
+                onChange={(event) => {
+                  this.setState({
+                    strokeColor: event.target.value,
+                  });
+                }}
+              />
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                this.canvas.current.eraseMode(false);
                 this.setState({
-                  exportedPaths: data,
+                  penMode: true,
                 });
-              })
-              .catch((e) => {
-                console.log(e);
-              });
-          }}
-        >
-          Get Paths
-        </button>
-        <button
-          type="button"
-          disabled={exportedPaths === null}
-          onClick={() => {
-            this.canvas.loadPaths(exportedPaths);
-          }}
-        >
-          Load Paths
-        </button>
-        <span>{`Current allowed mode: ${mode}`}</span>
-        <button type="button" onClick={this.getNextMode}>
-          Switch mode
-        </button>
+              }}
+            >
+              Pen
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                this.canvas.current.eraseMode(true);
+                this.setState({
+                  penMode: false,
+                });
+              }}
+            >
+              Erase
+            </button>
+            <hr />
+            <div className="colorPanel">
+              <span>Canvas Color: </span>
+              <input
+                type="color"
+                value={canvasColor}
+                onChange={(event) => {
+                  this.setState({
+                    canvasColor: event.target.value,
+                  });
+                }}
+              />
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                this.canvas.current.clearCanvas();
+              }}
+            >
+              Reset canvas
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                this.canvas.current
+                  .exportImage('png')
+                  .then((data) => {
+                    console.log(data);
+                  })
+                  .catch((e) => {
+                    console.log(e);
+                  });
+              }}
+            >
+              Get Image
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                this.canvas.current
+                  .exportPaths()
+                  .then((data) => {
+                    this.setState({
+                      exportedPaths: data,
+                    });
+                  })
+                  .catch((e) => {
+                    console.log(e);
+                  });
+              }}
+            >
+              Get Paths
+            </button>
+            <button
+              type="button"
+              disabled={exportedPaths === null}
+              onClick={() => {
+                this.canvas.current.loadPaths(exportedPaths);
+              }}
+            >
+              Load Paths
+            </button>
+            <hr />
+            <span>{`Current allowed mode: ${mode}`}</span>
+            <button type="button" onClick={this.getNextMode}>
+              Switch mode
+            </button>
+          </div>
+        </div>
       </div>
     );
   }

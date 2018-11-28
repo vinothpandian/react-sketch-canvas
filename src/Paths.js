@@ -2,19 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { List } from 'immutable';
 
-const svgPath = (
-  paths,
-  id,
-  strokeWidth,
-  eraserWidth,
-  strokeColor,
-  canvasColor,
-  drawMode,
-  command,
-) => {
+const svgPath = (paths, id, strokeWidth, strokeColor, command) => {
   const d = paths.reduce(
-    (acc, path, i, a) =>
-      (i === 0 ? `M ${path.get('x')},${path.get('y')}` : `${acc} ${command(path, i, a)}`),
+    (acc, path, i, a) => (i === 0 ? `M ${path.get('x')},${path.get('y')}` : `${acc} ${command(path, i, a)}`),
     '',
   );
   return (
@@ -23,8 +13,8 @@ const svgPath = (
       d={d}
       fill="none"
       strokeLinecap="round"
-      stroke={drawMode ? strokeColor : canvasColor}
-      strokeWidth={drawMode ? strokeWidth : eraserWidth}
+      stroke={strokeColor}
+      strokeWidth={strokeWidth}
     />
   );
 };
@@ -76,30 +66,20 @@ const bezierCommand = (point, i, a) => {
   return `C ${cpsX},${cpsY} ${cpeX},${cpeY} ${point.get('x')},${point.get('y')}`;
 };
 
-const Paths = ({
-  paths, strokeWidth, eraserWidth, strokeColor, canvasColor,
-}) => (
+const Paths = ({ paths }) => (
   <React.Fragment>
-    {paths.map((path, id) =>
-      svgPath(
-        path.get('paths'),
-        id,
-        strokeWidth,
-        eraserWidth,
-        strokeColor,
-        canvasColor,
-        path.get('drawMode'),
-        bezierCommand,
-      ))}
+    {paths.map((path, id) => svgPath(
+      path.get('paths'),
+      id,
+      path.get('strokeWidth'),
+      path.get('strokeColor'),
+      bezierCommand,
+    ))}
   </React.Fragment>
 );
 
 Paths.propTypes = {
   paths: PropTypes.instanceOf(List).isRequired,
-  strokeWidth: PropTypes.number.isRequired,
-  eraserWidth: PropTypes.number.isRequired,
-  strokeColor: PropTypes.string.isRequired,
-  canvasColor: PropTypes.string.isRequired,
 };
 
 export default Paths;
