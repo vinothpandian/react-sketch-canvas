@@ -1,53 +1,15 @@
 {
-  "name": "react-sketch-canvas",
-  "version": "3.0.0",
-  "description": "react-sketch-canvas - Freehand vector drawing tool for React using SVG as canvas",
-  "main": "lib/index.js",
-  "module": "es/index.js",
-  "files": [
-    "css",
-    "es",
-    "lib",
-    "umd"
+  "name": "react-sketch-canvas-monorepo",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Vinoth Pandian",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "documentation"
   ],
   "scripts": {
-    "build": "nwb build-react-component",
-    "clean": "nwb clean-module && nwb clean-demo",
-    "start": "nwb serve-react-demo --no-hmre",
-    "test": "nwb test-react",
-    "test:coverage": "nwb test-react --coverage",
-    "test:watch": "nwb test-react --server"
-  },
-  "dependencies": {
-    "immutable": "^4.0.0-rc.12"
-  },
-  "peerDependencies": {
-    "react": "16.x"
-  },
-  "devDependencies": {
-    "eslint": "^5.9.0",
-    "eslint-config-airbnb": "17.1.0",
-    "eslint-plugin-import": "2.14.0",
-    "eslint-plugin-jsx-a11y": "6.1.2",
-    "eslint-plugin-react": "7.11.1",
-    "nwb": "0.23.0",
-    "prop-types": "^15.6.2",
-    "react": "^16.6.3",
-    "react-dom": "^16.6.3",
-    "react-hot-loader": "^4.3.12"
-  },
-  "author": "Vinoth Pandian",
-  "homepage": "https://github.com/vinothpandian/react-sketch-canvas",
-  "license": "MIT",
-  "repository": "https://github.com/vinothpandian/react-sketch-canvas.git",
-  "keywords": [
-    "react-component",
-    "sketch",
-    "canvas",
-    "drawing",
-    "freehand",
-    "vector",
-    "svg-canvas",
-    "react-sketch"
-  ]
+    "start": "lerna run start --parallel"
+  }
 }
