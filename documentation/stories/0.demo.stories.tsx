@@ -47,7 +47,7 @@ export const SketchCanvas = () => {
   const [paths, setPaths] = React.useState<CanvasPath[]>([]);
 
   const width = text("Canvas width in em/rem/px (width)", "100%");
-  const height = text("Canvas height in em/rem/px (height)", "400px");
+  const height = text("Canvas height in em/rem/px (height)", "500px");
   const canvasColor = color("Canvas background color (canvasColor)", "#FFFFFF");
   const background = text(
     "SVG background using CSS (background)",
@@ -119,11 +119,11 @@ export const SketchCanvas = () => {
     }
   };
 
-  const resetHandler = () => {
-    const resetCanvas = canvasRef.current?.resetCanvas;
+  const clearHandler = () => {
+    const clearCanvas = canvasRef.current?.clearCanvas;
 
-    if (resetCanvas) {
-      resetCanvas();
+    if (clearCanvas) {
+      clearCanvas();
     }
   };
 
@@ -144,7 +144,7 @@ export const SketchCanvas = () => {
   const buttonsWithHandlers: Handlers = [
     ["Undo", undoHandler, "primary"],
     ["Redo", redoHandler, "primary"],
-    ["Reset", resetHandler, "primary"],
+    ["Clear All", clearHandler, "primary"],
     ["Pen", penHandler, "secondary"],
     ["Eraser", eraserHandler, "secondary"],
     ["Export Image", imageExportHandler, "success"],
@@ -158,7 +158,7 @@ export const SketchCanvas = () => {
   return (
     <div className="container-md">
       <h1 className="display-4 my-5">React Sketch Canvas - Full demo</h1>
-      <div className="row canvas-area">
+      <div className="row no-gutters canvas-area m-0 p-0">
         <div className="col-10 canvas">
           <SvgSketchCanvas
             ref={canvasRef}
@@ -170,7 +170,7 @@ export const SketchCanvas = () => {
             canvasColor={canvasColor}
             eraserWidth={eraserWidth}
             allowOnlyPointerType={pointerType}
-            style={{ border: "none" }}
+            style={{ borderRight: "1px solid #CCC" }}
             onUpdate={onUpdate}
           />
         </div>

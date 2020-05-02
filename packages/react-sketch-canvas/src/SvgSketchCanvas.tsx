@@ -75,7 +75,7 @@ export class SvgSketchCanvas extends React.Component<
     this.loadPaths = this.loadPaths.bind(this);
 
     this.eraseMode = this.eraseMode.bind(this);
-    this.resetCanvas = this.resetCanvas.bind(this);
+    this.clearCanvas = this.clearCanvas.bind(this);
     this.undo = this.undo.bind(this);
     this.redo = this.redo.bind(this);
 
@@ -147,7 +147,7 @@ export class SvgSketchCanvas extends React.Component<
     );
   }
 
-  resetCanvas() {
+  clearCanvas() {
     this.setState(
       produce((draft: SvgSketchCanvasStates) => {
         draft.resetStack = draft.currentPaths;
