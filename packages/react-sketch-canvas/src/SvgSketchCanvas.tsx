@@ -1,8 +1,8 @@
 import React from "react";
 
-import Canvas from "./Canvas";
-import { Point, CanvasPath } from "./typings";
 import { produce } from "immer";
+import { Canvas } from "./Canvas";
+import { Point, CanvasPath, ExportImageType } from "./typings";
 
 /* Default settings */
 
@@ -38,9 +38,8 @@ export type SvgSketchCanvasProps = {
 export type SvgSketchCanvasStates = {
   drawMode: boolean;
   isDrawing: boolean;
-  reset: boolean;
-  resetStore: CanvasPath[];
-  redoStore: CanvasPath[];
+  resetStack: CanvasPath[];
+  undoStack: CanvasPath[];
   currentPaths: CanvasPath[];
 };
 
@@ -50,15 +49,18 @@ export class SvgSketchCanvas extends React.Component<
 > {
   static defaultProps = defaultProps;
 
+  svgCanvas: React.RefObject<Canvas>;
+
   constructor(props: SvgSketchCanvasProps) {
     super(props);
 
     this.state = {
+      // eslint-disable-next-line react/no-unused-state
       drawMode: true,
       isDrawing: false,
-      reset: false,
-      resetStore: [],
-      redoStore: [],
+      // eslint-disable-next-line react/no-unused-state
+      resetStack: [],
+      undoStack: [],
       currentPaths: [],
     };
 
@@ -66,15 +68,17 @@ export class SvgSketchCanvas extends React.Component<
     this.handlePointerMove = this.handlePointerMove.bind(this);
     this.handlePointerUp = this.handlePointerUp.bind(this);
 
-    // this.exportImage = this.exportImage.bind(this);
-    // this.exportSvg = this.exportSvg.bind(this);
+    this.exportImage = this.exportImage.bind(this);
+    this.exportSvg = this.exportSvg.bind(this);
     this.exportPaths = this.exportPaths.bind(this);
-    // this.loadPaths = this.loadPaths.bind(this);
+    this.loadPaths = this.loadPaths.bind(this);
 
     this.eraseMode = this.eraseMode.bind(this);
-    this.clearCanvas = this.clearCanvas.bind(this);
+    this.resetCanvas = this.resetCanvas.bind(this);
     this.undo = this.undo.bind(this);
     this.redo = this.redo.bind(this);
+
+    this.svgCanvas = React.createRef();
   }
 
   /* Mouse Handlers - Mouse down, move and up */
@@ -85,7 +89,7 @@ export class SvgSketchCanvas extends React.Component<
     this.setState(
       produce((draft: SvgSketchCanvasStates) => {
         draft.isDrawing = true;
-        draft.redoStore = [];
+        draft.undoStack = [];
 
         draft.currentPaths.push({
           drawMode: draft.drawMode,
@@ -111,8 +115,8 @@ export class SvgSketchCanvas extends React.Component<
 
   handlePointerUp() {
     this.setState(
-      produce((state: SvgSketchCanvasStates) => {
-        state.isDrawing = false;
+      produce((draft: SvgSketchCanvasStates) => {
+        draft.isDrawing = false;
       })
     );
   }
@@ -123,53 +127,60 @@ export class SvgSketchCanvas extends React.Component<
 
   eraseMode(erase: boolean) {
     this.setState(
-      produce((state: SvgSketchCanvasStates) => {
-        state.isDrawing = !erase;
+      produce((draft: SvgSketchCanvasStates) => {
+        draft.drawMode = !erase;
       })
     );
   }
 
-  clearCanvas() {
+  resetCanvas() {
     this.setState(
-      produce((state: SvgSketchCanvasStates) => {
-        state.reset = true;
-        state.resetStore = state.currentPaths;
-        state.currentPaths = [];
+      produce((draft: SvgSketchCanvasStates) => {
+        draft.resetStack = draft.currentPaths;
+        draft.currentPaths = [];
       })
     );
   }
 
   undo() {
-    const { currentPaths, reset } = this.state;
+    const { resetStack } = this.state;
 
-    if (currentPaths.length === 0 && !reset) return;
+    // If there was a last reset then
+    if (resetStack.length !== 0) {
+      this.setState(
+        produce((draft: SvgSketchCanvasStates) => {
+          draft.currentPaths = draft.resetStack;
+          draft.resetStack = [];
+        })
+      );
+
+      return;
+    }
 
     this.setState(
-      produce((state: SvgSketchCanvasStates) => {
-        if (state.reset) {
-          state.reset = false;
-          state.resetStore = [];
-          state.redoStore = state.currentPaths;
-          state.currentPaths = state.resetStore;
-        } else {
-          state.redoStore.push(
-            state.currentPaths[state.currentPaths.length - 1]
-          );
-          state.currentPaths.pop();
+      produce((draft: SvgSketchCanvasStates) => {
+        const lastSketchPath = draft.currentPaths.pop();
+
+        if (lastSketchPath) {
+          draft.undoStack.push(lastSketchPath);
         }
       })
     );
   }
 
   redo() {
-    const { redoStore } = this.state;
+    const { undoStack } = this.state;
 
-    if (redoStore.length === 0) return;
+    // Nothing to Redo
+    if (undoStack.length === 0) return;
 
     this.setState(
-      produce((state: SvgSketchCanvasStates) => {
-        state.redoStore.pop();
-        state.currentPaths.push(state.redoStore[state.redoStore.length - 1]);
+      produce((draft: SvgSketchCanvasStates) => {
+        const lastUndoPath = draft.undoStack.pop();
+
+        if (lastUndoPath) {
+          draft.currentPaths.push(lastUndoPath);
+        }
       })
     );
   }
@@ -177,31 +188,33 @@ export class SvgSketchCanvas extends React.Component<
   /* Exporting options */
 
   // Creates a image from SVG and renders it on canvas, then exports the canvas as image
-  // exportImage(imageType) {
-  //   return new Promise((resolve, reject) => {
-  //     this.svgCanvas.current
-  //       .exportImage(imageType)
-  //       .then((data) => {
-  //         resolve(data);
-  //       })
-  //       .catch((e) => {
-  //         reject(e);
-  //       });
-  //   });
-  // }
+  exportImage(imageType: ExportImageType): Promise<string> {
+    const exportImage = this.svgCanvas.current?.exportImage;
 
-  // exportSvg() {
-  //   return new Promise((resolve, reject) => {
-  //     this.svgCanvas.current
-  //       .exportSvg()
-  //       .then((data) => {
-  //         resolve(data);
-  //       })
-  //       .catch((e) => {
-  //         reject(e);
-  //       });
-  //   });
-  // }
+    if (!exportImage) {
+      throw Error("Export function called before canvas loaded");
+    } else {
+      return exportImage(imageType);
+    }
+  }
+
+  exportSvg() {
+    return new Promise((resolve, reject) => {
+      const exportSvg = this.svgCanvas.current?.exportSvg;
+
+      if (!exportSvg) {
+        reject(Error("Export function called before canvas loaded"));
+      } else {
+        exportSvg()
+          .then((data) => {
+            resolve(data);
+          })
+          .catch((e) => {
+            reject(e);
+          });
+      }
+    });
+  }
 
   exportPaths() {
     const { currentPaths } = this.state;
@@ -215,11 +228,13 @@ export class SvgSketchCanvas extends React.Component<
     });
   }
 
-  // loadPaths(paths: List<CanvasPath>) {
-  //   this.setState((prevState) => ({
-  //     currentPaths: mergeDeep(prevState.currentPaths, paths),
-  //   }));
-  // }
+  loadPaths(paths: CanvasPath[]) {
+    this.setState(
+      produce((draft: SvgSketchCanvasStates) => {
+        draft.currentPaths = draft.currentPaths.concat(paths);
+      })
+    );
+  }
 
   /* Finally!!! Render method */
 
@@ -237,6 +252,7 @@ export class SvgSketchCanvas extends React.Component<
 
     return (
       <Canvas
+        ref={this.svgCanvas}
         width={width}
         height={height}
         canvasColor={canvasColor}
@@ -252,5 +268,3 @@ export class SvgSketchCanvas extends React.Component<
     );
   }
 }
-
-export default SvgSketchCanvas;

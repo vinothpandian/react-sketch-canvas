@@ -1,5 +1,6 @@
 import * as React from "react";
 import { SvgSketchCanvas } from "react-sketch-canvas";
+
 import {
   withKnobs,
   color,
@@ -8,7 +9,7 @@ import {
 } from "@storybook/addon-knobs";
 
 export default {
-  title: "Canvas",
+  title: "Export",
   component: SvgSketchCanvas,
   parameters: {
     info: { inline: true },
@@ -23,7 +24,7 @@ const pointerModes = {
   All: "all",
 };
 
-export const Default = () => {
+export const Image = () => {
   const canvasColor = color("Canvas background color", "#FFFFFF");
   const strokeColor = color("Stroke color", "#000000");
   const strokeWidth = number("Stroke thickness", 4);

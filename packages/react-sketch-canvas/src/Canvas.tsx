@@ -1,6 +1,7 @@
 import React from "react";
 import { ExportImageType, Point, CanvasPath } from "./typings";
 import Paths from "./Paths";
+import "pepjs";
 
 /* Default settings */
 
@@ -34,8 +35,6 @@ export type CanvasProps = {
 
 export class Canvas extends React.Component<CanvasProps> {
   canvas: React.RefObject<HTMLDivElement>;
-
-  static defaultProps = defaultProps;
 
   constructor(props: CanvasProps) {
     super(props);
@@ -83,8 +82,9 @@ export class Canvas extends React.Component<CanvasProps> {
     if (
       allowOnlyPointerType !== "all" &&
       event.pointerType !== allowOnlyPointerType
-    )
+    ) {
       return;
+    }
 
     if (event.pointerType === "mouse" && event.button !== 0) return;
 
@@ -96,16 +96,15 @@ export class Canvas extends React.Component<CanvasProps> {
   handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
     const { isDrawing, allowOnlyPointerType, onPointerMove } = this.props;
 
-    console.log(isDrawing);
-
     if (!isDrawing) return;
 
     // Allow only chosen pointer type
     if (
       allowOnlyPointerType !== "all" &&
       event.pointerType !== allowOnlyPointerType
-    )
+    ) {
       return;
+    }
 
     const point = this.getCoordinates(event);
 
@@ -120,8 +119,9 @@ export class Canvas extends React.Component<CanvasProps> {
     if (
       allowOnlyPointerType !== "all" &&
       event.pointerType !== allowOnlyPointerType
-    )
+    ) {
       return;
+    }
 
     onPointerUp();
   }
@@ -130,12 +130,12 @@ export class Canvas extends React.Component<CanvasProps> {
 
   // Creates a image from SVG and renders it on canvas, then exports the canvas as image
   exportImage(imageType: ExportImageType) {
-    return new Promise((resolve, reject) => {
+    return new Promise<string>((resolve, reject) => {
       try {
         const canvas = this.canvas.current;
 
         if (!canvas) {
-          throw "Error";
+          throw Error("Canvas not rendered yet");
         }
 
         const img = document.createElement("img");
@@ -143,9 +143,15 @@ export class Canvas extends React.Component<CanvasProps> {
 
         img.onload = () => {
           const renderCanvas = document.createElement("canvas");
-          renderCanvas?.setAttribute("width", canvas.offsetWidth.toString());
-          renderCanvas?.setAttribute("height", canvas.offsetHeight.toString());
-          renderCanvas?.getContext("2d")?.drawImage(img, 0, 0);
+          renderCanvas.setAttribute("width", canvas.offsetWidth.toString());
+          renderCanvas.setAttribute("height", canvas.offsetHeight.toString());
+          const context = renderCanvas.getContext("2d");
+
+          if (!context) {
+            throw Error("Canvas not rendered yet");
+          }
+
+          context.drawImage(img, 0, 0);
 
           resolve(renderCanvas.toDataURL(`image/${imageType}`));
         };
@@ -202,5 +208,3 @@ export class Canvas extends React.Component<CanvasProps> {
     );
   }
 }
-
-export default Canvas;
