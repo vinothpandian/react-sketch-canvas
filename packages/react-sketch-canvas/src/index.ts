@@ -1,5 +1,5 @@
 export * from "./Canvas";
 
-export * from "./SvgSketchCanvas";
+export * from "./ReactSketchCanvas";
 
 export * from "./typings";

@@ -9,6 +9,7 @@ import { Point, CanvasPath, ExportImageType } from "./typings";
 const defaultProps = {
   width: "100%",
   height: "100%",
+  className: "",
   canvasColor: "white",
   strokeColor: "red",
   background: "",
@@ -23,9 +24,10 @@ const defaultProps = {
 
 /* Props validation */
 
-export type SvgSketchCanvasProps = {
+export type ReactSketchCanvasProps = {
   width: string;
   height: string;
+  className: string;
   strokeColor: string;
   canvasColor: string;
   background: string;
@@ -36,7 +38,7 @@ export type SvgSketchCanvasProps = {
   style: React.CSSProperties;
 };
 
-export type SvgSketchCanvasStates = {
+export type ReactSketchCanvasStates = {
   drawMode: boolean;
   isDrawing: boolean;
   resetStack: CanvasPath[];
@@ -44,15 +46,15 @@ export type SvgSketchCanvasStates = {
   currentPaths: CanvasPath[];
 };
 
-export class SvgSketchCanvas extends React.Component<
-  SvgSketchCanvasProps,
-  SvgSketchCanvasStates
+export class ReactSketchCanvas extends React.Component<
+  ReactSketchCanvasProps,
+  ReactSketchCanvasStates
 > {
   static defaultProps = defaultProps;
 
   svgCanvas: React.RefObject<Canvas>;
 
-  constructor(props: SvgSketchCanvasProps) {
+  constructor(props: ReactSketchCanvasProps) {
     super(props);
 
     this.state = {
@@ -97,7 +99,7 @@ export class SvgSketchCanvas extends React.Component<
     const { strokeColor, strokeWidth, canvasColor, eraserWidth } = this.props;
 
     this.setState(
-      produce((draft: SvgSketchCanvasStates) => {
+      produce((draft: ReactSketchCanvasStates) => {
         draft.isDrawing = true;
         draft.undoStack = [];
 
@@ -118,7 +120,7 @@ export class SvgSketchCanvas extends React.Component<
     if (!isDrawing) return;
 
     this.setState(
-      produce((state: SvgSketchCanvasStates) => {
+      produce((state: ReactSketchCanvasStates) => {
         state.currentPaths[state.currentPaths.length - 1].paths.push(point);
       }),
       this.liftPathsUp
@@ -127,7 +129,7 @@ export class SvgSketchCanvas extends React.Component<
 
   handlePointerUp() {
     this.setState(
-      produce((draft: SvgSketchCanvasStates) => {
+      produce((draft: ReactSketchCanvasStates) => {
         draft.isDrawing = false;
       }),
       this.liftPathsUp
@@ -140,7 +142,7 @@ export class SvgSketchCanvas extends React.Component<
 
   eraseMode(erase: boolean) {
     this.setState(
-      produce((draft: SvgSketchCanvasStates) => {
+      produce((draft: ReactSketchCanvasStates) => {
         draft.drawMode = !erase;
       }),
       this.liftPathsUp
@@ -149,7 +151,7 @@ export class SvgSketchCanvas extends React.Component<
 
   clearCanvas() {
     this.setState(
-      produce((draft: SvgSketchCanvasStates) => {
+      produce((draft: ReactSketchCanvasStates) => {
         draft.resetStack = draft.currentPaths;
         draft.currentPaths = [];
       }),
@@ -163,7 +165,7 @@ export class SvgSketchCanvas extends React.Component<
     // If there was a last reset then
     if (resetStack.length !== 0) {
       this.setState(
-        produce((draft: SvgSketchCanvasStates) => {
+        produce((draft: ReactSketchCanvasStates) => {
           draft.currentPaths = draft.resetStack;
           draft.resetStack = [];
         }),
@@ -179,7 +181,7 @@ export class SvgSketchCanvas extends React.Component<
     }
 
     this.setState(
-      produce((draft: SvgSketchCanvasStates) => {
+      produce((draft: ReactSketchCanvasStates) => {
         const lastSketchPath = draft.currentPaths.pop();
 
         if (lastSketchPath) {
@@ -197,7 +199,7 @@ export class SvgSketchCanvas extends React.Component<
     if (undoStack.length === 0) return;
 
     this.setState(
-      produce((draft: SvgSketchCanvasStates) => {
+      produce((draft: ReactSketchCanvasStates) => {
         const lastUndoPath = draft.undoStack.pop();
 
         if (lastUndoPath) {
@@ -253,7 +255,7 @@ export class SvgSketchCanvas extends React.Component<
 
   loadPaths(paths: CanvasPath[]) {
     this.setState(
-      produce((draft: SvgSketchCanvasStates) => {
+      produce((draft: ReactSketchCanvasStates) => {
         draft.currentPaths = draft.currentPaths.concat(paths);
       }),
       this.liftPathsUp
@@ -266,6 +268,7 @@ export class SvgSketchCanvas extends React.Component<
     const {
       width,
       height,
+      className,
       canvasColor,
       background,
       style,
@@ -279,6 +282,7 @@ export class SvgSketchCanvas extends React.Component<
         ref={this.svgCanvas}
         width={width}
         height={height}
+        className={className}
         canvasColor={canvasColor}
         background={background}
         allowOnlyPointerType={allowOnlyPointerType}

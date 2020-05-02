@@ -8,6 +8,7 @@ import "pepjs";
 const defaultProps = {
   width: "100%",
   height: "100%",
+  className: "",
   canvasColor: "red",
   background: "",
   allowOnlyPointerType: "all",
@@ -22,6 +23,7 @@ const defaultProps = {
 export type CanvasProps = {
   paths: CanvasPath[];
   isDrawing: boolean;
+  className: string;
   onPointerDown: (point: Point) => void;
   onPointerMove: (point: Point) => void;
   onPointerUp: () => void;
@@ -183,12 +185,21 @@ export class Canvas extends React.Component<CanvasProps> {
   /* Finally!!! Render method */
 
   render() {
-    const { width, height, canvasColor, background, style, paths } = this.props;
+    const {
+      width,
+      height,
+      className,
+      canvasColor,
+      background,
+      style,
+      paths,
+    } = this.props;
 
     return (
       <div
         role="presentation"
         ref={this.canvas}
+        className={className}
         style={{
           touchAction: "none",
           width,

@@ -10,14 +10,14 @@ import {
 import * as React from "react";
 import {
   ExportImageType,
-  SvgSketchCanvas,
+  ReactSketchCanvas,
   CanvasPath,
 } from "react-sketch-canvas";
 import "./0.demo.stories.scss";
 
 export default {
   title: "Full Demo",
-  component: SvgSketchCanvas,
+  component: ReactSketchCanvas,
   parameters: {
     info: { inline: true },
   },
@@ -36,11 +36,11 @@ const imageTypes: { [key: string]: ExportImageType } = {
   jpeg: "jpeg",
 };
 
-type CanvasRef = React.RefObject<SvgSketchCanvas>;
+type CanvasRef = React.RefObject<ReactSketchCanvas>;
 type Handlers = [string, () => void, string][];
 
 export const SketchCanvas = () => {
-  const canvasRef: CanvasRef = React.useRef<SvgSketchCanvas>(null);
+  const canvasRef: CanvasRef = React.useRef<ReactSketchCanvas>(null);
 
   const [dataURI, setDataURI] = React.useState<string>("");
   const [svg, setSVG] = React.useState<string>("");
@@ -48,6 +48,7 @@ export const SketchCanvas = () => {
 
   const width = text("Canvas width in em/rem/px (width)", "100%");
   const height = text("Canvas height in em/rem/px (height)", "500px");
+  const className = text("Class name (className)", "react-sketch-canvas");
   const canvasColor = color("Canvas background color (canvasColor)", "#FFFFFF");
   const background = text(
     "SVG background using CSS (background)",
@@ -160,8 +161,9 @@ export const SketchCanvas = () => {
       <h1 className="display-4 my-5">React Sketch Canvas - Full demo</h1>
       <div className="row no-gutters canvas-area m-0 p-0">
         <div className="col-10 canvas">
-          <SvgSketchCanvas
+          <ReactSketchCanvas
             ref={canvasRef}
+            className={className}
             width={width}
             height={height}
             background={background}

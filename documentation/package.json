@@ -5,7 +5,7 @@
   "license": "MIT",
   "dependencies": {
     "react": "^16.13.1",
-    "react-sketch-canvas": "^3.0.0"
+    "react-sketch-canvas": "^5.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.9.6",
@@ -29,6 +29,6 @@
   },
   "scripts": {
     "start": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build": "build-storybook"
   }
 }
