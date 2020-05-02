@@ -31,10 +31,12 @@ export type CanvasProps = {
   background: string;
   allowOnlyPointerType: string;
   style: React.CSSProperties;
-} & typeof defaultProps;
+};
 
 export class Canvas extends React.Component<CanvasProps> {
   canvas: React.RefObject<HTMLDivElement>;
+
+  static defaultProps = defaultProps;
 
   constructor(props: CanvasProps) {
     super(props);
@@ -43,6 +45,8 @@ export class Canvas extends React.Component<CanvasProps> {
     this.handlePointerMove = this.handlePointerMove.bind(this);
     this.handlePointerUp = this.handlePointerUp.bind(this);
     this.getCoordinates = this.getCoordinates.bind(this);
+    this.exportImage = this.exportImage.bind(this);
+    this.exportSvg = this.exportSvg.bind(this);
 
     this.canvas = React.createRef<HTMLDivElement>();
   }
@@ -162,7 +166,7 @@ export class Canvas extends React.Component<CanvasProps> {
   }
 
   exportSvg() {
-    return new Promise((resolve, reject) => {
+    return new Promise<string>((resolve, reject) => {
       try {
         resolve(this.canvas.current?.innerHTML);
       } catch (e) {

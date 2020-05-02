@@ -33,7 +33,7 @@ export type SvgSketchCanvasProps = {
   eraserWidth: number;
   allowOnlyPointerType: string;
   style: React.CSSProperties;
-} & typeof defaultProps;
+};
 
 export type SvgSketchCanvasStates = {
   drawMode: boolean;
@@ -199,7 +199,7 @@ export class SvgSketchCanvas extends React.Component<
   }
 
   exportSvg() {
-    return new Promise((resolve, reject) => {
+    return new Promise<string>((resolve, reject) => {
       const exportSvg = this.svgCanvas.current?.exportSvg;
 
       if (!exportSvg) {

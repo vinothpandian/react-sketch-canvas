@@ -1,13 +1,14 @@
-import * as React from "react";
-import { SvgSketchCanvas } from "react-sketch-canvas";
+/* eslint-disable react/no-danger */
+/* eslint-disable jsx-a11y/label-has-associated-control */
 import {
-  withKnobs,
   color,
   number,
-  button,
-  text,
   optionsKnob as options,
+  text,
+  withKnobs,
 } from "@storybook/addon-knobs";
+import * as React from "react";
+import { ExportImageType, SvgSketchCanvas } from "react-sketch-canvas";
 import "./0.demo.stories.scss";
 
 export default {
@@ -26,10 +27,19 @@ const pointerModes = {
   all: "all",
 };
 
+const imageTypes: { [key: string]: ExportImageType } = {
+  png: "png",
+  jpeg: "jpeg",
+};
+
 type CanvasRef = React.RefObject<SvgSketchCanvas>;
+type Handlers = [string, () => void, string][];
 
 export const SketchCanvas = () => {
   const canvasRef: CanvasRef = React.useRef<SvgSketchCanvas>(null);
+
+  const [dataURI, setDataURI] = React.useState<string>("");
+  const [svg, setSVG] = React.useState<string>("");
 
   const width = text("Canvas width in em/rem/px (width)", "100%");
   const height = text("Canvas height in em/rem/px (height)", "400px");
@@ -50,61 +60,171 @@ export const SketchCanvas = () => {
     }
   );
 
-  button("Pen (eraseMode(false))", () => {
+  const imageType = options("Image type to export ", imageTypes, "png", {
+    display: "inline-radio",
+  });
+
+  const imageExportHandler = async () => {
+    const exportImage = canvasRef.current?.exportImage;
+
+    if (exportImage) {
+      const exportedDataURI = await exportImage(imageType);
+      setDataURI(exportedDataURI);
+    }
+  };
+
+  const svgExportHandler = async () => {
+    const exportSvg = canvasRef.current?.exportSvg;
+
+    if (exportSvg) {
+      const exportedDataURI = await exportSvg();
+      setSVG(exportedDataURI);
+    }
+  };
+
+  const penHandler = () => {
     const eraseMode = canvasRef.current?.eraseMode;
 
     if (eraseMode) {
       eraseMode(false);
     }
-  });
+  };
 
-  button("Eraser (eraseMode(true))", () => {
+  const eraserHandler = () => {
     const eraseMode = canvasRef.current?.eraseMode;
 
     if (eraseMode) {
       eraseMode(true);
     }
-  });
+  };
 
-  button("Undo (undo())", () => {
+  const undoHandler = () => {
     const undo = canvasRef.current?.undo;
 
     if (undo) {
       undo();
     }
-  });
+  };
 
-  button("Redo (redo())", () => {
+  const redoHandler = () => {
     const redo = canvasRef.current?.redo;
 
     if (redo) {
       redo();
     }
-  });
+  };
 
-  button("Reset (resetCanvas())", () => {
+  const resetHandler = () => {
     const resetCanvas = canvasRef.current?.resetCanvas;
 
     if (resetCanvas) {
       resetCanvas();
     }
-  });
+  };
+
+  const createButton = (
+    label: string,
+    handler: () => void,
+    themeColor: string
+  ) => (
+    <button
+      className={`btn btn-${themeColor} btn-block`}
+      type="button"
+      onClick={handler}
+    >
+      {label}
+    </button>
+  );
+
+  const buttonsWithHandlers: Handlers = [
+    ["Undo", undoHandler, "primary"],
+    ["Redo", redoHandler, "primary"],
+    ["Reset", resetHandler, "primary"],
+    ["Pen", penHandler, "secondary"],
+    ["Eraser", eraserHandler, "secondary"],
+    ["Export Image", imageExportHandler, "success"],
+    ["Export SVG", svgExportHandler, "success"],
+  ];
 
   return (
-    <div className="container">
-      <div className="canvas">
-        <h1>React Sketch Canvas - Full demo</h1>
-        <SvgSketchCanvas
-          ref={canvasRef}
-          width={width}
-          height={height}
-          background={background}
-          strokeWidth={strokeWidth}
-          strokeColor={strokeColor}
-          canvasColor={canvasColor}
-          eraserWidth={eraserWidth}
-          allowOnlyPointerType={pointerType}
-        />
+    <div className="container-md">
+      <h1 className="display-4 my-5">React Sketch Canvas - Full demo</h1>
+      <div className="row canvas-area">
+        <div className="col-10 canvas">
+          <SvgSketchCanvas
+            ref={canvasRef}
+            width={width}
+            height={height}
+            background={background}
+            strokeWidth={strokeWidth}
+            strokeColor={strokeColor}
+            canvasColor={canvasColor}
+            eraserWidth={eraserWidth}
+            allowOnlyPointerType={pointerType}
+            style={{ border: "none" }}
+          />
+        </div>
+        <div className="col-2 panel">
+          {buttonsWithHandlers.map(([label, handler, themeColor]) =>
+            createButton(label, handler, themeColor)
+          )}
+        </div>
+      </div>
+
+      <div className="row image-export p-3 justify-content-center align-items-start">
+        <div className="col-5 row form-group">
+          <label className="col-12" htmlFor="dataURI">
+            Exported Data URI for imagetype
+          </label>
+          <textarea
+            id="dataURI"
+            className="dataURICode col-12"
+            readOnly
+            rows={10}
+            value={dataURI || "Click on export image"}
+          />
+        </div>
+        <div className="col-5 offset-2">
+          <p>Exported image</p>
+          <img
+            className="exported-image"
+            src={
+              dataURI ||
+              "https://via.placeholder.com/500x250/000000/FFFFFF/?text=Click on export image"
+            }
+            alt="exported"
+          />
+        </div>
+      </div>
+
+      <div className="row image-export p-3 justify-content-center align-items-start">
+        <div className="col-5 row form-group">
+          <label className="col-12" htmlFor="dataURI">
+            Exported SVG code
+          </label>
+          <textarea
+            id="dataURI"
+            className="dataURICode col-12"
+            readOnly
+            rows={10}
+            value={svg || "Click on export svg"}
+          />
+        </div>
+        <div className="col-5 offset-2">
+          <p>Exported SVG</p>
+          {svg ? (
+            <span
+              className="exported-image"
+              dangerouslySetInnerHTML={{ __html: svg }}
+            />
+          ) : (
+            <img
+              src="https://via.placeholder.com/500x250/000000/FFFFFF/?text=Click on export SVG"
+              alt="Svg Export"
+              className="exported-image"
+            />
+          )}
+        </div>
       </div>
     </div>
   );
