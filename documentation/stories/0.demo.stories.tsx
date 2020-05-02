@@ -8,7 +8,11 @@ import {
   withKnobs,
 } from "@storybook/addon-knobs";
 import * as React from "react";
-import { ExportImageType, SvgSketchCanvas } from "react-sketch-canvas";
+import {
+  ExportImageType,
+  SvgSketchCanvas,
+  CanvasPath,
+} from "react-sketch-canvas";
 import "./0.demo.stories.scss";
 
 export default {
@@ -40,6 +44,7 @@ export const SketchCanvas = () => {
 
   const [dataURI, setDataURI] = React.useState<string>("");
   const [svg, setSVG] = React.useState<string>("");
+  const [paths, setPaths] = React.useState<CanvasPath[]>([]);
 
   const width = text("Canvas width in em/rem/px (width)", "100%");
   const height = text("Canvas height in em/rem/px (height)", "400px");
@@ -146,6 +151,10 @@ export const SketchCanvas = () => {
     ["Export SVG", svgExportHandler, "success"],
   ];
 
+  const onUpdate = (updatedPaths: CanvasPath[]) => {
+    setPaths(updatedPaths);
+  };
+
   return (
     <div className="container-md">
       <h1 className="display-4 my-5">React Sketch Canvas - Full demo</h1>
@@ -162,12 +171,30 @@ export const SketchCanvas = () => {
             eraserWidth={eraserWidth}
             allowOnlyPointerType={pointerType}
             style={{ border: "none" }}
+            onUpdate={onUpdate}
           />
         </div>
         <div className="col-2 panel">
           {buttonsWithHandlers.map(([label, handler, themeColor]) =>
             createButton(label, handler, themeColor)
           )}
+        </div>
+      </div>
+
+      <div className="row image-export p-3 ml-1">
+        <div className="col-5 row form-group">
+          <label className="col-12" htmlFor="dataURI">
+            Paths
+          </label>
+          <textarea
+            id="dataURI"
+            className="dataURICode col-12"
+            readOnly
+            rows={10}
+            value={
+              paths.length !== 0 ? JSON.stringify(paths) : "Sketch to get paths"
+            }
+          />
         </div>
       </div>
 

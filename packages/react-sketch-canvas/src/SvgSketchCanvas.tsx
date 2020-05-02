@@ -32,6 +32,7 @@ export type SvgSketchCanvasProps = {
   strokeWidth: number;
   eraserWidth: number;
   allowOnlyPointerType: string;
+  onUpdate: (updatedPaths: CanvasPath[]) => void;
   style: React.CSSProperties;
 };
 
@@ -78,7 +79,16 @@ export class SvgSketchCanvas extends React.Component<
     this.undo = this.undo.bind(this);
     this.redo = this.redo.bind(this);
 
+    this.liftPathsUp = this.liftPathsUp.bind(this);
+
     this.svgCanvas = React.createRef();
+  }
+
+  liftPathsUp() {
+    const { currentPaths } = this.state;
+    const { onUpdate } = this.props;
+
+    onUpdate(currentPaths);
   }
 
   /* Mouse Handlers - Mouse down, move and up */
@@ -97,7 +107,8 @@ export class SvgSketchCanvas extends React.Component<
           strokeWidth: draft.drawMode ? strokeWidth : eraserWidth,
           paths: [point],
         });
-      })
+      }),
+      this.liftPathsUp
     );
   }
 
@@ -109,7 +120,8 @@ export class SvgSketchCanvas extends React.Component<
     this.setState(
       produce((state: SvgSketchCanvasStates) => {
         state.currentPaths[state.currentPaths.length - 1].paths.push(point);
-      })
+      }),
+      this.liftPathsUp
     );
   }
 
@@ -117,7 +129,8 @@ export class SvgSketchCanvas extends React.Component<
     this.setState(
       produce((draft: SvgSketchCanvasStates) => {
         draft.isDrawing = false;
-      })
+      }),
+      this.liftPathsUp
     );
   }
 
@@ -129,7 +142,8 @@ export class SvgSketchCanvas extends React.Component<
     this.setState(
       produce((draft: SvgSketchCanvasStates) => {
         draft.drawMode = !erase;
-      })
+      }),
+      this.liftPathsUp
     );
   }
 
@@ -138,7 +152,8 @@ export class SvgSketchCanvas extends React.Component<
       produce((draft: SvgSketchCanvasStates) => {
         draft.resetStack = draft.currentPaths;
         draft.currentPaths = [];
-      })
+      }),
+      this.liftPathsUp
     );
   }
 
@@ -151,7 +166,13 @@ export class SvgSketchCanvas extends React.Component<
         produce((draft: SvgSketchCanvasStates) => {
           draft.currentPaths = draft.resetStack;
           draft.resetStack = [];
-        })
+        }),
+        () => {
+          const { currentPaths } = this.state;
+          const { onUpdate } = this.props;
+
+          onUpdate(currentPaths);
+        }
       );
 
       return;
@@ -164,7 +185,8 @@ export class SvgSketchCanvas extends React.Component<
         if (lastSketchPath) {
           draft.undoStack.push(lastSketchPath);
         }
-      })
+      }),
+      this.liftPathsUp
     );
   }
 
@@ -181,7 +203,8 @@ export class SvgSketchCanvas extends React.Component<
         if (lastUndoPath) {
           draft.currentPaths.push(lastUndoPath);
         }
-      })
+      }),
+      this.liftPathsUp
     );
   }
 
@@ -232,7 +255,8 @@ export class SvgSketchCanvas extends React.Component<
     this.setState(
       produce((draft: SvgSketchCanvasStates) => {
         draft.currentPaths = draft.currentPaths.concat(paths);
-      })
+      }),
+      this.liftPathsUp
     );
   }
 
