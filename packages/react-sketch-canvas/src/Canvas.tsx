@@ -65,13 +65,18 @@ export class Canvas extends React.Component<CanvasProps> {
   getCoordinates(pointerEvent: React.PointerEvent<HTMLDivElement>) {
     const boundingArea = this.canvas.current?.getBoundingClientRect();
 
+    const scrollLeft = window.scrollX ?? 0;
+    const scrollTop = window.scrollY ?? 0;
+
+    console.log(scrollLeft, scrollTop);
+
     if (!boundingArea) {
       return { x: 0, y: 0 };
     }
 
     const point: Point = {
-      x: pointerEvent.pageX - boundingArea.left,
-      y: pointerEvent.pageY - boundingArea.top,
+      x: pointerEvent.pageX - boundingArea.left - scrollLeft,
+      y: pointerEvent.pageY - boundingArea.top - scrollTop,
     };
 
     return point;
