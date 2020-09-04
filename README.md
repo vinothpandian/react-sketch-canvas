@@ -30,15 +30,6 @@ or with yarn
 yarn add react-sketch-canvas
 ```
 
-For Javascript Script tag use
-
-```html
-<script
-  type="text/javascript"
-  src="https://unpkg.com/react-sketch-canvas@5.0.0/umd/react-sketch-canvas.min.js"
-></script>
-```
-
 ## Example
 
 Common usage example
@@ -193,6 +184,14 @@ interface CanvasPath {
 ```
 
 ## Changelog
+
+### Version 5.1.0
+
+Bug fixes
+
+- Added defaultProps to onUpdate in ReactSketchCanvas
+- Added touch-action="none" to allow pepjs polyfill pointer events
+- Removed the annoying console.log from Canvas
 
 ### Version 5.0.1
 
