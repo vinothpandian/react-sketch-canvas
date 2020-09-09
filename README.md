@@ -36,7 +36,7 @@ Common usage example
 
 ```javascript
 import React from "react";
-import ReactSketchCanvas from "react-sketch-canvas";
+import { ReactSketchCanvas } from "react-sketch-canvas";
 
 const styles = {
   border: "0.0625rem solid #9c9c9c",
@@ -60,7 +60,7 @@ To export Data URL of your sketch use ref
 
 ```javascript
 import React from "react";
-import ReactSketchCanvas from "react-sketch-canvas";
+import { ReactSketchCanvas } from "react-sketch-canvas";
 
 const styles = {
   border: "0.0625rem solid #9c9c9c",
@@ -192,6 +192,7 @@ Bug fixes
 - Added defaultProps to onUpdate in ReactSketchCanvas
 - Added touch-action="none" to allow pepjs polyfill pointer events
 - Removed the annoying console.log from Canvas
+- Update README.md
 
 ### Version 5.0.1
 
