@@ -1,20 +1,30 @@
-# React Sketch canvas
+<p align="center">
+  <img src="https://i.imgur.com/ajs39FC.png" height="150" alt="React Sketch Canvas" />
+</p>
 
-## Freehand vector drawing tool for React using SVG as canvas
+<h3 align="center">
+  Freehand vector drawing tool for React using SVG as canvas 🖌
+</h3>
+<br>
+<div align="center">
 
-### Supports Desktop and Mobile.
+[![npm version](https://badge.fury.io/js/react-sketch-canvas.svg)](https://badge.fury.io/js/react-sketch-canvas)<space><space>
 
-### Accepts input from Mouse, touch, and graphic tablets
+</div>
 
-#### <span style="color:red">**Requires React 16.4**</span>
+## Overview
 
-#### Depends on [Immer] and [pepjs]
+### Features
+- **Supports Desktop and Mobile.**
+- **Accepts input from Mouse, touch, and graphic tablets.**
 
-[![npm version](https://badge.fury.io/js/react-sketch-canvas.svg)](https://badge.fury.io/js/react-sketch-canvas)
+### Requirements
+- **<span style="color:red">**Requires React 16.4**</span>**
+- **Depends on [Immer] and [pepjs]**
 
----
+### Wanna test React Sketch Canvas before using it? 
+- **Try [here](https://vinoth.info/react-sketch-canvas)**
 
-### Demo at [https://vinoth.info/react-sketch-canvas](https://vinoth.info/react-sketch-canvas)
 
 ## Installation
 
