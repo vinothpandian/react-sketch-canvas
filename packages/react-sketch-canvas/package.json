@@ -1,6 +1,6 @@
 {
   "name": "react-sketch-canvas",
-  "version": "5.1.1",
+  "version": "5.1.2",
   "root": true,
   "description": "react-sketch-canvas - Freehand vector drawing tool for React using SVG as canvas",
   "source": "src/index.ts",
@@ -10,28 +10,31 @@
   "unpkg": "dist/react-sketch-canvas.umd.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "yarn clean && microbundle  --jsx React.createElement --globals react=React",
+    "build": "yarn clean && microbundle --jsx React.createElement --globals react=React",
     "clean": "rimraf dist",
-    "start": "yarn clean && microbundle watch  --jsx React.createElement --globals react=React"
+    "start": "yarn clean && microbundle watch --jsx React.createElement --globals react=React"
   },
   "dependencies": {
-    "immer": "^6.0.3",
+    "immer": "^7.0.9",
     "pepjs": "^0.5.2"
   },
   "peerDependencies": {
     "react": "16.x"
   },
   "devDependencies": {
-    "eslint": "^6.8.0",
-    "eslint-config-airbnb-typescript-prettier": "^2.1.1",
-    "lerna": "^3.20.2",
-    "microbundle": "^0.12.0-next.8",
-    "prettier": "^2.0.5",
+    "eslint": "^7.10.0",
+    "eslint-config-airbnb-typescript-prettier": "^3.1.0",
+    "lerna": "^3.22.1",
+    "microbundle": "^0.12.4",
+    "prettier": "^2.1.2",
     "react": "^16.13.1",
     "rimraf": "^3.0.2"
   },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "author": "Vinoth Pandian",
-  "homepage": "https://github.com/vinothpandian/react-sketch-canvas",
+  "homepage": "https://vinoth.info/react-sketch-canvas",
   "license": "MIT",
   "repository": "https://github.com/vinothpandian/react-sketch-canvas.git",
   "keywords": [
@@ -43,5 +46,10 @@
     "vector",
     "svg-canvas",
     "react-sketch"
+  ],
+  "files": [
+    "src",
+    "dist",
+    "types"
   ]
 }
