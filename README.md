@@ -195,6 +195,12 @@ interface CanvasPath {
 
 ## Changelog
 
+## Version 5.1.2 & 5.1.1
+
+- Add index.d.ts to npm registry
+- Add Github as registry
+- Update example
+
 ### Version 5.1.0
 
 Bug fixes

@@ -30,9 +30,6 @@
     "react": "^16.13.1",
     "rimraf": "^3.0.2"
   },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
-  },
   "author": "Vinoth Pandian",
   "homepage": "https://vinoth.info/react-sketch-canvas",
   "license": "MIT",
@@ -48,8 +45,7 @@
     "react-sketch"
   ],
   "files": [
-    "src",
-    "dist",
-    "types"
+    "dist/**.js*",
+    "dist/**/*.ts"
   ]
 }
