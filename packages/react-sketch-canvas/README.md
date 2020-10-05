@@ -1,20 +1,30 @@
-# React Sketch canvas
+<p align="center">
+  <img src="https://i.imgur.com/ajs39FC.png" height="150" alt="React Sketch Canvas" />
+</p>
 
-## Freehand vector drawing tool for React using SVG as canvas
+<h3 align="center">
+  Freehand vector drawing tool for React using SVG as canvas 🖌
+</h3>
+<br>
+<div align="center">
 
-### Supports Desktop and Mobile.
+[![npm version](https://badge.fury.io/js/react-sketch-canvas.svg)](https://badge.fury.io/js/react-sketch-canvas)<space><space>
 
-### Accepts input from Mouse, touch, and graphic tablets
+</div>
 
-#### <span style="color:red">**Requires React 16.4**</span>
+## Overview
 
-#### Depends on [Immer] and [pepjs]
+### Features
+- **Supports Desktop and Mobile.**
+- **Accepts input from Mouse, touch, and graphic tablets.**
 
-[![npm version](https://badge.fury.io/js/react-sketch-canvas.svg)](https://badge.fury.io/js/react-sketch-canvas)
+### Requirements
+- **<span style="color:red">**Requires React 16.4**</span>**
+- **Depends on [Immer] and [pepjs]**
 
----
+### Wanna test React Sketch Canvas before using it? 
+- **Try [here](https://vinoth.info/react-sketch-canvas)**
 
-### Demo at [https://vinoth.info/react-sketch-canvas](https://vinoth.info/react-sketch-canvas)
 
 ## Installation
 
@@ -30,22 +40,13 @@ or with yarn
 yarn add react-sketch-canvas
 ```
 
-For Javascript Script tag use
-
-```html
-<script
-  type="text/javascript"
-  src="https://unpkg.com/react-sketch-canvas@5.0.0/umd/react-sketch-canvas.min.js"
-></script>
-```
-
 ## Example
 
 Common usage example
 
 ```javascript
 import React from "react";
-import ReactSketchCanvas from "react-sketch-canvas";
+import { ReactSketchCanvas } from "react-sketch-canvas";
 
 const styles = {
   border: "0.0625rem solid #9c9c9c",
@@ -69,7 +70,7 @@ To export Data URL of your sketch use ref
 
 ```javascript
 import React from "react";
-import ReactSketchCanvas from "react-sketch-canvas";
+import { ReactSketchCanvas } from "react-sketch-canvas";
 
 const styles = {
   border: "0.0625rem solid #9c9c9c",
@@ -193,6 +194,21 @@ interface CanvasPath {
 ```
 
 ## Changelog
+
+## Version 5.1.2 & 5.1.1
+
+- Add index.d.ts to npm registry
+- Add Github as registry
+- Update example
+
+### Version 5.1.0
+
+Bug fixes
+
+- Added defaultProps to onUpdate in ReactSketchCanvas
+- Added touch-action="none" to allow pepjs polyfill pointer events
+- Removed the annoying console.log from Canvas
+- Update README.md
 
 ### Version 5.0.1
 
