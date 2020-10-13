@@ -6,8 +6,8 @@ const svgPath = (
   id: string,
   strokeWidth: number,
   strokeColor: string,
-  command: (point: Point, i: number, a: Point[]) => {}
-) => {
+  command: (point: Point, i: number, a: Point[]) => string
+): JSX.Element => {
   const d = paths.reduce(
     (acc, point, i, a) =>
       i === 0 ? `M ${point.x},${point.y}` : `${acc} ${command(point, i, a)}`,
@@ -101,7 +101,7 @@ type PathProps = {
   paths: CanvasPath[];
 };
 
-const Paths = ({ paths }: PathProps) => (
+const Paths = ({ paths }: PathProps): JSX.Element => (
   <React.Fragment>
     {paths.map((path: CanvasPath, id: number) =>
       svgPath(
