@@ -38,5 +38,8 @@ module.exports = {
     // Specific to typescript
     "react/static-property-placement": ["warn", "static public field"],
     "react/jsx-fragments": "off",
+
+    "no-unused-vars": "off",
+  "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }]
   },
 };

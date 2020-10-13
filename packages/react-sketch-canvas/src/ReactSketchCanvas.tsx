@@ -20,7 +20,8 @@ const defaultProps = {
     border: "0.0625rem solid #9c9c9c",
     borderRadius: "0.25rem",
   },
-  onUpdate: (updatedPaths: CanvasPath[]) => updatedPaths,
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  onUpdate: (_: CanvasPath[]): void => {},
 };
 
 /* Props validation */
@@ -87,7 +88,7 @@ export class ReactSketchCanvas extends React.Component<
     this.svgCanvas = React.createRef();
   }
 
-  liftPathsUp() {
+  liftPathsUp(): void {
     const { currentPaths } = this.state;
     const { onUpdate } = this.props;
 
@@ -96,7 +97,7 @@ export class ReactSketchCanvas extends React.Component<
 
   /* Mouse Handlers - Mouse down, move and up */
 
-  handlePointerDown(point: Point) {
+  handlePointerDown(point: Point): void {
     const { strokeColor, strokeWidth, canvasColor, eraserWidth } = this.props;
 
     this.setState(
@@ -115,7 +116,7 @@ export class ReactSketchCanvas extends React.Component<
     );
   }
 
-  handlePointerMove(point: Point) {
+  handlePointerMove(point: Point): void {
     const { isDrawing } = this.state;
 
     if (!isDrawing) return;
@@ -128,7 +129,7 @@ export class ReactSketchCanvas extends React.Component<
     );
   }
 
-  handlePointerUp() {
+  handlePointerUp(): void {
     this.setState(
       produce((draft: ReactSketchCanvasStates) => {
         draft.isDrawing = false;
@@ -141,7 +142,7 @@ export class ReactSketchCanvas extends React.Component<
 
   /* Canvas operations */
 
-  eraseMode(erase: boolean) {
+  eraseMode(erase: boolean): void {
     this.setState(
       produce((draft: ReactSketchCanvasStates) => {
         draft.drawMode = !erase;
@@ -150,7 +151,7 @@ export class ReactSketchCanvas extends React.Component<
     );
   }
 
-  clearCanvas() {
+  clearCanvas(): void {
     this.setState(
       produce((draft: ReactSketchCanvasStates) => {
         draft.resetStack = draft.currentPaths;
@@ -160,7 +161,7 @@ export class ReactSketchCanvas extends React.Component<
     );
   }
 
-  undo() {
+  undo(): void {
     const { resetStack } = this.state;
 
     // If there was a last reset then
@@ -193,7 +194,7 @@ export class ReactSketchCanvas extends React.Component<
     );
   }
 
-  redo() {
+  redo(): void {
     const { undoStack } = this.state;
 
     // Nothing to Redo
@@ -224,7 +225,7 @@ export class ReactSketchCanvas extends React.Component<
     }
   }
 
-  exportSvg() {
+  exportSvg(): Promise<string> {
     return new Promise<string>((resolve, reject) => {
       const exportSvg = this.svgCanvas.current?.exportSvg;
 
@@ -242,10 +243,10 @@ export class ReactSketchCanvas extends React.Component<
     });
   }
 
-  exportPaths() {
+  exportPaths(): Promise<CanvasPath[]> {
     const { currentPaths } = this.state;
 
-    return new Promise((resolve, reject) => {
+    return new Promise<CanvasPath[]>((resolve, reject) => {
       try {
         resolve(currentPaths);
       } catch (e) {
@@ -254,7 +255,7 @@ export class ReactSketchCanvas extends React.Component<
     });
   }
 
-  loadPaths(paths: CanvasPath[]) {
+  loadPaths(paths: CanvasPath[]): void {
     this.setState(
       produce((draft: ReactSketchCanvasStates) => {
         draft.currentPaths = draft.currentPaths.concat(paths);
@@ -265,7 +266,7 @@ export class ReactSketchCanvas extends React.Component<
 
   /* Finally!!! Render method */
 
-  render() {
+  render(): JSX.Element {
     const {
       width,
       height,

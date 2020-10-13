@@ -16,6 +16,7 @@ const defaultProps = {
     border: "0.0625rem solid #9c9c9c",
     borderRadius: "0.25rem",
   },
+  withTimeStamp: true,
 };
 
 /* Props validation */
@@ -55,16 +56,16 @@ export class Canvas extends React.Component<CanvasProps> {
 
   /* Add event listener to Mouse up and Touch up to
   release drawing even when point goes out of canvas */
-  componentDidMount() {
+  componentDidMount(): void {
     document.addEventListener("pointerup", this.handlePointerUp);
   }
 
-  componentWillUnmount() {
+  componentWillUnmount(): void {
     document.removeEventListener("pointerup", this.handlePointerUp);
   }
 
   // Converts mouse coordinates to relative coordinate based on the absolute position of svg
-  getCoordinates(pointerEvent: React.PointerEvent<HTMLDivElement>) {
+  getCoordinates(pointerEvent: React.PointerEvent<HTMLDivElement>): Point {
     const boundingArea = this.canvas.current?.getBoundingClientRect();
 
     const scrollLeft = window.scrollX ?? 0;
@@ -84,7 +85,7 @@ export class Canvas extends React.Component<CanvasProps> {
 
   /* Mouse Handlers - Mouse down, move and up */
 
-  handlePointerDown(event: React.PointerEvent<HTMLDivElement>) {
+  handlePointerDown(event: React.PointerEvent<HTMLDivElement>): void {
     // Allow only chosen pointer type
 
     const { allowOnlyPointerType, onPointerDown } = this.props;
@@ -102,7 +103,7 @@ export class Canvas extends React.Component<CanvasProps> {
     onPointerDown(point);
   }
 
-  handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
+  handlePointerMove(event: React.PointerEvent<HTMLDivElement>): void {
     const { isDrawing, allowOnlyPointerType, onPointerMove } = this.props;
 
     if (!isDrawing) return;
@@ -120,7 +121,9 @@ export class Canvas extends React.Component<CanvasProps> {
     onPointerMove(point);
   }
 
-  handlePointerUp(event: React.PointerEvent<HTMLDivElement> | PointerEvent) {
+  handlePointerUp(
+    event: React.PointerEvent<HTMLDivElement> | PointerEvent
+  ): void {
     if (event.pointerType === "mouse" && event.button !== 0) return;
 
     // Allow only chosen pointer type
@@ -138,7 +141,7 @@ export class Canvas extends React.Component<CanvasProps> {
   /* Mouse Handlers ends */
 
   // Creates a image from SVG and renders it on canvas, then exports the canvas as image
-  exportImage(imageType: ExportImageType) {
+  exportImage(imageType: ExportImageType): Promise<string> {
     return new Promise<string>((resolve, reject) => {
       try {
         const canvas = this.canvas.current;
@@ -170,7 +173,7 @@ export class Canvas extends React.Component<CanvasProps> {
     });
   }
 
-  exportSvg() {
+  exportSvg(): Promise<string> {
     return new Promise<string>((resolve, reject) => {
       try {
         resolve(this.canvas.current?.innerHTML);
@@ -182,7 +185,7 @@ export class Canvas extends React.Component<CanvasProps> {
 
   /* Finally!!! Render method */
 
-  render() {
+  render(): JSX.Element {
     const {
       width,
       height,
