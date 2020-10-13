@@ -22,6 +22,7 @@ const defaultProps = {
   },
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   onUpdate: (_: CanvasPath[]): void => {},
+  withTimestamp: false,
 };
 
 /* Props validation */
@@ -38,6 +39,7 @@ export type ReactSketchCanvasProps = {
   allowOnlyPointerType: string;
   onUpdate: (updatedPaths: CanvasPath[]) => void;
   style: React.CSSProperties;
+  withTimestamp: boolean;
 };
 
 export type ReactSketchCanvasStates = {
@@ -82,10 +84,38 @@ export class ReactSketchCanvas extends React.Component<
     this.clearCanvas = this.clearCanvas.bind(this);
     this.undo = this.undo.bind(this);
     this.redo = this.redo.bind(this);
+    this.getSketchingTime = this.getSketchingTime.bind(this);
 
     this.liftPathsUp = this.liftPathsUp.bind(this);
 
     this.svgCanvas = React.createRef();
+  }
+
+  getSketchingTime(): Promise<number> {
+    const { withTimestamp } = this.props;
+    const { currentPaths } = this.state;
+
+    return new Promise<number>((resolve, reject) => {
+      if (!withTimestamp) {
+        reject(new Error("Set 'withTimestamp' prop to get sketching time"));
+      }
+
+      try {
+        const sketchingTime = currentPaths.reduce(
+          (totalSketchingTime, path) => {
+            const startTimestamp = path.startTimestamp ?? 0;
+            const endTimestamp = path.endTimestamp ?? 0;
+
+            return totalSketchingTime + (endTimestamp - startTimestamp);
+          },
+          0
+        );
+
+        resolve(sketchingTime);
+      } catch (e) {
+        reject(e);
+      }
+    });
   }
 
   liftPathsUp(): void {
@@ -98,19 +128,35 @@ export class ReactSketchCanvas extends React.Component<
   /* Mouse Handlers - Mouse down, move and up */
 
   handlePointerDown(point: Point): void {
-    const { strokeColor, strokeWidth, canvasColor, eraserWidth } = this.props;
+    const {
+      strokeColor,
+      strokeWidth,
+      canvasColor,
+      eraserWidth,
+      withTimestamp,
+    } = this.props;
 
     this.setState(
       produce((draft: ReactSketchCanvasStates) => {
         draft.isDrawing = true;
         draft.undoStack = [];
 
-        draft.currentPaths.push({
+        let stroke: CanvasPath = {
           drawMode: draft.drawMode,
           strokeColor: draft.drawMode ? strokeColor : canvasColor,
           strokeWidth: draft.drawMode ? strokeWidth : eraserWidth,
           paths: [point],
-        });
+        };
+
+        if (withTimestamp) {
+          stroke = {
+            ...stroke,
+            startTimestamp: Date.now(),
+            endTimestamp: 0,
+          };
+        }
+
+        draft.currentPaths.push(stroke);
       }),
       this.liftPathsUp
     );
@@ -122,17 +168,41 @@ export class ReactSketchCanvas extends React.Component<
     if (!isDrawing) return;
 
     this.setState(
-      produce((state: ReactSketchCanvasStates) => {
-        state.currentPaths[state.currentPaths.length - 1].paths.push(point);
+      produce((draft: ReactSketchCanvasStates) => {
+        const currentStroke = draft.currentPaths[draft.currentPaths.length - 1];
+        currentStroke.paths.push(point);
       }),
       this.liftPathsUp
     );
   }
 
   handlePointerUp(): void {
+    const { withTimestamp } = this.props;
+
+    const { isDrawing } = this.state;
+
+    if (!isDrawing) {
+      return;
+    }
+
     this.setState(
       produce((draft: ReactSketchCanvasStates) => {
         draft.isDrawing = false;
+
+        if (!withTimestamp) {
+          return;
+        }
+
+        let currentStroke: CanvasPath | undefined = draft.currentPaths.pop();
+
+        if (currentStroke) {
+          currentStroke = {
+            ...currentStroke,
+            endTimestamp: Date.now(),
+          };
+
+          draft.currentPaths.push(currentStroke);
+        }
       }),
       this.liftPathsUp
     );
