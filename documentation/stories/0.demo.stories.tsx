@@ -1,6 +1,7 @@
 /* eslint-disable react/no-danger */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import {
+  boolean,
   color,
   number,
   optionsKnob as options,
@@ -45,6 +46,7 @@ export const SketchCanvas = () => {
   const [dataURI, setDataURI] = React.useState<string>("");
   const [svg, setSVG] = React.useState<string>("");
   const [paths, setPaths] = React.useState<CanvasPath[]>([]);
+  const [sketchingTime, setSketchingTime] = React.useState<number>(0);
 
   const width = text("Canvas width in em/rem/px (width)", "100%");
   const height = text("Canvas height in em/rem/px (height)", "500px");
@@ -70,6 +72,8 @@ export const SketchCanvas = () => {
     display: "inline-radio",
   });
 
+  const withTimestamp = boolean("Add timestamp to strokes", true);
+
   const imageExportHandler = async () => {
     const exportImage = canvasRef.current?.exportImage;
 
@@ -85,6 +89,15 @@ export const SketchCanvas = () => {
     if (exportSvg) {
       const exportedDataURI = await exportSvg();
       setSVG(exportedDataURI);
+    }
+  };
+
+  const getSketchingTimeHandler = async () => {
+    const getSketchingTime = canvasRef.current?.getSketchingTime;
+
+    if (getSketchingTime) {
+      const currentSketchingTime = await getSketchingTime();
+      setSketchingTime(currentSketchingTime);
     }
   };
 
@@ -150,6 +163,7 @@ export const SketchCanvas = () => {
     ["Eraser", eraserHandler, "secondary"],
     ["Export Image", imageExportHandler, "success"],
     ["Export SVG", svgExportHandler, "success"],
+    ["Get Sketching time", getSketchingTimeHandler, "success"],
   ];
 
   const onUpdate = (updatedPaths: CanvasPath[]) => {
@@ -174,6 +188,7 @@ export const SketchCanvas = () => {
             allowOnlyPointerType={pointerType}
             style={{ borderRight: "1px solid #CCC" }}
             onUpdate={onUpdate}
+            withTimestamp={withTimestamp}
           />
         </div>
         <div className="col-2 panel">
@@ -183,7 +198,7 @@ export const SketchCanvas = () => {
         </div>
       </div>
 
-      <div className="row image-export p-3 ml-1">
+      <div className="row image-export p-3 justify-content-center align-items-start">
         <div className="col-5 row form-group">
           <label className="col-12" htmlFor="dataURI">
             Paths
@@ -197,6 +212,14 @@ export const SketchCanvas = () => {
               paths.length !== 0 ? JSON.stringify(paths) : "Sketch to get paths"
             }
           />
+        </div>
+        <div className="col-5 offset-2">
+          <label className="col-12" htmlFor="dataURI">
+            Sketching time
+          </label>
+          <div className="sketchingTime">
+            {(sketchingTime / 1000).toFixed(3)} sec
+          </div>
         </div>
       </div>
 
