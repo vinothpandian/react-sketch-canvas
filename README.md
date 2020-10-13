@@ -15,16 +15,18 @@
 ## Overview
 
 ### Features
+
 - **Supports Desktop and Mobile.**
 - **Accepts input from Mouse, touch, and graphic tablets.**
 
 ### Requirements
+
 - **<span style="color:red">**Requires React 16.4**</span>**
 - **Depends on [Immer] and [pepjs]**
 
-### Wanna test React Sketch Canvas before using it? 
-- **Try [here](https://vinoth.info/react-sketch-canvas)**
+### Wanna test React Sketch Canvas before using it?
 
+- **Try [here](https://vinoth.info/react-sketch-canvas)**
 
 ## Installation
 
@@ -126,6 +128,7 @@ const Canvas = class extends React.Component {
 | eraserWidth          | PropTypes.number  | 8             | Erase size                                                           |
 | allowOnlyPointerType | PropTypes.string  | all           | allow pointer type ("all"/"mouse"/"pen"/"touch")                     |
 | onUpdate             | PropTypes.func    | all           | Returns the current sketch path in `CanvasPath` type on every update |
+| withTimestamp        | PropTypes.bool    | false         | Add timestamp to individual strokes for measuring sketching time     |
 
 Set SVG background using CSS [background][css-bg] value
 
@@ -164,16 +167,17 @@ You can export the sketch as an image or as a svg
 
 _Use ref to access the element and call the following functions to export image_
 
-| Props                        | Expected datatype                                                                                                            |
-| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| eraseMode(boolean)           | Switch to eraser mode by passing true. You can switch back to pen mode by passing false                                      |
-| clearCanvas()                | Clears the canvas.                                                                                                           |
-| undo()                       | Undo the last action.                                                                                                        |
-| redo()                       | Redo the previous action.                                                                                                    |
-| exportImage(imageTypeString) | Accepts an image type as argument (`ExportImageType`) and returns a Promise which resolves to base64 data url of the sketch. |
-| exportSvg()                  | returns a Promise which resolves to an inline SVG element.                                                                   |
-| exportPaths()                | returns a Promise which resolves to an instance of `CanvasPath`.                                                             |
-| loadPaths(CanvasPath)        | Accepts an `CanvasPath` exported from exportPaths() and loads it on the canvas.                                              |
+| Props                        | Expected datatype                                                                                                                                |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| eraseMode(boolean)           | Switch to eraser mode by passing true. You can switch back to pen mode by passing false                                                          |
+| clearCanvas()                | Clears the canvas.                                                                                                                               |
+| undo()                       | Undo the last action.                                                                                                                            |
+| redo()                       | Redo the previous action.                                                                                                                        |
+| exportImage(imageTypeString) | Accepts an image type as argument (`ExportImageType`) and returns a Promise which resolves to base64 data url of the sketch.                     |
+| exportSvg()                  | returns a Promise which resolves to an inline SVG element.                                                                                       |
+| exportPaths()                | returns a Promise which resolves to an instance of `CanvasPath`.                                                                                 |
+| loadPaths(CanvasPath)        | Accepts an `CanvasPath` exported from exportPaths() and loads it on the canvas.                                                                  |
+| getSketchingTime             | returns a Promise which resolves the time that user sketched in the canvas (considers only when the user made the strokes or erased the strokes) |
 
 ## Types
 
@@ -190,10 +194,18 @@ interface CanvasPath {
   strokeWidth: number;
   strokeColor: string;
   drawMode: boolean;
+  startTimestamp?: number;
+  endTimestamp?: number;
 }
 ```
 
 ## Changelog
+
+## Version 5.2.0
+
+#### Added features
+
+- Add `withTimestamp` prop and `getSketchingTime` function to measure the sketching time of the user
 
 ## Version 5.1.2 & 5.1.1
 
