@@ -1,7 +1,7 @@
-import React from "react";
-import { ExportImageType, Point, CanvasPath } from "./typings";
-import Paths from "./Paths";
 import "pepjs";
+import React from "react";
+import Paths from "./Paths";
+import { CanvasPath, ExportImageType, Point } from "./typings";
 
 /* Default settings */
 
@@ -18,6 +18,19 @@ const defaultProps = {
   },
   withTimeStamp: true,
 };
+
+function getCanvasWithViewBox(canvas: HTMLDivElement) {
+  const svgCanvas = canvas.firstChild?.cloneNode(true) as SVGElement;
+
+  const width = canvas.offsetWidth;
+  const height = canvas.offsetHeight;
+
+  svgCanvas.setAttribute("viewBox", `0 0 ${width} ${height}`);
+
+  svgCanvas.setAttribute("width", width.toString());
+  svgCanvas.setAttribute("height", height.toString());
+  return { svgCanvas, width, height };
+}
 
 /* Props validation */
 
@@ -151,12 +164,14 @@ export class Canvas extends React.Component<CanvasProps> {
         }
 
         const img = document.createElement("img");
-        img.src = `data:image/svg+xml;base64,${btoa(canvas?.innerHTML)}`;
+        const { svgCanvas, width, height } = getCanvasWithViewBox(canvas);
+
+        img.src = `data:image/svg+xml;base64,${btoa(svgCanvas.outerHTML)}`;
 
         img.onload = () => {
           const renderCanvas = document.createElement("canvas");
-          renderCanvas.setAttribute("width", canvas.offsetWidth.toString());
-          renderCanvas.setAttribute("height", canvas.offsetHeight.toString());
+          renderCanvas.setAttribute("width", width.toString());
+          renderCanvas.setAttribute("height", height.toString());
           const context = renderCanvas.getContext("2d");
 
           if (!context) {
@@ -176,7 +191,14 @@ export class Canvas extends React.Component<CanvasProps> {
   exportSvg(): Promise<string> {
     return new Promise<string>((resolve, reject) => {
       try {
-        resolve(this.canvas.current?.innerHTML);
+        const canvas = this.canvas?.current ?? null;
+
+        if (canvas !== null) {
+          const { svgCanvas } = getCanvasWithViewBox(canvas);
+          resolve(svgCanvas.outerHTML);
+        }
+
+        reject(new Error("Canvas not loaded"));
       } catch (e) {
         reject(e);
       }

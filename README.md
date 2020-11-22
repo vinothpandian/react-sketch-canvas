@@ -171,13 +171,14 @@ _Use ref to access the element and call the following functions to export image_
 | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
 | eraseMode(boolean)           | Switch to eraser mode by passing true. You can switch back to pen mode by passing false                                                          |
 | clearCanvas()                | Clears the canvas.                                                                                                                               |
+| resetCanvas()                | Resets the canvas and clears the undo/redo stack along with it.                                                                                  |
 | undo()                       | Undo the last action.                                                                                                                            |
 | redo()                       | Redo the previous action.                                                                                                                        |
 | exportImage(imageTypeString) | Accepts an image type as argument (`ExportImageType`) and returns a Promise which resolves to base64 data url of the sketch.                     |
 | exportSvg()                  | returns a Promise which resolves to an inline SVG element.                                                                                       |
 | exportPaths()                | returns a Promise which resolves to an instance of `CanvasPath`.                                                                                 |
 | loadPaths(CanvasPath)        | Accepts an `CanvasPath` exported from exportPaths() and loads it on the canvas.                                                                  |
-| getSketchingTime             | returns a Promise which resolves the time that user sketched in the canvas (considers only when the user made the strokes or erased the strokes) |
+| getSketchingTime()           | returns a Promise which resolves the time that user sketched in the canvas (considers only when the user made the strokes or erased the strokes) |
 
 ## Types
 
@@ -198,110 +199,6 @@ interface CanvasPath {
   endTimestamp?: number;
 }
 ```
-
-## Changelog
-
-## Version 5.2.0
-
-#### Added features
-
-- Add `withTimestamp` prop and `getSketchingTime` function to measure the sketching time of the user
-
-## Version 5.1.2 & 5.1.1
-
-- Add index.d.ts to npm registry
-- Add Github as registry
-- Update example
-
-### Version 5.1.0
-
-Bug fixes
-
-- Added defaultProps to onUpdate in ReactSketchCanvas
-- Added touch-action="none" to allow pepjs polyfill pointer events
-- Removed the annoying console.log from Canvas
-- Update README.md
-
-### Version 5.0.1
-
-Added README :)
-
-### Version 5.0.0
-
-#### Added features
-
-- Rewrote codebase in typescript
-- Added pepjs to support more browsers
-- Added onUpdate feature to get current paths in `CanvasPath` type
-- Fixed sketch offset issue when the canvas is scrolled
-- Updated undo/redo/reset strategy
-- Updated demo in storybook
-
-### Version 4.0.0
-
-#### Breaking change
-
-- Renamed SvgSketchCanvas to ReactSketchCanvas to keep naming convention
-
-#### Added features
-
-- Added className property to set class names for CSS selectors
-
-### Version 3.0.1
-
-Bugfix: Moved immutable dependency from Canvas file
-
-### Version 3.0.0
-
-Removed onUpdate feature and made the system modular
-
-#### Added features
-
-- Made Canvas as a separate module. Now event handlers can be hooked with Canvas
-  class to update paths from server. (For Collaboration use case)
-
-#### Breaking changes
-
-- Removed onUpdate feature and instead made Canvas module
-
-### Version 2.3.0
-
-onUpdate feature
-
-#### Added features
-
-- Added onUpdate property to get the current sketch paths after every update
-
-### Version 2.2.0
-
-allowOnlyPointerType
-
-#### Added features
-
-- Added "allowOnlyPointerType" use-case. Now single pointer type can be targetted
-
-### Version 2.1.0
-
-#### Added features
-
-- Switched to pointer events
-
-### Version 2.0.1
-
-#### Added features
-
-- Add SVG background using CSS
-
-### Version 2.0.0
-
-#### Breaking change
-
-- Rename exportAsImage() to exportImage() for naming consistency
-
-#### Added features
-
-- Export and load paths
-- Erase mode and eraser width
 
 ---
 

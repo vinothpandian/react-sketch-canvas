@@ -10,9 +10,9 @@ import {
 } from "@storybook/addon-knobs";
 import * as React from "react";
 import {
+  CanvasPath,
   ExportImageType,
   ReactSketchCanvas,
-  CanvasPath,
 } from "react-sketch-canvas";
 import "./0.demo.stories.scss";
 
@@ -141,6 +141,14 @@ export const SketchCanvas = () => {
     }
   };
 
+  const resetCanvasHandler = () => {
+    const resetCanvas = canvasRef.current?.resetCanvas;
+
+    if (resetCanvas) {
+      resetCanvas();
+    }
+  };
+
   const createButton = (
     label: string,
     handler: () => void,
@@ -159,6 +167,7 @@ export const SketchCanvas = () => {
     ["Undo", undoHandler, "primary"],
     ["Redo", redoHandler, "primary"],
     ["Clear All", clearHandler, "primary"],
+    ["Reset All", resetCanvasHandler, "primary"],
     ["Pen", penHandler, "secondary"],
     ["Eraser", eraserHandler, "secondary"],
     ["Export Image", imageExportHandler, "success"],
@@ -174,7 +183,7 @@ export const SketchCanvas = () => {
     <div className="container-md">
       <h1 className="display-4 my-5">React Sketch Canvas - Full demo</h1>
       <div className="row no-gutters canvas-area m-0 p-0">
-        <div className="col-10 canvas">
+        <div className="col-9 canvas">
           <ReactSketchCanvas
             ref={canvasRef}
             className={className}
@@ -191,7 +200,7 @@ export const SketchCanvas = () => {
             withTimestamp={withTimestamp}
           />
         </div>
-        <div className="col-2 panel">
+        <div className="col-3 panel">
           {buttonsWithHandlers.map(([label, handler, themeColor]) =>
             createButton(label, handler, themeColor)
           )}

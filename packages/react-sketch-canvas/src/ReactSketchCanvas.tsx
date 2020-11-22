@@ -1,8 +1,7 @@
-import React from "react";
-
 import { produce } from "immer";
+import React from "react";
 import { Canvas } from "./Canvas";
-import { Point, CanvasPath, ExportImageType } from "./typings";
+import { CanvasPath, ExportImageType, Point } from "./typings";
 
 /* Default settings */
 
@@ -58,18 +57,19 @@ export class ReactSketchCanvas extends React.Component<
 
   svgCanvas: React.RefObject<Canvas>;
 
+  initialState = {
+    drawMode: true,
+    isDrawing: false,
+    // eslint-disable-next-line react/no-unused-state
+    resetStack: [],
+    undoStack: [],
+    currentPaths: [],
+  };
+
   constructor(props: ReactSketchCanvasProps) {
     super(props);
 
-    this.state = {
-      // eslint-disable-next-line react/no-unused-state
-      drawMode: true,
-      isDrawing: false,
-      // eslint-disable-next-line react/no-unused-state
-      resetStack: [],
-      undoStack: [],
-      currentPaths: [],
-    };
+    this.state = this.initialState;
 
     this.handlePointerDown = this.handlePointerDown.bind(this);
     this.handlePointerMove = this.handlePointerMove.bind(this);
@@ -84,6 +84,7 @@ export class ReactSketchCanvas extends React.Component<
     this.clearCanvas = this.clearCanvas.bind(this);
     this.undo = this.undo.bind(this);
     this.redo = this.redo.bind(this);
+    this.resetCanvas = this.resetCanvas.bind(this);
     this.getSketchingTime = this.getSketchingTime.bind(this);
 
     this.liftPathsUp = this.liftPathsUp.bind(this);
@@ -116,6 +117,10 @@ export class ReactSketchCanvas extends React.Component<
         reject(e);
       }
     });
+  }
+
+  resetCanvas(): void {
+    this.setState(this.initialState);
   }
 
   liftPathsUp(): void {
