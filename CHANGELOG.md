@@ -1,5 +1,9 @@
 ## Changelog
 
+## [5.3.1]
+
+- Set default value of `allowOnlyPointerType` as `'all'` again
+
 ## [5.3.0]
 
 ### Added
@@ -8,7 +12,6 @@
 
 ### Fixed
 
-- Set default value of `allowOnlyPointerType` as `'all'` again
 - Fix exportImage function to export png in Firefox and Safari
 
 ## [5.2.0]
