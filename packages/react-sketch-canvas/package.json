@@ -1,6 +1,6 @@
 {
   "name": "react-sketch-canvas",
-  "version": "5.3.1",
+  "version": "5.3.2",
   "root": true,
   "description": "react-sketch-canvas - Freehand vector drawing tool for React using SVG as canvas",
   "source": "src/index.ts",
@@ -15,8 +15,8 @@
     "start": "yarn clean && microbundle watch --jsx React.createElement --globals react=React"
   },
   "dependencies": {
-    "immer": "^7.0.9",
-    "pepjs": "^0.5.2"
+    "immer": "^9.0.1",
+    "pepjs": "^0.5.3"
   },
   "peerDependencies": {
     "react": "16.x"
