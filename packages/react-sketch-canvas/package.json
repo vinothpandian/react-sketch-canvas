@@ -19,7 +19,7 @@
     "pepjs": "^0.5.3"
   },
   "peerDependencies": {
-    "react": "^16.13.1 || ^17",
+    "react": ">=16.4"
   },
   "devDependencies": {
     "eslint": "^7.10.0",
