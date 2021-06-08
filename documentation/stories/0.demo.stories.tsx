@@ -2,7 +2,9 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import {
   boolean,
+  button,
   color,
+  files,
   number,
   optionsKnob as options,
   text,
@@ -73,6 +75,39 @@ export const SketchCanvas = () => {
   });
 
   const withTimestamp = boolean("Add timestamp to strokes", true);
+
+  const pathsToLoad = files("Load Paths from JSON file", ".json", []);
+
+  const loadPathHandler = () => {
+    if (pathsToLoad.length === 0) {
+      alert(
+        "Add a file to 'Load path from uploaded file' to load it on canvas"
+      );
+      return;
+    }
+
+    if (pathsToLoad.length > 1) {
+      alert(
+        "Please choose only one file on 'Load path from uploaded file' to load it on canvas"
+      );
+      return;
+    }
+
+    try {
+      const dataURI = pathsToLoad[0];
+      const data = atob(dataURI.substring(29));
+      const newPaths: CanvasPath[] = JSON.parse(data);
+
+      canvasRef.current?.loadPaths(newPaths);
+    } catch (error) {
+      alert(
+        error.message +
+          "Invalid Path format. It must be a list of CanvasPath type. More information on required fields in CanvasPath can be found here -> https://github.com/vinothpandian/react-sketch-canvas/#types"
+      );
+    }
+  };
+
+  button("Load path from a uploaded file", loadPathHandler);
 
   const imageExportHandler = async () => {
     const exportImage = canvasRef.current?.exportImage;
