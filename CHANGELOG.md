@@ -1,6 +1,31 @@
 ## Changelog
 
+## [5.3.4]
+
+## Added
+
+- Switched to Nx
+- Updated documentation
+
+## Changed
+
+- Removed pepjs. Can be polyfilled by the web app directly instead
+
+## [5.3.3]
+
+## Fixed
+
+- add support any version above react 16.4
+ 
+## [5.3.2]
+
+## Fixed
+
+- Bump dependency versions
+  
 ## [5.3.1]
+
+## Fixed
 
 - Set default value of `allowOnlyPointerType` as `'all'` again
 
