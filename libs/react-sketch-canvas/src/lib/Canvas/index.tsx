@@ -1,6 +1,6 @@
 import React from 'react';
-import Paths from './Paths';
-import { CanvasPath, ExportImageType, Point } from './typings';
+import Paths from '../Paths';
+import { CanvasPath, ExportImageType, Point } from '../types';
 
 /* Default settings */
 

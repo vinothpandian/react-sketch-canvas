@@ -1,9 +1,4 @@
-export type ExportImageType = "jpeg" | "png";
-
-export interface Point {
-  readonly x: number;
-  readonly y: number;
-}
+import { Point } from '.';
 
 export interface CanvasPath {
   readonly paths: Point[];

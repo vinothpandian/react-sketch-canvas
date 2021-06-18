@@ -1,29 +1,10 @@
-import React from "react";
-import { Point, CanvasPath } from "./typings";
+import { Point } from '../types';
 
-const svgPath = (
-  paths: Point[],
-  id: string,
-  strokeWidth: number,
-  strokeColor: string,
-  command: (point: Point, i: number, a: Point[]) => string
-): JSX.Element => {
-  const d = paths.reduce(
-    (acc, point, i, a) =>
-      i === 0 ? `M ${point.x},${point.y}` : `${acc} ${command(point, i, a)}`,
-    ""
-  );
-
-  return (
-    <path
-      key={id}
-      d={d}
-      fill="none"
-      strokeLinecap="round"
-      stroke={strokeColor}
-      strokeWidth={strokeWidth}
-    />
-  );
+export type ControlPoints = {
+  current: Point;
+  previous?: Point;
+  next?: Point;
+  reverse?: boolean;
 };
 
 const line = (pointA: Point, pointB: Point) => {
@@ -34,13 +15,6 @@ const line = (pointA: Point, pointB: Point) => {
     length: Math.sqrt(lengthX ** 2 + lengthY ** 2),
     angle: Math.atan2(lengthY, lengthX),
   };
-};
-
-type ControlPoints = {
-  current: Point;
-  previous?: Point;
-  next?: Point;
-  reverse?: boolean;
 };
 
 const controlPoint = (controlPoints: ControlPoints): [number, number] => {
@@ -62,7 +36,7 @@ const controlPoint = (controlPoints: ControlPoints): [number, number] => {
   return [x, y];
 };
 
-const bezierCommand = (point: Point, i: number, a: Point[]): string => {
+export const bezierCommand = (point: Point, i: number, a: Point[]): string => {
   let cpsX = null;
   let cpsY = null;
 
@@ -96,23 +70,3 @@ const bezierCommand = (point: Point, i: number, a: Point[]): string => {
 
   return `C ${cpsX},${cpsY} ${cpeX},${cpeY} ${point.x}, ${point.y}`;
 };
-
-type PathProps = {
-  paths: CanvasPath[];
-};
-
-const Paths = ({ paths }: PathProps): JSX.Element => (
-  <React.Fragment>
-    {paths.map((path: CanvasPath, id: number) =>
-      svgPath(
-        path.paths,
-        id.toString(),
-        path.strokeWidth,
-        path.strokeColor,
-        bezierCommand
-      )
-    )}
-  </React.Fragment>
-);
-
-export default Paths;
