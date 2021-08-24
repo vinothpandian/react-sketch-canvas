@@ -12,6 +12,7 @@ const defaultProps = {
   canvasColor: 'white',
   strokeColor: 'red',
   backgroundImage: '',
+  exportWithBackgroundImage: true,
   preserveBackgroundImageAspectRatio: 'none',
   strokeWidth: 4,
   eraserWidth: 8,
@@ -34,6 +35,7 @@ export type ReactSketchCanvasProps = {
   strokeColor: string;
   canvasColor: string;
   backgroundImage: string;
+  exportWithBackgroundImage: boolean;
   preserveBackgroundImageAspectRatio: string;
   strokeWidth: number;
   eraserWidth: number;
@@ -346,6 +348,7 @@ export class ReactSketchCanvas extends React.Component<
       canvasColor,
       backgroundImage,
       preserveBackgroundImageAspectRatio,
+      exportWithBackgroundImage,
       style,
       allowOnlyPointerType,
     } = this.props;
@@ -360,6 +363,7 @@ export class ReactSketchCanvas extends React.Component<
         className={className}
         canvasColor={canvasColor}
         backgroundImage={backgroundImage}
+        exportWithBackgroundImage={exportWithBackgroundImage}
         preserveBackgroundImageAspectRatio={preserveBackgroundImageAspectRatio}
         allowOnlyPointerType={allowOnlyPointerType}
         style={style}

@@ -31,6 +31,7 @@ Default.args = {
   height: '500px',
   backgroundImage:
     'https://upload.wikimedia.org/wikipedia/commons/7/70/Graph_paper_scan_1600x1000_%286509259561%29.jpg',
+  exportWithBackgroundImage: true,
   preserveBackgroundImageAspectRatio: 'none',
   strokeWidth: 4,
   strokeColor: '#000000',

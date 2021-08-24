@@ -10,6 +10,7 @@ const defaultProps = {
   className: '',
   canvasColor: 'red',
   backgroundImage: '',
+  exportWithBackgroundImage: true,
   preserveBackgroundImageAspectRatio: 'none',
   allowOnlyPointerType: 'all',
   style: {
@@ -18,6 +19,15 @@ const defaultProps = {
   },
   withTimeStamp: true,
 };
+
+const loadImage = (url: string): Promise<HTMLImageElement> =>
+  new Promise((resolve, reject) => {
+    const img = new Image();
+    img.addEventListener('load', () => resolve(img));
+    img.addEventListener('error', (err) => reject(err));
+    img.src = url;
+    img.setAttribute('crossorigin', 'anonymous');
+  });
 
 function getCanvasWithViewBox(canvas: HTMLDivElement) {
   const svgCanvas = canvas.firstChild?.cloneNode(true) as SVGElement;
@@ -45,6 +55,7 @@ export type CanvasProps = {
   height: string;
   canvasColor: string;
   backgroundImage: string;
+  exportWithBackgroundImage: boolean;
   preserveBackgroundImageAspectRatio: string;
   allowOnlyPointerType: string;
   style: React.CSSProperties;
@@ -164,26 +175,46 @@ export class Canvas extends React.Component<CanvasProps> {
           throw Error('Canvas not rendered yet');
         }
 
-        const img = document.createElement('img');
+        const { backgroundImage, exportWithBackgroundImage } = this.props;
+
         const { svgCanvas, width, height } = getCanvasWithViewBox(canvas);
+        const canvasSketch = `data:image/svg+xml;base64,${btoa(
+          svgCanvas.outerHTML
+        )}`;
 
-        img.src = `data:image/svg+xml;base64,${btoa(svgCanvas.outerHTML)}`;
+        const loadImagePromises = [loadImage(canvasSketch)];
 
-        img.onload = () => {
-          const renderCanvas = document.createElement('canvas');
-          renderCanvas.setAttribute('width', width.toString());
-          renderCanvas.setAttribute('height', height.toString());
-          const context = renderCanvas.getContext('2d');
+        if (exportWithBackgroundImage) {
+          console.log(
+            '🚀 ~ file: index.tsx ~ line 188 ~ Canvas ~ exportImage ~ exportWithBackgroundImage',
+            exportWithBackgroundImage
+          );
 
-          if (!context) {
-            throw Error('Canvas not rendered yet');
-          }
+          loadImagePromises.push(loadImage(backgroundImage));
+        }
 
-          context.drawImage(img, 0, 0);
+        Promise.all(loadImagePromises)
+          .then((images) => {
+            const renderCanvas = document.createElement('canvas');
+            renderCanvas.setAttribute('width', width.toString());
+            renderCanvas.setAttribute('height', height.toString());
+            const context = renderCanvas.getContext('2d');
 
-          resolve(renderCanvas.toDataURL(`image/${imageType}`));
-        };
+            if (!context) {
+              throw Error('Canvas not rendered yet');
+            }
+
+            images.reverse().forEach((image) => {
+              context.drawImage(image, 0, 0);
+            });
+
+            resolve(renderCanvas.toDataURL(`image/${imageType}`));
+          })
+          .catch((e) => {
+            throw e;
+          });
       } catch (e) {
+        console.error(e);
         reject(e);
       }
     });
@@ -196,6 +227,19 @@ export class Canvas extends React.Component<CanvasProps> {
 
         if (canvas !== null) {
           const { svgCanvas } = getCanvasWithViewBox(canvas);
+
+          const { exportWithBackgroundImage, canvasColor } = this.props;
+
+          if (exportWithBackgroundImage) {
+            resolve(svgCanvas.outerHTML);
+            return;
+          }
+
+          svgCanvas.querySelector('#background')?.remove();
+          svgCanvas
+            .querySelector('#canvas-background')
+            ?.setAttribute('fill', canvasColor);
+
           resolve(svgCanvas.outerHTML);
         }
 
@@ -265,8 +309,9 @@ export class Canvas extends React.Component<CanvasProps> {
               ></image>
             </pattern>
           )}
-          <g id="canvas-background">
+          <g id="canvas-background-group">
             <rect
+              id="canvas-background"
               x="0"
               y="0"
               width="100%"
@@ -274,7 +319,7 @@ export class Canvas extends React.Component<CanvasProps> {
               fill={backgroundImage ? 'url(#background)' : canvasColor}
             />
           </g>
-          <g id="canvasPenStrokes">
+          <g id="canvas-pen-group">
             <Paths paths={paths} />
           </g>
         </svg>
