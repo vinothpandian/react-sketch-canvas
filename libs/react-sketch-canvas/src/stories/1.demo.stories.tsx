@@ -3,12 +3,7 @@
 
 import { Meta, Story } from '@storybook/react';
 import React from 'react';
-import {
-  CanvasPath,
-  ExportImageType,
-  ReactSketchCanvas,
-  ReactSketchCanvasProps,
-} from '..';
+import { CanvasPath, ReactSketchCanvas, ReactSketchCanvasProps } from '..';
 import './demo.stories.css';
 
 export default {
@@ -25,18 +20,6 @@ export default {
   },
 } as Meta;
 
-const pointerModes = {
-  mouse: 'mouse',
-  touch: 'touch',
-  pen: 'pen',
-  all: 'all',
-};
-
-const imageTypes: { [key: string]: ExportImageType } = {
-  png: 'png',
-  jpeg: 'jpeg',
-};
-
 type CanvasRef = React.RefObject<ReactSketchCanvas>;
 type Handlers = [string, () => void, string][];
 
@@ -44,7 +27,8 @@ const Template: Story<ReactSketchCanvasProps> = ({
   className,
   width,
   height,
-  background,
+  backgroundImage,
+  preserveBackgroundImageAspectRatio,
   strokeWidth,
   strokeColor,
   canvasColor,
@@ -176,7 +160,10 @@ const Template: Story<ReactSketchCanvasProps> = ({
               className={className}
               width={width}
               height={height}
-              background={background}
+              backgroundImage={backgroundImage}
+              preserveBackgroundImageAspectRatio={
+                preserveBackgroundImageAspectRatio
+              }
               strokeWidth={strokeWidth}
               strokeColor={strokeColor}
               canvasColor={canvasColor}
@@ -288,8 +275,9 @@ Default.args = {
   className: 'react-sketch-canvas',
   width: '100%',
   height: '500px',
-  background:
-    'url(https://upload.wikimedia.org/wikipedia/commons/7/70/Graph_paper_scan_1600x1000_%286509259561%29.jpg)',
+  backgroundImage:
+    'https://upload.wikimedia.org/wikipedia/commons/7/70/Graph_paper_scan_1600x1000_%286509259561%29.jpg',
+  preserveBackgroundImageAspectRatio: 'none',
   strokeWidth: 4,
   strokeColor: '#000000',
   canvasColor: '#FFFFFF',

@@ -29,8 +29,9 @@ Default.args = {
   className: 'react-sketch-canvas',
   width: '100%',
   height: '500px',
-  background:
-    'url(https://upload.wikimedia.org/wikipedia/commons/7/70/Graph_paper_scan_1600x1000_%286509259561%29.jpg)',
+  backgroundImage:
+    'https://upload.wikimedia.org/wikipedia/commons/7/70/Graph_paper_scan_1600x1000_%286509259561%29.jpg',
+  preserveBackgroundImageAspectRatio: 'none',
   strokeWidth: 4,
   strokeColor: '#000000',
   canvasColor: '#FFFFFF',
