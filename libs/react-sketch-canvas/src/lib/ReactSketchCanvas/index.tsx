@@ -137,13 +137,7 @@ export class ReactSketchCanvas extends React.Component<
   /* Mouse Handlers - Mouse down, move and up */
 
   handlePointerDown(point: Point): void {
-    const {
-      strokeColor,
-      strokeWidth,
-      canvasColor,
-      eraserWidth,
-      withTimestamp,
-    } = this.props;
+    const { strokeColor, strokeWidth, eraserWidth, withTimestamp } = this.props;
 
     this.setState(
       produce((draft: ReactSketchCanvasStates) => {
@@ -152,7 +146,7 @@ export class ReactSketchCanvas extends React.Component<
 
         let stroke: CanvasPath = {
           drawMode: draft.drawMode,
-          strokeColor: draft.drawMode ? strokeColor : canvasColor,
+          strokeColor: draft.drawMode ? strokeColor : '#000000', // Eraser using mask
           strokeWidth: draft.drawMode ? strokeWidth : eraserWidth,
           paths: [point],
         };
