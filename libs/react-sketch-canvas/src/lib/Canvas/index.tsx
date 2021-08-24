@@ -9,7 +9,8 @@ const defaultProps = {
   height: '100%',
   className: '',
   canvasColor: 'red',
-  background: '',
+  backgroundImage: '',
+  preserveBackgroundImageAspectRatio: 'none',
   allowOnlyPointerType: 'all',
   style: {
     border: '0.0625rem solid #9c9c9c',
@@ -43,7 +44,8 @@ export type CanvasProps = {
   width: string;
   height: string;
   canvasColor: string;
-  background: string;
+  backgroundImage: string;
+  preserveBackgroundImageAspectRatio: string;
   allowOnlyPointerType: string;
   style: React.CSSProperties;
 };
@@ -207,8 +209,16 @@ export class Canvas extends React.Component<CanvasProps> {
   /* Finally!!! Render method */
 
   render(): JSX.Element {
-    const { width, height, className, canvasColor, background, style, paths } =
-      this.props;
+    const {
+      width,
+      height,
+      className,
+      canvasColor,
+      backgroundImage,
+      style,
+      paths,
+      preserveBackgroundImageAspectRatio,
+    } = this.props;
 
     return (
       <div
@@ -230,12 +240,40 @@ export class Canvas extends React.Component<CanvasProps> {
           version="1.1"
           baseProfile="full"
           xmlns="http://www.w3.org/2000/svg"
+          xmlnsXlink="http://www.w3.org/1999/xlink"
           style={{
             width: '100%',
             height: '100%',
-            background: `${background} ${canvasColor}`,
           }}
         >
+          {backgroundImage && (
+            <pattern
+              id="background"
+              x="0"
+              y="0"
+              width="100%"
+              height="100%"
+              patternUnits="userSpaceOnUse"
+            >
+              <image
+                x="0"
+                y="0"
+                width="100%"
+                height="100%"
+                xlinkHref={backgroundImage}
+                preserveAspectRatio={preserveBackgroundImageAspectRatio}
+              ></image>
+            </pattern>
+          )}
+          <g id="canvas-background">
+            <rect
+              x="0"
+              y="0"
+              width="100%"
+              height="100%"
+              fill={backgroundImage ? 'url(#background)' : canvasColor}
+            />
+          </g>
           <g id="canvasPenStrokes">
             <Paths paths={paths} />
           </g>
