@@ -1,6 +1,6 @@
 {
   "name": "react-sketch-canvas",
-  "version": "0.0.0",
+  "version": "6.0.0",
   "license": "MIT",
   "scripts": {
     "nx": "nx",
@@ -35,9 +35,6 @@
   },
   "devDependencies": {
     "@babel/core": "7.12.13",
-    "@babel/plugin-proposal-class-properties": "^7.14.5",
-    "@babel/plugin-proposal-private-methods": "^7.14.5",
-    "@babel/plugin-proposal-private-property-in-object": "^7.14.5",
     "@babel/preset-typescript": "7.12.13",
     "@nrwl/cli": "12.7.2",
     "@nrwl/eslint-plugin-nx": "12.7.2",
