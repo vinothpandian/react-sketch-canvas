@@ -20,6 +20,15 @@ const defaultProps = {
   withTimeStamp: true,
 };
 
+const partitionPenAndEraser = (paths: CanvasPath[]) =>
+  paths.reduce<[CanvasPath[], CanvasPath[]]>(
+    (partition, path) => {
+      partition[+path.drawMode].push(path);
+      return partition;
+    },
+    [[], []]
+  );
+
 const loadImage = (url: string): Promise<HTMLImageElement> =>
   new Promise((resolve, reject) => {
     const img = new Image();
@@ -185,11 +194,6 @@ export class Canvas extends React.Component<CanvasProps> {
         const loadImagePromises = [loadImage(canvasSketch)];
 
         if (exportWithBackgroundImage) {
-          console.log(
-            '🚀 ~ file: index.tsx ~ line 188 ~ Canvas ~ exportImage ~ exportWithBackgroundImage',
-            exportWithBackgroundImage
-          );
-
           loadImagePromises.push(loadImage(backgroundImage));
         }
 
@@ -264,6 +268,8 @@ export class Canvas extends React.Component<CanvasProps> {
       preserveBackgroundImageAspectRatio,
     } = this.props;
 
+    const [eraserPaths, penPaths] = partitionPenAndEraser(paths);
+
     return (
       <div
         role="presentation"
@@ -290,25 +296,32 @@ export class Canvas extends React.Component<CanvasProps> {
             height: '100%',
           }}
         >
-          {backgroundImage && (
-            <pattern
-              id="background"
-              x="0"
-              y="0"
-              width="100%"
-              height="100%"
-              patternUnits="userSpaceOnUse"
-            >
-              <image
+          <defs>
+            {backgroundImage && (
+              <pattern
+                id="background"
                 x="0"
                 y="0"
                 width="100%"
                 height="100%"
-                xlinkHref={backgroundImage}
-                preserveAspectRatio={preserveBackgroundImageAspectRatio}
-              ></image>
-            </pattern>
-          )}
+                patternUnits="userSpaceOnUse"
+              >
+                <image
+                  x="0"
+                  y="0"
+                  width="100%"
+                  height="100%"
+                  xlinkHref={backgroundImage}
+                  preserveAspectRatio={preserveBackgroundImageAspectRatio}
+                ></image>
+              </pattern>
+            )}
+
+            <mask id="eraser">
+              <rect x="0" y="0" width="100%" height="100%" fill="white" />
+              <Paths paths={eraserPaths} />
+            </mask>
+          </defs>
           <g id="canvas-background-group">
             <rect
               id="canvas-background"
@@ -319,8 +332,8 @@ export class Canvas extends React.Component<CanvasProps> {
               fill={backgroundImage ? 'url(#background)' : canvasColor}
             />
           </g>
-          <g id="canvas-pen-group">
-            <Paths paths={paths} />
+          <g id="canvas-pen-paths" mask="url(#eraser)">
+            <Paths paths={penPaths} />
           </g>
         </svg>
       </div>
