@@ -1,6 +1,6 @@
 {
   "name": "react-sketch-canvas",
-  "version": "5.3.4",
+  "version": "6.0.0",
   "description": "react-sketch-canvas - Freehand vector drawing tool for React using SVG as canvas",
   "author": "Vinoth Pandian",
   "homepage": "https://vinoth.info/react-sketch-canvas",
