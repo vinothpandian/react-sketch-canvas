@@ -24,13 +24,17 @@
       }
     }
   },
+  "targetDependencies": {
+    "build": [
+      {
+        "target": "build",
+        "projects": "dependencies"
+      }
+    ]
+  },
   "projects": {
     "react-sketch-canvas": {
       "tags": []
-    },
-    "react-sketch-canvas-e2e": {
-      "tags": [],
-      "implicitDependencies": ["react-sketch-canvas"]
     }
   }
 }

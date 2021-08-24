@@ -246,12 +246,7 @@ export class ReactSketchCanvas extends React.Component<
           draft.currentPaths = draft.resetStack;
           draft.resetStack = [];
         }),
-        () => {
-          const { currentPaths } = this.state;
-          const { onUpdate } = this.props;
-
-          onUpdate(currentPaths);
-        }
+        this.liftPathsUp
       );
 
       return;
