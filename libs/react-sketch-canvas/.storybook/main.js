@@ -1,12 +1,22 @@
 const rootMain = require('../../../.storybook/main');
 
-rootMain.addons.push(...['@storybook/addon-docs', '@storybook/preset-scss']);
+module.exports = {
+  ...rootMain,
 
-rootMain.stories.push(
-  ...[
-    '../src/stories/**/*.stories.mdx',
-    '../src/stories/**/*.stories.@(js|jsx|ts|tsx)',
-  ]
-);
+  stories: [
+    ...rootMain.stories,
+    '../src/stories/*.stories.mdx',
+    '../src/stories/*.stories.@(js|jsx|ts|tsx)',
+  ],
+  addons: [...rootMain.addons, '@nrwl/react/plugins/storybook'],
+  webpackFinal: async (config, { configType }) => {
+    // apply any global webpack configs that might have been specified in .storybook/main.js
+    if (rootMain.webpackFinal) {
+      config = await rootMain.webpackFinal(config, { configType });
+    }
 
-module.exports = rootMain;
+    // add your own webpack tweaks if needed
+
+    return config;
+  },
+};

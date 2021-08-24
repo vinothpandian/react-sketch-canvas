@@ -15,7 +15,6 @@
             "project": "libs/react-sketch-canvas/package.json",
             "entryFile": "libs/react-sketch-canvas/src/index.ts",
             "updateBuildableProjectDepsInPackageJson": true,
-            "external": ["react/jsx-runtime"],
             "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
             "assets": [
               {
@@ -84,32 +83,6 @@
           }
         }
       }
-    },
-    "react-sketch-canvas-e2e": {
-      "root": "apps/react-sketch-canvas-e2e",
-      "sourceRoot": "apps/react-sketch-canvas-e2e/src",
-      "projectType": "application",
-      "targets": {
-        "e2e": {
-          "executor": "@nrwl/cypress:cypress",
-          "options": {
-            "cypressConfig": "apps/react-sketch-canvas-e2e/cypress.json",
-            "tsConfig": "apps/react-sketch-canvas-e2e/tsconfig.e2e.json",
-            "devServerTarget": "react-sketch-canvas:storybook"
-          },
-          "configurations": {
-            "ci": {
-              "devServerTarget": "react-sketch-canvas:storybook:ci"
-            }
-          }
-        },
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": ["apps/react-sketch-canvas-e2e/**/*.{js,ts}"]
-          }
-        }
-      }
     }
   },
   "cli": {
@@ -118,18 +91,7 @@
   "generators": {
     "@nrwl/react": {
       "application": {
-        "style": "scss",
-        "linter": "eslint",
-        "strict": true,
         "babel": true
-      },
-      "component": {
-        "style": "scss"
-      },
-      "library": {
-        "style": "scss",
-        "linter": "eslint",
-        "strict": true
       }
     }
   }

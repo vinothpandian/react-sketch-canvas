@@ -207,15 +207,8 @@ export class Canvas extends React.Component<CanvasProps> {
   /* Finally!!! Render method */
 
   render(): JSX.Element {
-    const {
-      width,
-      height,
-      className,
-      canvasColor,
-      background,
-      style,
-      paths,
-    } = this.props;
+    const { width, height, className, canvasColor, background, style, paths } =
+      this.props;
 
     return (
       <div

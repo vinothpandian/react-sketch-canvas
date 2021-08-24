@@ -1,9 +1,17 @@
-import { withKnobs } from '@storybook/addon-knobs';
-import { addDecorator, addParameters } from '@storybook/react';
-
-addDecorator(withKnobs);
+import { addParameters } from '@storybook/react';
 
 addParameters({
   layout: 'centered',
   viewMode: 'docs',
+  controls: {
+    matchers: {
+      color: /(color)$/i,
+      date: /Date$/,
+    },
+  },
+  docs: {
+    source: {
+      type: 'code',
+    },
+  },
 });

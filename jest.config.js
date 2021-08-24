@@ -1,3 +1,5 @@
+const { getJestProjects } = require('@nrwl/jest');
+
 module.exports = {
-  projects: [, '<rootDir>/libs/react-sketch-canvas'],
+  projects: getJestProjects(),
 };
