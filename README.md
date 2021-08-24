@@ -55,12 +55,12 @@ yarn add react-sketch-canvas
 Common usage example
 
 ```javascript
-import React from "react";
-import { ReactSketchCanvas } from "react-sketch-canvas";
+import React from 'react';
+import { ReactSketchCanvas } from 'react-sketch-canvas';
 
 const styles = {
-  border: "0.0625rem solid #9c9c9c",
-  borderRadius: "0.25rem",
+  border: '0.0625rem solid #9c9c9c',
+  borderRadius: '0.25rem',
 };
 
 const Canvas = () => {
@@ -124,52 +124,30 @@ const Canvas = class extends React.Component {
 
 ## List of Props
 
-| Props                | Expected datatype | Default value | Description                                                          |
-| -------------------- | ----------------- | ------------- | -------------------------------------------------------------------- |
-| className            | PropTypes.string  | ""            | Class for using with CSS selectors                                   |
-| width                | PropTypes.string  | 100%          | canvas width (em/rem/px)                                             |
-| height               | PropTypes.string  | 100%          | canvas width (em/rem/px)                                             |
-| canvasColor          | PropTypes.string  | white         | canvas color (HTML colors)                                           |
-| background           | PropTypes.string  | ''            | Set SVG background using CSS [background][css-bg] value              |
-| strokeColor          | PropTypes.string  | black         | Pen color                                                            |
-| strokeWidth          | PropTypes.number  | 4             | Pen stroke size                                                      |
-| eraserWidth          | PropTypes.number  | 8             | Erase size                                                           |
-| allowOnlyPointerType | PropTypes.string  | all           | allow pointer type ("all"/"mouse"/"pen"/"touch")                     |
-| onUpdate             | PropTypes.func    | all           | Returns the current sketch path in `CanvasPath` type on every update |
-| withTimestamp        | PropTypes.bool    | false         | Add timestamp to individual strokes for measuring sketching time     |
+| Props                              | Expected datatype | Default value | Description                                                                                         |
+| ---------------------------------- | ----------------- | ------------- | --------------------------------------------------------------------------------------------------- |
+| width                              | PropTypes.string  | 100%          | canvas width (em/rem/px)                                                                            |
+| height                             | PropTypes.string  | 100%          | canvas width (em/rem/px)                                                                            |
+| className                          | PropTypes.string  | ""            | Class for using with CSS selectors                                                                  |
+| strokeColor                        | PropTypes.string  | black         | Pen color                                                                                           |
+| canvasColor                        | PropTypes.string  | white         | canvas color (HTML colors)                                                                          |
+| backgroundImage                    | PropTypes.string  | ''            | Set SVG background with image URL                                                                   |
+| exportWithBackgroundImage          | PropTypes.bool    | true          | Keep background image on image/SVG export (on false, canvasColor will be set as background)         |
+| preserveBackgroundImageAspectRatio | PropTypes.string  | none          | Set aspect ratio of the background image. For possible values check [MDN docs][preserveaspectratio] |
+| strokeWidth                        | PropTypes.number  | 4             | Pen stroke size                                                                                     |
+| eraserWidth                        | PropTypes.number  | 8             | Erase size                                                                                          |
+| allowOnlyPointerType               | PropTypes.string  | all           | allow pointer type ("all"/"mouse"/"pen"/"touch")                                                    |
+| onUpdate                           | PropTypes.func    | all           | Returns the current sketch path in `CanvasPath` type on every update                                |
+| style                              | PropTypes.object  | false         | Add CSS styling as CSS-in-JS object                                                                 |
+| withTimestamp                      | PropTypes.bool    | false         | Add timestamp to individual strokes for measuring sketching time                                    |
 
 Set SVG background using CSS [background][css-bg] value
 
 You can specify width and height values in em or rem. It fills the parent element space if width and height are not set
 
-Example
+<br />
 
-```javascript
-<ReactSketchCanvas width="25em" height="10rem" />
-```
-
-## Styling
-
-You can pass a CSS in JS style object to style the element. By default it has a border with following properties
-
-```css
-canvas {
-  border: 0.0625rem solid #9c9c9c;
-  border-radius: 0.25rem;
-}
-```
-
-Example
-
-```javascript
-<ReactSketchCanvas
-  style={{
-    border: "0.0625rem solid #9c9c9c",
-  }}
-/>
-```
-
-## Functions
+## Methods
 
 You can export the sketch as an image or as a svg
 
@@ -191,7 +169,7 @@ _Use ref to access the element and call the following functions to export image_
 ## Types
 
 ```ts
-type ExportImageType = "jpeg" | "png";
+type ExportImageType = 'jpeg' | 'png';
 
 interface Point {
   x: number;
@@ -216,10 +194,10 @@ interface CanvasPath {
 - Draws smooth curves, thanks to François Romain's [tutorial][smooth-curve-tutorial]
 - Immer [link][immer]
 
-
 ---
 
 [based-on]: https://pspdfkit.com/blog/2017/how-to-build-free-hand-drawing-using-react/
 [smooth-curve-tutorial]: https://medium.com/@francoisromain/smooth-a-svg-path-with-cubic-bezier-curves-e37b49d46c74
 [css-bg]: https://developer.mozilla.org/en-US/docs/Web/CSS/background
 [immer]: https://immerjs.github.io/immer/docs/introduction
+[preserveaspectratio]: https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/preserveAspectRatio

@@ -1,23 +1,25 @@
-import { produce } from "immer";
-import React from "react";
-import { Canvas } from "./Canvas";
-import { CanvasPath, ExportImageType, Point } from "./typings";
+import { produce } from 'immer';
+import React from 'react';
+import { Canvas } from '../Canvas';
+import { CanvasPath, ExportImageType, Point } from '../types';
 
 /* Default settings */
 
 const defaultProps = {
-  width: "100%",
-  height: "100%",
-  className: "",
-  canvasColor: "white",
-  strokeColor: "red",
-  background: "",
+  width: '100%',
+  height: '100%',
+  className: '',
+  canvasColor: 'white',
+  strokeColor: 'red',
+  backgroundImage: '',
+  exportWithBackgroundImage: true,
+  preserveBackgroundImageAspectRatio: 'none',
   strokeWidth: 4,
   eraserWidth: 8,
-  allowOnlyPointerType: "all",
+  allowOnlyPointerType: 'all',
   style: {
-    border: "0.0625rem solid #9c9c9c",
-    borderRadius: "0.25rem",
+    border: '0.0625rem solid #9c9c9c',
+    borderRadius: '0.25rem',
   },
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   onUpdate: (_: CanvasPath[]): void => {},
@@ -32,7 +34,9 @@ export type ReactSketchCanvasProps = {
   className: string;
   strokeColor: string;
   canvasColor: string;
-  background: string;
+  backgroundImage: string;
+  exportWithBackgroundImage: boolean;
+  preserveBackgroundImageAspectRatio: string;
   strokeWidth: number;
   eraserWidth: number;
   allowOnlyPointerType: string;
@@ -133,13 +137,7 @@ export class ReactSketchCanvas extends React.Component<
   /* Mouse Handlers - Mouse down, move and up */
 
   handlePointerDown(point: Point): void {
-    const {
-      strokeColor,
-      strokeWidth,
-      canvasColor,
-      eraserWidth,
-      withTimestamp,
-    } = this.props;
+    const { strokeColor, strokeWidth, eraserWidth, withTimestamp } = this.props;
 
     this.setState(
       produce((draft: ReactSketchCanvasStates) => {
@@ -148,7 +146,7 @@ export class ReactSketchCanvas extends React.Component<
 
         let stroke: CanvasPath = {
           drawMode: draft.drawMode,
-          strokeColor: draft.drawMode ? strokeColor : canvasColor,
+          strokeColor: draft.drawMode ? strokeColor : '#000000', // Eraser using mask
           strokeWidth: draft.drawMode ? strokeWidth : eraserWidth,
           paths: [point],
         };
@@ -246,12 +244,7 @@ export class ReactSketchCanvas extends React.Component<
           draft.currentPaths = draft.resetStack;
           draft.resetStack = [];
         }),
-        () => {
-          const { currentPaths } = this.state;
-          const { onUpdate } = this.props;
-
-          onUpdate(currentPaths);
-        }
+        this.liftPathsUp
       );
 
       return;
@@ -294,7 +287,7 @@ export class ReactSketchCanvas extends React.Component<
     const exportImage = this.svgCanvas.current?.exportImage;
 
     if (!exportImage) {
-      throw Error("Export function called before canvas loaded");
+      throw Error('Export function called before canvas loaded');
     } else {
       return exportImage(imageType);
     }
@@ -305,7 +298,7 @@ export class ReactSketchCanvas extends React.Component<
       const exportSvg = this.svgCanvas.current?.exportSvg;
 
       if (!exportSvg) {
-        reject(Error("Export function called before canvas loaded"));
+        reject(Error('Export function called before canvas loaded'));
       } else {
         exportSvg()
           .then((data) => {
@@ -347,7 +340,9 @@ export class ReactSketchCanvas extends React.Component<
       height,
       className,
       canvasColor,
-      background,
+      backgroundImage,
+      preserveBackgroundImageAspectRatio,
+      exportWithBackgroundImage,
       style,
       allowOnlyPointerType,
     } = this.props;
@@ -361,7 +356,9 @@ export class ReactSketchCanvas extends React.Component<
         height={height}
         className={className}
         canvasColor={canvasColor}
-        background={background}
+        backgroundImage={backgroundImage}
+        exportWithBackgroundImage={exportWithBackgroundImage}
+        preserveBackgroundImageAspectRatio={preserveBackgroundImageAspectRatio}
         allowOnlyPointerType={allowOnlyPointerType}
         style={style}
         paths={currentPaths}
