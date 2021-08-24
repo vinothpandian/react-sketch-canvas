@@ -1,5 +1,5 @@
-import React from "react";
-import { Point, CanvasPath } from "./typings";
+import React from 'react';
+import { CanvasPath, Point } from '../types';
 
 const svgPath = (
   paths: Point[],
@@ -11,7 +11,7 @@ const svgPath = (
   const d = paths.reduce(
     (acc, point, i, a) =>
       i === 0 ? `M ${point.x},${point.y}` : `${acc} ${command(point, i, a)}`,
-    ""
+    ''
   );
 
   return (

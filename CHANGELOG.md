@@ -1,5 +1,22 @@
 ## Changelog
 
+## [6.0.0]
+
+## Added
+
+- Upgraded all dependencies
+- Updated directory structure
+- Added background image rendering directly in SVG
+- Added option to export background image while exporting the canvas as image or SVG
+- Added background image aspect ratio control
+- Updated erase option to use mask instead of canvas color
+- Add github action for deployment of storybook and package
+
+## Breaking changes
+
+- Removed background option to set background image using CSS-in-JS (instead check feature-filled backgroundImage prop)
+
+
 ## [5.3.4]
 
 ## Added

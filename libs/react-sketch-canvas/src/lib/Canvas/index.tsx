@@ -1,6 +1,6 @@
 import React from 'react';
-import Paths from './Paths';
-import { CanvasPath, ExportImageType, Point } from './typings';
+import Paths from '../Paths';
+import { CanvasPath, ExportImageType, Point } from '../types';
 
 /* Default settings */
 
@@ -9,7 +9,9 @@ const defaultProps = {
   height: '100%',
   className: '',
   canvasColor: 'red',
-  background: '',
+  backgroundImage: '',
+  exportWithBackgroundImage: true,
+  preserveBackgroundImageAspectRatio: 'none',
   allowOnlyPointerType: 'all',
   style: {
     border: '0.0625rem solid #9c9c9c',
@@ -17,6 +19,24 @@ const defaultProps = {
   },
   withTimeStamp: true,
 };
+
+const partitionPenAndEraser = (paths: CanvasPath[]) =>
+  paths.reduce<[CanvasPath[], CanvasPath[]]>(
+    (partition, path) => {
+      partition[+path.drawMode].push(path);
+      return partition;
+    },
+    [[], []]
+  );
+
+const loadImage = (url: string): Promise<HTMLImageElement> =>
+  new Promise((resolve, reject) => {
+    const img = new Image();
+    img.addEventListener('load', () => resolve(img));
+    img.addEventListener('error', (err) => reject(err));
+    img.src = url;
+    img.setAttribute('crossorigin', 'anonymous');
+  });
 
 function getCanvasWithViewBox(canvas: HTMLDivElement) {
   const svgCanvas = canvas.firstChild?.cloneNode(true) as SVGElement;
@@ -43,7 +63,9 @@ export type CanvasProps = {
   width: string;
   height: string;
   canvasColor: string;
-  background: string;
+  backgroundImage: string;
+  exportWithBackgroundImage: boolean;
+  preserveBackgroundImageAspectRatio: string;
   allowOnlyPointerType: string;
   style: React.CSSProperties;
 };
@@ -162,26 +184,41 @@ export class Canvas extends React.Component<CanvasProps> {
           throw Error('Canvas not rendered yet');
         }
 
-        const img = document.createElement('img');
+        const { backgroundImage, exportWithBackgroundImage } = this.props;
+
         const { svgCanvas, width, height } = getCanvasWithViewBox(canvas);
+        const canvasSketch = `data:image/svg+xml;base64,${btoa(
+          svgCanvas.outerHTML
+        )}`;
 
-        img.src = `data:image/svg+xml;base64,${btoa(svgCanvas.outerHTML)}`;
+        const loadImagePromises = [loadImage(canvasSketch)];
 
-        img.onload = () => {
-          const renderCanvas = document.createElement('canvas');
-          renderCanvas.setAttribute('width', width.toString());
-          renderCanvas.setAttribute('height', height.toString());
-          const context = renderCanvas.getContext('2d');
+        if (exportWithBackgroundImage) {
+          loadImagePromises.push(loadImage(backgroundImage));
+        }
 
-          if (!context) {
-            throw Error('Canvas not rendered yet');
-          }
+        Promise.all(loadImagePromises)
+          .then((images) => {
+            const renderCanvas = document.createElement('canvas');
+            renderCanvas.setAttribute('width', width.toString());
+            renderCanvas.setAttribute('height', height.toString());
+            const context = renderCanvas.getContext('2d');
 
-          context.drawImage(img, 0, 0);
+            if (!context) {
+              throw Error('Canvas not rendered yet');
+            }
 
-          resolve(renderCanvas.toDataURL(`image/${imageType}`));
-        };
+            images.reverse().forEach((image) => {
+              context.drawImage(image, 0, 0);
+            });
+
+            resolve(renderCanvas.toDataURL(`image/${imageType}`));
+          })
+          .catch((e) => {
+            throw e;
+          });
       } catch (e) {
+        console.error(e);
         reject(e);
       }
     });
@@ -194,6 +231,19 @@ export class Canvas extends React.Component<CanvasProps> {
 
         if (canvas !== null) {
           const { svgCanvas } = getCanvasWithViewBox(canvas);
+
+          const { exportWithBackgroundImage, canvasColor } = this.props;
+
+          if (exportWithBackgroundImage) {
+            resolve(svgCanvas.outerHTML);
+            return;
+          }
+
+          svgCanvas.querySelector('#background')?.remove();
+          svgCanvas
+            .querySelector('#canvas-background')
+            ?.setAttribute('fill', canvasColor);
+
           resolve(svgCanvas.outerHTML);
         }
 
@@ -212,10 +262,13 @@ export class Canvas extends React.Component<CanvasProps> {
       height,
       className,
       canvasColor,
-      background,
+      backgroundImage,
       style,
       paths,
+      preserveBackgroundImageAspectRatio,
     } = this.props;
+
+    const [eraserPaths, penPaths] = partitionPenAndEraser(paths);
 
     return (
       <div
@@ -237,14 +290,50 @@ export class Canvas extends React.Component<CanvasProps> {
           version="1.1"
           baseProfile="full"
           xmlns="http://www.w3.org/2000/svg"
+          xmlnsXlink="http://www.w3.org/1999/xlink"
           style={{
             width: '100%',
             height: '100%',
-            background: `${background} ${canvasColor}`,
           }}
         >
-          <g id="canvasPenStrokes">
-            <Paths paths={paths} />
+          <defs>
+            {backgroundImage && (
+              <pattern
+                id="background"
+                x="0"
+                y="0"
+                width="100%"
+                height="100%"
+                patternUnits="userSpaceOnUse"
+              >
+                <image
+                  x="0"
+                  y="0"
+                  width="100%"
+                  height="100%"
+                  xlinkHref={backgroundImage}
+                  preserveAspectRatio={preserveBackgroundImageAspectRatio}
+                ></image>
+              </pattern>
+            )}
+
+            <mask id="eraser">
+              <rect x="0" y="0" width="100%" height="100%" fill="white" />
+              <Paths paths={eraserPaths} />
+            </mask>
+          </defs>
+          <g id="canvas-background-group">
+            <rect
+              id="canvas-background"
+              x="0"
+              y="0"
+              width="100%"
+              height="100%"
+              fill={backgroundImage ? 'url(#background)' : canvasColor}
+            />
+          </g>
+          <g id="canvas-pen-paths" mask="url(#eraser)">
+            <Paths paths={penPaths} />
           </g>
         </svg>
       </div>
