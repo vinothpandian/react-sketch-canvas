@@ -41,7 +41,8 @@
             "lintFilePatterns": [
               "libs/react-sketch-canvas/**/*.{ts,tsx,js,jsx}"
             ]
-          }
+          },
+          "outputs": ["{options.outputFile}"]
         },
         "test": {
           "executor": "@nrwl/jest:jest",
