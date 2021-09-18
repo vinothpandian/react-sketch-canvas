@@ -1,6 +1,6 @@
 ## Changelog
 
-## [6.0.0]
+## [beta]
 
 ## Added
 
@@ -15,7 +15,6 @@
 ## Breaking changes
 
 - Removed background option to set background image using CSS-in-JS (instead check feature-filled backgroundImage prop)
-
 
 ## [5.3.4]
 
@@ -33,13 +32,13 @@
 ## Fixed
 
 - add support any version above react 16.4
- 
+
 ## [5.3.2]
 
 ## Fixed
 
 - Bump dependency versions
-  
+
 ## [5.3.1]
 
 ## Fixed

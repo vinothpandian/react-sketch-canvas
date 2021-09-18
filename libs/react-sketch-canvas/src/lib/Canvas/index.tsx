@@ -1,5 +1,5 @@
 import React from 'react';
-import Paths from '../Paths';
+import Paths, { SvgPath } from '../Paths';
 import { CanvasPath, ExportImageType, Point } from '../types';
 
 /* Default settings */
@@ -268,7 +268,25 @@ export class Canvas extends React.Component<CanvasProps> {
       preserveBackgroundImageAspectRatio,
     } = this.props;
 
-    const [eraserPaths, penPaths] = partitionPenAndEraser(paths);
+    const eraserPaths = paths.filter((path) => !path.drawMode);
+
+    let currentGroup = 0;
+    const pathGroups = paths.reduce<CanvasPath[][]>(
+      (arrayGroup, path) => {
+        if (!path.drawMode) {
+          currentGroup += 1;
+          return arrayGroup;
+        }
+
+        if (arrayGroup[currentGroup] === undefined) {
+          arrayGroup[currentGroup] = [];
+        }
+
+        arrayGroup[currentGroup].push(path);
+        return arrayGroup;
+      },
+      [[]]
+    );
 
     return (
       <div
@@ -296,6 +314,25 @@ export class Canvas extends React.Component<CanvasProps> {
             height: '100%',
           }}
         >
+          <g id="eraser-stroke-group" display="none">
+            <rect
+              id="mask-background"
+              x="0"
+              y="0"
+              width="100%"
+              height="100%"
+              fill="white"
+            />
+            {eraserPaths.map((eraserPath, i) => (
+              <SvgPath
+                key={`eraser-${i}`}
+                id={`eraser-${i}`}
+                paths={eraserPath.paths}
+                strokeColor={eraserPath.strokeColor}
+                strokeWidth={eraserPath.strokeWidth}
+              />
+            ))}
+          </g>
           <defs>
             {backgroundImage && (
               <pattern
@@ -317,10 +354,17 @@ export class Canvas extends React.Component<CanvasProps> {
               </pattern>
             )}
 
-            <mask id="eraser">
-              <rect x="0" y="0" width="100%" height="100%" fill="white" />
-              <Paths paths={eraserPaths} />
-            </mask>
+            {eraserPaths.map((_, i) => (
+              <mask id={`eraser-mask-${i}`} key={`eraser-mask-${i}`}>
+                <use href="#mask-background" />
+                {Array.from(
+                  { length: eraserPaths.length - i },
+                  (_, j) => j + i
+                ).map((k) => (
+                  <use key={k.toString()} href={`#eraser-${k.toString()}`} />
+                ))}
+              </mask>
+            ))}
           </defs>
           <g id="canvas-background-group">
             <rect
@@ -332,9 +376,15 @@ export class Canvas extends React.Component<CanvasProps> {
               fill={backgroundImage ? 'url(#background)' : canvasColor}
             />
           </g>
-          <g id="canvas-pen-paths" mask="url(#eraser)">
-            <Paths paths={penPaths} />
-          </g>
+          {pathGroups.map((pathGroup, i) => (
+            <g
+              id={`stroke-group-${i}`}
+              key={`stroke-group-${i}`}
+              mask={`url(#eraser-mask-${i})`}
+            >
+              <Paths paths={pathGroup} />
+            </g>
+          ))}
         </svg>
       </div>
     );
