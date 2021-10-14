@@ -8,6 +8,19 @@ const svgPath = (
   strokeColor: string,
   command: (point: Point, i: number, a: Point[]) => string
 ): JSX.Element => {
+  if (paths.length === 1) {
+    return (
+      <circle
+        key={id}
+        cx={paths[0].x}
+        cy={paths[1].y}
+        r={strokeWidth/2}
+        stroke="none"
+        fill={strokeColor}
+      />
+    )
+  }
+  
   const d = paths.reduce(
     (acc, point, i, a) =>
       i === 0 ? `M ${point.x},${point.y}` : `${acc} ${command(point, i, a)}`,
