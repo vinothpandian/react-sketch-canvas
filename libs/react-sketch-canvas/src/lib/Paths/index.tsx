@@ -13,14 +13,14 @@ const svgPath = (
       <circle
         key={id}
         cx={paths[0].x}
-        cy={paths[1].y}
+        cy={paths[0].y}
         r={strokeWidth/2}
         stroke="none"
         fill={strokeColor}
       />
     )
   }
-  
+
   const d = paths.reduce(
     (acc, point, i, a) =>
       i === 0 ? `M ${point.x},${point.y}` : `${acc} ${command(point, i, a)}`,
