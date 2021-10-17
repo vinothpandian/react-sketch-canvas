@@ -1,6 +1,6 @@
 ## Changelog
 
-## [beta]
+## [6.0.1-beta]
 
 ## Added
 
