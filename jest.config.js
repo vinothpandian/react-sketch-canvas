@@ -1,5 +1,4 @@
-const { getJestProjects } = require('@nrwl/jest');
-
 module.exports = {
-  projects: getJestProjects(),
+  coverageDirectory: 'jest-coverage',
+  testMatch: ['<rootDir>/**/*.(test).{ts,tsx,js,jsx}'],
 };
