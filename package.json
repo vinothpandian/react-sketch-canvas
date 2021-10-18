@@ -62,14 +62,14 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "module": "dist/rsc.esm.js",
+  "module": "dist/react-sketch-canvas.esm.js",
   "size-limit": [
     {
-      "path": "dist/rsc.cjs.production.min.js",
+      "path": "dist/react-sketch-canvas.cjs.production.min.js",
       "limit": "10 KB"
     },
     {
-      "path": "dist/rsc.esm.js",
+      "path": "dist/react-sketch-canvas.esm.js",
       "limit": "10 KB"
     }
   ],
@@ -79,9 +79,9 @@
   "devDependencies": {
     "@babel/core": "^7.15.8",
     "@cypress/code-coverage": "^3.9.11",
-    "@size-limit/preset-small-lib": "^5.0.5",
+    "@size-limit/preset-small-lib": "^6.0.3",
     "@testing-library/cypress": "^8.0.1",
-    "@types/react": "^17.0.27",
+    "@types/react": "^17.0.30",
     "@types/react-dom": "^17.0.9",
     "babel-loader": "^8.2.2",
     "babel-plugin-istanbul": "^6.1.1",
@@ -89,7 +89,7 @@
     "concurrently": "^6.3.0",
     "cross-env": "^7.0.3",
     "cypress": "^8.6.0",
-    "dts-cli": "^0.17.1",
+    "dts-cli": "^0.19.2",
     "eslint-plugin-prettier": "^4.0.0",
     "husky": "^7.0.2",
     "merge-cypress-jest-coverage": "^1.7.0",
@@ -97,10 +97,10 @@
     "react-dom": "^17.0.2",
     "react-is": "^17.0.2",
     "release-it": "^14.11.6",
-    "size-limit": "^5.0.5",
+    "size-limit": "^6.0.3",
     "start-server-and-test": "^1.14.0",
     "tslib": "^2.3.1",
-    "typescript": "^4.4.3"
+    "typescript": "^4.4.4"
   },
   "dependencies": {
     "immer": "^9.0.6"
