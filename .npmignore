@@ -7,7 +7,7 @@ example/
 cypress/
 .env
 tsconfig.json
-src
+src/
 .github
 .nyc_output/
 coverage/
