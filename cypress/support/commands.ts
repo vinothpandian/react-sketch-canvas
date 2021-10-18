@@ -1,26 +1,22 @@
-// ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 import '@testing-library/cypress/add-commands';
+
+Cypress.Commands.add('drawSquare', function (side: number) {
+  cy.findByRole('presentation', { name: /react\-sketch\-canvas/i }).then(
+    ($canvas) => {
+      const x = $canvas.offset().left;
+      const y = $canvas.offset().top;
+
+      cy.findByRole('presentation', { name: /react\-sketch\-canvas/i })
+        .trigger('pointerdown', {
+          which: 1,
+          pageX: x + side,
+          pageY: y + side,
+        })
+        .trigger('pointermove', { pageX: x + side, pageY: y + side * 2 })
+        .trigger('pointermove', { pageX: x + side * 2, pageY: y + side * 2 })
+        .trigger('pointermove', { pageX: x + side * 2, pageY: y + side })
+        .trigger('pointermove', { pageX: x + side, pageY: y + side })
+        .trigger('pointerup', { force: true });
+    }
+  );
+});
