@@ -1,5 +1,3 @@
-
-
 <p align="center">
   <img src="https://i.imgur.com/ajs39FC.png" height="150" alt="React Sketch Canvas" />
 </p>
@@ -14,11 +12,9 @@
 ![npm](https://img.shields.io/npm/v/react-sketch-canvas?style=flat-square) &nbsp;&nbsp; ![NPM](https://img.shields.io/npm/l/react-sketch-canvas?style=flat-square) &nbsp;&nbsp; ![npm](https://img.shields.io/npm/dm/react-sketch-canvas?style=flat-square) <br/>
 ![npm bundle size](https://img.shields.io/bundlephobia/min/react-sketch-canvas?style=flat-square) &nbsp;&nbsp; ![npm bundle size](https://img.shields.io/bundlephobia/minzip/react-sketch-canvas?style=flat-square)
 <br/>
-This project was generated using [Nx](https://nx.dev).
+This project was generated using [DTS](https://github.com/weiran-zsd/dts-cli).
 
 </div>
-
-
 
 ## Overview
 
