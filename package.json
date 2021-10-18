@@ -107,5 +107,8 @@
   },
   "peerDependencies": {
     "react": ">=16.4"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
   }
 }
