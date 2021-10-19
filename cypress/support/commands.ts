@@ -1,5 +1,9 @@
 import '@testing-library/cypress/add-commands';
 
+Cypress.Commands.add('getCanvas', function () {
+  return cy.findByRole('presentation', { name: /react\-sketch\-canvas/i });
+});
+
 Cypress.Commands.add('drawSquare', function (side: number) {
   cy.findByRole('presentation', { name: /react\-sketch\-canvas/i }).then(
     ($canvas) => {
