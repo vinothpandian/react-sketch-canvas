@@ -36,3 +36,12 @@ code {
   font-weight: 200;
   font-size: 3rem;
 }
+
+.logo {
+  clip-path: inset(0px 80px 0px 0px);
+  height: 64px;
+}
+
+.title {
+  margin-left: -64px;
+}

@@ -6,12 +6,7 @@ import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
-    <main className="container-md">
-      <header className="my-5">
-        <h1>ReactSketchCanvas</h1>
-      </header>
-      <App />
-    </main>
+    <App />
   </React.StrictMode>,
   document.getElementById('root')
 );

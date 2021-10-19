@@ -2,13 +2,21 @@ import * as React from 'react';
 import { CanvasPath, Point } from '../types';
 
 export type SvgPathProps = {
+  // List of points to create the stroke
   paths: Point[];
+  // Unique ID
   id: string;
+  // Width of the stroke
   strokeWidth: number;
+  // Color of the stroke
   strokeColor: string;
+  // Bezier command to smoothen the line
   command?: (point: Point, i: number, a: Point[]) => string;
 };
 
+/**
+ * Generate SVG Path tag from the given points
+ */
 export const SvgPath = ({
   paths,
   id,
