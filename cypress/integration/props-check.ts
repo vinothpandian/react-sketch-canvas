@@ -315,3 +315,24 @@ describe('allowOnlyPointerType', () => {
     cy.get('#stroke-group-0').find('path').should('have.length', 1);
   });
 });
+
+it('should call onUpdate when a new stroke or eraser is added', () => {
+  cy.get('#paths')
+    .as('pathsContainer')
+    .should('have.text', 'Sketch to get paths');
+
+  cy.drawLine(50, 0, 10, 'pen');
+  cy.get('@pathsContainer').then(($pathsContainer) => {
+    const paths = JSON.parse($pathsContainer.text());
+    expect(paths).to.have.length(1);
+    expect(paths.pop()).to.have.property('drawMode', true);
+  });
+
+  cy.findByRole('button', { name: /eraser/i }).click();
+  cy.drawLine(50, 0, 10, 'pen');
+  cy.get('@pathsContainer').then(($pathsContainer) => {
+    const paths = JSON.parse($pathsContainer.text());
+    expect(paths).to.have.length(2);
+    expect(paths.pop()).to.have.property('drawMode', false);
+  });
+});

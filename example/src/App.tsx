@@ -480,17 +480,17 @@ function App() {
 
           <section className="row image-export mt-5 p-3 justify-content-center align-items-start">
             <div className="col-5 row form-group">
-              <label className="col-12" htmlFor="dataURI">
+              <label className="col-12" htmlFor="paths">
                 Paths
               </label>
               <textarea
-                id="dataURI"
+                id="paths"
                 className="dataURICode col-12"
                 readOnly
                 rows={10}
                 value={
                   paths.length !== 0
-                    ? JSON.stringify(paths)
+                    ? JSON.stringify(paths, null, 2)
                     : 'Sketch to get paths'
                 }
               />
@@ -507,11 +507,11 @@ function App() {
 
           <section className="row image-export p-3 justify-content-center align-items-start">
             <div className="col-5 row form-group">
-              <label className="col-12" htmlFor="dataURI">
+              <label className="col-12" htmlFor="imageDataURI">
                 Exported Data URI for imagetype
               </label>
               <textarea
-                id="dataURI"
+                id="imageDataURI"
                 className="dataURICode col-12"
                 readOnly
                 rows={10}
@@ -534,11 +534,11 @@ function App() {
 
           <section className="row image-export p-3 justify-content-center align-items-start">
             <div className="col-5 row form-group">
-              <label className="col-12" htmlFor="dataURI">
+              <label className="col-12" htmlFor="svgCode">
                 Exported SVG code
               </label>
               <textarea
-                id="dataURI"
+                id="svgCode"
                 className="dataURICode col-12"
                 readOnly
                 rows={10}
