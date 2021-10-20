@@ -169,7 +169,7 @@ it('should change canvas color', () => {
 });
 
 describe('exportWithBackgroundImage', () => {
-  it('should export svg with background', () => {
+  it('should export svg with background when enabled and canvas color background when disabled', () => {
     cy.findByRole('button', { name: /export svg/i }).click();
     cy.get('#exported-svg')
       .find('#canvas-background')
@@ -187,5 +187,56 @@ describe('exportWithBackgroundImage', () => {
     cy.get('#exported-svg')
       .find('#canvas-background')
       .should('have.attr', 'fill', defaultProps.canvasColor);
+  });
+
+  it('should export png with background when enabled and canvas color background when disabled', () => {
+    cy.findByRole('button', { name: /export image/i }).click();
+
+    cy.get('#exported-image')
+      .should('have.attr', 'src')
+      .and('match', /^data:image\/png;base64/i)
+      .convertDataURIToKiloBytes()
+      .as('fileSizeWithExportedImage');
+
+    cy.findByRole('switch', { name: /exportWithBackgroundImage/i }).click();
+
+    cy.findByRole('button', { name: /export image/i }).click();
+
+    cy.get('#exported-image')
+      .should('have.attr', 'src')
+      .and('match', /^data:image\/png;base64/i)
+      .convertDataURIToKiloBytes()
+      .then((fileSizeWithoutExportedImage) => {
+        cy.get('@fileSizeWithExportedImage').should(
+          'not.be.lessThan',
+          fileSizeWithoutExportedImage
+        );
+      });
+  });
+
+  it('should export jpeg with background when enabled and canvas color background when disabled', () => {
+    cy.findByRole('radio', { name: /jpeg/i }).click();
+    cy.findByRole('button', { name: /export image/i }).click();
+
+    cy.get('#exported-image')
+      .should('have.attr', 'src')
+      .and('match', /^data:image\/jpeg;base64/i)
+      .convertDataURIToKiloBytes()
+      .as('fileSizeWithExportedImage');
+
+    cy.findByRole('switch', { name: /exportWithBackgroundImage/i }).click();
+
+    cy.findByRole('button', { name: /export image/i }).click();
+
+    cy.get('#exported-image')
+      .should('have.attr', 'src')
+      .and('match', /^data:image\/jpeg;base64/i)
+      .convertDataURIToKiloBytes()
+      .then((fileSizeWithoutExportedImage) => {
+        cy.get('@fileSizeWithExportedImage').should(
+          'not.be.lessThan',
+          fileSizeWithoutExportedImage
+        );
+      });
   });
 });
