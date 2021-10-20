@@ -10,7 +10,8 @@
 <div align="center">
 
 ![npm](https://img.shields.io/npm/v/react-sketch-canvas?style=flat-square) &nbsp;&nbsp; ![NPM](https://img.shields.io/npm/l/react-sketch-canvas?style=flat-square) &nbsp;&nbsp; ![npm](https://img.shields.io/npm/dm/react-sketch-canvas?style=flat-square) <br/>
-![npm bundle size](https://img.shields.io/bundlephobia/min/react-sketch-canvas?style=flat-square) &nbsp;&nbsp; ![npm bundle size](https://img.shields.io/bundlephobia/minzip/react-sketch-canvas?style=flat-square)
+![npm bundle size](https://img.shields.io/bundlephobia/min/react-sketch-canvas?style=flat-square) &nbsp;&nbsp; ![npm bundle size](https://img.shields.io/bundlephobia/minzip/react-sketch-canvas?style=flat-square) <br/>
+[![codecov](https://codecov.io/gh/vinothpandian/react-sketch-canvas/branch/master/graph/badge.svg?token=NJcqGRgbSa)](https://codecov.io/gh/vinothpandian/react-sketch-canvas)
 <br/>
 This project was generated using [DTS](https://github.com/weiran-zsd/dts-cli).
 
