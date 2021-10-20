@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   CanvasPath,
+  ExportImageType,
   ReactSketchCanvas,
   ReactSketchCanvasProps,
 } from 'react-sketch-canvas';
@@ -89,12 +90,14 @@ function App() {
   const [svg, setSVG] = React.useState<string>('');
   const [paths, setPaths] = React.useState<CanvasPath[]>([]);
   const [sketchingTime, setSketchingTime] = React.useState<number>(0);
+  const [exportImageType, setexportImageType] =
+    React.useState<ExportImageType>('png');
 
   const imageExportHandler = async () => {
     const exportImage = canvasRef.current?.exportImage;
 
     if (exportImage) {
-      const exportedDataURI = await exportImage('png');
+      const exportedDataURI = await exportImage(exportImageType);
       setDataURI(exportedDataURI);
     }
   };
@@ -308,6 +311,51 @@ function App() {
                 >
                   withTimestamp
                 </label>
+              </div>
+            </div>
+            <div className="p-2">
+              <label className="form-check-label" htmlFor="exportImageType">
+                exportImageType
+              </label>
+              <div id="exportImageType" className="pt-2">
+                <div className="form-check form-check-inline">
+                  <input
+                    className="form-check-input"
+                    type="radio"
+                    name="exportImageType"
+                    id="exportImageTypePng"
+                    value="png"
+                    checked={exportImageType === 'png'}
+                    onChange={() => {
+                      setexportImageType('png');
+                    }}
+                  />
+                  <label
+                    className="form-check-label"
+                    htmlFor="exportImageTypePng"
+                  >
+                    png
+                  </label>
+                </div>
+                <div className="form-check form-check-inline">
+                  <input
+                    className="form-check-input"
+                    type="radio"
+                    name="exportImageType"
+                    id="exportImageTypeJPEG"
+                    value="touch"
+                    checked={exportImageType === 'jpeg'}
+                    onChange={() => {
+                      setexportImageType('jpeg');
+                    }}
+                  />
+                  <label
+                    className="form-check-label"
+                    htmlFor="exportImageTypeJPEG"
+                  >
+                    jpeg
+                  </label>
+                </div>
               </div>
             </div>
             <div className="p-2">

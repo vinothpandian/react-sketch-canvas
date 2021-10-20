@@ -13,5 +13,6 @@ declare namespace Cypress {
       originY?: number
     ): Chainable<any>;
     getCanvas(): Chainable<any>;
+    convertDataURIToKiloBytes(): Chainable<number>;
   }
 }

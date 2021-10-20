@@ -44,3 +44,14 @@ Cypress.Commands.add(
     );
   }
 );
+
+Cypress.Commands.add(
+  'convertDataURIToKiloBytes',
+  { prevSubject: true },
+  function (subject) {
+    const base64str = subject.split('base64,')[1];
+    const decoded = atob(base64str);
+    const fileSizeInKB = Math.floor(decoded.length / 1024);
+    return cy.wrap(fileSizeInKB);
+  }
+);
