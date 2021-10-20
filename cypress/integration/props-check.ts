@@ -74,3 +74,61 @@ it('should update backgroundImage on props change', () => {
     .should('have.attr', 'xlink:href')
     .and('equal', updatedBackgroundImage);
 });
+
+it('should update preserveAspectRatio of the background image', () => {
+  const currentPreserveAspectRatio = 'none';
+  const updatedPreserveAspectRatio = 'xMidYMid meet';
+
+  cy.get('pattern#background>image')
+    .first()
+    .should('have.attr', 'preserveAspectRatio')
+    .and('equal', currentPreserveAspectRatio);
+
+  cy.findByRole('textbox', {
+    name: /preserveBackgroundImageAspectRatio/i,
+  })
+    .clear()
+    .type(updatedPreserveAspectRatio);
+
+  cy.get('pattern#background>image')
+    .first()
+    .should('have.attr', 'preserveAspectRatio')
+    .and('equal', updatedPreserveAspectRatio);
+});
+
+it('should change stroke width', () => {
+  cy.drawLine(100, 100, 100);
+  cy.get('#stroke-group-0>path')
+    .first()
+    .should('have.attr', 'stroke-width')
+    .and('equal', '4');
+
+  cy.findByRole('spinbutton', { name: /strokeWidth/i })
+    .clear()
+    .type('8');
+
+  cy.drawLine(50, 50, 100);
+  cy.get('#stroke-group-0>path')
+    .last()
+    .should('have.attr', 'stroke-width')
+    .and('equal', '8');
+});
+
+it('should change eraser width', () => {
+  cy.findByRole('button', { name: /eraser/i }).click();
+  cy.drawLine(100, 100, 100);
+  cy.get('#eraser-stroke-group>path')
+    .first()
+    .should('have.attr', 'stroke-width')
+    .and('equal', '5');
+
+  cy.findByRole('spinbutton', { name: /eraserWidth/i })
+    .clear()
+    .type('8');
+
+  cy.drawLine(50, 50, 100);
+  cy.get('#eraser-stroke-group>path')
+    .last()
+    .should('have.attr', 'stroke-width')
+    .and('equal', '8');
+});
