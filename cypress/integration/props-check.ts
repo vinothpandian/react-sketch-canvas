@@ -57,8 +57,8 @@ it('should update backgroundImage on props change', () => {
 
   cy.get('#canvas-background').should('have.attr', 'fill', 'url(#background)');
 
-  cy.get('pattern#background')
-    .find('image')
+  cy.get('pattern#background image')
+    .as('backgroundImage')
     .should('have.attr', 'xlink:href', defaultProps.backgroundImage);
 
   cy.findByRole('textbox', { name: 'backgroundImage', exact: true })
@@ -66,17 +66,18 @@ it('should update backgroundImage on props change', () => {
     .type(updatedBackgroundImage);
 
   cy.get('#canvas-background').should('have.attr', 'fill', 'url(#background)');
-
-  cy.get('pattern#background')
-    .find('image')
-    .should('have.attr', 'xlink:href', updatedBackgroundImage);
+  cy.get('@backgroundImage').should(
+    'have.attr',
+    'xlink:href',
+    updatedBackgroundImage
+  );
 });
 
 it('should update preserveAspectRatio of the background image', () => {
   const updatedPreserveAspectRatio = 'xMidYMid meet';
 
-  cy.get('pattern#background')
-    .find('image')
+  cy.get('pattern#background image')
+    .as('backgroundImage')
     .should(
       'have.attr',
       'preserveAspectRatio',
@@ -89,9 +90,11 @@ it('should update preserveAspectRatio of the background image', () => {
     .clear()
     .type(updatedPreserveAspectRatio);
 
-  cy.get('pattern#background')
-    .find('image')
-    .should('have.attr', 'preserveAspectRatio', updatedPreserveAspectRatio);
+  cy.get('@backgroundImage').should(
+    'have.attr',
+    'preserveAspectRatio',
+    updatedPreserveAspectRatio
+  );
 });
 
 it('should change stroke width', () => {
@@ -171,22 +174,24 @@ it('should change canvas color', () => {
 describe('exportWithBackgroundImage', () => {
   it('should export svg with background when enabled and canvas color background when disabled', () => {
     cy.findByRole('button', { name: /export svg/i }).click();
-    cy.get('#exported-svg')
-      .find('#canvas-background')
+    cy.get('#exported-svg #canvas-background')
+      .as('exportedCanvasBackground')
       .should('have.attr', 'fill', 'url(#background)');
 
-    cy.get('#exported-svg')
-      .find('pattern#background')
-      .find('image')
-      .first()
-      .should('have.attr', 'xlink:href', defaultProps.backgroundImage);
+    cy.get('#exported-svg pattern#background image').should(
+      'have.attr',
+      'xlink:href',
+      defaultProps.backgroundImage
+    );
 
     cy.findByRole('switch', { name: /exportWithBackgroundImage/i }).click();
 
     cy.findByRole('button', { name: /export svg/i }).click();
-    cy.get('#exported-svg')
-      .find('#canvas-background')
-      .should('have.attr', 'fill', defaultProps.canvasColor);
+    cy.get('@exportedCanvasBackground').should(
+      'have.attr',
+      'fill',
+      defaultProps.canvasColor
+    );
   });
 
   it('should export png with background when enabled and canvas color background when disabled', () => {
