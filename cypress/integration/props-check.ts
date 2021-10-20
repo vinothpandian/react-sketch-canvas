@@ -56,8 +56,8 @@ it('should update backgroundImage on props change', () => {
     .should('have.attr', 'fill')
     .and('equal', 'url(#background)');
 
-  cy.get('pattern#background>image')
-    .first()
+  cy.get('pattern#background')
+    .find('image')
     .should('have.attr', 'xlink:href')
     .and('equal', currentBackgroundImage);
 
@@ -69,8 +69,8 @@ it('should update backgroundImage on props change', () => {
     .should('have.attr', 'fill')
     .and('equal', 'url(#background)');
 
-  cy.get('pattern#background>image')
-    .first()
+  cy.get('pattern#background')
+    .find('image')
     .should('have.attr', 'xlink:href')
     .and('equal', updatedBackgroundImage);
 });
@@ -79,8 +79,8 @@ it('should update preserveAspectRatio of the background image', () => {
   const currentPreserveAspectRatio = 'none';
   const updatedPreserveAspectRatio = 'xMidYMid meet';
 
-  cy.get('pattern#background>image')
-    .first()
+  cy.get('pattern#background')
+    .find('image')
     .should('have.attr', 'preserveAspectRatio')
     .and('equal', currentPreserveAspectRatio);
 
@@ -90,15 +90,16 @@ it('should update preserveAspectRatio of the background image', () => {
     .clear()
     .type(updatedPreserveAspectRatio);
 
-  cy.get('pattern#background>image')
-    .first()
+  cy.get('pattern#background')
+    .find('image')
     .should('have.attr', 'preserveAspectRatio')
     .and('equal', updatedPreserveAspectRatio);
 });
 
 it('should change stroke width', () => {
   cy.drawLine(100, 100, 100);
-  cy.get('#stroke-group-0>path')
+  cy.get('#stroke-group-0')
+    .find('path')
     .first()
     .should('have.attr', 'stroke-width')
     .and('equal', '4');
@@ -108,7 +109,8 @@ it('should change stroke width', () => {
     .type('8');
 
   cy.drawLine(50, 50, 100);
-  cy.get('#stroke-group-0>path')
+  cy.get('#stroke-group-0')
+    .find('path')
     .last()
     .should('have.attr', 'stroke-width')
     .and('equal', '8');
@@ -117,7 +119,8 @@ it('should change stroke width', () => {
 it('should change eraser width', () => {
   cy.findByRole('button', { name: /eraser/i }).click();
   cy.drawLine(100, 100, 100);
-  cy.get('#eraser-stroke-group>path')
+  cy.get('#eraser-stroke-group')
+    .find('path')
     .first()
     .should('have.attr', 'stroke-width')
     .and('equal', '5');
@@ -127,7 +130,8 @@ it('should change eraser width', () => {
     .type('8');
 
   cy.drawLine(50, 50, 100);
-  cy.get('#eraser-stroke-group>path')
+  cy.get('#eraser-stroke-group')
+    .find('path')
     .last()
     .should('have.attr', 'stroke-width')
     .and('equal', '8');
@@ -135,7 +139,8 @@ it('should change eraser width', () => {
 
 it('should change stroke color', () => {
   cy.drawLine(100, 100, 100);
-  cy.get('#stroke-group-0>path')
+  cy.get('#stroke-group-0')
+    .find('path')
     .first()
     .should('have.attr', 'stroke')
     .and('equal', '#000000');
@@ -145,7 +150,8 @@ it('should change stroke color', () => {
     .trigger('change');
 
   cy.drawLine(50, 50, 100);
-  cy.get('#stroke-group-0>path')
+  cy.get('#stroke-group-0')
+    .find('path')
     .last()
     .should('have.attr', 'stroke')
     .and('equal', '#ff0000');
@@ -163,4 +169,30 @@ it('should change canvas color', () => {
   cy.get('#canvas-background')
     .should('have.attr', 'fill')
     .and('equal', '#ff0000');
+});
+
+it('should export svg with background', () => {
+  const currentBackgroundImage =
+    'https://upload.wikimedia.org/wikipedia/commons/7/70/Graph_paper_scan_1600x1000_%286509259561%29.jpg';
+
+  cy.findByRole('button', { name: /export svg/i }).click();
+  cy.get('#exported-svg')
+    .find('#canvas-background')
+    .should('have.attr', 'fill')
+    .and('equal', 'url(#background)');
+
+  cy.get('#exported-svg')
+    .find('pattern#background')
+    .find('image')
+    .first()
+    .should('have.attr', 'xlink:href')
+    .and('equal', currentBackgroundImage);
+
+  cy.findByRole('switch', { name: /exportWithBackgroundImage/i }).click();
+
+  cy.findByRole('button', { name: /export svg/i }).click();
+  cy.get('#exported-svg')
+    .find('#canvas-background')
+    .should('have.attr', 'fill')
+    .and('equal', '#FFFFFF');
 });
