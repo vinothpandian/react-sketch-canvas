@@ -1,14 +1,21 @@
+import { ReactSketchCanvasProps } from 'react-sketch-canvas';
+
+let defaultProps: Partial<ReactSketchCanvasProps>;
+
+before(() => {
+  cy.fixture('props.json').then((props) => (defaultProps = props));
+});
+
 beforeEach(() => {
   cy.visit('/');
 });
 
 it('should update width on props change', () => {
-  const currentWidth = '100%';
   const updatedWidth = '100px';
 
   cy.getCanvas()
     .should('have.attr', 'style')
-    .and('include', `width: ${currentWidth}`);
+    .and('include', `width: ${defaultProps.width}`);
 
   cy.findByRole('textbox', { name: /width/i }).clear().type(updatedWidth);
 
@@ -18,12 +25,11 @@ it('should update width on props change', () => {
 });
 
 it('should update height on props change', () => {
-  const currentHeight = '500px';
   const updatedHeight = '200px';
 
   cy.getCanvas()
     .should('have.attr', 'style')
-    .and('include', `height: ${currentHeight}`);
+    .and('include', `height: ${defaultProps.height}`);
 
   cy.findByRole('textbox', { name: /height/i })
     .clear()
@@ -35,10 +41,9 @@ it('should update height on props change', () => {
 });
 
 it('should update className on props change', () => {
-  const currentClassName = 'react-sketch-canvas';
   const updatedClassName = 'svg-canvas';
 
-  cy.getCanvas().should('have.class', currentClassName);
+  cy.getCanvas().should('have.class', defaultProps.className);
 
   cy.findByRole('textbox', { name: /className/i })
     .clear()
@@ -48,41 +53,35 @@ it('should update className on props change', () => {
 });
 
 it('should update backgroundImage on props change', () => {
-  const currentBackgroundImage =
-    'https://upload.wikimedia.org/wikipedia/commons/7/70/Graph_paper_scan_1600x1000_%286509259561%29.jpg';
   const updatedBackgroundImage = 'https://i.imgur.com/jx47T07.jpeg';
 
-  cy.get('#canvas-background')
-    .should('have.attr', 'fill')
-    .and('equal', 'url(#background)');
+  cy.get('#canvas-background').should('have.attr', 'fill', 'url(#background)');
 
   cy.get('pattern#background')
     .find('image')
-    .should('have.attr', 'xlink:href')
-    .and('equal', currentBackgroundImage);
+    .should('have.attr', 'xlink:href', defaultProps.backgroundImage);
 
   cy.findByRole('textbox', { name: 'backgroundImage', exact: true })
     .clear()
     .type(updatedBackgroundImage);
 
-  cy.get('#canvas-background')
-    .should('have.attr', 'fill')
-    .and('equal', 'url(#background)');
+  cy.get('#canvas-background').should('have.attr', 'fill', 'url(#background)');
 
   cy.get('pattern#background')
     .find('image')
-    .should('have.attr', 'xlink:href')
-    .and('equal', updatedBackgroundImage);
+    .should('have.attr', 'xlink:href', updatedBackgroundImage);
 });
 
 it('should update preserveAspectRatio of the background image', () => {
-  const currentPreserveAspectRatio = 'none';
   const updatedPreserveAspectRatio = 'xMidYMid meet';
 
   cy.get('pattern#background')
     .find('image')
-    .should('have.attr', 'preserveAspectRatio')
-    .and('equal', currentPreserveAspectRatio);
+    .should(
+      'have.attr',
+      'preserveAspectRatio',
+      defaultProps.preserveBackgroundImageAspectRatio
+    );
 
   cy.findByRole('textbox', {
     name: /preserveBackgroundImageAspectRatio/i,
@@ -92,107 +91,101 @@ it('should update preserveAspectRatio of the background image', () => {
 
   cy.get('pattern#background')
     .find('image')
-    .should('have.attr', 'preserveAspectRatio')
-    .and('equal', updatedPreserveAspectRatio);
+    .should('have.attr', 'preserveAspectRatio', updatedPreserveAspectRatio);
 });
 
 it('should change stroke width', () => {
+  const updatedStrokeWidth = '8';
+
   cy.drawLine(100, 100, 100);
   cy.get('#stroke-group-0')
     .find('path')
     .first()
-    .should('have.attr', 'stroke-width')
-    .and('equal', '4');
+    .should('have.attr', 'stroke-width', defaultProps.strokeWidth.toString());
 
   cy.findByRole('spinbutton', { name: /strokeWidth/i })
     .clear()
-    .type('8');
+    .type(updatedStrokeWidth);
 
   cy.drawLine(50, 50, 100);
   cy.get('#stroke-group-0')
     .find('path')
     .last()
-    .should('have.attr', 'stroke-width')
-    .and('equal', '8');
+    .should('have.attr', 'stroke-width', updatedStrokeWidth);
 });
 
 it('should change eraser width', () => {
+  const updatedEraserWidth = '8';
   cy.findByRole('button', { name: /eraser/i }).click();
   cy.drawLine(100, 100, 100);
   cy.get('#eraser-stroke-group')
     .find('path')
     .first()
-    .should('have.attr', 'stroke-width')
-    .and('equal', '5');
+    .should('have.attr', 'stroke-width', defaultProps.eraserWidth.toString());
 
   cy.findByRole('spinbutton', { name: /eraserWidth/i })
     .clear()
-    .type('8');
+    .type(updatedEraserWidth);
 
   cy.drawLine(50, 50, 100);
   cy.get('#eraser-stroke-group')
     .find('path')
     .last()
-    .should('have.attr', 'stroke-width')
-    .and('equal', '8');
+    .should('have.attr', 'stroke-width', updatedEraserWidth);
 });
 
 it('should change stroke color', () => {
+  const updatedStrokeColor = '#FF0000';
   cy.drawLine(100, 100, 100);
   cy.get('#stroke-group-0')
     .find('path')
     .first()
-    .should('have.attr', 'stroke')
-    .and('equal', '#000000');
+    .should('have.attr', 'stroke', defaultProps.strokeColor);
 
   cy.findByLabelText(/strokeColor/i)
-    .invoke('val', '#FF0000')
+    .invoke('val', updatedStrokeColor)
     .trigger('change');
 
   cy.drawLine(50, 50, 100);
   cy.get('#stroke-group-0')
     .find('path')
     .last()
-    .should('have.attr', 'stroke')
-    .and('equal', '#ff0000');
+    .should('have.attr', 'stroke', updatedStrokeColor.toLowerCase());
 });
 
 it('should change canvas color', () => {
-  cy.get('#canvas-background')
-    .should('have.attr', 'fill')
-    .and('equal', 'url(#background)');
+  cy.get('#canvas-background').should('have.attr', 'fill', 'url(#background)');
 
+  const updatedCanvasColor = '#FF0000';
   cy.findByLabelText(/canvasColor/i)
-    .invoke('val', '#FF0000')
+    .invoke('val', updatedCanvasColor)
     .trigger('change');
 
-  cy.get('#canvas-background')
-    .should('have.attr', 'fill')
-    .and('equal', '#ff0000');
+  cy.get('#canvas-background').should(
+    'have.attr',
+    'fill',
+    updatedCanvasColor.toLowerCase()
+  );
 });
 
-it('should export svg with background', () => {
-  const currentBackgroundImage =
-    'https://upload.wikimedia.org/wikipedia/commons/7/70/Graph_paper_scan_1600x1000_%286509259561%29.jpg';
+describe('exportWithBackgroundImage', () => {
+  it('should export svg with background', () => {
+    cy.findByRole('button', { name: /export svg/i }).click();
+    cy.get('#exported-svg')
+      .find('#canvas-background')
+      .should('have.attr', 'fill', 'url(#background)');
 
-  cy.findByRole('button', { name: /export svg/i }).click();
-  cy.get('#exported-svg')
-    .find('#canvas-background')
-    .should('have.attr', 'fill')
-    .and('equal', 'url(#background)');
+    cy.get('#exported-svg')
+      .find('pattern#background')
+      .find('image')
+      .first()
+      .should('have.attr', 'xlink:href', defaultProps.backgroundImage);
 
-  cy.get('#exported-svg')
-    .find('pattern#background')
-    .find('image')
-    .first()
-    .should('have.attr', 'xlink:href')
-    .and('equal', currentBackgroundImage);
+    cy.findByRole('switch', { name: /exportWithBackgroundImage/i }).click();
 
-  cy.findByRole('switch', { name: /exportWithBackgroundImage/i }).click();
-
-  cy.findByRole('button', { name: /export svg/i }).click();
-  cy.get('#exported-svg')
-    .find('#canvas-background')
-    .should('have.attr', 'fill')
-    .and('equal', '#FFFFFF');
+    cy.findByRole('button', { name: /export svg/i }).click();
+    cy.get('#exported-svg')
+      .find('#canvas-background')
+      .should('have.attr', 'fill', defaultProps.canvasColor);
+  });
 });
