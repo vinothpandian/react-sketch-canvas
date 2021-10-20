@@ -439,21 +439,18 @@ function App() {
                     className="form-check-input"
                     type="radio"
                     name="allowPointer"
-                    id="allowPointerStylus"
-                    value="stylus"
-                    checked={canvasProps.allowOnlyPointerType === 'stylus'}
+                    id="allowPointerPen"
+                    value="pen"
+                    checked={canvasProps.allowOnlyPointerType === 'pen'}
                     onChange={() => {
                       setCanvasProps((prevCanvasProps) => ({
                         ...prevCanvasProps,
-                        allowOnlyPointerType: 'stylus',
+                        allowOnlyPointerType: 'pen',
                       }));
                     }}
                   />
-                  <label
-                    className="form-check-label"
-                    htmlFor="allowPointerStylus"
-                  >
-                    stylus
+                  <label className="form-check-label" htmlFor="allowPointerPen">
+                    pen
                   </label>
                 </div>
               </div>

@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 declare namespace Cypress {
-  type PointerEventType = 'pointer' | 'touch' | 'mouse';
+  type PointerEventType = 'pen' | 'touch' | 'mouse';
 
   interface Chainable<Subject> {
     drawSquare(
