@@ -245,3 +245,30 @@ describe('exportWithBackgroundImage', () => {
       });
   });
 });
+
+it.only('should throw exception when attempted to get sketching time when withTimestamp is disabled', () => {
+  const getSketchingTimeInString = (sketchingTime: number): string =>
+    `${(sketchingTime / 1000).toFixed(3)} sec`;
+
+  const initialTime = 0;
+  cy.get('#sketchingTime')
+    .as('sketchingTimeContainer')
+    .should('contain.text', getSketchingTimeInString(initialTime));
+
+  cy.drawSquare(100);
+  cy.findByRole('button', { name: /get sketching time/i }).click();
+
+  cy.get('@sketchingTimeContainer').then(($sketchingTimeContainer) => {
+    const sketchingTime = Number($sketchingTimeContainer.text().slice(0, 5));
+    expect(sketchingTime).to.be.greaterThan(0);
+  });
+
+  cy.findByRole('switch', { name: /withTimestamp/i }).click();
+
+  cy.drawSquare(100, 200, 200);
+  cy.findByRole('button', { name: /get sketching time/i }).click();
+  cy.get('@sketchingTimeContainer').should(
+    'contain.text',
+    getSketchingTimeInString(initialTime)
+  );
+});

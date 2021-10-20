@@ -114,9 +114,14 @@ function App() {
   const getSketchingTimeHandler = async () => {
     const getSketchingTime = canvasRef.current?.getSketchingTime;
 
-    if (getSketchingTime) {
-      const currentSketchingTime = await getSketchingTime();
-      setSketchingTime(currentSketchingTime);
+    try {
+      if (getSketchingTime) {
+        const currentSketchingTime = await getSketchingTime();
+        setSketchingTime(currentSketchingTime);
+      }
+    } catch {
+      setSketchingTime(0);
+      console.error('With timestamp is disabled');
     }
   };
 
@@ -497,7 +502,7 @@ function App() {
               <label className="col-12" htmlFor="dataURI">
                 Sketching time
               </label>
-              <div className="sketchingTime">
+              <div id="sketchingTime" className="sketchingTime">
                 {(sketchingTime / 1000).toFixed(3)} sec
               </div>
             </div>
