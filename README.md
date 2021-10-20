@@ -55,7 +55,7 @@ yarn add react-sketch-canvas
 Common usage example
 
 ```javascript
-import React from 'react';
+import * as React from 'react';
 import { ReactSketchCanvas } from 'react-sketch-canvas';
 
 const styles = {
@@ -79,7 +79,7 @@ const Canvas = () => {
 To export Data URL of your sketch use ref
 
 ```javascript
-import React from "react";
+import * as React from "react";
 import { ReactSketchCanvas } from "react-sketch-canvas";
 
 const styles = {
