@@ -273,4 +273,45 @@ it('should throw exception when attempted to get sketching time when withTimesta
   );
 });
 
-describe('allowOnlyPointerType', () => {});
+describe('allowOnlyPointerType', () => {
+  it('should allow sketching with mouse, touch, and stylus when allowOnlyPointerType is set as all', () => {
+    cy.drawLine(50, 0, 10, 'mouse');
+    cy.drawLine(100, 50, 10, 'touch');
+    cy.drawLine(200, 100, 10, 'pen');
+
+    cy.get('#stroke-group-0').find('path').should('have.length', 3);
+  });
+
+  it('should allow sketching only with mouse when allowOnlyPointerType is set as mouse', () => {
+    cy.findByRole('radio', { name: /mouse/i }).click();
+
+    cy.drawLine(50, 0, 10, 'mouse');
+    cy.get('#stroke-group-0').find('path').should('have.length', 1);
+    cy.drawLine(100, 50, 10, 'touch');
+    cy.drawLine(200, 100, 10, 'pen');
+
+    cy.get('#stroke-group-0').find('path').should('have.length', 1);
+  });
+
+  it('should allow sketching only with touch when allowOnlyPointerType is set as touch', () => {
+    cy.findByRole('radio', { name: /touch/i }).click();
+
+    cy.drawLine(50, 0, 10, 'touch');
+    cy.get('#stroke-group-0').find('path').should('have.length', 1);
+    cy.drawLine(100, 50, 10, 'mouse');
+    cy.drawLine(200, 100, 10, 'pen');
+
+    cy.get('#stroke-group-0').find('path').should('have.length', 1);
+  });
+
+  it('should allow sketching only with pen when allowOnlyPointerType is set as pen', () => {
+    cy.findByRole('radio', { name: /pen/i }).click();
+
+    cy.drawLine(50, 0, 10, 'pen');
+    cy.get('#stroke-group-0').find('path').should('have.length', 1);
+    cy.drawLine(100, 50, 10, 'mouse');
+    cy.drawLine(200, 100, 10, 'touch');
+
+    cy.get('#stroke-group-0').find('path').should('have.length', 1);
+  });
+});

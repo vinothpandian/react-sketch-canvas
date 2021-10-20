@@ -10,7 +10,7 @@ Cypress.Commands.add(
     side: number,
     originX: number = 0,
     originY: number = 0,
-    eventType: Cypress.PointerEventType = 'pointer'
+    pointerType: Cypress.PointerEventType = 'pen'
   ) {
     cy.findByRole('presentation', { name: /react\-sketch\-canvas/i }).then(
       ($canvas) => {
@@ -18,12 +18,40 @@ Cypress.Commands.add(
         const y = $canvas.offset().top + originY;
 
         cy.wrap($canvas)
-          .trigger(`${eventType}down`, { which: 1, pageX: x, pageY: y })
-          .trigger(`${eventType}move`, { pageX: x, pageY: y + side })
-          .trigger(`${eventType}move`, { pageX: x + side, pageY: y + side })
-          .trigger(`${eventType}move`, { pageX: x + side, pageY: y })
-          .trigger(`${eventType}move`, { pageX: x, pageY: y })
-          .trigger(`${eventType}up`, { force: true });
+          .trigger('pointerdown', {
+            pointerType: pointerType,
+            button: 0,
+            pageX: x,
+            pageY: y,
+          })
+          .trigger('pointermove', {
+            pointerType: pointerType,
+            pageX: x,
+            pageY: y + side,
+          })
+          .trigger('pointermove', {
+            pointerType: pointerType,
+            button: 0,
+            pageX: x + side,
+            pageY: y + side,
+          })
+          .trigger('pointermove', {
+            pointerType: pointerType,
+            button: 0,
+            pageX: x + side,
+            pageY: y,
+          })
+          .trigger('pointermove', {
+            pointerType: pointerType,
+            button: 0,
+            pageX: x,
+            pageY: y,
+          })
+          .trigger('pointerup', {
+            pointerType: pointerType,
+            button: 0,
+            force: true,
+          });
       }
     );
   }
@@ -35,7 +63,7 @@ Cypress.Commands.add(
     length: number,
     originX: number = 0,
     originY: number = 0,
-    eventType: Cypress.PointerEventType = 'pointer'
+    pointerType: Cypress.PointerEventType = 'pen'
   ) {
     cy.findByRole('presentation', { name: /react\-sketch\-canvas/i }).then(
       ($canvas) => {
@@ -43,9 +71,23 @@ Cypress.Commands.add(
         const y = $canvas.offset().top + originY;
 
         cy.wrap($canvas)
-          .trigger(`${eventType}down`, { which: 1, pageX: x, pageY: y })
-          .trigger(`${eventType}move`, { pageX: x + length, pageY: y + length })
-          .trigger(`${eventType}up`, { force: true });
+          .trigger('pointerdown', {
+            pointerType: pointerType,
+            button: 0,
+            pageX: x,
+            pageY: y,
+          })
+          .trigger('pointermove', {
+            pointerType: pointerType,
+            button: 0,
+            pageX: x + length,
+            pageY: y + length,
+          })
+          .trigger('pointerup', {
+            pointerType: pointerType,
+            button: 0,
+            force: true,
+          });
       }
     );
   }
