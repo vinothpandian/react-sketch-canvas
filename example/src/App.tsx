@@ -472,6 +472,7 @@ function App() {
               <p>Exported image</p>
               <img
                 className="exported-image"
+                id="exported-image"
                 src={
                   dataURI ||
                   'https://via.placeholder.com/500x250/000000/FFFFFF/?text=Click on export image'
@@ -498,6 +499,7 @@ function App() {
               <p>Exported SVG</p>
               {svg ? (
                 <span
+                  id="exported-svg"
                   className="exported-image"
                   dangerouslySetInnerHTML={{ __html: svg }}
                 />
@@ -505,6 +507,7 @@ function App() {
                 <img
                   src="https://via.placeholder.com/500x250/000000/FFFFFF/?text=Click on export SVG"
                   alt="Svg Export"
+                  id="exported-svg"
                   className="exported-image"
                 />
               )}
