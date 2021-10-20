@@ -6,23 +6,24 @@ Cypress.Commands.add('getCanvas', function () {
 
 Cypress.Commands.add(
   'drawSquare',
-  function (side: number, originX: number = 0, originY: number = 0) {
+  function (
+    side: number,
+    originX: number = 0,
+    originY: number = 0,
+    eventType: Cypress.PointerEventType = 'pointer'
+  ) {
     cy.findByRole('presentation', { name: /react\-sketch\-canvas/i }).then(
       ($canvas) => {
         const x = $canvas.offset().left + originX;
         const y = $canvas.offset().top + originY;
 
-        cy.findByRole('presentation', { name: /react\-sketch\-canvas/i })
-          .trigger('pointerdown', {
-            which: 1,
-            pageX: x + side,
-            pageY: y + side,
-          })
-          .trigger('pointermove', { pageX: x + side, pageY: y + side * 2 })
-          .trigger('pointermove', { pageX: x + side * 2, pageY: y + side * 2 })
-          .trigger('pointermove', { pageX: x + side * 2, pageY: y + side })
-          .trigger('pointermove', { pageX: x + side, pageY: y + side })
-          .trigger('pointerup', { force: true });
+        cy.wrap($canvas)
+          .trigger(`${eventType}down`, { which: 1, pageX: x, pageY: y })
+          .trigger(`${eventType}move`, { pageX: x, pageY: y + side })
+          .trigger(`${eventType}move`, { pageX: x + side, pageY: y + side })
+          .trigger(`${eventType}move`, { pageX: x + side, pageY: y })
+          .trigger(`${eventType}move`, { pageX: x, pageY: y })
+          .trigger(`${eventType}up`, { force: true });
       }
     );
   }
@@ -30,16 +31,21 @@ Cypress.Commands.add(
 
 Cypress.Commands.add(
   'drawLine',
-  function (length: number, originX: number = 0, originY: number = 0) {
+  function (
+    length: number,
+    originX: number = 0,
+    originY: number = 0,
+    eventType: Cypress.PointerEventType = 'pointer'
+  ) {
     cy.findByRole('presentation', { name: /react\-sketch\-canvas/i }).then(
       ($canvas) => {
         const x = $canvas.offset().left + originX;
         const y = $canvas.offset().top + originY;
 
-        cy.findByRole('presentation', { name: /react\-sketch\-canvas/i })
-          .trigger('pointerdown', { which: 1, pageX: x, pageY: y })
-          .trigger('pointermove', { pageX: x + length, pageY: y + length })
-          .trigger('pointerup', { force: true });
+        cy.wrap($canvas)
+          .trigger(`${eventType}down`, { which: 1, pageX: x, pageY: y })
+          .trigger(`${eventType}move`, { pageX: x + length, pageY: y + length })
+          .trigger(`${eventType}up`, { force: true });
       }
     );
   }
