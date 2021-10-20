@@ -2,7 +2,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 
 import { Meta, Story } from '@storybook/react';
-import React from 'react';
+import * as React from 'react';
 import { CanvasPath, ReactSketchCanvas, ReactSketchCanvasProps } from '..';
 import './demo.stories.css';
 
