@@ -246,7 +246,7 @@ describe('exportWithBackgroundImage', () => {
   });
 });
 
-it.only('should throw exception when attempted to get sketching time when withTimestamp is disabled', () => {
+it('should throw exception when attempted to get sketching time when withTimestamp is disabled', () => {
   const getSketchingTimeInString = (sketchingTime: number): string =>
     `${(sketchingTime / 1000).toFixed(3)} sec`;
 
@@ -272,3 +272,5 @@ it.only('should throw exception when attempted to get sketching time when withTi
     getSketchingTimeInString(initialTime)
   );
 });
+
+describe('allowOnlyPointerType', () => {});
