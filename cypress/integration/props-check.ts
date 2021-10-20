@@ -132,3 +132,35 @@ it('should change eraser width', () => {
     .should('have.attr', 'stroke-width')
     .and('equal', '8');
 });
+
+it('should change stroke color', () => {
+  cy.drawLine(100, 100, 100);
+  cy.get('#stroke-group-0>path')
+    .first()
+    .should('have.attr', 'stroke')
+    .and('equal', '#000000');
+
+  cy.findByLabelText(/strokeColor/i)
+    .invoke('val', '#FF0000')
+    .trigger('change');
+
+  cy.drawLine(50, 50, 100);
+  cy.get('#stroke-group-0>path')
+    .last()
+    .should('have.attr', 'stroke')
+    .and('equal', '#ff0000');
+});
+
+it('should change canvas color', () => {
+  cy.get('#canvas-background')
+    .should('have.attr', 'fill')
+    .and('equal', 'url(#background)');
+
+  cy.findByLabelText(/canvasColor/i)
+    .invoke('val', '#FF0000')
+    .trigger('change');
+
+  cy.get('#canvas-background')
+    .should('have.attr', 'fill')
+    .and('equal', '#ff0000');
+});
