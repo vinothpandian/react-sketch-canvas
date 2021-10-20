@@ -31,5 +31,10 @@ jobs:
       - name: Test
         run: yarn test
 
+      - name: Upload coverage
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        run: npx nyc report --reporter=text-lcov | npx codecov --disable=gcov --pipe
+
       - name: Build
         run: yarn build:prod
