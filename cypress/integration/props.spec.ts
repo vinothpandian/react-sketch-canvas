@@ -353,7 +353,10 @@ it('should update style', () => {
 
   cy.findByRole('textbox', { name: /style/i })
     .clear()
-    .type(JSON.stringify(updatedStyle), { parseSpecialCharSequences: false });
+    .type(JSON.stringify(updatedStyle), {
+      parseSpecialCharSequences: false,
+      delay: 0,
+    });
 
   cy.getCanvas()
     .should('have.attr', 'style')

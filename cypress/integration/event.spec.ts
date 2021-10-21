@@ -1,9 +1,17 @@
-import { ReactSketchCanvasProps } from 'react-sketch-canvas';
+import { CanvasPath, ReactSketchCanvasProps } from 'react-sketch-canvas';
 
 let defaultProps: Partial<ReactSketchCanvasProps>;
+let canvasPathWithEraser: CanvasPath;
+let canvasPathWithOnlyPen: CanvasPath;
 
 before(() => {
   cy.fixture('props.json').then((props) => (defaultProps = props));
+  cy.fixture('canvasPath/onlyPen.json').then(
+    (onlyPen) => (canvasPathWithOnlyPen = onlyPen)
+  );
+  cy.fixture('canvasPath/withEraser.json').then(
+    (withEraser) => (canvasPathWithEraser = withEraser)
+  );
 });
 
 beforeEach(() => {
@@ -494,5 +502,37 @@ describe('exportImage - svg', () => {
       'fill',
       defaultProps.canvasColor
     );
+  });
+});
+
+describe('loadPaths', () => {
+  it('should load path with only pen', () => {
+    cy.getCanvas().find('path').should('not.exist');
+
+    cy.findByRole('textbox', { name: /paths to load/i })
+      .clear()
+      .type(JSON.stringify(canvasPathWithOnlyPen), {
+        parseSpecialCharSequences: false,
+        delay: 0,
+      });
+
+    cy.findByRole('button', { name: /load paths/i }).click();
+    cy.getCanvas().find('path').should('have.length', 1);
+  });
+
+  it('should load path with pen and eraser', () => {
+    cy.getCanvas().find('path').should('not.exist');
+
+    cy.findByRole('textbox', { name: /paths to load/i })
+      .clear()
+      .type(JSON.stringify(canvasPathWithEraser), {
+        parseSpecialCharSequences: false,
+        delay: 0,
+      });
+
+    cy.findByRole('button', { name: /load paths/i }).click();
+    cy.getCanvas().find('path').should('have.length', 2);
+    cy.get('#eraser-stroke-group').find('path').should('have.length', 1);
+    cy.get('mask#eraser-mask-0').find('use').should('have.length', 2); // background + one mask path
   });
 });
