@@ -124,7 +124,7 @@ export class ReactSketchCanvas extends React.Component<
   }
 
   resetCanvas(): void {
-    this.setState(this.initialState);
+    this.setState({ ...this.initialState });
   }
 
   liftPathsUp(): void {
