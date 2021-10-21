@@ -134,7 +134,7 @@ describe('clearCanvas', () => {
   });
 });
 
-describe.only('resetCanvas', () => {
+describe('resetCanvas', () => {
   it('should resetCanvas and remove the stack', () => {
     cy.getCanvas().find('path').should('have.length', 0);
     cy.drawSquare(100, 100, 50, 'pen');
@@ -170,5 +170,329 @@ describe.only('resetCanvas', () => {
     cy.findByRole('button', { name: /undo/i }).click();
     cy.getCanvas().find('path').should('have.length', 0);
     cy.get('mask#eraser-mask-0').should('not.exist');
+  });
+});
+
+describe('exportImage - png', () => {
+  beforeEach(() => {
+    cy.findByRole('radio', { name: /png/i }).click();
+    cy.findByRole('textbox', { name: 'backgroundImage', exact: true }).clear();
+    cy.findByRole('switch', {
+      name: 'exportWithBackgroundImage',
+      exact: true,
+    }).click();
+  });
+
+  it('should export png with stroke', () => {
+    cy.findByRole('button', { name: /export image/i }).click();
+
+    cy.get('#exported-image')
+      .should('have.attr', 'src')
+      .and('match', /^data:image\/png;base64/i)
+      .convertDataURIToKiloBytes()
+      .as('fileSizeWithoutStroke');
+
+    cy.drawSquare(100, 100, 50, 'pen');
+
+    cy.findByRole('button', { name: /export image/i }).click();
+
+    cy.get('#exported-image')
+      .should('have.attr', 'src')
+      .and('match', /^data:image\/png;base64/i)
+      .convertDataURIToKiloBytes()
+      .then((fileSizeWithStroke) => {
+        cy.get('@fileSizeWithoutStroke').should(
+          'be.lessThan',
+          fileSizeWithStroke
+        );
+      });
+  });
+
+  it('should export png with stroke and eraser', () => {
+    cy.findByRole('button', { name: /export image/i }).click();
+
+    cy.get('#exported-image')
+      .should('have.attr', 'src')
+      .and('match', /^data:image\/png;base64/i)
+      .convertDataURIToKiloBytes()
+      .as('fileSizeWithoutStrokeAndEraser');
+
+    cy.drawSquare(100, 100, 50, 'pen');
+    cy.findByRole('button', { name: /eraser/i }).click();
+    cy.drawSquare(100, 150, 50, 'pen');
+
+    cy.findByRole('button', { name: /export image/i }).click();
+
+    cy.get('#exported-image')
+      .should('have.attr', 'src')
+      .and('match', /^data:image\/png;base64/i)
+      .convertDataURIToKiloBytes()
+      .then((fileSizeWithStrokeAndEraser) => {
+        cy.get('@fileSizeWithoutStrokeAndEraser').should(
+          'be.lessThan',
+          fileSizeWithStrokeAndEraser
+        );
+      });
+  });
+
+  it('should export png with stroke while exportWithBackgroundImage is set', () => {
+    cy.findByRole('switch', {
+      name: 'exportWithBackgroundImage',
+      exact: true,
+    }).click();
+    cy.findByRole('button', { name: /export image/i }).click();
+
+    cy.get('#exported-image')
+      .should('have.attr', 'src')
+      .and('match', /^data:image\/png;base64/i)
+      .convertDataURIToKiloBytes()
+      .as('fileSizeWithoutStroke');
+
+    cy.drawSquare(100, 100, 50, 'pen');
+
+    cy.findByRole('button', { name: /export image/i }).click();
+
+    cy.get('#exported-image')
+      .should('have.attr', 'src')
+      .and('match', /^data:image\/png;base64/i)
+      .convertDataURIToKiloBytes()
+      .then((fileSizeWithStroke) => {
+        cy.get('@fileSizeWithoutStroke').should(
+          'be.lessThan',
+          fileSizeWithStroke
+        );
+      });
+  });
+
+  it('should export png with stroke and eraser while exportWithBackgroundImage is set', () => {
+    cy.findByRole('switch', {
+      name: 'exportWithBackgroundImage',
+      exact: true,
+    }).click();
+    cy.findByRole('button', { name: /export image/i }).click();
+
+    cy.get('#exported-image')
+      .should('have.attr', 'src')
+      .and('match', /^data:image\/png;base64/i)
+      .convertDataURIToKiloBytes()
+      .as('fileSizeWithoutStrokeAndEraser');
+
+    cy.drawSquare(100, 100, 50, 'pen');
+    cy.findByRole('button', { name: /eraser/i }).click();
+    cy.drawSquare(100, 150, 50, 'pen');
+
+    cy.findByRole('button', { name: /export image/i }).click();
+
+    cy.get('#exported-image')
+      .should('have.attr', 'src')
+      .and('match', /^data:image\/png;base64/i)
+      .convertDataURIToKiloBytes()
+      .then((fileSizeWithStrokeAndEraser) => {
+        cy.get('@fileSizeWithoutStrokeAndEraser').should(
+          'be.lessThan',
+          fileSizeWithStrokeAndEraser
+        );
+      });
+  });
+});
+
+describe('exportImage - jpeg', () => {
+  beforeEach(() => {
+    cy.findByRole('radio', { name: /jpeg/i }).click();
+    cy.findByRole('textbox', { name: 'backgroundImage', exact: true }).clear();
+
+    cy.findByRole('switch', {
+      name: 'exportWithBackgroundImage',
+      exact: true,
+    }).click();
+  });
+
+  it('should export jpeg with stroke', () => {
+    cy.findByRole('button', { name: /export image/i }).click();
+
+    cy.get('#exported-image')
+      .should('have.attr', 'src')
+      .and('match', /^data:image\/jpeg;base64/i)
+      .convertDataURIToKiloBytes()
+      .as('fileSizeWithoutStroke');
+
+    cy.drawSquare(100, 100, 50, 'pen');
+
+    cy.findByRole('button', { name: /export image/i }).click();
+
+    cy.get('#exported-image')
+      .should('have.attr', 'src')
+      .and('match', /^data:image\/jpeg;base64/i)
+      .convertDataURIToKiloBytes()
+      .then((fileSizeWithStroke) => {
+        cy.get('@fileSizeWithoutStroke').should(
+          'be.lessThan',
+          fileSizeWithStroke
+        );
+      });
+  });
+
+  it('should export jpeg with stroke and eraser', () => {
+    cy.findByRole('button', { name: /export image/i }).click();
+
+    cy.get('#exported-image')
+      .should('have.attr', 'src')
+      .and('match', /^data:image\/jpeg;base64/i)
+      .convertDataURIToKiloBytes()
+      .as('fileSizeWithoutStrokeAndEraser');
+
+    cy.drawSquare(100, 100, 50, 'pen');
+    cy.findByRole('button', { name: /eraser/i }).click();
+    cy.drawSquare(100, 150, 50, 'pen');
+
+    cy.findByRole('button', { name: /export image/i }).click();
+
+    cy.get('#exported-image')
+      .should('have.attr', 'src')
+      .and('match', /^data:image\/jpeg;base64/i)
+      .convertDataURIToKiloBytes()
+      .then((fileSizeWithStrokeAndEraser) => {
+        cy.get('@fileSizeWithoutStrokeAndEraser').should(
+          'be.lessThan',
+          fileSizeWithStrokeAndEraser
+        );
+      });
+  });
+
+  it('should export jpeg with stroke while exportWithBackgroundImage is set', () => {
+    cy.findByRole('switch', {
+      name: 'exportWithBackgroundImage',
+      exact: true,
+    }).click();
+    cy.findByRole('button', { name: /export image/i }).click();
+
+    cy.get('#exported-image')
+      .should('have.attr', 'src')
+      .and('match', /^data:image\/jpeg;base64/i)
+      .convertDataURIToKiloBytes()
+      .as('fileSizeWithoutStroke');
+
+    cy.drawSquare(100, 100, 50, 'pen');
+
+    cy.findByRole('button', { name: /export image/i }).click();
+
+    cy.get('#exported-image')
+      .should('have.attr', 'src')
+      .and('match', /^data:image\/jpeg;base64/i)
+      .convertDataURIToKiloBytes()
+      .then((fileSizeWithStroke) => {
+        cy.get('@fileSizeWithoutStroke').should(
+          'be.lessThan',
+          fileSizeWithStroke
+        );
+      });
+  });
+
+  it('should export jpeg with stroke and eraser while exportWithBackgroundImage is set', () => {
+    cy.findByRole('switch', {
+      name: 'exportWithBackgroundImage',
+      exact: true,
+    }).click();
+    cy.findByRole('button', { name: /export image/i }).click();
+
+    cy.get('#exported-image')
+      .should('have.attr', 'src')
+      .and('match', /^data:image\/jpeg;base64/i)
+      .convertDataURIToKiloBytes()
+      .as('fileSizeWithoutStrokeAndEraser');
+
+    cy.drawSquare(100, 100, 50, 'pen');
+    cy.findByRole('button', { name: /eraser/i }).click();
+    cy.drawSquare(100, 150, 50, 'pen');
+
+    cy.findByRole('button', { name: /export image/i }).click();
+
+    cy.get('#exported-image')
+      .should('have.attr', 'src')
+      .and('match', /^data:image\/jpeg;base64/i)
+      .convertDataURIToKiloBytes()
+      .then((fileSizeWithStrokeAndEraser) => {
+        cy.get('@fileSizeWithoutStrokeAndEraser').should(
+          'be.lessThan',
+          fileSizeWithStrokeAndEraser
+        );
+      });
+  });
+});
+
+describe('exportImage - svg', () => {
+  beforeEach(() => {
+    cy.findByRole('textbox', { name: 'backgroundImage', exact: true }).clear();
+
+    cy.findByRole('switch', {
+      name: 'exportWithBackgroundImage',
+      exact: true,
+    }).click();
+  });
+
+  it('should export jpeg with stroke', () => {
+    cy.drawSquare(100, 100, 50, 'pen');
+
+    cy.findByRole('button', { name: /export svg/i }).click();
+    cy.get('#exported-svg').find('path').should('have.length', 1);
+  });
+
+  it('should export jpeg with stroke and eraser', () => {
+    cy.drawSquare(100, 100, 50, 'pen');
+    cy.findByRole('button', { name: /eraser/i }).click();
+    cy.drawSquare(100, 150, 50, 'pen');
+
+    cy.findByRole('button', { name: /export svg/i }).click();
+
+    cy.get('#exported-svg').find('path').should('have.length', 2);
+    cy.get('#exported-svg #eraser-stroke-group')
+      .find('path')
+      .should('have.length', 1);
+    cy.get('#exported-svg mask#eraser-mask-0')
+      .find('use')
+      .should('have.length', 2); // background + one mask path
+  });
+
+  it('should export jpeg with stroke while exportWithBackgroundImage is set', () => {
+    cy.findByRole('switch', {
+      name: 'exportWithBackgroundImage',
+      exact: true,
+    }).click();
+
+    cy.drawSquare(100, 100, 50, 'pen');
+
+    cy.findByRole('button', { name: /export svg/i }).click();
+
+    cy.get('#exported-svg').find('path').should('have.length', 1);
+    cy.get('#exported-svg #canvas-background').should(
+      'have.attr',
+      'fill',
+      defaultProps.canvasColor
+    );
+  });
+
+  it('should export jpeg with stroke and eraser while exportWithBackgroundImage is set', () => {
+    cy.findByRole('switch', {
+      name: 'exportWithBackgroundImage',
+      exact: true,
+    }).click();
+    cy.drawSquare(100, 100, 50, 'pen');
+    cy.findByRole('button', { name: /eraser/i }).click();
+    cy.drawSquare(100, 150, 50, 'pen');
+
+    cy.findByRole('button', { name: /export svg/i }).click();
+    cy.get('#exported-svg').find('path').should('have.length', 2);
+    cy.get('#exported-svg #eraser-stroke-group')
+      .find('path')
+      .should('have.length', 1);
+    cy.get('#exported-svg mask#eraser-mask-0')
+      .find('use')
+      .should('have.length', 2); // background + one mask path
+
+    cy.get('#exported-svg #canvas-background').should(
+      'have.attr',
+      'fill',
+      defaultProps.canvasColor
+    );
   });
 });
