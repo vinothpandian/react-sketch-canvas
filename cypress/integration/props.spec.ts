@@ -98,7 +98,6 @@ it('should update preserveAspectRatio of the background image', () => {
 });
 
 it('should change stroke width', () => {
-  
   const updatedStrokeWidth = '8';
 
   cy.drawLine(100, 100, 100);
@@ -336,4 +335,32 @@ it('should call onUpdate when a new stroke or eraser is added', () => {
     expect(paths).to.have.length(2);
     expect(paths.pop()).to.have.property('drawMode', false);
   });
+});
+
+it('should update style', () => {
+  const updatedStyle = {
+    border: '10px solid red',
+    outline: '10px solid green',
+  };
+
+  cy.getCanvas()
+    .should('have.attr', 'style')
+    .CssStyleToObject()
+    .and(
+      'have.any.key',
+      Object.keys(defaultProps.style).map(Cypress._.kebabCase)
+    );
+
+  cy.findByRole('textbox', { name: /style/i })
+    .clear()
+    .type(JSON.stringify(updatedStyle), { parseSpecialCharSequences: false });
+
+  cy.getCanvas()
+    .should('have.attr', 'style')
+    .CssStyleToObject()
+    .and(
+      'not.have.any.keys',
+      Object.keys(defaultProps.style).map(Cypress._.kebabCase)
+    )
+    .and('have.any.keys', Object.keys(updatedStyle).map(Cypress._.kebabCase));
 });
