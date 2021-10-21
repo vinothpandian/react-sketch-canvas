@@ -110,3 +110,18 @@ Cypress.Commands.add(
     return cy.wrap(fileSizeInKB);
   }
 );
+
+Cypress.Commands.add(
+  'CssStyleToObject',
+  { prevSubject: true },
+  function (subject) {
+    const regex = /([\w-]*)\s*:\s*([^;]*)/g;
+    let match = null;
+    let properties = {};
+    while ((match = regex.exec(subject))) {
+      properties[match[1]] = match[2].trim();
+    }
+
+    return cy.wrap(properties);
+  }
+);

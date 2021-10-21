@@ -368,7 +368,7 @@ function App() {
               >
                 allowOnlyPointerType
               </label>
-              <div id="allowOnlyPointerType" className="pt-2">
+              <div id="allowOnlyPointerType" className="p-2">
                 <div className="form-check form-check-inline">
                   <input
                     className="form-check-input"
@@ -451,6 +451,38 @@ function App() {
                     pen
                   </label>
                 </div>
+              </div>
+              <div className="p-2 col-10">
+                <label htmlFor="style" className="form-label">
+                  style
+                </label>
+                <textarea
+                  id="style"
+                  className="dataURICode col-12"
+                  onChange={(event) => {
+                    try {
+                      const style = JSON.parse(event.target.value);
+                      setCanvasProps((prevCanvasProps) => ({
+                        ...prevCanvasProps,
+                        style: style,
+                      }));
+                    } catch {
+                      return;
+                    }
+                  }}
+                  rows={5}
+                  defaultValue={JSON.stringify(canvasProps.style, null, 2)}
+                />
+              </div>
+              <div className="p-2 col-10">
+                <label htmlFor="pathsToLoad" className="form-label">
+                  Paths to load
+                </label>
+                <textarea
+                  id="pathsToLoad"
+                  className="dataURICode col-12"
+                  rows={5}
+                />
               </div>
             </div>
           </form>
