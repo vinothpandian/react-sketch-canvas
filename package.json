@@ -47,7 +47,7 @@
     "e2e": " yarn start:example cypress",
     "cypress:ci": "cypress run",
     "e2e:ci": "nyc --silent --no-clean yarn start:example:ci cypress:ci",
-    "test": "yarn unit-test:ci && yarn e2e:ci && merge-cypress-jest-coverage",
+    "test": "yarn e2e:ci",
     "release": "yarn test && release-it",
     "release:notest": "release-it",
     "release:beta": "yarn test && release-it --preRelease=beta"
