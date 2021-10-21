@@ -20,37 +20,42 @@ Cypress.Commands.add(
         cy.wrap($canvas)
           .trigger('pointerdown', {
             pointerType: pointerType,
+            force: true,
             button: 0,
             pageX: x,
             pageY: y,
           })
           .trigger('pointermove', {
             pointerType: pointerType,
+            force: true,
             pageX: x,
             pageY: y + side,
           })
           .trigger('pointermove', {
             pointerType: pointerType,
+            force: true,
             button: 0,
             pageX: x + side,
             pageY: y + side,
           })
           .trigger('pointermove', {
             pointerType: pointerType,
+            force: true,
             button: 0,
             pageX: x + side,
             pageY: y,
           })
           .trigger('pointermove', {
             pointerType: pointerType,
+            force: true,
             button: 0,
             pageX: x,
             pageY: y,
           })
           .trigger('pointerup', {
             pointerType: pointerType,
-            button: 0,
             force: true,
+            button: 0,
           });
       }
     );
@@ -73,12 +78,14 @@ Cypress.Commands.add(
         cy.wrap($canvas)
           .trigger('pointerdown', {
             pointerType: pointerType,
+            force: true,
             button: 0,
             pageX: x,
             pageY: y,
           })
           .trigger('pointermove', {
             pointerType: pointerType,
+            force: true,
             button: 0,
             pageX: x + length,
             pageY: y + length,
