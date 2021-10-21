@@ -23,7 +23,12 @@ const defaultProps = {
 const loadImage = (url: string): Promise<HTMLImageElement> =>
   new Promise((resolve, reject) => {
     const img = new Image();
-    img.addEventListener('load', () => resolve(img));
+    img.addEventListener('load', () => {
+      if (img.width > 0) {
+        resolve(img);
+      }
+      reject('Image not found');
+    });
     img.addEventListener('error', (err) => reject(err));
     img.src = url;
     img.setAttribute('crossorigin', 'anonymous');
@@ -167,7 +172,7 @@ export class Canvas extends React.Component<CanvasProps> {
 
   // Creates a image from SVG and renders it on canvas, then exports the canvas as image
   exportImage(imageType: ExportImageType): Promise<string> {
-    return new Promise<string>((resolve, reject) => {
+    return new Promise<string>(async (resolve, reject) => {
       try {
         const canvas = this.canvas.current;
 
@@ -182,10 +187,17 @@ export class Canvas extends React.Component<CanvasProps> {
           svgCanvas.outerHTML
         )}`;
 
-        const loadImagePromises = [loadImage(canvasSketch)];
+        const loadImagePromises = [await loadImage(canvasSketch)];
 
         if (exportWithBackgroundImage) {
-          loadImagePromises.push(loadImage(backgroundImage));
+          try {
+            const img = await loadImage(backgroundImage);
+            loadImagePromises.push(img);
+          } catch (error) {
+            console.warn(
+              'exportWithBackgroundImage props is set without a valid background image URL. This option is ignored'
+            );
+          }
         }
 
         Promise.all(loadImagePromises)
@@ -209,7 +221,6 @@ export class Canvas extends React.Component<CanvasProps> {
             throw e;
           });
       } catch (e) {
-        console.error(e);
         reject(e);
       }
     });

@@ -279,7 +279,6 @@ function App() {
                   id="switchExportWithBackgroundImage"
                   checked={canvasProps.exportWithBackgroundImage}
                   onChange={(e) => {
-                    console.log(e);
                     setCanvasProps((prevCanvasProps) => ({
                       ...prevCanvasProps,
                       exportWithBackgroundImage: e.target.checked,
@@ -303,7 +302,6 @@ function App() {
                   id="switchWithTimestamp"
                   checked={canvasProps.withTimestamp}
                   onChange={(e) => {
-                    console.log(e);
                     setCanvasProps((prevCanvasProps) => ({
                       ...prevCanvasProps,
                       withTimestamp: e.target.checked,

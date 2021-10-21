@@ -98,6 +98,7 @@ it('should update preserveAspectRatio of the background image', () => {
 });
 
 it('should change stroke width', () => {
+  
   const updatedStrokeWidth = '8';
 
   cy.drawLine(100, 100, 100);
