@@ -89,6 +89,7 @@ function App() {
   const [dataURI, setDataURI] = React.useState<string>('');
   const [svg, setSVG] = React.useState<string>('');
   const [paths, setPaths] = React.useState<CanvasPath[]>([]);
+  const [pathsToLoad, setPathsToLoad] = React.useState<string>('');
   const [sketchingTime, setSketchingTime] = React.useState<number>(0);
   const [exportImageType, setexportImageType] =
     React.useState<ExportImageType>('png');
@@ -479,10 +480,26 @@ function App() {
                   Paths to load
                 </label>
                 <textarea
+                  name="pathsToLoad"
                   id="pathsToLoad"
                   className="dataURICode col-12"
                   rows={5}
+                  value={pathsToLoad}
+                  onChange={(e) => {
+                    setPathsToLoad(e.target.value);
+                  }}
                 />
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={() => {
+                    const pathsToUpdate = JSON.parse(pathsToLoad);
+
+                    canvasRef.current?.loadPaths(pathsToUpdate);
+                  }}
+                >
+                  Load Paths
+                </button>
               </div>
             </div>
           </form>
