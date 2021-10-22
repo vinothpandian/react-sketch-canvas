@@ -331,7 +331,7 @@ export class Canvas extends React.Component<CanvasProps> {
                 key={`eraser-${i}`}
                 id={`eraser-${i}`}
                 paths={eraserPath.paths}
-                strokeColor={eraserPath.strokeColor}
+                strokeColor="#000000"
                 strokeWidth={eraserPath.strokeWidth}
               />
             ))}
