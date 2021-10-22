@@ -8,6 +8,8 @@
 - Moved to DTS (tsdx fork) instead of nx
 - Add cypress tests
 - Added `onStroke` prop to get last stroke on pointer up
+- Adds a point on click (without moving) #45
+- Fix partial transparent erase (eraser stroke color changed to black for masking) #44
 
 ### Fixed
 

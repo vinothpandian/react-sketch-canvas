@@ -101,6 +101,36 @@ Cypress.Commands.add(
 );
 
 Cypress.Commands.add(
+  'drawPoint',
+  function (
+    originX: number = 0,
+    originY: number = 0,
+    pointerType: Cypress.PointerEventType = 'pen'
+  ) {
+    cy.findByRole('presentation', { name: /react\-sketch\-canvas/i }).then(
+      ($canvas) => {
+        const x = $canvas.offset().left + originX;
+        const y = $canvas.offset().top + originY;
+
+        cy.wrap($canvas)
+          .trigger('pointerdown', {
+            pointerType: pointerType,
+            force: true,
+            button: 0,
+            pageX: x,
+            pageY: y,
+          })
+          .trigger('pointerup', {
+            pointerType: pointerType,
+            button: 0,
+            force: true,
+          });
+      }
+    );
+  }
+);
+
+Cypress.Commands.add(
   'convertDataURIToKiloBytes',
   { prevSubject: true },
   function (subject) {

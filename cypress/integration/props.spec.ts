@@ -422,3 +422,32 @@ describe('onStroke', () => {
       });
   });
 });
+
+describe('point', () => {
+  it('should create a point with circle on single point stroke', () => {
+    const x = 10;
+    const y = 20;
+    cy.drawPoint(x, y);
+
+    cy.getCanvas()
+      .find('circle#0')
+      .should('have.attr', 'r', defaultProps.strokeWidth / 2)
+      .should('have.attr', 'cx', x)
+      .should('have.attr', 'cy', y);
+  });
+
+  it('should create a eraser point with circle on single point erase', () => {
+    const x = 10;
+    const y = 20;
+
+    cy.drawPoint(x, y);
+    cy.findByRole('button', { name: /eraser/i }).click();
+    cy.drawPoint(x, y);
+
+    cy.getCanvas()
+      .find('circle#eraser-0')
+      .should('have.attr', 'r', defaultProps.eraserWidth / 2)
+      .should('have.attr', 'cx', x)
+      .should('have.attr', 'cy', y);
+  });
+});

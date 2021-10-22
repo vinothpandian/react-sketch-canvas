@@ -16,6 +16,11 @@ declare namespace Cypress {
       originY?: number,
       eventType?: PointerEventType
     ): Chainable<any>;
+    drawPoint(
+      originX?: number,
+      originY?: number,
+      eventType?: PointerEventType
+    ): Chainable<any>;
     getCanvas(): Chainable<any>;
     convertDataURIToKiloBytes(): Chainable<number>;
     CssStyleToObject(): Chainable<object>;
