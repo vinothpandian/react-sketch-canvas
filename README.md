@@ -3,7 +3,7 @@
 </p>
 <br/>
 <h3 align="center">
-  Freehand vector drawing tool for React using SVG as canvas 🖌
+  Freehand vector drawing component for React using SVG as canvas 🖌
 </h3>
 <br/>
 <br/>
