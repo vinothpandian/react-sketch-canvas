@@ -134,7 +134,8 @@ const Canvas = class extends React.Component {
 | strokeWidth                        | PropTypes.number  | 4             | Pen stroke size                                                                                     |
 | eraserWidth                        | PropTypes.number  | 8             | Erase size                                                                                          |
 | allowOnlyPointerType               | PropTypes.string  | all           | allow pointer type ("all"/"mouse"/"pen"/"touch")                                                    |
-| onUpdate                           | PropTypes.func    | all           | Returns the current sketch path in `CanvasPath` type on every update                                |
+| onChange                           | PropTypes.func    |               | Returns the current sketch path in `CanvasPath` type on every path change                           |
+| onStroke                           | PropTypes.func    |               | Returns the the last stroke path and whether it is an eraser stroke on every pointer up event       |
 | style                              | PropTypes.object  | false         | Add CSS styling as CSS-in-JS object                                                                 |
 | withTimestamp                      | PropTypes.bool    | false         | Add timestamp to individual strokes for measuring sketching time                                    |
 

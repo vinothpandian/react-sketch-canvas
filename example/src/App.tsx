@@ -89,6 +89,10 @@ function App() {
   const [dataURI, setDataURI] = React.useState<string>('');
   const [svg, setSVG] = React.useState<string>('');
   const [paths, setPaths] = React.useState<CanvasPath[]>([]);
+  const [lastStroke, setLastStroke] = React.useState<{
+    stroke: CanvasPath | null;
+    isEraser: boolean | null;
+  }>({ stroke: null, isEraser: null });
   const [pathsToLoad, setPathsToLoad] = React.useState<string>('');
   const [sketchingTime, setSketchingTime] = React.useState<number>(0);
   const [exportImageType, setexportImageType] =
@@ -201,7 +205,7 @@ function App() {
     ['Get Sketching time', getSketchingTimeHandler, 'success'],
   ];
 
-  const onUpdate = (updatedPaths: CanvasPath[]): void => {
+  const onChange = (updatedPaths: CanvasPath[]): void => {
     setPaths(updatedPaths);
   };
 
@@ -512,7 +516,10 @@ function App() {
             <div className="col-9 canvas p-0">
               <ReactSketchCanvas
                 ref={canvasRef}
-                onUpdate={onUpdate}
+                onChange={onChange}
+                onStroke={(stroke, isEraser) =>
+                  setLastStroke({ stroke, isEraser })
+                }
                 {...canvasProps}
               />
             </div>
@@ -527,20 +534,40 @@ function App() {
 
           <section className="row image-export mt-5 p-3 justify-content-center align-items-start">
             <div className="col-5 row form-group">
-              <label className="col-12" htmlFor="paths">
-                Paths
-              </label>
-              <textarea
-                id="paths"
-                className="dataURICode col-12"
-                readOnly
-                rows={10}
-                value={
-                  paths.length !== 0
-                    ? JSON.stringify(paths, null, 2)
-                    : 'Sketch to get paths'
-                }
-              />
+              <div className="p-2">
+                <label className="col-12" htmlFor="paths">
+                  Paths
+                </label>
+                <textarea
+                  id="paths"
+                  className="dataURICode col-12"
+                  readOnly
+                  rows={10}
+                  value={
+                    paths.length !== 0
+                      ? JSON.stringify(paths, null, 2)
+                      : 'Sketch to get paths'
+                  }
+                />
+              </div>
+              <div className="p-2">
+                <label className="col-12" htmlFor="last-stroke">
+                  Last stroke
+                  {lastStroke.isEraser !== null &&
+                    ':' + (lastStroke.isEraser ? 'Eraser' : 'Pen')}
+                </label>
+                <textarea
+                  id="last-stroke"
+                  className="dataURICode col-12"
+                  readOnly
+                  rows={10}
+                  value={
+                    lastStroke.stroke !== null
+                      ? JSON.stringify(lastStroke.stroke, null, 2)
+                      : 'Sketch to get the last stroke'
+                  }
+                />
+              </div>
             </div>
             <div className="col-5 offset-2">
               <label className="col-12" htmlFor="dataURI">

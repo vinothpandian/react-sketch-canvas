@@ -1,8 +1,26 @@
-## Changelog
+# Changelog
+
+## [6.0.2]
+
+### Added
+
+- Upgraded all dependencies
+- Moved to DTS (tsdx fork) instead of nx
+- Add cypress tests
+- Added `onStroke` prop to get last stroke on pointer up
+
+### Fixed
+
+- Changed React import to \* from React #40
+- Export image fails when the background is not an image [beta] #46
+
+### Breaking changes
+
+- Renamed `onUpdate` to `onChange`
 
 ## [6.0.1-beta]
 
-## Added
+### Added
 
 - Upgraded all dependencies
 - Updated directory structure
@@ -12,36 +30,36 @@
 - Updated erase option to use mask instead of canvas color
 - Add github action for deployment of storybook and package
 
-## Breaking changes
+### Breaking changes
 
 - Removed background option to set background image using CSS-in-JS (instead check feature-filled backgroundImage prop)
 
 ## [5.3.4]
 
-## Added
+### Added
 
 - Switched to Nx
 - Updated documentation
 
-## Changed
+### Changed
 
 - Removed pepjs. Can be polyfilled by the web app directly instead
 
 ## [5.3.3]
 
-## Fixed
+### Fixed
 
 - add support any version above react 16.4
 
 ## [5.3.2]
 
-## Fixed
+### Fixed
 
 - Bump dependency versions
 
 ## [5.3.1]
 
-## Fixed
+### Fixed
 
 - Set default value of `allowOnlyPointerType` as `'all'` again
 
@@ -99,7 +117,7 @@ Added README :)
 
 - Fixed sketch offset issue when the canvas is scrolled
 
-### Changed
+#### Changed
 
 - Updated undo/redo/reset strategy
 - Updated demo in storybook
@@ -117,13 +135,13 @@ Added README :)
 
 ## [3.0.1]
 
-### Changed
+#### Changed
 
 - Moved immutable dependency from Canvas file
 
 ## [3.0.0]
 
-### Changed
+#### Changed
 
 Removed onUpdate feature and made the system modular
 
@@ -169,7 +187,7 @@ allowOnlyPointerType
 - Export and load paths
 - Erase mode and eraser width
 
-### Changed
+#### Changed
 
 - Rename exportAsImage() to exportImage() for naming consistency
 
