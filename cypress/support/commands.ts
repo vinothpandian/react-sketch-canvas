@@ -125,3 +125,16 @@ Cypress.Commands.add(
     return cy.wrap(properties);
   }
 );
+
+Cypress.Commands.add(
+  'StringToObject',
+  { prevSubject: true },
+  function (subject) {
+    try {
+      const value = JSON.parse(subject.text());
+      return cy.wrap(value);
+    } catch (error) {
+      return cy.wrap({});
+    }
+  }
+);

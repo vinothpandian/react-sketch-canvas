@@ -21,8 +21,8 @@ const defaultProps = {
     border: '0.0625rem solid #9c9c9c',
     borderRadius: '0.25rem',
   },
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  onUpdate: (_: CanvasPath[]): void => {},
+  onChange: (_paths: CanvasPath[]): void => {},
+  onStroke: (_path: CanvasPath, _isEraser: boolean): void => {},
   withTimestamp: false,
 };
 
@@ -40,7 +40,8 @@ export type ReactSketchCanvasProps = {
   strokeWidth: number;
   eraserWidth: number;
   allowOnlyPointerType: string;
-  onUpdate: (updatedPaths: CanvasPath[]) => void;
+  onChange: (updatedPaths: CanvasPath[]) => void;
+  onStroke: (path: CanvasPath, isEraser: boolean) => void;
   style: React.CSSProperties;
   withTimestamp: boolean;
 };
@@ -92,6 +93,7 @@ export class ReactSketchCanvas extends React.Component<
     this.getSketchingTime = this.getSketchingTime.bind(this);
 
     this.liftPathsUp = this.liftPathsUp.bind(this);
+    this.liftStrokeUp = this.liftStrokeUp.bind(this);
 
     this.svgCanvas = React.createRef();
   }
@@ -129,9 +131,23 @@ export class ReactSketchCanvas extends React.Component<
 
   liftPathsUp(): void {
     const { currentPaths } = this.state;
-    const { onUpdate } = this.props;
+    const { onChange } = this.props;
 
-    onUpdate(currentPaths);
+    onChange(currentPaths);
+  }
+
+  liftStrokeUp(): void {
+    const { currentPaths } = this.state;
+    const { onStroke } = this.props;
+
+    const lastStroke = currentPaths.at(-1);
+
+    if (lastStroke === undefined) {
+      console.warn('No stroke found!');
+      return;
+    }
+
+    onStroke(lastStroke, !lastStroke.drawMode);
   }
 
   /* Mouse Handlers - Mouse down, move and up */
@@ -207,7 +223,10 @@ export class ReactSketchCanvas extends React.Component<
           draft.currentPaths.push(currentStroke);
         }
       }),
-      this.liftPathsUp
+      () => {
+        this.liftPathsUp();
+        this.liftStrokeUp();
+      }
     );
   }
 

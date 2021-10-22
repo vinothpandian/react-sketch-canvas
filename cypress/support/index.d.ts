@@ -19,5 +19,6 @@ declare namespace Cypress {
     getCanvas(): Chainable<any>;
     convertDataURIToKiloBytes(): Chainable<number>;
     CssStyleToObject(): Chainable<object>;
+    StringToObject(): Chainable<object>;
   }
 }

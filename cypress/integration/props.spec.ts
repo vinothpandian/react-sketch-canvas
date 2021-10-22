@@ -316,7 +316,7 @@ describe('allowOnlyPointerType', () => {
   });
 });
 
-it('should call onUpdate when a new stroke or eraser is added', () => {
+it('should call onChange when a new stroke or eraser is added', () => {
   cy.get('#paths')
     .as('pathsContainer')
     .should('have.text', 'Sketch to get paths');
@@ -366,4 +366,59 @@ it('should update style', () => {
       Object.keys(defaultProps.style).map(Cypress._.kebabCase)
     )
     .and('have.any.keys', Object.keys(updatedStyle).map(Cypress._.kebabCase));
+});
+
+describe('onStroke', () => {
+  it('should return the last stroke', () => {
+    cy.drawLine(200, 10, 20, 'pen');
+
+    cy.findByRole('textbox', { name: /last stroke:pen/i })
+      .StringToObject()
+      .then((canvaspath) => {
+        expect(canvaspath).has.property('drawMode', true);
+        expect(canvaspath).has.deep.property('paths', [
+          { x: 10, y: 20 },
+          { x: 210, y: 220 },
+        ]);
+      });
+
+    cy.drawLine(100, 0, 0, 'pen');
+
+    cy.findByRole('textbox', { name: /last stroke:pen/i })
+      .StringToObject()
+      .then((canvaspath) => {
+        expect(canvaspath).has.property('drawMode', true);
+        expect(canvaspath).has.deep.property('paths', [
+          { x: 0, y: 0 },
+          { x: 100, y: 100 },
+        ]);
+      });
+  });
+
+  it('should return the last eraser stroke', () => {
+    cy.drawLine(200, 10, 20, 'pen');
+
+    cy.findByRole('textbox', { name: /last stroke:pen/i })
+      .StringToObject()
+      .then((canvaspath) => {
+        expect(canvaspath).has.property('drawMode', true);
+        expect(canvaspath).has.deep.property('paths', [
+          { x: 10, y: 20 },
+          { x: 210, y: 220 },
+        ]);
+      });
+
+    cy.findByRole('button', { name: /eraser/i }).click();
+    cy.drawLine(100, 0, 0, 'pen');
+
+    cy.findByRole('textbox', { name: /last stroke:eraser/i })
+      .StringToObject()
+      .then((canvaspath) => {
+        expect(canvaspath).has.property('drawMode', false);
+        expect(canvaspath).has.deep.property('paths', [
+          { x: 0, y: 0 },
+          { x: 100, y: 100 },
+        ]);
+      });
+  });
 });
