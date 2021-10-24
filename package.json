@@ -27,8 +27,9 @@
   },
   "scripts": {
     "prepare": "dts build",
+    "link:lib": "yarn build && yarn unlink; yarn link",
     "install:example": "cd example && yarn",
-    "postinstall": "yarn prepare && yarn install:example",
+    "postinstall": "yarn link:lib && yarn install:example && yarn link react-sketch-canvas",
     "lint": "dts lint src",
     "watch:lib": "dts watch",
     "watch:example": "yarn build && cd example && yarn start",
