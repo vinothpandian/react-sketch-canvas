@@ -4,7 +4,6 @@ import { Canvas, CanvasRef } from '../Canvas';
 import { CanvasPath, ExportImageType, Point } from '../types';
 
 export type ReactSketchCanvasStates = {
-  resetStack: CanvasPath[];
   undoStack: CanvasPath[];
   currentPaths: CanvasPath[];
 };
@@ -69,15 +68,14 @@ export const ReactSketchCanvas = React.forwardRef<
   const svgCanvas = React.createRef<CanvasRef>();
   const [drawMode, setDrawMode] = React.useState<boolean>(true);
   const [isDrawing, setIsDrawing] = React.useState<boolean>(false);
+  const [resetStack, setResetStack] = React.useState<CanvasPath[]>([]);
 
   const [state, setState] = React.useState<ReactSketchCanvasStates>({
-    // eslint-disable-next-line react/no-unused-state
-    resetStack: [],
     undoStack: [],
     currentPaths: [],
   });
 
-  const { undoStack, resetStack, currentPaths } = state;
+  const { undoStack, currentPaths } = state;
 
   const liftStrokeUp = React.useCallback((): void => {
     const lastStroke = currentPaths.at(-1);
@@ -103,9 +101,9 @@ export const ReactSketchCanvas = React.forwardRef<
       setDrawMode(!erase);
     },
     clearCanvas: (): void => {
+      setResetStack([...currentPaths]);
       setState(
         produce((draft: ReactSketchCanvasStates) => {
-          draft.resetStack = draft.currentPaths;
           draft.currentPaths = [];
         })
       );
@@ -115,10 +113,10 @@ export const ReactSketchCanvas = React.forwardRef<
       if (resetStack.length !== 0) {
         setState(
           produce((draft: ReactSketchCanvasStates) => {
-            draft.currentPaths = draft.resetStack;
-            draft.resetStack = [];
+            draft.currentPaths = resetStack;
           })
         );
+        setResetStack([]);
 
         return;
       }
@@ -213,9 +211,8 @@ export const ReactSketchCanvas = React.forwardRef<
       });
     },
     resetCanvas: (): void => {
+      setResetStack([]);
       setState({
-        // eslint-disable-next-line react/no-unused-state
-        resetStack: [],
         undoStack: [],
         currentPaths: [],
       });
