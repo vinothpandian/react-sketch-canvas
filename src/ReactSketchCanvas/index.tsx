@@ -4,7 +4,6 @@ import { Canvas, CanvasRef } from '../Canvas';
 import { CanvasPath, ExportImageType, Point } from '../types';
 
 export type ReactSketchCanvasStates = {
-  drawMode: boolean;
   isDrawing: boolean;
   resetStack: CanvasPath[];
   undoStack: CanvasPath[];
@@ -67,9 +66,10 @@ export const ReactSketchCanvas = React.forwardRef<
     onStroke = (_path: CanvasPath, _isEraser: boolean): void => {},
     withTimestamp = false,
   } = props;
+
   const svgCanvas = React.createRef<CanvasRef>();
+  const [drawMode, setDrawMode] = React.useState<boolean>(true);
   const [state, setState] = React.useState<ReactSketchCanvasStates>({
-    drawMode: true,
     isDrawing: false,
     // eslint-disable-next-line react/no-unused-state
     resetStack: [],
@@ -100,11 +100,7 @@ export const ReactSketchCanvas = React.forwardRef<
 
   React.useImperativeHandle(ref, () => ({
     eraseMode: (erase: boolean): void => {
-      setState(
-        produce((draft: ReactSketchCanvasStates) => {
-          draft.drawMode = !erase;
-        })
-      );
+      setDrawMode(!erase);
     },
     clearCanvas: (): void => {
       setState(
@@ -218,7 +214,6 @@ export const ReactSketchCanvas = React.forwardRef<
     },
     resetCanvas: (): void => {
       setState({
-        drawMode: true,
         isDrawing: false,
         // eslint-disable-next-line react/no-unused-state
         resetStack: [],
@@ -235,9 +230,9 @@ export const ReactSketchCanvas = React.forwardRef<
         draft.undoStack = [];
 
         let stroke: CanvasPath = {
-          drawMode: draft.drawMode,
-          strokeColor: draft.drawMode ? strokeColor : '#000000', // Eraser using mask
-          strokeWidth: draft.drawMode ? strokeWidth : eraserWidth,
+          drawMode: drawMode,
+          strokeColor: drawMode ? strokeColor : '#000000', // Eraser using mask
+          strokeWidth: drawMode ? strokeWidth : eraserWidth,
           paths: [point],
         };
 
