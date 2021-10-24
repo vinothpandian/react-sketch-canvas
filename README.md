@@ -129,7 +129,7 @@ const Canvas = class extends React.Component {
 | strokeColor                        | PropTypes.string  | black         | Pen color                                                                                           |
 | canvasColor                        | PropTypes.string  | white         | canvas color (HTML colors)                                                                          |
 | backgroundImage                    | PropTypes.string  | ''            | Set SVG background with image URL                                                                   |
-| exportWithBackgroundImage          | PropTypes.bool    | true          | Keep background image on image/SVG export (on false, canvasColor will be set as background)         |
+| exportWithBackgroundImage          | PropTypes.bool    | false         | Keep background image on image/SVG export (on false, canvasColor will be set as background)         |
 | preserveBackgroundImageAspectRatio | PropTypes.string  | none          | Set aspect ratio of the background image. For possible values check [MDN docs][preserveaspectratio] |
 | strokeWidth                        | PropTypes.number  | 4             | Pen stroke size                                                                                     |
 | eraserWidth                        | PropTypes.number  | 8             | Erase size                                                                                          |

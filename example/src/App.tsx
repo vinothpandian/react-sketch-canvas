@@ -4,9 +4,9 @@ import {
   ExportImageType,
   ReactSketchCanvas,
   ReactSketchCanvasProps,
-} from 'react-sketch-canvas';
+  ReactSketchCanvasRef,
+} from '../../src';
 
-type CanvasRef = React.RefObject<ReactSketchCanvas>;
 type Handlers = [string, () => void, string][];
 
 interface InputFieldProps {
@@ -84,7 +84,7 @@ function App() {
     ['eraserWidth', 'number'],
   ];
 
-  const canvasRef: CanvasRef = React.useRef<ReactSketchCanvas>(null);
+  const canvasRef = React.createRef<ReactSketchCanvasRef>();
 
   const [dataURI, setDataURI] = React.useState<string>('');
   const [svg, setSVG] = React.useState<string>('');
