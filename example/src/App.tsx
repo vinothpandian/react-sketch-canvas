@@ -5,7 +5,7 @@ import {
   ReactSketchCanvas,
   ReactSketchCanvasProps,
   ReactSketchCanvasRef,
-} from '../../src';
+} from 'react-sketch-canvas';
 
 type Handlers = [string, () => void, string][];
 
@@ -27,7 +27,7 @@ function InputField({
   const handleChange = ({
     target,
   }: React.ChangeEvent<HTMLInputElement>): void => {
-    setCanvasProps((prevCanvasProps) => ({
+    setCanvasProps((prevCanvasProps: Partial<ReactSketchCanvasProps>) => ({
       ...prevCanvasProps,
       [fieldName]: target.value,
     }));
@@ -247,10 +247,12 @@ function App() {
                   value={canvasProps.strokeColor}
                   title="Choose stroke color"
                   onChange={(e) => {
-                    setCanvasProps((prevCanvasProps) => ({
-                      ...prevCanvasProps,
-                      strokeColor: e.target.value,
-                    }));
+                    setCanvasProps(
+                      (prevCanvasProps: Partial<ReactSketchCanvasProps>) => ({
+                        ...prevCanvasProps,
+                        strokeColor: e.target.value,
+                      })
+                    );
                   }}
                 ></input>
               </div>
@@ -266,11 +268,13 @@ function App() {
                   value={canvasProps.canvasColor}
                   title="Choose stroke color"
                   onChange={(e) => {
-                    setCanvasProps((prevCanvasProps) => ({
-                      ...prevCanvasProps,
-                      backgroundImage: '',
-                      canvasColor: e.target.value,
-                    }));
+                    setCanvasProps(
+                      (prevCanvasProps: Partial<ReactSketchCanvasProps>) => ({
+                        ...prevCanvasProps,
+                        backgroundImage: '',
+                        canvasColor: e.target.value,
+                      })
+                    );
                   }}
                 ></input>
               </div>
@@ -284,10 +288,12 @@ function App() {
                   id="switchExportWithBackgroundImage"
                   checked={canvasProps.exportWithBackgroundImage}
                   onChange={(e) => {
-                    setCanvasProps((prevCanvasProps) => ({
-                      ...prevCanvasProps,
-                      exportWithBackgroundImage: e.target.checked,
-                    }));
+                    setCanvasProps(
+                      (prevCanvasProps: Partial<ReactSketchCanvasProps>) => ({
+                        ...prevCanvasProps,
+                        exportWithBackgroundImage: e.target.checked,
+                      })
+                    );
                   }}
                 />
                 <label
@@ -307,10 +313,12 @@ function App() {
                   id="switchWithTimestamp"
                   checked={canvasProps.withTimestamp}
                   onChange={(e) => {
-                    setCanvasProps((prevCanvasProps) => ({
-                      ...prevCanvasProps,
-                      withTimestamp: e.target.checked,
-                    }));
+                    setCanvasProps(
+                      (prevCanvasProps: Partial<ReactSketchCanvasProps>) => ({
+                        ...prevCanvasProps,
+                        withTimestamp: e.target.checked,
+                      })
+                    );
                   }}
                 />
                 <label
@@ -383,10 +391,12 @@ function App() {
                     value="all"
                     checked={canvasProps.allowOnlyPointerType === 'all'}
                     onChange={() => {
-                      setCanvasProps((prevCanvasProps) => ({
-                        ...prevCanvasProps,
-                        allowOnlyPointerType: 'all',
-                      }));
+                      setCanvasProps(
+                        (prevCanvasProps: Partial<ReactSketchCanvasProps>) => ({
+                          ...prevCanvasProps,
+                          allowOnlyPointerType: 'all',
+                        })
+                      );
                     }}
                   />
                   <label className="form-check-label" htmlFor="allowPointerAll">
@@ -402,10 +412,12 @@ function App() {
                     value="touch"
                     checked={canvasProps.allowOnlyPointerType === 'touch'}
                     onChange={() => {
-                      setCanvasProps((prevCanvasProps) => ({
-                        ...prevCanvasProps,
-                        allowOnlyPointerType: 'touch',
-                      }));
+                      setCanvasProps(
+                        (prevCanvasProps: Partial<ReactSketchCanvasProps>) => ({
+                          ...prevCanvasProps,
+                          allowOnlyPointerType: 'touch',
+                        })
+                      );
                     }}
                   />
                   <label
@@ -424,10 +436,12 @@ function App() {
                     value="mouse"
                     checked={canvasProps.allowOnlyPointerType === 'mouse'}
                     onChange={() => {
-                      setCanvasProps((prevCanvasProps) => ({
-                        ...prevCanvasProps,
-                        allowOnlyPointerType: 'mouse',
-                      }));
+                      setCanvasProps(
+                        (prevCanvasProps: Partial<ReactSketchCanvasProps>) => ({
+                          ...prevCanvasProps,
+                          allowOnlyPointerType: 'mouse',
+                        })
+                      );
                     }}
                   />
                   <label
@@ -446,10 +460,12 @@ function App() {
                     value="pen"
                     checked={canvasProps.allowOnlyPointerType === 'pen'}
                     onChange={() => {
-                      setCanvasProps((prevCanvasProps) => ({
-                        ...prevCanvasProps,
-                        allowOnlyPointerType: 'pen',
-                      }));
+                      setCanvasProps(
+                        (prevCanvasProps: Partial<ReactSketchCanvasProps>) => ({
+                          ...prevCanvasProps,
+                          allowOnlyPointerType: 'pen',
+                        })
+                      );
                     }}
                   />
                   <label className="form-check-label" htmlFor="allowPointerPen">
@@ -467,10 +483,12 @@ function App() {
                   onChange={(event) => {
                     try {
                       const style = JSON.parse(event.target.value);
-                      setCanvasProps((prevCanvasProps) => ({
-                        ...prevCanvasProps,
-                        style: style,
-                      }));
+                      setCanvasProps(
+                        (prevCanvasProps: Partial<ReactSketchCanvasProps>) => ({
+                          ...prevCanvasProps,
+                          style: style,
+                        })
+                      );
                     } catch {
                       return;
                     }
