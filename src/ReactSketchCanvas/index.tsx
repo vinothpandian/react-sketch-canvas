@@ -1,5 +1,5 @@
 import { produce } from 'immer';
-import React from 'react';
+import * as React from 'react';
 import { Canvas, CanvasRef } from '../Canvas';
 import { CanvasPath, ExportImageType, Point } from '../types';
 
