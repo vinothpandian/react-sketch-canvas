@@ -4,7 +4,6 @@ import { Canvas, CanvasRef } from '../Canvas';
 import { CanvasPath, ExportImageType, Point } from '../types';
 
 export type ReactSketchCanvasStates = {
-  isDrawing: boolean;
   resetStack: CanvasPath[];
   undoStack: CanvasPath[];
   currentPaths: CanvasPath[];
@@ -69,15 +68,16 @@ export const ReactSketchCanvas = React.forwardRef<
 
   const svgCanvas = React.createRef<CanvasRef>();
   const [drawMode, setDrawMode] = React.useState<boolean>(true);
+  const [isDrawing, setIsDrawing] = React.useState<boolean>(false);
+
   const [state, setState] = React.useState<ReactSketchCanvasStates>({
-    isDrawing: false,
     // eslint-disable-next-line react/no-unused-state
     resetStack: [],
     undoStack: [],
     currentPaths: [],
   });
 
-  const { isDrawing, undoStack, resetStack, currentPaths } = state;
+  const { undoStack, resetStack, currentPaths } = state;
 
   const liftStrokeUp = React.useCallback((): void => {
     const lastStroke = currentPaths.at(-1);
@@ -214,7 +214,6 @@ export const ReactSketchCanvas = React.forwardRef<
     },
     resetCanvas: (): void => {
       setState({
-        isDrawing: false,
         // eslint-disable-next-line react/no-unused-state
         resetStack: [],
         undoStack: [],
@@ -224,9 +223,9 @@ export const ReactSketchCanvas = React.forwardRef<
   }));
 
   const handlePointerDown = (point: Point): void => {
+    setIsDrawing(true);
     setState(
       produce((draft: ReactSketchCanvasStates) => {
-        draft.isDrawing = true;
         draft.undoStack = [];
 
         let stroke: CanvasPath = {
@@ -265,10 +264,10 @@ export const ReactSketchCanvas = React.forwardRef<
       return;
     }
 
+    setIsDrawing(false);
+
     setState(
       produce((draft: ReactSketchCanvasStates) => {
-        draft.isDrawing = false;
-
         if (!withTimestamp) {
           return;
         }
@@ -299,8 +298,8 @@ export const ReactSketchCanvas = React.forwardRef<
       preserveBackgroundImageAspectRatio={preserveBackgroundImageAspectRatio}
       allowOnlyPointerType={allowOnlyPointerType}
       style={style}
-      paths={state.currentPaths}
-      isDrawing={state.isDrawing}
+      paths={currentPaths}
+      isDrawing={isDrawing}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
