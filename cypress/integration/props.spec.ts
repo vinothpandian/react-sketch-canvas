@@ -146,6 +146,7 @@ it('should change stroke color', () => {
     .should('have.attr', 'stroke', defaultProps.strokeColor);
 
   cy.findByLabelText(/strokeColor/i)
+    .focus()
     .invoke('val', updatedStrokeColor)
     .trigger('change');
 
@@ -161,6 +162,7 @@ it('should change canvas color', () => {
 
   const updatedCanvasColor = '#FF0000';
   cy.findByLabelText(/canvasColor/i)
+    .focus()
     .invoke('val', updatedCanvasColor)
     .trigger('change');
 
