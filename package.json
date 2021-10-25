@@ -1,74 +1,113 @@
 {
   "name": "react-sketch-canvas",
-  "version": "5.3.5",
+  "version": "6.0.2-beta.2",
+  "description": "react-sketch-canvas - Freehand vector drawing tool for React using SVG as canvas",
+  "author": "Vinoth Pandian",
+  "homepage": "https://vinoth.info/react-sketch-canvas",
   "license": "MIT",
-  "scripts": {
-    "nx": "nx",
-    "start": "nx serve",
-    "build": "nx build",
-    "test": "nx test",
-    "lint": "nx workspace-lint && nx lint",
-    "e2e": "nx e2e",
-    "affected:apps": "nx affected:apps",
-    "affected:libs": "nx affected:libs",
-    "affected:build": "nx affected:build",
-    "affected:e2e": "nx affected:e2e",
-    "affected:test": "nx affected:test",
-    "affected:lint": "nx affected:lint",
-    "affected:dep-graph": "nx affected:dep-graph",
-    "affected": "nx affected",
-    "format": "nx format:write",
-    "format:write": "nx format:write",
-    "format:check": "nx format:check",
-    "update": "nx migrate latest",
-    "workspace-generator": "nx workspace-generator",
-    "dep-graph": "nx dep-graph",
-    "help": "nx help"
+  "repository": "https://github.com/vinothpandian/react-sketch-canvas.git",
+  "keywords": [
+    "react-component",
+    "sketch",
+    "canvas",
+    "drawing",
+    "freehand",
+    "vector",
+    "svg-canvas",
+    "react-sketch"
+  ],
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "engines": {
+    "node": ">=10"
   },
-  "private": true,
-  "dependencies": {
-    "core-js": "^3.6.5",
-    "react": "17.0.2",
-    "react-dom": "17.0.2",
-    "regenerator-runtime": "0.13.7",
-    "tslib": "^2.0.0"
+  "scripts": {
+    "prepare": "dts build",
+    "link:lib": "yarn build && yarn unlink; yarn link",
+    "install:example": "cd example && yarn",
+    "postinstall": "yarn link:lib && yarn install:example && yarn link react-sketch-canvas",
+    "lint": "dts lint src",
+    "watch:lib": "dts watch",
+    "watch:example": "yarn build && cd example && yarn start",
+    "watch": "concurrently \"yarn:watch:example\" \"yarn:watch:lib\"",
+    "start:example": "cross-env BROWSER=none start-server-and-test watch http://localhost:3000",
+    "start:example:ci": "cross-env BROWSER=none start-server-and-test watch:example http://localhost:3000",
+    "build": "dts build",
+    "build:prod": "cross-env NODE_ENV=production dts build",
+    "build:example": "cd example && cross-env NODE_ENV=production yarn build",
+    "size": "size-limit",
+    "analyze": "size-limit --why",
+    "unit-test": "dts test --passWithNoTests",
+    "unit-test:ci": "nyc --silent dts test --passWithNoTests --ci --coverage",
+    "cypress": "cypress open",
+    "e2e": " yarn start:example cypress",
+    "cypress:ci": "cypress run",
+    "e2e:ci": "nyc --silent --no-clean yarn start:example:ci cypress:ci",
+    "test": "yarn e2e:ci",
+    "release": "yarn test && release-it",
+    "release:notest": "release-it",
+    "release:beta": "yarn test && release-it --preRelease=beta"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "dts lint"
+    }
+  },
+  "prettier": {
+    "printWidth": 80,
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "es5"
+  },
+  "module": "dist/react-sketch-canvas.esm.js",
+  "size-limit": [
+    {
+      "path": "dist/react-sketch-canvas.cjs.production.min.js",
+      "limit": "10 KB"
+    },
+    {
+      "path": "dist/react-sketch-canvas.esm.js",
+      "limit": "10 KB"
+    }
+  ],
+  "nyc": {
+    "report-dir": "cypress-coverage"
   },
   "devDependencies": {
-    "@babel/core": "7.12.13",
-    "@babel/preset-typescript": "7.12.13",
-    "@nrwl/cli": "12.7.2",
-    "@nrwl/eslint-plugin-nx": "12.7.2",
-    "@nrwl/jest": "12.7.2",
-    "@nrwl/linter": "12.7.2",
-    "@nrwl/react": "^12.7.2",
-    "@nrwl/storybook": "12.7.2",
-    "@nrwl/tao": "12.7.2",
-    "@nrwl/web": "12.7.2",
-    "@nrwl/workspace": "12.7.2",
-    "@storybook/addon-essentials": "~6.3.0",
-    "@storybook/react": "~6.3.0",
-    "@svgr/webpack": "^5.4.0",
-    "@testing-library/react": "11.2.6",
-    "@types/jest": "26.0.24",
-    "@types/node": "14.14.33",
-    "@types/react": "17.0.3",
-    "@types/react-dom": "17.0.3",
-    "@typescript-eslint/eslint-plugin": "~4.28.3",
-    "@typescript-eslint/parser": "~4.28.3",
-    "babel-jest": "27.0.6",
-    "babel-loader": "8.1.0",
-    "dotenv": "~10.0.0",
-    "eslint": "7.22.0",
-    "eslint-config-prettier": "8.1.0",
-    "eslint-plugin-import": "2.22.1",
-    "eslint-plugin-jsx-a11y": "6.4.1",
-    "eslint-plugin-react": "7.23.1",
-    "eslint-plugin-react-hooks": "4.2.0",
-    "jest": "27.0.3",
-    "prettier": "^2.3.1",
-    "ts-jest": "27.0.3",
-    "ts-node": "~9.1.1",
-    "typescript": "~4.3.5",
-    "url-loader": "^3.0.0"
+    "@babel/core": "^7.15.8",
+    "@cypress/code-coverage": "^3.9.11",
+    "@size-limit/preset-small-lib": "^6.0.3",
+    "@testing-library/cypress": "^8.0.1",
+    "@types/react": "^17.0.30",
+    "@types/react-dom": "^17.0.9",
+    "babel-loader": "^8.2.2",
+    "babel-plugin-istanbul": "^6.1.1",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "concurrently": "^6.3.0",
+    "cross-env": "^7.0.3",
+    "cypress": "^8.6.0",
+    "dts-cli": "^0.19.2",
+    "eslint-plugin-prettier": "^4.0.0",
+    "husky": "^7.0.2",
+    "merge-cypress-jest-coverage": "^1.7.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-is": "^17.0.2",
+    "release-it": "^14.11.6",
+    "size-limit": "^6.0.3",
+    "start-server-and-test": "^1.14.0",
+    "tslib": "^2.3.1",
+    "typescript": "^4.4.4"
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "react": ">=16.8"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
   }
 }

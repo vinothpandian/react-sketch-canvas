@@ -1,24 +1,21 @@
-
-
 <p align="center">
   <img src="https://i.imgur.com/ajs39FC.png" height="150" alt="React Sketch Canvas" />
 </p>
 <br/>
 <h3 align="center">
-  Freehand vector drawing tool for React using SVG as canvas 🖌
+  Freehand vector drawing component for React using SVG as canvas 🖌
 </h3>
 <br/>
 <br/>
 <div align="center">
 
 ![npm](https://img.shields.io/npm/v/react-sketch-canvas?style=flat-square) &nbsp;&nbsp; ![NPM](https://img.shields.io/npm/l/react-sketch-canvas?style=flat-square) &nbsp;&nbsp; ![npm](https://img.shields.io/npm/dm/react-sketch-canvas?style=flat-square) <br/>
-![npm bundle size](https://img.shields.io/bundlephobia/min/react-sketch-canvas?style=flat-square) &nbsp;&nbsp; ![npm bundle size](https://img.shields.io/bundlephobia/minzip/react-sketch-canvas?style=flat-square)
+![npm bundle size](https://img.shields.io/bundlephobia/min/react-sketch-canvas?style=flat-square) &nbsp;&nbsp; ![npm bundle size](https://img.shields.io/bundlephobia/minzip/react-sketch-canvas?style=flat-square) <br/>
+[![codecov](https://codecov.io/gh/vinothpandian/react-sketch-canvas/branch/master/graph/badge.svg?token=NJcqGRgbSa)](https://codecov.io/gh/vinothpandian/react-sketch-canvas)
 <br/>
-This project was generated using [Nx](https://nx.dev).
+This project was generated using [DTS](https://github.com/weiran-zsd/dts-cli).
 
 </div>
-
-
 
 ## Overview
 
@@ -30,7 +27,6 @@ This project was generated using [Nx](https://nx.dev).
 ### Requirements
 
 - **<span style="color:red">**Requires React >= 16.4**</span>**
-- **Depends on [Immer]**
 
 ### Wanna test React Sketch Canvas before using it?
 
@@ -132,12 +128,13 @@ const Canvas = class extends React.Component {
 | strokeColor                        | PropTypes.string  | black         | Pen color                                                                                           |
 | canvasColor                        | PropTypes.string  | white         | canvas color (HTML colors)                                                                          |
 | backgroundImage                    | PropTypes.string  | ''            | Set SVG background with image URL                                                                   |
-| exportWithBackgroundImage          | PropTypes.bool    | true          | Keep background image on image/SVG export (on false, canvasColor will be set as background)         |
+| exportWithBackgroundImage          | PropTypes.bool    | false         | Keep background image on image/SVG export (on false, canvasColor will be set as background)         |
 | preserveBackgroundImageAspectRatio | PropTypes.string  | none          | Set aspect ratio of the background image. For possible values check [MDN docs][preserveaspectratio] |
 | strokeWidth                        | PropTypes.number  | 4             | Pen stroke size                                                                                     |
 | eraserWidth                        | PropTypes.number  | 8             | Erase size                                                                                          |
 | allowOnlyPointerType               | PropTypes.string  | all           | allow pointer type ("all"/"mouse"/"pen"/"touch")                                                    |
-| onUpdate                           | PropTypes.func    | all           | Returns the current sketch path in `CanvasPath` type on every update                                |
+| onChange                           | PropTypes.func    |               | Returns the current sketch path in `CanvasPath` type on every path change                           |
+| onStroke                           | PropTypes.func    |               | Returns the the last stroke path and whether it is an eraser stroke on every pointer up event       |
 | style                              | PropTypes.object  | false         | Add CSS styling as CSS-in-JS object                                                                 |
 | withTimestamp                      | PropTypes.bool    | false         | Add timestamp to individual strokes for measuring sketching time                                    |
 
@@ -192,12 +189,10 @@ interface CanvasPath {
 
 - Philipp Spiess' [tutorial][based-on]
 - Draws smooth curves, thanks to François Romain's [tutorial][smooth-curve-tutorial]
-- Immer [link][immer]
 
 ---
 
 [based-on]: https://pspdfkit.com/blog/2017/how-to-build-free-hand-drawing-using-react/
 [smooth-curve-tutorial]: https://medium.com/@francoisromain/smooth-a-svg-path-with-cubic-bezier-curves-e37b49d46c74
 [css-bg]: https://developer.mozilla.org/en-US/docs/Web/CSS/background
-[immer]: https://immerjs.github.io/immer/docs/introduction
 [preserveaspectratio]: https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/preserveAspectRatio

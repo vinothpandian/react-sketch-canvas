@@ -1,0 +1,18 @@
+{
+  "git": {
+    "commitMessage": "chore: release v${version}"
+  },
+  "github": {
+    "release": true,
+    "web": true,
+    "assets": ["dist/*"]
+  },
+  "hooks": {
+    "after:bump": "yarn build:prod",
+    "after:release": "echo Successfully released ${name} v${version} to ${repo.repository}."
+  },
+  "npm": {
+    "release": true,
+    "skipChecks": true
+  }
+}
