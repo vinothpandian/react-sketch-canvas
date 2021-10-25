@@ -27,7 +27,6 @@ This project was generated using [DTS](https://github.com/weiran-zsd/dts-cli).
 ### Requirements
 
 - **<span style="color:red">**Requires React >= 16.4**</span>**
-- **Depends on [Immer]**
 
 ### Wanna test React Sketch Canvas before using it?
 
@@ -190,12 +189,10 @@ interface CanvasPath {
 
 - Philipp Spiess' [tutorial][based-on]
 - Draws smooth curves, thanks to François Romain's [tutorial][smooth-curve-tutorial]
-- Immer [link][immer]
 
 ---
 
 [based-on]: https://pspdfkit.com/blog/2017/how-to-build-free-hand-drawing-using-react/
 [smooth-curve-tutorial]: https://medium.com/@francoisromain/smooth-a-svg-path-with-cubic-bezier-curves-e37b49d46c74
 [css-bg]: https://developer.mozilla.org/en-US/docs/Web/CSS/background
-[immer]: https://immerjs.github.io/immer/docs/introduction
 [preserveaspectratio]: https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/preserveAspectRatio
