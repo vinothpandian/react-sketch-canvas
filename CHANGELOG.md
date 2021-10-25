@@ -4,17 +4,22 @@
 
 ### Added
 
-- Upgraded all dependencies
-- Moved to DTS (tsdx fork) instead of nx
-- Add cypress tests
+- Add cypress tests for all props and events
 - Added `onStroke` prop to get last stroke on pointer up
 - Adds a point on click (without moving) #45
-- Fix partial transparent erase (eraser stroke color changed to black for masking) #44
+
+### Changed
+
+- Upgraded all dependencies
+- Moved to DTS (tsdx fork) instead of nx
+- Switched codebase to hook based implementation (support react >= 16.8)
+- Removed immer dependency
 
 ### Fixed
 
 - Changed React import to \* from React #40
 - Export image fails when the background is not an image [beta] #46
+- Fix partial transparent erase (eraser stroke color changed to black for masking, add maskUnits) #44
 
 ### Breaking changes
 
@@ -119,7 +124,7 @@ Added README :)
 
 - Fixed sketch offset issue when the canvas is scrolled
 
-#### Changed
+### Changed
 
 - Updated undo/redo/reset strategy
 - Updated demo in storybook
@@ -137,13 +142,13 @@ Added README :)
 
 ## [3.0.1]
 
-#### Changed
+### Changed
 
 - Moved immutable dependency from Canvas file
 
 ## [3.0.0]
 
-#### Changed
+### Changed
 
 Removed onUpdate feature and made the system modular
 
@@ -189,7 +194,7 @@ allowOnlyPointerType
 - Export and load paths
 - Erase mode and eraser width
 
-#### Changed
+### Changed
 
 - Rename exportAsImage() to exportImage() for naming consistency
 

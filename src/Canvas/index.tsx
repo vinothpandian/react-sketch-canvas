@@ -331,7 +331,11 @@ release drawing even when point goes out of canvas */
           )}
 
           {eraserPaths.map((_, i) => (
-            <mask id={`eraser-mask-${i}`} key={`eraser-mask-${i}`}>
+            <mask
+              id={`eraser-mask-${i}`}
+              key={`eraser-mask-${i}`}
+              maskUnits="userSpaceOnUse"
+            >
               <use href="#mask-background" />
               {Array.from(
                 { length: eraserPaths.length - i },
