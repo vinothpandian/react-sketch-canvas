@@ -1,12 +1,8 @@
-import { produce } from 'immer';
 import * as React from 'react';
 import { Canvas, CanvasRef } from '../Canvas';
 import { CanvasPath, ExportImageType, Point } from '../types';
 
-export type ReactSketchCanvasStates = {
-  undoStack: CanvasPath[];
-  currentPaths: CanvasPath[];
-};
+export type ReactSketchCanvasStates = {};
 
 /* Props validation */
 export interface ReactSketchCanvasProps {
@@ -69,13 +65,8 @@ export const ReactSketchCanvas = React.forwardRef<
   const [drawMode, setDrawMode] = React.useState<boolean>(true);
   const [isDrawing, setIsDrawing] = React.useState<boolean>(false);
   const [resetStack, setResetStack] = React.useState<CanvasPath[]>([]);
-
-  const [state, setState] = React.useState<ReactSketchCanvasStates>({
-    undoStack: [],
-    currentPaths: [],
-  });
-
-  const { undoStack, currentPaths } = state;
+  const [undoStack, setUndoStack] = React.useState<CanvasPath[]>([]);
+  const [currentPaths, setCurrentPaths] = React.useState<CanvasPath[]>([]);
 
   const liftStrokeUp = React.useCallback((): void => {
     const lastStroke = currentPaths.at(-1);
@@ -102,48 +93,29 @@ export const ReactSketchCanvas = React.forwardRef<
     },
     clearCanvas: (): void => {
       setResetStack([...currentPaths]);
-      setState(
-        produce((draft: ReactSketchCanvasStates) => {
-          draft.currentPaths = [];
-        })
-      );
+      setCurrentPaths([]);
     },
     undo: (): void => {
       // If there was a last reset then
       if (resetStack.length !== 0) {
-        setState(
-          produce((draft: ReactSketchCanvasStates) => {
-            draft.currentPaths = resetStack;
-          })
-        );
+        setCurrentPaths([...resetStack]);
         setResetStack([]);
 
         return;
       }
 
-      setState(
-        produce((draft: ReactSketchCanvasStates) => {
-          const lastSketchPath = draft.currentPaths.pop();
-
-          if (lastSketchPath) {
-            draft.undoStack.push(lastSketchPath);
-          }
-        })
-      );
+      setUndoStack((undoStack) => [...undoStack, ...currentPaths.slice(-1)]);
+      setCurrentPaths((currentPaths) => currentPaths.slice(0, -1));
     },
     redo: (): void => {
       // Nothing to Redo
       if (undoStack.length === 0) return;
 
-      setState(
-        produce((draft: ReactSketchCanvasStates) => {
-          const lastUndoPath = draft.undoStack.pop();
-
-          if (lastUndoPath) {
-            draft.currentPaths.push(lastUndoPath);
-          }
-        })
-      );
+      setCurrentPaths((currentPaths) => [
+        ...currentPaths,
+        ...undoStack.slice(-1),
+      ]);
+      setUndoStack((undoStack) => undoStack.slice(0, -1));
     },
     exportImage: (imageType: ExportImageType): Promise<string> => {
       const exportImage = svgCanvas.current?.exportImage;
@@ -181,11 +153,7 @@ export const ReactSketchCanvas = React.forwardRef<
       });
     },
     loadPaths: (paths: CanvasPath[]): void => {
-      setState(
-        produce((draft: ReactSketchCanvasStates) => {
-          draft.currentPaths = draft.currentPaths.concat(paths);
-        })
-      );
+      setCurrentPaths((currentPaths) => [...currentPaths, ...paths]);
     },
     getSketchingTime: (): Promise<number> => {
       return new Promise<number>((resolve, reject) => {
@@ -212,48 +180,45 @@ export const ReactSketchCanvas = React.forwardRef<
     },
     resetCanvas: (): void => {
       setResetStack([]);
-      setState({
-        undoStack: [],
-        currentPaths: [],
-      });
+      setUndoStack([]);
+      setCurrentPaths([]);
     },
   }));
 
   const handlePointerDown = (point: Point): void => {
     setIsDrawing(true);
-    setState(
-      produce((draft: ReactSketchCanvasStates) => {
-        draft.undoStack = [];
+    setUndoStack([]);
 
-        let stroke: CanvasPath = {
-          drawMode: drawMode,
-          strokeColor: drawMode ? strokeColor : '#000000', // Eraser using mask
-          strokeWidth: drawMode ? strokeWidth : eraserWidth,
-          paths: [point],
-        };
+    let stroke: CanvasPath = {
+      drawMode: drawMode,
+      strokeColor: drawMode ? strokeColor : '#000000', // Eraser using mask
+      strokeWidth: drawMode ? strokeWidth : eraserWidth,
+      paths: [point],
+    };
 
-        if (withTimestamp) {
-          stroke = {
-            ...stroke,
-            startTimestamp: Date.now(),
-            endTimestamp: 0,
-          };
-        }
+    if (withTimestamp) {
+      stroke = {
+        ...stroke,
+        startTimestamp: Date.now(),
+        endTimestamp: 0,
+      };
+    }
 
-        draft.currentPaths.push(stroke);
-      })
-    );
+    setCurrentPaths((currentPaths) => [...currentPaths, stroke]);
   };
 
   const handlePointerMove = (point: Point): void => {
     if (!isDrawing) return;
 
-    setState(
-      produce((draft: ReactSketchCanvasStates) => {
-        const currentStroke = draft.currentPaths[draft.currentPaths.length - 1];
-        currentStroke.paths.push(point);
-      })
-    );
+    const currentStroke = currentPaths.slice(-1)[0];
+    const updatedStroke = {
+      ...currentStroke,
+      paths: [...currentStroke.paths, point],
+    };
+    setCurrentPaths((currentPaths) => [
+      ...currentPaths.slice(0, -1),
+      updatedStroke,
+    ]);
   };
 
   const handlePointerUp = (): void => {
@@ -263,24 +228,25 @@ export const ReactSketchCanvas = React.forwardRef<
 
     setIsDrawing(false);
 
-    setState(
-      produce((draft: ReactSketchCanvasStates) => {
-        if (!withTimestamp) {
-          return;
-        }
+    if (!withTimestamp) {
+      return;
+    }
 
-        let currentStroke: CanvasPath | undefined = draft.currentPaths.pop();
+    let currentStroke = currentPaths.slice(-1)?.[0] ?? null;
 
-        if (currentStroke) {
-          currentStroke = {
-            ...currentStroke,
-            endTimestamp: Date.now(),
-          };
+    if (currentStroke === null) {
+      return;
+    }
 
-          draft.currentPaths.push(currentStroke);
-        }
-      })
-    );
+    const updatedStroke = {
+      ...currentStroke,
+      endTimestamp: Date.now(),
+    };
+
+    setCurrentPaths((currentPaths) => [
+      ...currentPaths.slice(0, -1),
+      updatedStroke,
+    ]);
   };
 
   return (
