@@ -1,5 +1,45 @@
-## Changelog
+# Changelog
 
+## [6.0.2]
+
+### Added
+
+- Add cypress tests for all props and events
+- Added `onStroke` prop to get last stroke on pointer up
+- Adds a point on click (without moving) #45
+
+### Changed
+
+- Upgraded all dependencies
+- Moved to DTS (tsdx fork) instead of nx
+- Switched codebase to hook based implementation (support react >= 16.8)
+- Removed immer dependency
+
+### Fixed
+
+- Changed React import to \* from React #40
+- Export image fails when the background is not an image [beta] #46
+- Fix partial transparent erase (eraser stroke color changed to black for masking, add maskUnits) #44
+
+### Breaking changes
+
+- Renamed `onUpdate` to `onChange`
+
+## [6.0.1-beta]
+
+### Added
+
+- Upgraded all dependencies
+- Updated directory structure
+- Added background image rendering directly in SVG
+- Added option to export background image while exporting the canvas as image or SVG
+- Added background image aspect ratio control
+- Updated erase option to use mask instead of canvas color
+- Add github action for deployment of storybook and package
+
+### Breaking changes
+
+- Removed background option to set background image using CSS-in-JS (instead check feature-filled backgroundImage prop)
 
 ## [5.3.5]
 
@@ -9,30 +49,30 @@
 
 ## [5.3.4]
 
-## Added
+### Added
 
 - Switched to Nx
 - Updated documentation
 
-## Changed
+### Changed
 
 - Removed pepjs. Can be polyfilled by the web app directly instead
 
 ## [5.3.3]
 
-## Fixed
+### Fixed
 
 - add support any version above react 16.4
- 
+
 ## [5.3.2]
 
-## Fixed
+### Fixed
 
 - Bump dependency versions
-  
+
 ## [5.3.1]
 
-## Fixed
+### Fixed
 
 - Set default value of `allowOnlyPointerType` as `'all'` again
 

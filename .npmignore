@@ -1,0 +1,17 @@
+.DS_Store
+.cache
+.vscode
+.dependabot
+node_modules
+example/
+cypress/
+.env
+tsconfig.json
+src/
+.github
+.nyc_output/
+coverage/
+jest-coverage/
+cypress-coverage/
+reports/
+cypress.json
