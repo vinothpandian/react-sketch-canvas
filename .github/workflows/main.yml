@@ -23,7 +23,9 @@ jobs:
         run: npm install -g yarn
 
       - name: Install deps and build (with cache)
-        run: yarn install --frozen-lockfile --silent
+        run: |
+          yarn install --frozen-lockfile --silent
+          yarn install:example
 
       - name: Lint
         run: yarn lint
