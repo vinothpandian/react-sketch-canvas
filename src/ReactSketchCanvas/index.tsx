@@ -42,7 +42,7 @@ export const ReactSketchCanvas = React.forwardRef<
   ReactSketchCanvasProps
 >((props, ref) => {
   const {
-    id="react-sketch-canvas",
+    id = 'react-sketch-canvas',
     width = '100%',
     height = '100%',
     className = '',
@@ -71,9 +71,9 @@ export const ReactSketchCanvas = React.forwardRef<
   const [currentPaths, setCurrentPaths] = React.useState<CanvasPath[]>([]);
 
   const liftStrokeUp = React.useCallback((): void => {
-    const lastStroke = currentPaths.at(-1);
+    const lastStroke = currentPaths.slice(-1)?.[0] ?? null;
 
-    if (lastStroke === undefined) {
+    if (lastStroke === null) {
       console.warn('No stroke found!');
       return;
     }
