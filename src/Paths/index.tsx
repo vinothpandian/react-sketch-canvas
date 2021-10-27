@@ -132,16 +132,17 @@ export const bezierCommand = (point: Point, i: number, a: Point[]): string => {
 };
 
 type PathProps = {
+  id: string;
   paths: CanvasPath[];
 };
 
-const Paths = ({ paths }: PathProps): JSX.Element => (
+const Paths = ({ id, paths }: PathProps): JSX.Element => (
   <React.Fragment>
-    {paths.map((path: CanvasPath, id: number) => (
+    {paths.map((path: CanvasPath, index: number) => (
       <SvgPath
-        key={id.toString()}
+        key={`${id}__${index}`}
         paths={path.paths}
-        id={id.toString()}
+        id={`${id}__${index}`}
         strokeWidth={path.strokeWidth}
         strokeColor={path.strokeColor}
         command={bezierCommand}

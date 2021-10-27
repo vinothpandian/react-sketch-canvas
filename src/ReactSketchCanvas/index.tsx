@@ -6,6 +6,7 @@ export type ReactSketchCanvasStates = {};
 
 /* Props validation */
 export interface ReactSketchCanvasProps {
+  id?: string;
   width?: string;
   height?: string;
   className?: string;
@@ -41,6 +42,7 @@ export const ReactSketchCanvas = React.forwardRef<
   ReactSketchCanvasProps
 >((props, ref) => {
   const {
+    id="react-sketch-canvas",
     width = '100%',
     height = '100%',
     className = '',
@@ -252,6 +254,7 @@ export const ReactSketchCanvas = React.forwardRef<
   return (
     <Canvas
       ref={svgCanvas}
+      id={id}
       width={width}
       height={height}
       className={className}

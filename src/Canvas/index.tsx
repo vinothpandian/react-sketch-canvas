@@ -32,10 +32,11 @@ function getCanvasWithViewBox(canvas: HTMLDivElement) {
 export interface CanvasProps {
   paths: CanvasPath[];
   isDrawing: boolean;
-  className: string;
   onPointerDown: (point: Point) => void;
   onPointerMove: (point: Point) => void;
   onPointerUp: () => void;
+  className?: string;
+  id?: string;
   width: string;
   height: string;
   canvasColor: string;
@@ -58,9 +59,10 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
     onPointerDown,
     onPointerMove,
     onPointerUp,
+    id = 'react-sketch-canvas',
     width = '100%',
     height = '100%',
-    className = '',
+    className = 'react-sketch-canvas',
     canvasColor = 'red',
     backgroundImage = '',
     exportWithBackgroundImage = false,
@@ -218,9 +220,9 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
               return;
             }
 
-            svgCanvas.querySelector('#background')?.remove();
+            svgCanvas.querySelector(`#${id}__background`)?.remove();
             svgCanvas
-              .querySelector('#canvas-background')
+              .querySelector(`#${id}__canvas-background`)
               ?.setAttribute('fill', canvasColor);
 
             resolve(svgCanvas.outerHTML);
@@ -289,10 +291,11 @@ release drawing even when point goes out of canvas */
           width: '100%',
           height: '100%',
         }}
+        id={id}
       >
-        <g id="eraser-stroke-group" display="none">
+        <g id={`${id}__eraser-stroke-group`} display="none">
           <rect
-            id="mask-background"
+            id={`${id}__mask-background`}
             x="0"
             y="0"
             width="100%"
@@ -301,8 +304,8 @@ release drawing even when point goes out of canvas */
           />
           {eraserPaths.map((eraserPath, i) => (
             <SvgPath
-              key={`eraser-${i}`}
-              id={`eraser-${i}`}
+              key={`${id}__eraser-${i}`}
+              id={`${id}__eraser-${i}`}
               paths={eraserPath.paths}
               strokeColor="#000000"
               strokeWidth={eraserPath.strokeWidth}
@@ -312,7 +315,7 @@ release drawing even when point goes out of canvas */
         <defs>
           {backgroundImage && (
             <pattern
-              id="background"
+              id={`${id}__background`}
               x="0"
               y="0"
               width="100%"
@@ -332,37 +335,40 @@ release drawing even when point goes out of canvas */
 
           {eraserPaths.map((_, i) => (
             <mask
-              id={`eraser-mask-${i}`}
-              key={`eraser-mask-${i}`}
+              id={`${id}__eraser-mask-${i}`}
+              key={`${id}__eraser-mask-${i}`}
               maskUnits="userSpaceOnUse"
             >
-              <use href="#mask-background" />
+              <use href={`#${id}__mask-background`} />
               {Array.from(
                 { length: eraserPaths.length - i },
                 (_, j) => j + i
               ).map((k) => (
-                <use key={k.toString()} href={`#eraser-${k.toString()}`} />
+                <use
+                  key={k.toString()}
+                  href={`#${id}__eraser-${k.toString()}`}
+                />
               ))}
             </mask>
           ))}
         </defs>
-        <g id="canvas-background-group">
+        <g id={`${id}__canvas-background-group`}>
           <rect
-            id="canvas-background"
+            id={`${id}__canvas-background`}
             x="0"
             y="0"
             width="100%"
             height="100%"
-            fill={backgroundImage ? 'url(#background)' : canvasColor}
+            fill={backgroundImage ? `url(#${id}__background)` : canvasColor}
           />
         </g>
         {pathGroups.map((pathGroup, i) => (
           <g
-            id={`stroke-group-${i}`}
-            key={`stroke-group-${i}`}
-            mask={`url(#eraser-mask-${i})`}
+            id={`${id}__stroke-group-${i}`}
+            key={`${id}__stroke-group-${i}`}
+            mask={`url(#${id}__eraser-mask-${i})`}
           >
-            <Paths paths={pathGroup} />
+            <Paths id={id} paths={pathGroup} />
           </g>
         ))}
       </svg>
