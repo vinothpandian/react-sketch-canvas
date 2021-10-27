@@ -1,5 +1,13 @@
 # Changelog
 
+## [6.0.3]
+
+### Fixed
+
+- Fix Package cannot be installed via npm #51
+- update contributing.md
+- update github actions
+
 ## [6.0.2]
 
 ### Added
