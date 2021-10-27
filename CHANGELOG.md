@@ -5,6 +5,7 @@
 ### Added
 
 - Added optional id props to uniquely identify a sketch canvas
+- Upgraded dependencies
 
 ## Changed
 
@@ -13,6 +14,7 @@
 ### Fixed
 
 - Fix multiple ReactSketchCanvas in one page causes issues due to id="background" #52
+- ReactSketchCanvas doesn't work on safari. #53
 
 ## [6.0.3]
 
