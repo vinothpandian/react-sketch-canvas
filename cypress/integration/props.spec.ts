@@ -1,9 +1,31 @@
-import { ReactSketchCanvasProps } from 'react-sketch-canvas';
+import { ReactSketchCanvasProps } from '../../src';
 
 let defaultProps: Partial<ReactSketchCanvasProps>;
+let backgroundImagePatternId: string;
+let backgroundFill: string;
+let firstStrokeGroupId: string;
+let eraserStrokeGroupId: string;
+
+let firstCircleId: string;
+let canvasBackgroundId: string;
+let firstEraserCircleId: string;
+
+const exportedSvgId = '#exported-svg';
+const exportedImageId = '#exported-image';
+const sketchingTimeId = '#sketchingTime';
 
 before(() => {
-  cy.fixture('props.json').then((props) => (defaultProps = props));
+  cy.fixture('props.json').then((props: Partial<ReactSketchCanvasProps>) => {
+    defaultProps = props;
+    canvasBackgroundId = `#${props.id}__canvas-background`;
+    backgroundImagePatternId = `pattern#${props.id}__background image`;
+    backgroundFill = `url(#${props.id}__background)`;
+    firstStrokeGroupId = `#${props.id}__stroke-group-0`;
+    eraserStrokeGroupId = `#${props.id}__eraser-stroke-group`;
+
+    firstCircleId = `circle#${props.id}__0`;
+    firstEraserCircleId = `circle#${props.id}__eraser-0`;
+  });
 });
 
 beforeEach(() => {
@@ -55,9 +77,9 @@ it('should update className on props change', () => {
 it('should update backgroundImage on props change', () => {
   const updatedBackgroundImage = 'https://i.imgur.com/jx47T07.jpeg';
 
-  cy.get('#canvas-background').should('have.attr', 'fill', 'url(#background)');
+  cy.get(canvasBackgroundId).should('have.attr', 'fill', backgroundFill);
 
-  cy.get('pattern#background image')
+  cy.get(backgroundImagePatternId)
     .as('backgroundImage')
     .should('have.attr', 'xlink:href', defaultProps.backgroundImage);
 
@@ -65,7 +87,7 @@ it('should update backgroundImage on props change', () => {
     .clear()
     .type(updatedBackgroundImage);
 
-  cy.get('#canvas-background').should('have.attr', 'fill', 'url(#background)');
+  cy.get(canvasBackgroundId).should('have.attr', 'fill', backgroundFill);
   cy.get('@backgroundImage').should(
     'have.attr',
     'xlink:href',
@@ -76,7 +98,7 @@ it('should update backgroundImage on props change', () => {
 it('should update preserveAspectRatio of the background image', () => {
   const updatedPreserveAspectRatio = 'xMidYMid meet';
 
-  cy.get('pattern#background image')
+  cy.get(backgroundImagePatternId)
     .as('backgroundImage')
     .should(
       'have.attr',
@@ -101,7 +123,7 @@ it('should change stroke width', () => {
   const updatedStrokeWidth = '8';
 
   cy.drawLine(100, 100, 100);
-  cy.get('#stroke-group-0')
+  cy.get(firstStrokeGroupId)
     .find('path')
     .first()
     .should('have.attr', 'stroke-width', defaultProps.strokeWidth.toString());
@@ -111,7 +133,7 @@ it('should change stroke width', () => {
     .type(updatedStrokeWidth);
 
   cy.drawLine(50, 50, 100);
-  cy.get('#stroke-group-0')
+  cy.get(firstStrokeGroupId)
     .find('path')
     .last()
     .should('have.attr', 'stroke-width', updatedStrokeWidth);
@@ -121,7 +143,7 @@ it('should change eraser width', () => {
   const updatedEraserWidth = '8';
   cy.findByRole('button', { name: /eraser/i }).click();
   cy.drawLine(100, 100, 100);
-  cy.get('#eraser-stroke-group')
+  cy.get(eraserStrokeGroupId)
     .find('path')
     .first()
     .should('have.attr', 'stroke-width', defaultProps.eraserWidth.toString());
@@ -131,7 +153,7 @@ it('should change eraser width', () => {
     .type(updatedEraserWidth);
 
   cy.drawLine(50, 50, 100);
-  cy.get('#eraser-stroke-group')
+  cy.get(eraserStrokeGroupId)
     .find('path')
     .last()
     .should('have.attr', 'stroke-width', updatedEraserWidth);
@@ -140,7 +162,7 @@ it('should change eraser width', () => {
 it('should change stroke color', () => {
   const updatedStrokeColor = '#FF0000';
   cy.drawLine(100, 100, 100);
-  cy.get('#stroke-group-0')
+  cy.get(firstStrokeGroupId)
     .find('path')
     .first()
     .should('have.attr', 'stroke', defaultProps.strokeColor);
@@ -151,14 +173,14 @@ it('should change stroke color', () => {
     .trigger('change');
 
   cy.drawLine(50, 50, 100);
-  cy.get('#stroke-group-0')
+  cy.get(firstStrokeGroupId)
     .find('path')
     .last()
     .should('have.attr', 'stroke', updatedStrokeColor.toLowerCase());
 });
 
 it('should change canvas color', () => {
-  cy.get('#canvas-background').should('have.attr', 'fill', 'url(#background)');
+  cy.get(canvasBackgroundId).should('have.attr', 'fill', backgroundFill);
 
   const updatedCanvasColor = '#FF0000';
   cy.findByLabelText(/canvasColor/i)
@@ -166,7 +188,7 @@ it('should change canvas color', () => {
     .invoke('val', updatedCanvasColor)
     .trigger('change');
 
-  cy.get('#canvas-background').should(
+  cy.get(canvasBackgroundId).should(
     'have.attr',
     'fill',
     updatedCanvasColor.toLowerCase()
@@ -176,11 +198,12 @@ it('should change canvas color', () => {
 describe('exportWithBackgroundImage', () => {
   it('should export svg with background when enabled and canvas color background when disabled', () => {
     cy.findByRole('button', { name: /export svg/i }).click();
-    cy.get('#exported-svg #canvas-background')
-      .as('exportedCanvasBackground')
-      .should('have.attr', 'fill', 'url(#background)');
 
-    cy.get('#exported-svg pattern#background image').should(
+    cy.get(`${exportedSvgId} ${canvasBackgroundId}`)
+      .as('exportedCanvasBackground')
+      .should('have.attr', 'fill', backgroundFill);
+
+    cy.get(`${exportedSvgId} ${backgroundImagePatternId}`).should(
       'have.attr',
       'xlink:href',
       defaultProps.backgroundImage
@@ -199,7 +222,7 @@ describe('exportWithBackgroundImage', () => {
   it('should export png with background when enabled and canvas color background when disabled', () => {
     cy.findByRole('button', { name: /export image/i }).click();
 
-    cy.get('#exported-image')
+    cy.get(exportedImageId)
       .should('have.attr', 'src')
       .and('match', /^data:image\/png;base64/i)
       .convertDataURIToKiloBytes()
@@ -209,7 +232,7 @@ describe('exportWithBackgroundImage', () => {
 
     cy.findByRole('button', { name: /export image/i }).click();
 
-    cy.get('#exported-image')
+    cy.get(exportedImageId)
       .should('have.attr', 'src')
       .and('match', /^data:image\/png;base64/i)
       .convertDataURIToKiloBytes()
@@ -225,7 +248,7 @@ describe('exportWithBackgroundImage', () => {
     cy.findByRole('radio', { name: /jpeg/i }).click();
     cy.findByRole('button', { name: /export image/i }).click();
 
-    cy.get('#exported-image')
+    cy.get(exportedImageId)
       .should('have.attr', 'src')
       .and('match', /^data:image\/jpeg;base64/i)
       .convertDataURIToKiloBytes()
@@ -235,7 +258,7 @@ describe('exportWithBackgroundImage', () => {
 
     cy.findByRole('button', { name: /export image/i }).click();
 
-    cy.get('#exported-image')
+    cy.get(exportedImageId)
       .should('have.attr', 'src')
       .and('match', /^data:image\/jpeg;base64/i)
       .convertDataURIToKiloBytes()
@@ -253,7 +276,7 @@ it('should throw exception when attempted to get sketching time when withTimesta
     `${(sketchingTime / 1000).toFixed(3)} sec`;
 
   const initialTime = 0;
-  cy.get('#sketchingTime')
+  cy.get(sketchingTimeId)
     .as('sketchingTimeContainer')
     .should('contain.text', getSketchingTimeInString(initialTime));
 
@@ -281,40 +304,40 @@ describe('allowOnlyPointerType', () => {
     cy.drawLine(100, 50, 10, 'touch');
     cy.drawLine(200, 100, 10, 'pen');
 
-    cy.get('#stroke-group-0').find('path').should('have.length', 3);
+    cy.get(firstStrokeGroupId).find('path').should('have.length', 3);
   });
 
   it('should allow sketching only with mouse when allowOnlyPointerType is set as mouse', () => {
     cy.findByRole('radio', { name: /mouse/i }).click();
 
     cy.drawLine(50, 0, 10, 'mouse');
-    cy.get('#stroke-group-0').find('path').should('have.length', 1);
+    cy.get(firstStrokeGroupId).find('path').should('have.length', 1);
     cy.drawLine(100, 50, 10, 'touch');
     cy.drawLine(200, 100, 10, 'pen');
 
-    cy.get('#stroke-group-0').find('path').should('have.length', 1);
+    cy.get(firstStrokeGroupId).find('path').should('have.length', 1);
   });
 
   it('should allow sketching only with touch when allowOnlyPointerType is set as touch', () => {
     cy.findByRole('radio', { name: /touch/i }).click();
 
     cy.drawLine(50, 0, 10, 'touch');
-    cy.get('#stroke-group-0').find('path').should('have.length', 1);
+    cy.get(firstStrokeGroupId).find('path').should('have.length', 1);
     cy.drawLine(100, 50, 10, 'mouse');
     cy.drawLine(200, 100, 10, 'pen');
 
-    cy.get('#stroke-group-0').find('path').should('have.length', 1);
+    cy.get(firstStrokeGroupId).find('path').should('have.length', 1);
   });
 
   it('should allow sketching only with pen when allowOnlyPointerType is set as pen', () => {
     cy.findByRole('radio', { name: /pen/i }).click();
 
     cy.drawLine(50, 0, 10, 'pen');
-    cy.get('#stroke-group-0').find('path').should('have.length', 1);
+    cy.get(firstStrokeGroupId).find('path').should('have.length', 1);
     cy.drawLine(100, 50, 10, 'mouse');
     cy.drawLine(200, 100, 10, 'touch');
 
-    cy.get('#stroke-group-0').find('path').should('have.length', 1);
+    cy.get(firstStrokeGroupId).find('path').should('have.length', 1);
   });
 });
 
@@ -432,7 +455,7 @@ describe('point', () => {
     cy.drawPoint(x, y);
 
     cy.getCanvas()
-      .find('circle#0')
+      .find(firstCircleId)
       .should('have.attr', 'r', defaultProps.strokeWidth / 2)
       .should('have.attr', 'cx', x)
       .should('have.attr', 'cy', y);
@@ -447,7 +470,7 @@ describe('point', () => {
     cy.drawPoint(x, y);
 
     cy.getCanvas()
-      .find('circle#eraser-0')
+      .find(firstEraserCircleId)
       .should('have.attr', 'r', defaultProps.eraserWidth / 2)
       .should('have.attr', 'cx', x)
       .should('have.attr', 'cy', y);

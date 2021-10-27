@@ -1,11 +1,28 @@
-import { CanvasPath, ReactSketchCanvasProps } from 'react-sketch-canvas';
+import { ReactSketchCanvasProps } from '../../src';
 
 let defaultProps: Partial<ReactSketchCanvasProps>;
 let canvasPathWithEraser: CanvasPath;
 let canvasPathWithOnlyPen: CanvasPath;
 
+let firstStrokeGroupId: string;
+let eraserStrokeGroupId: string;
+let firstEraserMask: string;
+let firstEraserMaskId: string;
+let canvasBackgroundId: string;
+
+const exportedImageId = '#exported-image';
+const exportedSvgId = '#exported-svg';
+
 before(() => {
-  cy.fixture('props.json').then((props) => (defaultProps = props));
+  cy.fixture('props.json').then((props: Partial<ReactSketchCanvasProps>) => {
+    defaultProps = props;
+    firstStrokeGroupId = `#${props.id}__stroke-group-0`;
+    canvasBackgroundId = `#${props.id}__canvas-background`;
+    eraserStrokeGroupId = `#${props.id}__eraser-stroke-group`;
+    firstEraserMaskId = `${props.id}__eraser-mask-0`;
+    firstEraserMask = `mask#${firstEraserMaskId}`;
+  });
+
   cy.fixture('canvasPath/onlyPen.json').then(
     (onlyPen) => (canvasPathWithOnlyPen = onlyPen)
   );
@@ -24,11 +41,11 @@ it('should trigger erase mode and add a mask for erasing previous strokes', () =
   cy.findByRole('button', { name: /eraser/i }).click();
   cy.drawSquare(100, 150, 50, 'pen');
 
-  cy.get('#eraser-stroke-group').find('path').should('have.length', 1);
-  cy.get('mask#eraser-mask-0').find('use').should('have.length', 2); // background + one mask path
+  cy.get(eraserStrokeGroupId).find('path').should('have.length', 1);
+  cy.get(firstEraserMask).find('use').should('have.length', 2); // background + one mask path
 
-  cy.get('#stroke-group-0')
-    .should('have.attr', 'mask', 'url(#eraser-mask-0)')
+  cy.get(firstStrokeGroupId)
+    .should('have.attr', 'mask', `url(#${firstEraserMaskId})`)
     .find('path')
     .should('have.length', 1);
 
@@ -38,9 +55,10 @@ it('should trigger erase mode and add a mask for erasing previous strokes', () =
   cy.findByRole('button', { name: /eraser/i }).click();
   cy.drawSquare(100, 150, 50, 'pen');
 
-  cy.get('#eraser-stroke-group').find('path').should('have.length', 2);
-  cy.get('mask#eraser-mask-0').find('use').should('have.length', 3); // background + two mask paths
-  cy.get('mask#eraser-mask-1').find('use').should('have.length', 2); // background + one mask path
+  cy.get(eraserStrokeGroupId).find('path').should('have.length', 2);
+  cy.get(firstEraserMask).find('use').should('have.length', 3); // background + two mask paths
+  const secondEraserMaskId = firstEraserMask.slice(0, -1) + '1';
+  cy.get(secondEraserMaskId).find('use').should('have.length', 2); // background + one mask path
 });
 
 describe('undo', () => {
@@ -59,12 +77,12 @@ describe('undo', () => {
     cy.drawSquare(100, 150, 50, 'pen');
 
     cy.getCanvas().find('path').should('have.length', 2);
-    cy.get('#eraser-stroke-group').find('path').should('have.length', 1);
-    cy.get('mask#eraser-mask-0').find('use').should('have.length', 2); // background + one mask path
+    cy.get(eraserStrokeGroupId).find('path').should('have.length', 1);
+    cy.get(firstEraserMask).find('use').should('have.length', 2); // background + one mask path
 
     cy.findByRole('button', { name: /undo/i }).click();
     cy.getCanvas().find('path').should('have.length', 1);
-    cy.get('#eraser-stroke-group').find('path').should('have.length', 0);
+    cy.get(eraserStrokeGroupId).find('path').should('have.length', 0);
   });
 });
 
@@ -87,18 +105,18 @@ describe('redo', () => {
     cy.drawSquare(100, 150, 50, 'pen');
 
     cy.getCanvas().find('path').should('have.length', 2);
-    cy.get('#eraser-stroke-group').find('path').should('have.length', 1);
-    cy.get('mask#eraser-mask-0').find('use').should('have.length', 2); // background + one mask path
+    cy.get(eraserStrokeGroupId).find('path').should('have.length', 1);
+    cy.get(firstEraserMask).find('use').should('have.length', 2); // background + one mask path
 
     cy.findByRole('button', { name: /undo/i }).click();
     cy.getCanvas().find('path').should('have.length', 1);
-    cy.get('#eraser-stroke-group').find('path').should('have.length', 0);
-    cy.get('mask#eraser-mask-0').should('not.exist');
+    cy.get(eraserStrokeGroupId).find('path').should('have.length', 0);
+    cy.get(firstEraserMask).should('not.exist');
 
     cy.findByRole('button', { name: /redo/i }).click();
     cy.getCanvas().find('path').should('have.length', 2);
-    cy.get('#eraser-stroke-group').find('path').should('have.length', 1);
-    cy.get('mask#eraser-mask-0').find('use').should('have.length', 2); // background + one mask path
+    cy.get(eraserStrokeGroupId).find('path').should('have.length', 1);
+    cy.get(firstEraserMask).find('use').should('have.length', 2); // background + one mask path
   });
 });
 
@@ -124,21 +142,21 @@ describe('clearCanvas', () => {
     cy.drawSquare(100, 150, 50, 'pen');
 
     cy.getCanvas().find('path').should('have.length', 2);
-    cy.get('#eraser-stroke-group').find('path').should('have.length', 1);
-    cy.get('mask#eraser-mask-0').find('use').should('have.length', 2); // background + one mask path
+    cy.get(eraserStrokeGroupId).find('path').should('have.length', 1);
+    cy.get(firstEraserMask).find('use').should('have.length', 2); // background + one mask path
 
     cy.findByRole('button', { name: /clear all/i }).click();
     cy.getCanvas().find('path').should('have.length', 0);
-    cy.get('mask#eraser-mask-0').should('not.exist');
+    cy.get(firstEraserMask).should('not.exist');
 
     cy.findByRole('button', { name: /redo/i }).click();
     cy.getCanvas().find('path').should('have.length', 0);
-    cy.get('mask#eraser-mask-0').should('not.exist');
+    cy.get(firstEraserMask).should('not.exist');
 
     cy.findByRole('button', { name: /undo/i }).click();
     cy.getCanvas().find('path').should('have.length', 2);
-    cy.get('#eraser-stroke-group').find('path').should('have.length', 1);
-    cy.get('mask#eraser-mask-0').find('use').should('have.length', 2); // background + one mask path
+    cy.get(eraserStrokeGroupId).find('path').should('have.length', 1);
+    cy.get(firstEraserMask).find('use').should('have.length', 2); // background + one mask path
   });
 });
 
@@ -164,20 +182,20 @@ describe('resetCanvas', () => {
     cy.drawSquare(100, 150, 50, 'pen');
 
     cy.getCanvas().find('path').should('have.length', 2);
-    cy.get('#eraser-stroke-group').find('path').should('have.length', 1);
-    cy.get('mask#eraser-mask-0').find('use').should('have.length', 2); // background + one mask path
+    cy.get(eraserStrokeGroupId).find('path').should('have.length', 1);
+    cy.get(firstEraserMask).find('use').should('have.length', 2); // background + one mask path
 
     cy.findByRole('button', { name: /reset all/i }).click();
     cy.getCanvas().find('path').should('have.length', 0);
-    cy.get('mask#eraser-mask-0').should('not.exist');
+    cy.get(firstEraserMask).should('not.exist');
 
     cy.findByRole('button', { name: /redo/i }).click();
     cy.getCanvas().find('path').should('have.length', 0);
-    cy.get('mask#eraser-mask-0').should('not.exist');
+    cy.get(firstEraserMask).should('not.exist');
 
     cy.findByRole('button', { name: /undo/i }).click();
     cy.getCanvas().find('path').should('have.length', 0);
-    cy.get('mask#eraser-mask-0').should('not.exist');
+    cy.get(firstEraserMask).should('not.exist');
   });
 });
 
@@ -194,7 +212,7 @@ describe('exportImage - png', () => {
   it('should export png with stroke', () => {
     cy.findByRole('button', { name: /export image/i }).click();
 
-    cy.get('#exported-image')
+    cy.get(exportedImageId)
       .should('have.attr', 'src')
       .and('match', /^data:image\/png;base64/i)
       .convertDataURIToKiloBytes()
@@ -204,7 +222,7 @@ describe('exportImage - png', () => {
 
     cy.findByRole('button', { name: /export image/i }).click();
 
-    cy.get('#exported-image')
+    cy.get(exportedImageId)
       .should('have.attr', 'src')
       .and('match', /^data:image\/png;base64/i)
       .convertDataURIToKiloBytes()
@@ -219,7 +237,7 @@ describe('exportImage - png', () => {
   it('should export png with stroke and eraser', () => {
     cy.findByRole('button', { name: /export image/i }).click();
 
-    cy.get('#exported-image')
+    cy.get(exportedImageId)
       .should('have.attr', 'src')
       .and('match', /^data:image\/png;base64/i)
       .convertDataURIToKiloBytes()
@@ -231,7 +249,7 @@ describe('exportImage - png', () => {
 
     cy.findByRole('button', { name: /export image/i }).click();
 
-    cy.get('#exported-image')
+    cy.get(exportedImageId)
       .should('have.attr', 'src')
       .and('match', /^data:image\/png;base64/i)
       .convertDataURIToKiloBytes()
@@ -250,7 +268,7 @@ describe('exportImage - png', () => {
     }).click();
     cy.findByRole('button', { name: /export image/i }).click();
 
-    cy.get('#exported-image')
+    cy.get(exportedImageId)
       .should('have.attr', 'src')
       .and('match', /^data:image\/png;base64/i)
       .convertDataURIToKiloBytes()
@@ -260,7 +278,7 @@ describe('exportImage - png', () => {
 
     cy.findByRole('button', { name: /export image/i }).click();
 
-    cy.get('#exported-image')
+    cy.get(exportedImageId)
       .should('have.attr', 'src')
       .and('match', /^data:image\/png;base64/i)
       .convertDataURIToKiloBytes()
@@ -279,7 +297,7 @@ describe('exportImage - png', () => {
     }).click();
     cy.findByRole('button', { name: /export image/i }).click();
 
-    cy.get('#exported-image')
+    cy.get(exportedImageId)
       .should('have.attr', 'src')
       .and('match', /^data:image\/png;base64/i)
       .convertDataURIToKiloBytes()
@@ -291,7 +309,7 @@ describe('exportImage - png', () => {
 
     cy.findByRole('button', { name: /export image/i }).click();
 
-    cy.get('#exported-image')
+    cy.get(exportedImageId)
       .should('have.attr', 'src')
       .and('match', /^data:image\/png;base64/i)
       .convertDataURIToKiloBytes()
@@ -318,7 +336,7 @@ describe('exportImage - jpeg', () => {
   it('should export jpeg with stroke', () => {
     cy.findByRole('button', { name: /export image/i }).click();
 
-    cy.get('#exported-image')
+    cy.get(exportedImageId)
       .should('have.attr', 'src')
       .and('match', /^data:image\/jpeg;base64/i)
       .convertDataURIToKiloBytes()
@@ -328,7 +346,7 @@ describe('exportImage - jpeg', () => {
 
     cy.findByRole('button', { name: /export image/i }).click();
 
-    cy.get('#exported-image')
+    cy.get(exportedImageId)
       .should('have.attr', 'src')
       .and('match', /^data:image\/jpeg;base64/i)
       .convertDataURIToKiloBytes()
@@ -343,7 +361,7 @@ describe('exportImage - jpeg', () => {
   it('should export jpeg with stroke and eraser', () => {
     cy.findByRole('button', { name: /export image/i }).click();
 
-    cy.get('#exported-image')
+    cy.get(exportedImageId)
       .should('have.attr', 'src')
       .and('match', /^data:image\/jpeg;base64/i)
       .convertDataURIToKiloBytes()
@@ -355,7 +373,7 @@ describe('exportImage - jpeg', () => {
 
     cy.findByRole('button', { name: /export image/i }).click();
 
-    cy.get('#exported-image')
+    cy.get(exportedImageId)
       .should('have.attr', 'src')
       .and('match', /^data:image\/jpeg;base64/i)
       .convertDataURIToKiloBytes()
@@ -374,7 +392,7 @@ describe('exportImage - jpeg', () => {
     }).click();
     cy.findByRole('button', { name: /export image/i }).click();
 
-    cy.get('#exported-image')
+    cy.get(exportedImageId)
       .should('have.attr', 'src')
       .and('match', /^data:image\/jpeg;base64/i)
       .convertDataURIToKiloBytes()
@@ -384,7 +402,7 @@ describe('exportImage - jpeg', () => {
 
     cy.findByRole('button', { name: /export image/i }).click();
 
-    cy.get('#exported-image')
+    cy.get(exportedImageId)
       .should('have.attr', 'src')
       .and('match', /^data:image\/jpeg;base64/i)
       .convertDataURIToKiloBytes()
@@ -403,7 +421,7 @@ describe('exportImage - jpeg', () => {
     }).click();
     cy.findByRole('button', { name: /export image/i }).click();
 
-    cy.get('#exported-image')
+    cy.get(exportedImageId)
       .should('have.attr', 'src')
       .and('match', /^data:image\/jpeg;base64/i)
       .convertDataURIToKiloBytes()
@@ -415,7 +433,7 @@ describe('exportImage - jpeg', () => {
 
     cy.findByRole('button', { name: /export image/i }).click();
 
-    cy.get('#exported-image')
+    cy.get(exportedImageId)
       .should('have.attr', 'src')
       .and('match', /^data:image\/jpeg;base64/i)
       .convertDataURIToKiloBytes()
@@ -442,7 +460,7 @@ describe('exportImage - svg', () => {
     cy.drawSquare(100, 100, 50, 'pen');
 
     cy.findByRole('button', { name: /export svg/i }).click();
-    cy.get('#exported-svg').find('path').should('have.length', 1);
+    cy.get(exportedSvgId).find('path').should('have.length', 1);
   });
 
   it('should export jpeg with stroke and eraser', () => {
@@ -452,11 +470,11 @@ describe('exportImage - svg', () => {
 
     cy.findByRole('button', { name: /export svg/i }).click();
 
-    cy.get('#exported-svg').find('path').should('have.length', 2);
-    cy.get('#exported-svg #eraser-stroke-group')
+    cy.get(exportedSvgId).find('path').should('have.length', 2);
+    cy.get(`${exportedSvgId} ${eraserStrokeGroupId}`)
       .find('path')
       .should('have.length', 1);
-    cy.get('#exported-svg mask#eraser-mask-0')
+    cy.get(`${exportedSvgId} ${firstEraserMask}`)
       .find('use')
       .should('have.length', 2); // background + one mask path
   });
@@ -471,8 +489,8 @@ describe('exportImage - svg', () => {
 
     cy.findByRole('button', { name: /export svg/i }).click();
 
-    cy.get('#exported-svg').find('path').should('have.length', 1);
-    cy.get('#exported-svg #canvas-background').should(
+    cy.get(exportedSvgId).find('path').should('have.length', 1);
+    cy.get(`${exportedSvgId} ${canvasBackgroundId}`).should(
       'have.attr',
       'fill',
       defaultProps.canvasColor
@@ -489,15 +507,15 @@ describe('exportImage - svg', () => {
     cy.drawSquare(100, 150, 50, 'pen');
 
     cy.findByRole('button', { name: /export svg/i }).click();
-    cy.get('#exported-svg').find('path').should('have.length', 2);
-    cy.get('#exported-svg #eraser-stroke-group')
+    cy.get(exportedSvgId).find('path').should('have.length', 2);
+    cy.get(`${exportedSvgId} ${eraserStrokeGroupId}`)
       .find('path')
       .should('have.length', 1);
-    cy.get('#exported-svg mask#eraser-mask-0')
+    cy.get(`${exportedSvgId} ${firstEraserMask}`)
       .find('use')
       .should('have.length', 2); // background + one mask path
 
-    cy.get('#exported-svg #canvas-background').should(
+    cy.get(`${exportedSvgId} ${canvasBackgroundId}`).should(
       'have.attr',
       'fill',
       defaultProps.canvasColor
@@ -532,7 +550,7 @@ describe('loadPaths', () => {
 
     cy.findByRole('button', { name: /load paths/i }).click();
     cy.getCanvas().find('path').should('have.length', 2);
-    cy.get('#eraser-stroke-group').find('path').should('have.length', 1);
-    cy.get('mask#eraser-mask-0').find('use').should('have.length', 2); // background + one mask path
+    cy.get(eraserStrokeGroupId).find('path').should('have.length', 1);
+    cy.get(firstEraserMask).find('use').should('have.length', 2); // background + one mask path
   });
 });

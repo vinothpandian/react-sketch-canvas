@@ -1,4 +1,5 @@
 {
+  "id": "react-sketch-canvas",
   "className": "react-sketch-canvas",
   "width": "100%",
   "height": "500px",

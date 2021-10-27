@@ -1,5 +1,19 @@
 # Changelog
 
+# [6.1.0]
+
+### Added
+
+- Added optional id props to uniquely identify a sketch canvas
+
+## Changed
+
+- Updated tests to use the id props
+
+### Fixed
+
+- Fix multiple ReactSketchCanvas in one page causes issues due to id="background" #52
+
 ## [6.0.3]
 
 ### Fixed
@@ -12,7 +26,7 @@
 
 ### Added
 
-- Add cypress tests for all props and events
+- Added cypress tests for all props and events
 - Added `onStroke` prop to get last stroke on pointer up
 - Adds a point on click (without moving) #45
 
