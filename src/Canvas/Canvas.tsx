@@ -1,56 +1,8 @@
 import * as React from 'react';
-import Paths, { SvgPath } from '../Paths';
+import { Paths, SvgPath } from '../Paths';
 import { CanvasPath, ExportImageType, Point } from '../types';
-
-const loadImage = (url: string): Promise<HTMLImageElement> =>
-  new Promise((resolve, reject) => {
-    const img = new Image();
-    img.addEventListener('load', () => {
-      if (img.width > 0) {
-        resolve(img);
-      }
-      reject('Image not found');
-    });
-    img.addEventListener('error', (err) => reject(err));
-    img.src = url;
-    img.setAttribute('crossorigin', 'anonymous');
-  });
-
-function getCanvasWithViewBox(canvas: HTMLDivElement) {
-  const svgCanvas = canvas.firstChild?.cloneNode(true) as SVGElement;
-
-  const width = canvas.offsetWidth;
-  const height = canvas.offsetHeight;
-
-  svgCanvas.setAttribute('viewBox', `0 0 ${width} ${height}`);
-
-  svgCanvas.setAttribute('width', width.toString());
-  svgCanvas.setAttribute('height', height.toString());
-  return { svgCanvas, width, height };
-}
-
-export interface CanvasProps {
-  paths: CanvasPath[];
-  isDrawing: boolean;
-  onPointerDown: (point: Point) => void;
-  onPointerMove: (point: Point) => void;
-  onPointerUp: () => void;
-  className?: string;
-  id?: string;
-  width: string;
-  height: string;
-  canvasColor: string;
-  backgroundImage: string;
-  exportWithBackgroundImage: boolean;
-  preserveBackgroundImageAspectRatio: string;
-  allowOnlyPointerType: string;
-  style: React.CSSProperties;
-}
-
-export interface CanvasRef {
-  exportImage: (imageType: ExportImageType) => Promise<string>;
-  exportSvg: () => Promise<string>;
-}
+import { CanvasProps, CanvasRef } from './types';
+import { getCanvasWithViewBox, loadImage } from './utils';
 
 export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
   const {

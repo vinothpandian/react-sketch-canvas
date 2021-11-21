@@ -1,41 +1,7 @@
 import * as React from 'react';
 import { Canvas, CanvasRef } from '../Canvas';
 import { CanvasPath, ExportImageType, Point } from '../types';
-
-export type ReactSketchCanvasStates = {};
-
-/* Props validation */
-export interface ReactSketchCanvasProps {
-  id?: string;
-  width?: string;
-  height?: string;
-  className?: string;
-  strokeColor?: string;
-  canvasColor?: string;
-  backgroundImage?: string;
-  exportWithBackgroundImage?: boolean;
-  preserveBackgroundImageAspectRatio?: string;
-  strokeWidth?: number;
-  eraserWidth?: number;
-  allowOnlyPointerType?: string;
-  onChange?: (updatedPaths: CanvasPath[]) => void;
-  onStroke?: (path: CanvasPath, isEraser: boolean) => void;
-  style?: React.CSSProperties;
-  withTimestamp?: boolean;
-}
-
-export interface ReactSketchCanvasRef {
-  eraseMode: (erase: boolean) => void;
-  clearCanvas: () => void;
-  undo: () => void;
-  redo: () => void;
-  exportImage: (imageType: ExportImageType) => Promise<string>;
-  exportSvg: () => Promise<string>;
-  exportPaths: () => Promise<CanvasPath[]>;
-  loadPaths: (paths: CanvasPath[]) => void;
-  getSketchingTime: () => Promise<number>;
-  resetCanvas: () => void;
-}
+import { ReactSketchCanvasProps, ReactSketchCanvasRef } from './types';
 
 export const ReactSketchCanvas = React.forwardRef<
   ReactSketchCanvasRef,
