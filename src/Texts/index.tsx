@@ -1,18 +1,25 @@
 import * as React from 'react';
-import { CanvasText } from '../types/canvas';
+import { CanvasText } from '../types';
 import SVGTextEditable from './SVGTextEditable';
-
 
 interface SVGTextsProps {
   texts: CanvasText[];
   onChange?: (oldText: CanvasText, newText: CanvasText) => void;
-  isDrawing? : boolean
+  isDrawing?: boolean;
 }
 
 export const SVGTexts = ({ texts, onChange, isDrawing }: SVGTextsProps) => {
-  return <>{
-    texts.map((text, id) => {
-      return <SVGTextEditable texts={texts} text={text} key={id.toString()} onChange={onChange} isDrawing={isDrawing} />;
-    })
-  }</>;
+  return (
+    <>
+      {texts.map((text, id) => (
+        <SVGTextEditable
+          texts={texts}
+          text={text}
+          key={id.toString()}
+          onChange={onChange}
+          isDrawing={isDrawing}
+        />
+      ))}
+    </>
+  );
 };

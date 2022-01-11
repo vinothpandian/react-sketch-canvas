@@ -5,9 +5,8 @@ import {
   CanvasPath,
   CanvasText,
   ExportImageType,
-  Point
+  Point,
 } from '../types';
-
 
 export type ReactSketchCanvasStates = {};
 
@@ -24,7 +23,7 @@ export interface ReactSketchCanvasProps {
   preserveBackgroundImageAspectRatio?: string;
   strokeWidth?: number;
   eraserWidth?: number;
-  textSize?: string
+  textSize?: string;
   allowOnlyPointerType?: string;
   onChange?: (updatedPaths: CanvasPath[], updatedTexts: CanvasText[]) => void;
   onStroke?: (path: CanvasPath, isEraser: boolean) => void;
@@ -42,7 +41,11 @@ export interface ReactSketchCanvasRef {
   exportPaths: () => Promise<CanvasPath[]>;
   loadPaths: (paths: CanvasPath[]) => void;
   getSketchingTime: () => Promise<number>;
-  adjustProportion: (imagescale: number, paths: CanvasPath[], texts: CanvasText[]) => void;
+  adjustProportion: (
+    imagescale: number,
+    paths: CanvasPath[],
+    texts: CanvasText[]
+  ) => void;
   resetCanvas: () => void;
 }
 
@@ -84,24 +87,24 @@ export const ReactSketchCanvas = React.forwardRef<
 
   const scalePaths = (paths: CanvasPath[], scale: number): CanvasPath[] => {
     return paths.map((path) => ({
-        ...path,
-        paths: path.paths.map(
-          (pt: Point) => ({ x: pt.x * scale, y: pt.y * scale })
-        )
-      }
-    ))
+      ...path,
+      paths: path.paths.map((pt: Point) => ({
+        x: pt.x * scale,
+        y: pt.y * scale,
+      })),
+    }));
   };
 
   const scaleTexts = (texts: CanvasText[], scale: number): CanvasText[] => {
     return texts.map((item: CanvasText) => ({
       ...item,
-      position: { x: item.position.x * scale, y: item.position.y * scale }
+      position: { x: item.position.x * scale, y: item.position.y * scale },
     }));
   };
 
   const isDrawingMode = (): boolean => {
     return drawMode === CanvasMode.pen || drawMode === CanvasMode.eraser;
-  }
+  };
 
   const liftUpdatedStateUp = React.useCallback((): void => {
     const lastStroke = currentPaths.slice(-1)?.[0] ?? null;
@@ -112,28 +115,34 @@ export const ReactSketchCanvas = React.forwardRef<
     }
 
     onStroke(lastStroke, !lastStroke.drawMode);
-  }, [isDrawing]);
+    // we want to run it whenever `isDrawing` changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isDrawing, currentPaths, onStroke]);
 
   React.useEffect(() => {
     liftUpdatedStateUp();
-  }, [isDrawing]);
+  }, [isDrawing, liftUpdatedStateUp]);
 
   React.useEffect(() => {
     onChange(currentPaths, currentTexts);
-  }, [currentPaths, currentTexts]);
+  }, [currentPaths, currentTexts, onChange]);
 
   const resetCanvas = () => {
     setResetStack([]);
     setUndoStack([]);
     setCurrentPaths([]);
     setCurrentTexts([]);
-  }
+  };
 
   React.useImperativeHandle(ref, () => ({
     setMode: (mode: CanvasMode): void => {
       setDrawMode(mode);
     },
-    adjustProportion: (imageScale: number, paths: CanvasPath[], texts: CanvasText[]): void => {
+    adjustProportion: (
+      imageScale: number,
+      paths: CanvasPath[],
+      texts: CanvasText[]
+    ): void => {
       resetCanvas();
       setImageScale(imageScale);
       setCurrentPaths(scalePaths(paths, imageScale));
@@ -212,10 +221,16 @@ export const ReactSketchCanvas = React.forwardRef<
       });
     },
     loadPaths: (paths: CanvasPath[]): void => {
-      setCurrentPaths((currentPaths) => [...currentPaths, ...scalePaths(paths, imageScale)]);
+      setCurrentPaths((currentPaths) => [
+        ...currentPaths,
+        ...scalePaths(paths, imageScale),
+      ]);
     },
     loadTexts: (texts: CanvasText[]): void => {
-      setCurrentTexts((currentTexts) => [...currentTexts, ...scaleTexts(texts, imageScale)]);
+      setCurrentTexts((currentTexts) => [
+        ...currentTexts,
+        ...scaleTexts(texts, imageScale),
+      ]);
     },
     getSketchingTime: (): Promise<number> => {
       return new Promise<number>((resolve, reject) => {
@@ -241,7 +256,7 @@ export const ReactSketchCanvas = React.forwardRef<
       });
     },
     resetCanvas: (): void => {
-      resetCanvas()
+      resetCanvas();
     },
   }));
 
@@ -252,16 +267,16 @@ export const ReactSketchCanvas = React.forwardRef<
 
     if (!isDrawingMode()) {
       // handle text label insertion
-      setIsDrawing(false)
-      setUndoStack([])
+      setIsDrawing(false);
+      setUndoStack([]);
       setCurrentTexts((texts) => {
         const textLabel: CanvasText = {
-          id: Math.round((new Date()).getTime()),
+          id: Math.round(new Date().getTime()),
           text: 'Text',
-          position: point
+          position: point,
         };
         return [...texts, textLabel];
-      })
+      });
       return;
     }
 

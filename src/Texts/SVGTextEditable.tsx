@@ -1,14 +1,13 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { DraggableCore, DraggableData, DraggableEvent } from 'react-draggable';
 import { useOnClickOutside } from '../hooks';
 import { CanvasText } from '../types';
-
 
 export interface SVGTextEditableProps {
   text: CanvasText;
   texts: CanvasText[];
   onChange?: (oldText: CanvasText, newText: CanvasText) => void;
-  isDrawing? : boolean;
+  isDrawing?: boolean;
 }
 
 interface Size {
@@ -19,11 +18,11 @@ interface Size {
 }
 
 export default function SVGTextEditable({
-                                          text,
-                                          texts,
-                                          onChange,
-                                          isDrawing
-                                        }: SVGTextEditableProps) {
+  text,
+  texts,
+  onChange,
+  isDrawing,
+}: SVGTextEditableProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [wasDragged, setWasDragged] = useState(false);
   const [currentText, setCurrentText] = useState(text.text);
@@ -31,7 +30,7 @@ export default function SVGTextEditable({
     height: 0,
     width: 0,
     x: 0,
-    y: 0
+    y: 0,
   });
   const [rectOffset, setRectOffset] = useState({ x: 0, y: 0 });
 
@@ -43,17 +42,7 @@ export default function SVGTextEditable({
     }
   });
 
-  useEffect(() => {
-    const lastTextId = (texts[texts.length - 1]).id;
-    if(text.id === lastTextId && !isDrawing) {
-      // setIsEditing(true);
-      beginEditing();
-    }
-  }, [texts]);
-
-  const textRef = useRef<SVGTextElement>(null);
-
-  const beginEditing = () => {
+  const beginEditing = useCallback(() => {
     if (wasDragged) {
       setWasDragged(false);
       return;
@@ -72,14 +61,24 @@ export default function SVGTextEditable({
     }
 
     setIsEditing(true);
-  };
+  }, [wasDragged]);
+
+  useEffect(() => {
+    const lastTextId = texts[texts.length - 1].id;
+    if (text.id === lastTextId && !isDrawing) {
+      // setIsEditing(true);
+      beginEditing();
+    }
+  }, [texts, beginEditing, isDrawing, text.id]);
+
+  const textRef = useRef<SVGTextElement>(null);
 
   const commitChanges = () => {
     setIsEditing(false);
     if (onChange) {
       onChange(text, {
         ...text,
-        text: currentText
+        text: currentText,
       });
     }
   };
@@ -89,10 +88,13 @@ export default function SVGTextEditable({
     setCurrentText(text.text);
   };
 
-  const onDragStart = (_: DraggableEvent, data: DraggableData): void | false => {
+  const onDragStart = (
+    _: DraggableEvent,
+    data: DraggableData,
+  ): void | false => {
     setRectOffset({
       x: data.x - text.position.x,
-      y: data.y - text.position.y
+      y: data.y - text.position.y,
     });
   };
 
@@ -121,56 +123,62 @@ export default function SVGTextEditable({
         ...text,
         position: {
           x: newX,
-          y: newY
-        }
+          y: newY,
+        },
       });
     }
   };
 
-
-
   if (isEditing) {
-    return <foreignObject
-      x={textSize.x}
-      y={textSize.y}
-      width={textSize.width}
-      height={textSize.height}
-    >
-      <input
-        type='text'
-        ref={inputRef}
-        style={{
-          width: '100%',
-          height: '100%',
-          textAlign: 'center'
-        }}
-        autoFocus={true}
-        value={currentText}
-        onInput={(e) => setCurrentText(e.currentTarget.value)}
-        onFocus={(e) => e.currentTarget.select()}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') {
-            commitChanges();
-            return;
-          }
-          if (e.key === 'Escape') {
-            rollbackChanges();
-            return;
-          }
-        }
-        }
-      />
-    </foreignObject>;
+    return (
+      <foreignObject
+        x={textSize.x}
+        y={textSize.y}
+        width={textSize.width}
+        height={textSize.height}
+      >
+        <input
+          type="text"
+          ref={inputRef}
+          style={{
+            width: '100%',
+            height: '100%',
+            textAlign: 'center',
+          }}
+          autoFocus={true}
+          value={currentText}
+          onInput={(e) => setCurrentText(e.currentTarget.value)}
+          onFocus={(e) => e.currentTarget.select()}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              commitChanges();
+              return;
+            }
+            if (e.key === 'Escape') {
+              rollbackChanges();
+              return;
+            }
+          }}
+        />
+      </foreignObject>
+    );
   }
 
-  return <DraggableCore onStart={onDragStart} onDrag={isDragging} onStop={onDragStop} disabled={isDrawing}>
-    <text
-      x={text.position.x}
-      y={text.position.y}
-      onClick={beginEditing}
-      ref={textRef}
+  return (
+    <DraggableCore
+      onStart={onDragStart}
+      onDrag={isDragging}
+      onStop={onDragStop}
+      disabled={isDrawing}
     >
-      {currentText}
-    </text>
-  </DraggableCore>;
+      <text
+        x={text.position.x}
+        y={text.position.y}
+        onClick={beginEditing}
+        ref={textRef}
+      >
+        {currentText}
+      </text>
+    </DraggableCore>
+  );
 }

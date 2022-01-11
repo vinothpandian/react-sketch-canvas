@@ -30,5 +30,5 @@ export interface CanvasText {
 export interface CanvasProportion {
   readonly originalHeight: number;
   readonly bufferHeight: number;
-  readonly innerHeight : number;
+  readonly innerHeight: number;
 }

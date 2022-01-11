@@ -2,7 +2,14 @@ export class UniqueId {
   random: string;
 
   private getUniqueString(n: number) {
-    return Array(n).fill('').map(() => 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'.charAt(Math.random() * 62)).join('');
+    return Array(n)
+      .fill('')
+      .map(() =>
+        'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'.charAt(
+          Math.random() * 62
+        )
+      )
+      .join('');
   }
 
   constructor(length?: number) {
