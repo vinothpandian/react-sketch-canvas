@@ -78,6 +78,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.15.8",
+    "@babel/plugin-syntax-flow": "^7.16.7",
     "@cypress/code-coverage": "^3.9.11",
     "@size-limit/preset-small-lib": "^6.0.3",
     "@testing-library/cypress": "^8.0.1",
@@ -90,18 +91,21 @@
     "cross-env": "^7.0.3",
     "cypress": "^8.7.0",
     "dts-cli": "^0.19.4",
+    "eslint": "^8.6.0",
     "eslint-plugin-prettier": "^4.0.0",
     "husky": "^7.0.4",
     "merge-cypress-jest-coverage": "^1.7.0",
+    "prettier": "^2.5.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-draggable": "^4.4.4",
     "react-is": "^17.0.2",
     "release-it": "^14.11.6",
     "size-limit": "^6.0.3",
     "start-server-and-test": "^1.14.0",
     "tslib": "^2.3.1",
     "typescript": "^4.4.4",
-    "react-draggable": "^4.4.4"
+    "webpack": "^5.65.0"
   },
   "dependencies": {},
   "peerDependencies": {
