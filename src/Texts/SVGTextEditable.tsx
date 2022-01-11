@@ -90,7 +90,7 @@ export default function SVGTextEditable({
 
   const onDragStart = (
     _: DraggableEvent,
-    data: DraggableData,
+    data: DraggableData
   ): void | false => {
     setRectOffset({
       x: data.x - text.position.x,
