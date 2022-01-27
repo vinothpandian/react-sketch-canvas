@@ -1,29 +1,18 @@
 {
-  "name": "react-sketch-canvas",
-  "version": "6.1.0",
+  "name": "@sarc-mediq/react-sketch-canvas",
+  "version": "1.0.0-dev.0",
   "description": "react-sketch-canvas - Freehand vector drawing tool for React using SVG as canvas",
-  "author": "Vinoth Pandian",
-  "homepage": "https://vinoth.info/react-sketch-canvas",
+  "author": "SARC-MedIQ",
+  "homepage": "https://github.com/SARC-MedIQ/react-sketch-canvas#readme",
   "license": "MIT",
-  "repository": "https://github.com/vinothpandian/react-sketch-canvas.git",
-  "keywords": [
-    "react-component",
-    "sketch",
-    "canvas",
-    "drawing",
-    "freehand",
-    "vector",
-    "svg-canvas",
-    "react-sketch"
-  ],
+  "repository": "git+https://github.com/SARC-MedIQ/react-sketch-canvas.git",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "engines": {
-    "node": ">=10"
+    "node": "~14"
   },
   "scripts": {
     "prepare": "dts build",
@@ -91,10 +80,12 @@
     "cypress": "^8.7.0",
     "dts-cli": "^0.19.4",
     "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react-hooks": "^4.3.0",
     "husky": "^7.0.4",
     "merge-cypress-jest-coverage": "^1.7.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-draggable": "^4.4.4",
     "react-is": "^17.0.2",
     "release-it": "^14.11.6",
     "size-limit": "^6.0.3",
@@ -107,6 +98,6 @@
     "react": ">=16.8"
   },
   "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
+    "registry":"https://npm.pkg.github.com/"
   }
 }

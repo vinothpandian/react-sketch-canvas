@@ -1,6 +1,14 @@
+import { useCallback } from 'react';
 import * as React from 'react';
 import Paths, { SvgPath } from '../Paths';
-import { CanvasPath, ExportImageType, Point } from '../types';
+import { SVGTexts } from '../Texts';
+import {
+  CanvasMode,
+  CanvasPath,
+  CanvasText,
+  ExportImageType,
+  Point,
+} from '../types';
 
 const loadImage = (url: string): Promise<HTMLImageElement> =>
   new Promise((resolve, reject) => {
@@ -31,10 +39,12 @@ function getCanvasWithViewBox(canvas: HTMLDivElement) {
 
 export interface CanvasProps {
   paths: CanvasPath[];
+  texts: CanvasText[];
   isDrawing: boolean;
   onPointerDown: (point: Point) => void;
   onPointerMove: (point: Point) => void;
   onPointerUp: () => void;
+  onTextChange: (oldText: CanvasText, newText: CanvasText) => void;
   className?: string;
   id?: string;
   width: string;
@@ -55,10 +65,12 @@ export interface CanvasRef {
 export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
   const {
     paths,
+    texts,
     isDrawing,
     onPointerDown,
     onPointerMove,
     onPointerUp,
+    onTextChange,
     id = 'react-sketch-canvas',
     width = '100%',
     height = '100%',
@@ -102,6 +114,15 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
   const handlePointerDown = (
     event: React.PointerEvent<HTMLDivElement>
   ): void => {
+    // checks and return if click on some already added text element
+
+    if (!isDrawing) {
+      const targetElem: string = (event.target as HTMLElement).nodeName;
+      if (targetElem === 'text' || targetElem === 'INPUT') {
+        return;
+      }
+    }
+
     // Allow only chosen pointer type
 
     if (
@@ -136,21 +157,22 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
     onPointerMove(point);
   };
 
-  const handlePointerUp = (
-    event: React.PointerEvent<HTMLDivElement> | PointerEvent
-  ): void => {
-    if (event.pointerType === 'mouse' && event.button !== 0) return;
+  const handlePointerUp = useCallback(
+    (event: React.PointerEvent<HTMLDivElement> | PointerEvent): void => {
+      if (event.pointerType === 'mouse' && event.button !== 0) return;
 
-    // Allow only chosen pointer type
-    if (
-      allowOnlyPointerType !== 'all' &&
-      event.pointerType !== allowOnlyPointerType
-    ) {
-      return;
-    }
+      // Allow only chosen pointer type
+      if (
+        allowOnlyPointerType !== 'all' &&
+        event.pointerType !== allowOnlyPointerType
+      ) {
+        return;
+      }
 
-    onPointerUp();
-  };
+      onPointerUp();
+    },
+    [allowOnlyPointerType, onPointerUp]
+  );
 
   /* Mouse Handlers ends */
 
@@ -245,7 +267,9 @@ release drawing even when point goes out of canvas */
     };
   }, [handlePointerUp]);
 
-  const eraserPaths = paths.filter((path) => !path.drawMode);
+  const eraserPaths = paths.filter(
+    (path) => path.drawMode === CanvasMode.eraser
+  );
 
   let currentGroup = 0;
   const pathGroups = paths.reduce<CanvasPath[][]>(
@@ -329,7 +353,7 @@ release drawing even when point goes out of canvas */
                 height="100%"
                 xlinkHref={backgroundImage}
                 preserveAspectRatio={preserveBackgroundImageAspectRatio}
-              ></image>
+              />
             </pattern>
           )}
 
@@ -371,6 +395,13 @@ release drawing even when point goes out of canvas */
             <Paths id={id} paths={pathGroup} />
           </g>
         ))}
+        <g id={`${id}__canvas-texts`}>
+          <SVGTexts
+            texts={texts}
+            isDrawing={isDrawing}
+            onChange={onTextChange}
+          />
+        </g>
       </svg>
     </div>
   );

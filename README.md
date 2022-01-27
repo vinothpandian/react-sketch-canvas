@@ -186,6 +186,15 @@ interface CanvasPath {
 
 ---
 
+## Publish a NPM package to GitHub Packages
+
+1. Update version in `package.json`
+
+2. `npm login --scope=@sarc-mediq`
+3. enter your github username, your [personal access token](https://github.com/settings/tokens), and email
+4. `npm publish`
+
+
 ## Thanks to
 
 - Philipp Spiess' [tutorial][based-on]

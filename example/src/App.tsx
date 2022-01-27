@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   CanvasPath,
+  CanvasMode,
   ExportImageType,
   ReactSketchCanvas,
   ReactSketchCanvasProps,
@@ -131,19 +132,15 @@ function App() {
   };
 
   const penHandler = () => {
-    const eraseMode = canvasRef.current?.eraseMode;
+    canvasRef.current?.setMode(CanvasMode.pen)
+  };
 
-    if (eraseMode) {
-      eraseMode(false);
-    }
+  const textHandler = () => {
+    canvasRef.current?.setMode(CanvasMode.text)
   };
 
   const eraserHandler = () => {
-    const eraseMode = canvasRef.current?.eraseMode;
-
-    if (eraseMode) {
-      eraseMode(true);
-    }
+    canvasRef.current?.setMode(CanvasMode.eraser)
   };
 
   const undoHandler = () => {
@@ -199,6 +196,7 @@ function App() {
     ['Clear All', clearHandler, 'primary'],
     ['Reset All', resetCanvasHandler, 'primary'],
     ['Pen', penHandler, 'secondary'],
+    ['Text', textHandler, 'secondary'],
     ['Eraser', eraserHandler, 'secondary'],
     ['Export Image', imageExportHandler, 'success'],
     ['Export SVG', svgExportHandler, 'success'],
@@ -254,7 +252,7 @@ function App() {
                       })
                     );
                   }}
-                ></input>
+                />
               </div>
               <div className="mx-4">
                 <label htmlFor="canvasColorInput" className="form-label">
@@ -276,7 +274,7 @@ function App() {
                       })
                     );
                   }}
-                ></input>
+                />
               </div>
             </div>
             <div className="p-2 col-10">

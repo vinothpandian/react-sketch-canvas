@@ -7,7 +7,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node: ['12.x', '14.x']
+        node: ['14.x']
         os: [ubuntu-latest]
 
     steps:
@@ -30,13 +30,13 @@ jobs:
       - name: Lint
         run: yarn lint
 
-      - name: Test
-        run: yarn test
-
-      - name: Upload coverage
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-        run: npx nyc report --reporter=text-lcov | npx codecov --disable=gcov --pipe
+#      - name: Test
+#        run: yarn test
+#
+#      - name: Upload coverage
+#        env:
+#          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+#        run: npx nyc report --reporter=text-lcov | npx codecov --disable=gcov --pipe
 
       - name: Build
         run: yarn build:prod
