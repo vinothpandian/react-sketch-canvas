@@ -1,26 +1,15 @@
 {
-  "name": "react-sketch-canvas",
-  "version": "6.1.0",
+  "name": "@sarc-mediq/react-sketch-canvas",
+  "version": "1.0.0-dev.0",
   "description": "react-sketch-canvas - Freehand vector drawing tool for React using SVG as canvas",
-  "author": "Vinoth Pandian",
-  "homepage": "https://vinoth.info/react-sketch-canvas",
+  "author": "SARC-MedIQ",
+  "homepage": "https://github.com/SARC-MedIQ/react-sketch-canvas#readme",
   "license": "MIT",
-  "repository": "https://github.com/vinothpandian/react-sketch-canvas.git",
-  "keywords": [
-    "react-component",
-    "sketch",
-    "canvas",
-    "drawing",
-    "freehand",
-    "vector",
-    "svg-canvas",
-    "react-sketch"
-  ],
+  "repository": "git+https://github.com/SARC-MedIQ/react-sketch-canvas.git",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "engines": {
     "node": "~14"
@@ -109,6 +98,6 @@
     "react": ">=16.8"
   },
   "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
+    "registry":"https://npm.pkg.github.com/"
   }
 }

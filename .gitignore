@@ -11,3 +11,5 @@ coverage/
 jest-coverage/
 cypress-coverage/
 reports/
+*.tgz
+.env
