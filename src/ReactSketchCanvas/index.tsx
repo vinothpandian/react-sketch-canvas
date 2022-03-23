@@ -110,7 +110,6 @@ export const ReactSketchCanvas = React.forwardRef<
     const lastStroke = currentPaths.slice(-1)?.[0] ?? null;
 
     if (lastStroke === null) {
-      console.warn('No stroke found!');
       return;
     }
 
@@ -275,6 +274,7 @@ export const ReactSketchCanvas = React.forwardRef<
           text: 'Text',
           position: point,
         };
+        setDrawMode(CanvasMode.none);
         return [...texts, textLabel];
       });
       return;
