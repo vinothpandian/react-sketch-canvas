@@ -1,11 +1,10 @@
-import React, { useRef, useState, useEffect, useCallback } from 'react';
+import React, { useRef, useState, useCallback } from 'react';
 import { DraggableCore, DraggableData, DraggableEvent } from 'react-draggable';
 import { useOnClickOutside } from '../hooks';
 import { CanvasText } from '../types';
 
 export interface SVGTextEditableProps {
   text: CanvasText;
-  texts: CanvasText[];
   onChange?: (oldText: CanvasText, newText: CanvasText) => void;
   isDrawing?: boolean;
 }
@@ -19,7 +18,6 @@ interface Size {
 
 export default function SVGTextEditable({
   text,
-  texts,
   onChange,
   isDrawing,
 }: SVGTextEditableProps) {
@@ -42,6 +40,8 @@ export default function SVGTextEditable({
     }
   });
 
+  const textRef = useRef<SVGTextElement>(null);
+
   const beginEditing = useCallback(() => {
     if (wasDragged) {
       setWasDragged(false);
@@ -62,16 +62,6 @@ export default function SVGTextEditable({
 
     setIsEditing(true);
   }, [wasDragged]);
-
-  useEffect(() => {
-    const lastTextId = texts[texts.length - 1].id;
-    if (text.id === lastTextId && !isDrawing) {
-      // setIsEditing(true);
-      beginEditing();
-    }
-  }, [texts, beginEditing, isDrawing, text.id]);
-
-  const textRef = useRef<SVGTextElement>(null);
 
   const commitChanges = () => {
     setIsEditing(false);
@@ -103,7 +93,6 @@ export default function SVGTextEditable({
       setWasDragged(true);
     }
     if (textRef.current) {
-      console.log(text.position, data);
       textRef.current.setAttribute('x', (data.x - rectOffset.x).toString());
       textRef.current.setAttribute('y', (data.y - rectOffset.y).toString());
     }
@@ -111,8 +100,10 @@ export default function SVGTextEditable({
 
   const onDragStop = (_: DraggableEvent, data: DraggableData): void | false => {
     if (!wasDragged) {
+      beginEditing();
       return;
     }
+    setWasDragged(false);
     if (!textRef.current) {
       return;
     }
@@ -174,8 +165,9 @@ export default function SVGTextEditable({
       <text
         x={text.position.x}
         y={text.position.y}
-        onClick={beginEditing}
+        onMouseUp={beginEditing}
         ref={textRef}
+        style={{ cursor: 'pointer' }}
       >
         {currentText}
       </text>

@@ -13,7 +13,6 @@ export const SVGTexts = ({ texts, onChange, isDrawing }: SVGTextsProps) => {
     <>
       {texts.map((text, id) => (
         <SVGTextEditable
-          texts={texts}
           text={text}
           key={id.toString()}
           onChange={onChange}

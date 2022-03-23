@@ -34,7 +34,7 @@ function InputField({
     }));
   };
 
-  const id = 'validation' + fieldName;
+  const id = `validation${fieldName as string}`;
 
   return (
     <div className="p-2 col-10">
@@ -42,7 +42,7 @@ function InputField({
         {fieldName}
       </label>
       <input
-        name={fieldName}
+        name={fieldName as string}
         type={type}
         className="form-control"
         id={id}
@@ -225,7 +225,7 @@ function App() {
           <form>
             {inputProps.map(([fieldName, type]) => (
               <InputField
-                key={fieldName}
+                key={fieldName as string}
                 fieldName={fieldName}
                 type={type}
                 canvasProps={canvasProps}
@@ -533,7 +533,7 @@ function App() {
               <ReactSketchCanvas
                 ref={canvasRef}
                 onChange={onChange}
-                onStroke={(stroke, isEraser) =>
+                onStroke={(stroke: CanvasPath, isEraser: boolean) =>
                   setLastStroke({ stroke, isEraser })
                 }
                 {...canvasProps}
