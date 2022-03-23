@@ -8,10 +8,11 @@
     "assets": ["dist/*"]
   },
   "hooks": {
-    "after:bump": "yarn build:prod",
+    "after:bump": "yarn build",
     "after:release": "echo Successfully released ${name} v${version} to ${repo.repository}."
   },
   "npm": {
+    "publish": true,
     "release": true,
     "skipChecks": true
   }
