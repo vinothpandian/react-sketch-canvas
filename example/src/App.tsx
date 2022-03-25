@@ -1,7 +1,8 @@
 import React from 'react';
 import {
-  CanvasPath,
   CanvasMode,
+  CanvasPath,
+  CanvasText,
   ExportImageType,
   ReactSketchCanvas,
   ReactSketchCanvasProps,
@@ -203,7 +204,7 @@ function App() {
     ['Get Sketching time', getSketchingTimeHandler, 'success'],
   ];
 
-  const onChange = (updatedPaths: CanvasPath[]): void => {
+  const onChange = (updatedPaths: CanvasPath[], updatedTexts: CanvasText[]): void => {
     setPaths(updatedPaths);
   };
 

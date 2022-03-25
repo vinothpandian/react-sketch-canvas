@@ -1,5 +1,5 @@
-import { useCallback } from 'react';
 import * as React from 'react';
+import { useCallback } from 'react';
 import Paths, { SvgPath } from '../Paths';
 import { SVGTexts } from '../Texts';
 import {
@@ -265,7 +265,8 @@ release drawing even when point goes out of canvas */
     return () => {
       document.removeEventListener('pointerup', handlePointerUp);
     };
-  }, [handlePointerUp]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const eraserPaths = paths.filter(
     (path) => path.drawMode === CanvasMode.eraser

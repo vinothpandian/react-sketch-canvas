@@ -1,11 +1,10 @@
 import * as React from 'react';
-import { useEffect } from 'react';
 
 export function useOnClickOutside<T extends HTMLElement = HTMLElement>(
   ref: React.RefObject<T>,
   handler: (event: Event) => void
 ) {
-  useEffect(() => {
+  React.useEffect(() => {
     const listener = (event: Event) => {
       const el = ref?.current;
 
@@ -27,4 +26,12 @@ export function useOnClickOutside<T extends HTMLElement = HTMLElement>(
 
     // Reload only if ref or handler changes
   }, [ref, handler]);
+}
+
+export function usePrevious<T>(value: T): T | undefined {
+  const ref = React.useRef<T>();
+  React.useEffect(() => {
+    ref.current = value;
+  }, [value]);
+  return ref.current;
 }

@@ -38,7 +38,10 @@ export interface ReactSketchCanvasRef {
   redo: () => void;
   exportImage: (imageType: ExportImageType) => Promise<string>;
   exportSvg: () => Promise<string>;
-  exportPaths: () => Promise<CanvasPath[]>;
+  exportPaths: () => CanvasPath[];
+  exportTexts: () => CanvasText[];
+  exportPathsPromise: () => Promise<CanvasPath[]>;
+  exportTextsPromise: () => Promise<CanvasText[]>;
   loadPaths: (paths: CanvasPath[]) => void;
   getSketchingTime: () => Promise<number>;
   adjustProportion: (
@@ -113,24 +116,20 @@ export const ReactSketchCanvas = React.forwardRef<
       return;
     }
 
-    onStroke(lastStroke, !lastStroke.drawMode);
+    onStroke(lastStroke, lastStroke.drawMode === CanvasMode.eraser);
     // we want to run it whenever `isDrawing` changes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isDrawing, currentPaths, onStroke]);
+  }, [currentPaths, onStroke]);
 
   React.useEffect(() => {
     liftUpdatedStateUp();
-  }, [isDrawing, liftUpdatedStateUp]);
-
-  React.useEffect(() => {
-    onChange(currentPaths, currentTexts);
-  }, [currentPaths, currentTexts, onChange]);
+  }, [isDrawing]);
 
   const resetCanvas = () => {
     setResetStack([]);
     setUndoStack([]);
     setCurrentPaths([]);
     setCurrentTexts([]);
+    onChange(currentPaths, currentTexts);
   };
 
   React.useImperativeHandle(ref, () => ({
@@ -152,18 +151,20 @@ export const ReactSketchCanvas = React.forwardRef<
       setResetStack([...currentPaths]);
       setCurrentPaths([]);
       setCurrentTexts([]);
+      onChange(currentPaths, currentTexts);
     },
     undo: (): void => {
       // If there was a last reset then
       if (resetStack.length !== 0) {
         setCurrentPaths([...resetStack]);
         setResetStack([]);
-
+        onChange(currentPaths, currentTexts);
         return;
       }
 
       setUndoStack((undoStack) => [...undoStack, ...currentPaths.slice(-1)]);
       setCurrentPaths((currentPaths) => currentPaths.slice(0, -1));
+      onChange(currentPaths, currentTexts);
     },
     redo: (): void => {
       // Nothing to Redo
@@ -174,6 +175,7 @@ export const ReactSketchCanvas = React.forwardRef<
         ...undoStack.slice(-1),
       ]);
       setUndoStack((undoStack) => undoStack.slice(0, -1));
+      onChange(currentPaths, currentTexts);
     },
     exportImage: (imageType: ExportImageType): Promise<string> => {
       const exportImage = svgCanvas.current?.exportImage;
@@ -201,7 +203,9 @@ export const ReactSketchCanvas = React.forwardRef<
         }
       });
     },
-    exportPaths: (): Promise<CanvasPath[]> => {
+    exportPaths: (): CanvasPath[] => scalePaths(currentPaths, 1.0 / imageScale),
+    exportTexts: (): CanvasText[] => scaleTexts(currentTexts, 1.0 / imageScale),
+    exportPathsPromise: (): Promise<CanvasPath[]> => {
       return new Promise<CanvasPath[]>((resolve, reject) => {
         try {
           resolve(scalePaths(currentPaths, 1.0 / imageScale));
@@ -210,7 +214,7 @@ export const ReactSketchCanvas = React.forwardRef<
         }
       });
     },
-    exportTexts: (): Promise<CanvasText[]> => {
+    exportTextsPromise: (): Promise<CanvasText[]> => {
       return new Promise<CanvasText[]>((resolve, reject) => {
         try {
           resolve(scaleTexts(currentTexts, 1.0 / imageScale));
@@ -224,12 +228,14 @@ export const ReactSketchCanvas = React.forwardRef<
         ...currentPaths,
         ...scalePaths(paths, imageScale),
       ]);
+      onChange(currentPaths, currentTexts);
     },
     loadTexts: (texts: CanvasText[]): void => {
       setCurrentTexts((currentTexts) => [
         ...currentTexts,
         ...scaleTexts(texts, imageScale),
       ]);
+      onChange(currentPaths, currentTexts);
     },
     getSketchingTime: (): Promise<number> => {
       return new Promise<number>((resolve, reject) => {
@@ -274,9 +280,9 @@ export const ReactSketchCanvas = React.forwardRef<
           text: 'Text',
           position: point,
         };
-        setDrawMode(CanvasMode.none);
         return [...texts, textLabel];
       });
+      onChange(currentPaths, currentTexts);
       return;
     }
 
@@ -341,6 +347,7 @@ export const ReactSketchCanvas = React.forwardRef<
       ...currentPaths.slice(0, -1),
       updatedStroke,
     ]);
+    onChange(currentPaths, currentTexts);
   };
 
   const handleTextChange = (oldText: CanvasText, newText: CanvasText): void => {
@@ -353,6 +360,7 @@ export const ReactSketchCanvas = React.forwardRef<
       }
       return texts;
     });
+    onChange(currentPaths, currentTexts);
   };
 
   return (

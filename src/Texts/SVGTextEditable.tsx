@@ -1,4 +1,4 @@
-import React, { useRef, useState, useCallback } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { DraggableCore, DraggableData, DraggableEvent } from 'react-draggable';
 import { useOnClickOutside } from '../hooks';
 import { CanvasText } from '../types';
@@ -40,7 +40,7 @@ export default function SVGTextEditable({
     }
   });
 
-  const textRef = useRef<SVGTextElement>(null);
+  const textRef = useRef<SVGTextElement & HTMLElement>(null);
 
   const beginEditing = useCallback(() => {
     if (wasDragged) {
@@ -161,6 +161,7 @@ export default function SVGTextEditable({
       onDrag={isDragging}
       onStop={onDragStop}
       disabled={isDrawing}
+      nodeRef={textRef}
     >
       <text
         x={text.position.x}
