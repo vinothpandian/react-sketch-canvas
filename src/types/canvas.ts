@@ -13,11 +13,13 @@ export interface Size {
 export enum CanvasMode {
   none,
   pen,
+  remove,
   text,
   eraser,
 }
 
 export interface CanvasPath {
+  readonly id: number;
   readonly paths: Point[];
   readonly strokeWidth: number;
   readonly strokeColor: string;

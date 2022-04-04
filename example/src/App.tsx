@@ -131,15 +131,27 @@ function App() {
   };
 
   const penHandler = () => {
-    canvasRef.current?.setMode(CanvasMode.pen)
+    if (canvasRef.current) {
+      canvasRef.current.mode = CanvasMode.pen
+    }
+  };
+
+  const removePathHandler = () => {
+    if (canvasRef.current) {
+      canvasRef.current.mode = CanvasMode.remove
+    }
   };
 
   const textHandler = () => {
-    canvasRef.current?.setMode(CanvasMode.text)
+    if (canvasRef.current) {
+      canvasRef.current.mode = CanvasMode.text
+    }
   };
 
   const eraserHandler = () => {
-    canvasRef.current?.setMode(CanvasMode.eraser)
+    if (canvasRef.current) {
+      canvasRef.current.mode = CanvasMode.eraser;
+    }
   };
 
   const undoHandler = () => {
@@ -205,6 +217,7 @@ function App() {
     ['Clear All', clearHandler, 'primary'],
     ['Reset All', resetCanvasHandler, 'primary'],
     ['Pen', penHandler, 'secondary'],
+    ['Delete path', removePathHandler, 'secondary'],
     ['Text', textHandler, 'secondary'],
     ['Eraser', eraserHandler, 'secondary'],
     ['Export Image', imageExportHandler, 'success'],

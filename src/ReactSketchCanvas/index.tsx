@@ -35,7 +35,7 @@ export interface ReactSketchCanvasProps {
 
 export interface ReactSketchCanvasRef {
   keepScale: boolean;
-  setMode: (mode: CanvasMode) => void;
+  mode: CanvasMode;
   clearCanvas: () => void;
   undo: () => void;
   redo: () => void;
@@ -46,6 +46,7 @@ export interface ReactSketchCanvasRef {
   exportPathsPromise: () => Promise<CanvasPath[]>;
   exportTextsPromise: () => Promise<CanvasText[]>;
   loadPaths: (paths: CanvasPath[]) => void;
+  loadTexts: (paths: CanvasText[]) => void;
   getSketchingTime: () => Promise<number>;
   resetCanvas: () => void;
 }
@@ -117,7 +118,6 @@ export const ReactSketchCanvas = React.forwardRef<
   const currentSizeRef = React.useRef<Size | undefined>();
 
   const handleResize = (size: Size) => {
-    console.log(`Resized to ${size?.width}x${size?.height}`);
     if (!keepScaleRef.current || !currentPaths.length) {
       currentSizeRef.current = size;
       return;
@@ -160,8 +160,11 @@ export const ReactSketchCanvas = React.forwardRef<
   };
 
   React.useImperativeHandle(ref, () => ({
-    setMode: (mode: CanvasMode): void => {
-      setDrawMode(mode);
+    get mode(): CanvasMode {
+      return drawMode;
+    },
+    set mode(val: CanvasMode) {
+      setDrawMode(val);
     },
     get keepScale(): boolean {
       return keepScaleRef.current;
@@ -286,7 +289,7 @@ export const ReactSketchCanvas = React.forwardRef<
       return;
     }
 
-    if (!isDrawingMode()) {
+    if (drawMode === CanvasMode.text) {
       // handle text label insertion
       setIsDrawing(false);
       setUndoStack([]);
@@ -302,10 +305,25 @@ export const ReactSketchCanvas = React.forwardRef<
       return;
     }
 
+    if (drawMode === CanvasMode.remove) {
+      const path = svgCanvas.current?.getPathAtCurrentPoint();
+      if (path) {
+        setCurrentPaths((paths) => paths.filter((p) => p.id !== path?.id));
+        setUndoStack((paths) => {
+          return {
+            ...paths,
+            path,
+          };
+        });
+      }
+      return;
+    }
+
     setIsDrawing(true);
     setUndoStack([]);
 
     let stroke: CanvasPath = {
+      id: Math.round(new Date().getTime()),
       drawMode: drawMode,
       strokeColor: drawMode ? strokeColor : '#000000', // Eraser using mask
       strokeWidth: drawMode ? strokeWidth : eraserWidth,

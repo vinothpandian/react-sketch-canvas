@@ -61,6 +61,7 @@ export interface CanvasProps {
 }
 
 export interface CanvasRef {
+  getPathAtCurrentPoint: () => CanvasPath | undefined;
   exportImage: (imageType: ExportImageType) => Promise<string>;
   exportSvg: () => Promise<string>;
 }
@@ -91,6 +92,7 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
   } = props;
 
   const canvasRef = React.useRef<HTMLDivElement>(null);
+  const lastMouseEvent = React.useRef<React.PointerEvent<HTMLDivElement>>();
 
   // Converts mouse coordinates to relative coordinate based on the absolute position of svg
   const getCoordinates = (
@@ -119,6 +121,7 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
     event: React.PointerEvent<HTMLDivElement>
   ): void => {
     // checks and return if click on some already added text element
+    lastMouseEvent.current = event;
 
     if (!isDrawing) {
       const targetElem: string = (event.target as HTMLElement).nodeName;
@@ -146,6 +149,8 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
   const handlePointerMove = (
     event: React.PointerEvent<HTMLDivElement>
   ): void => {
+    lastMouseEvent.current = event;
+
     if (!isDrawing) return;
 
     // Allow only chosen pointer type
@@ -164,6 +169,8 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
   const handlePointerUp = useCallback(
     (event: React.PointerEvent<HTMLDivElement> | PointerEvent): void => {
       if (event.pointerType === 'mouse' && event.button !== 0) return;
+
+      lastMouseEvent.current = event as React.PointerEvent<HTMLDivElement>;
 
       // Allow only chosen pointer type
       if (
@@ -196,6 +203,16 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
   /* Mouse Handlers ends */
 
   React.useImperativeHandle(ref, () => ({
+    getPathAtCurrentPoint: (): CanvasPath | undefined => {
+      if (lastMouseEvent.current) {
+        const event = lastMouseEvent.current!;
+        const elem = document.elementFromPoint(event.pageX, event.pageY);
+        if (elem?.tagName === 'path') {
+          return paths.filter((p) => p.id === parseInt(elem.id, 10))[0];
+        }
+      }
+      return;
+    },
     exportImage: (imageType: ExportImageType): Promise<string> => {
       return new Promise<string>(async (resolve, reject) => {
         try {
@@ -408,7 +425,7 @@ release drawing even when point goes out of canvas */
             key={`${id}__stroke-group-${i}`}
             mask={`url(#${id}__eraser-mask-${i})`}
           >
-            <Paths id={id} paths={pathGroup} />
+            <Paths paths={pathGroup} />
           </g>
         ))}
         <g id={`${id}__canvas-texts`}>
