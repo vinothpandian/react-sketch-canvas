@@ -45,3 +45,10 @@ code {
 .title {
   margin-left: -64px;
 }
+
+.canvas-area .canvas {
+  padding: 0.6em;
+  overflow: auto;
+  resize: both;
+  max-width: 75%; /* col-9 class sets width to 75% */
+}

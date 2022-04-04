@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useCallback } from 'react';
+import { useResizeDetector } from 'react-resize-detector';
 import Paths, { SvgPath } from '../Paths';
 import { SVGTexts } from '../Texts';
 import {
@@ -8,6 +9,7 @@ import {
   CanvasText,
   ExportImageType,
   Point,
+  Size,
 } from '../types';
 
 const loadImage = (url: string): Promise<HTMLImageElement> =>
@@ -44,6 +46,7 @@ export interface CanvasProps {
   onPointerDown: (point: Point) => void;
   onPointerMove: (point: Point) => void;
   onPointerUp: () => void;
+  onResize?: (size: Size) => void;
   onTextChange: (oldText: CanvasText, newText: CanvasText) => void;
   className?: string;
   id?: string;
@@ -71,6 +74,7 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
     onPointerMove,
     onPointerUp,
     onTextChange,
+    onResize,
     id = 'react-sketch-canvas',
     width = '100%',
     height = '100%',
@@ -173,6 +177,21 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
     },
     [allowOnlyPointerType, onPointerUp]
   );
+
+  const resizeDetectorOnResize = useCallback(
+    (width?: number, height?: number) => {
+      if (onResize && width && height) {
+        onResize({ width, height });
+      }
+    },
+    [onResize]
+  );
+
+  useResizeDetector({
+    targetRef: canvasRef,
+    skipOnMount: true,
+    onResize: resizeDetectorOnResize,
+  });
 
   /* Mouse Handlers ends */
 
@@ -348,10 +367,6 @@ release drawing even when point goes out of canvas */
               patternUnits="userSpaceOnUse"
             >
               <image
-                x="0"
-                y="0"
-                width="100%"
-                height="100%"
                 xlinkHref={backgroundImage}
                 preserveAspectRatio={preserveBackgroundImageAspectRatio}
               />

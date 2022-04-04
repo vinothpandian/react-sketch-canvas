@@ -5,6 +5,11 @@ export interface Point {
   readonly y: number;
 }
 
+export interface Size {
+  width: number;
+  height: number;
+}
+
 export enum CanvasMode {
   none,
   pen,

@@ -9,15 +9,13 @@ import {
   ReactSketchCanvasRef,
 } from 'react-sketch-canvas';
 
-type Handlers = [string, () => void, string][];
+type Handlers = [string, () => void, string, (() => void)?][];
 
 interface InputFieldProps {
   fieldName: keyof ReactSketchCanvasProps;
   type?: string;
   canvasProps: Partial<ReactSketchCanvasProps>;
-  setCanvasProps: React.Dispatch<
-    React.SetStateAction<Partial<ReactSketchCanvasProps>>
-  >;
+  setCanvasProps: React.Dispatch<React.SetStateAction<Partial<ReactSketchCanvasProps>>>;
 }
 
 function InputField({
@@ -57,12 +55,10 @@ function InputField({
 }
 
 function App() {
-  const [canvasProps, setCanvasProps] = React.useState<
-    Partial<ReactSketchCanvasProps>
-  >({
+  const [canvasProps, setCanvasProps] = React.useState<Partial<ReactSketchCanvasProps>>({
     className: 'react-sketch-canvas',
     width: '100%',
-    height: '500px',
+    height: '100%',
     backgroundImage:
       'https://upload.wikimedia.org/wikipedia/commons/7/70/Graph_paper_scan_1600x1000_%286509259561%29.jpg',
     preserveBackgroundImageAspectRatio: 'none',
@@ -74,6 +70,7 @@ function App() {
     exportWithBackgroundImage: true,
     withTimestamp: true,
     allowOnlyPointerType: 'all',
+    keepScale: true,
   });
 
   const inputProps: Array<[keyof ReactSketchCanvasProps, 'text' | 'number']> = [
@@ -99,6 +96,7 @@ function App() {
   const [sketchingTime, setSketchingTime] = React.useState<number>(0);
   const [exportImageType, setexportImageType] =
     React.useState<ExportImageType>('png');
+  const [keepScale, setKeepScale] = React.useState(canvasRef.current?.keepScale ?? false);
 
   const imageExportHandler = async () => {
     const exportImage = canvasRef.current?.exportImage;
@@ -176,7 +174,17 @@ function App() {
     }
   };
 
-  const createButton = (
+  const toggleKeepScale = () => {
+    setKeepScale((v: boolean) => {
+      const newValue = !v;
+      if (canvasRef.current) {
+        canvasRef.current.keepScale = newValue;
+      }
+      return newValue;
+    })
+  }
+
+  const createControl = (
     label: string,
     handler: () => void,
     themeColor: string
@@ -191,7 +199,7 @@ function App() {
     </button>
   );
 
-  const buttonsWithHandlers: Handlers = [
+  const controlsWithHandlers: Handlers = [
     ['Undo', undoHandler, 'primary'],
     ['Redo', redoHandler, 'primary'],
     ['Clear All', clearHandler, 'primary'],
@@ -530,7 +538,7 @@ function App() {
             <h3>Canvas</h3>
           </header>
           <section className="row no-gutters canvas-area m-0 p-0">
-            <div className="col-9 canvas p-0">
+            <div className="col-9 canvas">
               <ReactSketchCanvas
                 ref={canvasRef}
                 onChange={onChange}
@@ -542,9 +550,18 @@ function App() {
             </div>
             <div className="col-3 panel">
               <div className="d-grid gap-2">
-                {buttonsWithHandlers.map(([label, handler, themeColor]) =>
-                  createButton(label, handler, themeColor)
+                {controlsWithHandlers.map(([label, handler, themeColor]) =>
+                  createControl(label, handler, themeColor)
                 )}
+                <div className='form-check'>
+                  <label>
+                    <input type='checkbox'
+                           className='form-check-input'
+                           onChange={toggleKeepScale}
+                           checked={keepScale}
+                    />
+                    Maintain Aspect Ratio
+                  </label></div>
               </div>
             </div>
           </section>
