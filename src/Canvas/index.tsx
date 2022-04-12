@@ -50,12 +50,11 @@ export interface CanvasProps {
   onTextChange: (oldText: CanvasText, newText: CanvasText) => void;
   className?: string;
   id?: string;
-  width: string;
-  height: string;
+  width: string | number;
+  height: string | number;
   canvasColor: string;
   backgroundImage: string;
   exportWithBackgroundImage: boolean;
-  preserveBackgroundImageAspectRatio: string;
   allowOnlyPointerType: string;
   style: React.CSSProperties;
 }
@@ -83,7 +82,6 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
     canvasColor = 'red',
     backgroundImage = '',
     exportWithBackgroundImage = false,
-    preserveBackgroundImageAspectRatio = 'none',
     allowOnlyPointerType = 'all',
     style = {
       border: '0.0625rem solid #9c9c9c',
@@ -377,15 +375,17 @@ release drawing even when point goes out of canvas */
           {backgroundImage && (
             <pattern
               id={`${id}__background`}
-              x="0"
-              y="0"
               width="100%"
               height="100%"
-              patternUnits="userSpaceOnUse"
+              patternContentUnits="objectBoundingBox"
+              viewBox="0 0 1 1"
+              preserveAspectRatio="xMidYMid meet"
             >
               <image
                 xlinkHref={backgroundImage}
-                preserveAspectRatio={preserveBackgroundImageAspectRatio}
+                height="1"
+                width="1"
+                preserveAspectRatio="xMidYMid meet"
               />
             </pattern>
           )}
