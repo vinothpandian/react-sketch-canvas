@@ -5,6 +5,7 @@ import {
   CanvasPath,
   CanvasText,
   ExportImageType,
+  getId,
   Point,
   Size,
 } from '../types';
@@ -14,8 +15,8 @@ export type ReactSketchCanvasStates = {};
 /* Props validation */
 export interface ReactSketchCanvasProps {
   id?: string;
-  width?: string;
-  height?: string;
+  width?: string | number;
+  height?: string | number;
   className?: string;
   strokeColor?: string;
   canvasColor?: string;
@@ -35,6 +36,7 @@ export interface ReactSketchCanvasProps {
 export interface ReactSketchCanvasRef {
   keepScale: boolean;
   mode: CanvasMode;
+  size?: Size;
   clearCanvas: () => void;
   undo: () => void;
   redo: () => void;
@@ -71,6 +73,7 @@ export const ReactSketchCanvas = React.forwardRef<
       border: '0.0625rem solid #9c9c9c',
       borderRadius: '0.25rem',
     },
+    keepScale = false,
     onChange = (_paths: CanvasPath[], _texts: CanvasText[]): void => {},
     onStroke = (_path: CanvasPath, _isEraser: boolean): void => {},
     withTimestamp = false,
@@ -84,7 +87,7 @@ export const ReactSketchCanvas = React.forwardRef<
   const [currentPaths, setCurrentPaths] = React.useState<CanvasPath[]>([]);
   const [currentTexts, setCurrentTexts] = React.useState<CanvasText[]>([]);
 
-  const keepScaleRef = React.useRef(false);
+  const keepScaleRef = React.useRef(keepScale);
 
   const isDrawingMode = (): boolean => {
     return drawMode === CanvasMode.pen || drawMode === CanvasMode.eraser;
@@ -116,45 +119,46 @@ export const ReactSketchCanvas = React.forwardRef<
   const currentSizeRef = React.useRef<Size | undefined>();
 
   const handleResize = (size: Size) => {
-    if (!keepScaleRef.current || !currentPaths.length) {
+    const currentSize = currentSizeRef.current;
+
+    if (!currentSize) {
       currentSizeRef.current = size;
       return;
     }
-    const currentSize = currentSizeRef.current;
-    if (currentSize) {
-      if (
-        size.width === currentSize.width &&
-        size.height === currentSize.height
-      ) {
-        return;
-      }
-      let [scaleX, scaleY] = [
-        size.width / currentSize.width,
-        size.height / currentSize.height,
-      ];
-      currentSizeRef.current = size;
-      console.log('Current size: ', currentSizeRef.current);
-
-      setCurrentPaths((paths) =>
-        paths.map((path) => ({
-          ...path,
-          paths: path.paths.map((pt: Point) => ({
-            x: pt.x * scaleX,
-            y: pt.y * scaleY,
-          })),
-        }))
-      );
-
-      setCurrentTexts((texts) =>
-        texts.map((item: CanvasText) => ({
-          ...item,
-          position: {
-            x: item.position.x * scaleX,
-            y: item.position.y * scaleY,
-          },
-        }))
-      );
+    if (
+      size.width === currentSize.width &&
+      size.height === currentSize.height
+    ) {
+      return;
     }
+
+    let [scaleX, scaleY] = [
+      size.width / currentSize.width,
+      size.height / currentSize.height,
+    ];
+
+    currentSizeRef.current = size;
+
+    setCurrentPaths((paths) =>
+      paths.map((path) => ({
+        ...path,
+        paths: path.paths.map((pt: Point) => ({
+          x: pt.x * scaleX,
+          y: pt.y * scaleY,
+        })),
+      }))
+    );
+
+    setCurrentTexts((texts) =>
+      texts.map((item: CanvasText) => ({
+        ...item,
+        position: {
+          x: item.position.x * scaleX,
+          y: item.position.y * scaleY,
+        },
+      }))
+    );
+    onChange(currentPaths, currentTexts);
   };
 
   React.useImperativeHandle(ref, () => ({
@@ -169,6 +173,9 @@ export const ReactSketchCanvas = React.forwardRef<
     },
     set keepScale(val) {
       keepScaleRef.current = val;
+    },
+    get size(): Size | undefined {
+      return currentSizeRef.current;
     },
     clearCanvas: (): void => {
       setResetStack([...currentPaths]);
@@ -247,7 +254,13 @@ export const ReactSketchCanvas = React.forwardRef<
       });
     },
     loadPaths: (paths: CanvasPath[]): void => {
-      setCurrentPaths((currentPaths) => [...currentPaths, ...paths]);
+      setCurrentPaths((currentPaths) => [
+        ...currentPaths,
+        ...paths.map((p) => ({
+          ...p,
+          id: p.id || getId(),
+        })),
+      ]);
       onChange(currentPaths, currentTexts);
     },
     loadTexts: (texts: CanvasText[]): void => {
@@ -293,7 +306,7 @@ export const ReactSketchCanvas = React.forwardRef<
       setUndoStack([]);
       setCurrentTexts((texts) => {
         const textLabel: CanvasText = {
-          id: Math.round(new Date().getTime()),
+          id: getId(),
           text: 'Text',
           position: point,
         };
@@ -321,7 +334,7 @@ export const ReactSketchCanvas = React.forwardRef<
     setUndoStack([]);
 
     let stroke: CanvasPath = {
-      id: Math.round(new Date().getTime()),
+      id: getId(),
       drawMode: drawMode,
       strokeColor: drawMode ? strokeColor : '#000000', // Eraser using mask
       strokeWidth: drawMode ? strokeWidth : eraserWidth,

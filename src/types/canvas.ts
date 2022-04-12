@@ -39,3 +39,17 @@ export interface CanvasProportion {
   readonly bufferHeight: number;
   readonly innerHeight: number;
 }
+
+const Sequence = (): (() => number) => {
+  let lastValue: number = 0;
+
+  return (): number => {
+    let value = Math.round(new Date().getTime());
+    if (lastValue >= value) {
+      value = lastValue + 1;
+    }
+    return (lastValue = value);
+  };
+};
+
+export const getId = Sequence();
