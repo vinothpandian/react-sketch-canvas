@@ -1,4 +1,4 @@
-export class UniqueId {
+export default class UniqueId {
   random: string;
 
   private getUniqueString(n: number) {

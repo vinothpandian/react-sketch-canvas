@@ -9,6 +9,7 @@ import {
   Point,
   Size,
 } from '../types';
+import UniqueId from '../types/uniqueId';
 
 export type ReactSketchCanvasStates = {};
 
@@ -56,8 +57,10 @@ export const ReactSketchCanvas = React.forwardRef<
   ReactSketchCanvasRef,
   ReactSketchCanvasProps
 >((props, ref) => {
+  const uniqueIdRef = React.useRef(new UniqueId());
+
   const {
-    id = 'react-sketch-canvas',
+    id = uniqueIdRef.current.get('react-sketch-canvas'),
     width = '100%',
     height = '100%',
     className = '',
