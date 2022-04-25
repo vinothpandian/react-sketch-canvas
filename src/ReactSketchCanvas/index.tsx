@@ -121,26 +121,26 @@ export const ReactSketchCanvas = React.forwardRef<
 
   const currentSizeRef = React.useRef<Size | undefined>();
 
-  const handleResize = (size: Size) => {
+  const handleResize = (newSize: Size) => {
     const currentSize = currentSizeRef.current;
 
     if (!currentSize) {
-      currentSizeRef.current = size;
+      currentSizeRef.current = newSize;
       return;
     }
     if (
-      size.width === currentSize.width &&
-      size.height === currentSize.height
+      newSize.width === currentSize.width &&
+      newSize.height === currentSize.height
     ) {
       return;
     }
 
     let [scaleX, scaleY] = [
-      size.width / currentSize.width,
-      size.height / currentSize.height,
+      newSize.width / currentSize.width,
+      newSize.height / currentSize.height,
     ];
 
-    currentSizeRef.current = size;
+    currentSizeRef.current = newSize;
 
     setCurrentPaths((paths) =>
       paths.map((path) => ({
@@ -179,6 +179,11 @@ export const ReactSketchCanvas = React.forwardRef<
     },
     get size(): Size | undefined {
       return currentSizeRef.current;
+    },
+    set size(newSize) {
+      if (newSize) {
+        handleResize(newSize);
+      }
     },
     clearCanvas: (): void => {
       setResetStack([...currentPaths]);
