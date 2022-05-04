@@ -11,9 +11,6 @@ import {
 } from '../types';
 import UniqueId from '../types/uniqueId';
 
-export type ReactSketchCanvasStates = {};
-
-/* Props validation */
 export interface ReactSketchCanvasProps {
   id?: string;
   width?: string | number;
@@ -47,16 +44,66 @@ export interface ReactSketchCanvasRef {
   exportTexts: () => CanvasText[];
   exportPathsPromise: () => Promise<CanvasPath[]>;
   exportTextsPromise: () => Promise<CanvasText[]>;
-  loadPaths: (paths: CanvasPath[]) => void;
-  loadTexts: (paths: CanvasText[]) => void;
+  loadPaths: (paths: CanvasPath[], size?: Size) => void;
+  loadTexts: (paths: CanvasText[], size?: Size) => void;
   getSketchingTime: () => Promise<number>;
   resetCanvas: () => void;
 }
 
-export const ReactSketchCanvas = React.forwardRef<
-  ReactSketchCanvasRef,
-  ReactSketchCanvasProps
->((props, ref) => {
+function scalePaths(
+  paths: CanvasPath[],
+  currentSize: Size,
+  newSize: Size
+): CanvasPath[] {
+  if (
+    newSize.width === currentSize.width &&
+    newSize.height === currentSize.height
+  ) {
+    return paths;
+  }
+
+  let [scaleX, scaleY] = [
+    newSize.width / currentSize.width,
+    newSize.height / currentSize.height,
+  ];
+
+  return paths.map((path) => ({
+    ...path,
+    paths: path.paths.map((pt: Point) => ({
+      x: pt.x * scaleX,
+      y: pt.y * scaleY,
+    })),
+  }));
+}
+
+function scaleTexts(
+  texts: CanvasText[],
+  currentSize: Size,
+  newSize: Size
+): CanvasText[] {
+  if (
+    newSize.width === currentSize.width &&
+    newSize.height === currentSize.height
+  ) {
+    return texts;
+  }
+
+  let [scaleX, scaleY] = [
+    newSize.width / currentSize.width,
+    newSize.height / currentSize.height,
+  ];
+
+  return texts.map((item: CanvasText) => ({
+    ...item,
+    position: {
+      x: item.position.x * scaleX,
+      y: item.position.y * scaleY,
+    },
+  }));
+}
+
+export const ReactSketchCanvas = React.forwardRef<ReactSketchCanvasRef,
+  ReactSketchCanvasProps>((props, ref) => {
   const uniqueIdRef = React.useRef(new UniqueId());
 
   const {
@@ -82,7 +129,7 @@ export const ReactSketchCanvas = React.forwardRef<
     withTimestamp = false,
   } = props;
 
-  const svgCanvas = React.createRef<CanvasRef & SVGElement>();
+  const svgCanvas = React.createRef<CanvasRef>();
   const [drawMode, setDrawMode] = React.useState<CanvasMode>(CanvasMode.pen);
   const [isDrawing, setIsDrawing] = React.useState<boolean>(false);
   const [resetStack, setResetStack] = React.useState<CanvasPath[]>([]);
@@ -109,6 +156,7 @@ export const ReactSketchCanvas = React.forwardRef<
 
   React.useEffect(() => {
     liftUpdatedStateUp();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isDrawing]);
 
   const resetCanvas = () => {
@@ -128,6 +176,7 @@ export const ReactSketchCanvas = React.forwardRef<
       currentSizeRef.current = newSize;
       return;
     }
+
     if (
       newSize.width === currentSize.width &&
       newSize.height === currentSize.height
@@ -135,32 +184,11 @@ export const ReactSketchCanvas = React.forwardRef<
       return;
     }
 
-    let [scaleX, scaleY] = [
-      newSize.width / currentSize.width,
-      newSize.height / currentSize.height,
-    ];
-
     currentSizeRef.current = newSize;
 
-    setCurrentPaths((paths) =>
-      paths.map((path) => ({
-        ...path,
-        paths: path.paths.map((pt: Point) => ({
-          x: pt.x * scaleX,
-          y: pt.y * scaleY,
-        })),
-      }))
-    );
+    setCurrentPaths((paths) => scalePaths(paths, currentSize, newSize));
+    setCurrentTexts((texts) => scaleTexts(texts, currentSize, newSize));
 
-    setCurrentTexts((texts) =>
-      texts.map((item: CanvasText) => ({
-        ...item,
-        position: {
-          x: item.position.x * scaleX,
-          y: item.position.y * scaleY,
-        },
-      }))
-    );
     onChange(currentPaths, currentTexts);
   };
 
@@ -261,7 +289,15 @@ export const ReactSketchCanvas = React.forwardRef<
         }
       });
     },
-    loadPaths: (paths: CanvasPath[]): void => {
+    loadPaths: (paths: CanvasPath[], size?: Size): void => {
+      if (size) {
+        let newSize = currentSizeRef.current ?? svgCanvas.current!.size;
+        if (newSize) {
+          paths = scalePaths(paths, size, newSize);
+        } else {
+          console.error('Cannot determine new size.');
+        }
+      }
       setCurrentPaths((currentPaths) => [
         ...currentPaths,
         ...paths.map((p) => ({
@@ -271,7 +307,15 @@ export const ReactSketchCanvas = React.forwardRef<
       ]);
       onChange(currentPaths, currentTexts);
     },
-    loadTexts: (texts: CanvasText[]): void => {
+    loadTexts: (texts: CanvasText[], size?: Size): void => {
+      if (size) {
+        let newSize = currentSizeRef.current ?? svgCanvas.current!.size;
+        if (newSize) {
+          texts = scaleTexts(texts, size, newSize);
+        } else {
+          console.error('Cannot determine new size.');
+        }
+      }
       setCurrentTexts((currentTexts) => [...currentTexts, ...texts]);
       onChange(currentPaths, currentTexts);
     },

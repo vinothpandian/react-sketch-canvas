@@ -63,6 +63,7 @@ export interface CanvasRef {
   getPathAtCurrentPoint: () => CanvasPath | undefined;
   exportImage: (imageType: ExportImageType) => Promise<string>;
   exportSvg: () => Promise<string>;
+  readonly size?: Size;
 }
 
 export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
@@ -201,6 +202,15 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
   /* Mouse Handlers ends */
 
   React.useImperativeHandle(ref, () => ({
+    get size(): Size | undefined {
+      if (canvasRef.current) {
+        return {
+          width: canvasRef.current.clientWidth,
+          height: canvasRef.current.clientHeight,
+        };
+      }
+      return;
+    },
     getPathAtCurrentPoint: (): CanvasPath | undefined => {
       if (lastMouseEvent.current) {
         const event = lastMouseEvent.current!;
