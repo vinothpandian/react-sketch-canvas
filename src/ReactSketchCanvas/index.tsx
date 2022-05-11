@@ -188,8 +188,6 @@ export const ReactSketchCanvas = React.forwardRef<ReactSketchCanvasRef,
 
     setCurrentPaths((paths) => scalePaths(paths, currentSize, newSize));
     setCurrentTexts((texts) => scaleTexts(texts, currentSize, newSize));
-
-    onChange(currentPaths, currentTexts);
   };
 
   React.useImperativeHandle(ref, () => ({
