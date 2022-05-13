@@ -171,10 +171,8 @@ export const ReactSketchCanvas = React.forwardRef<ReactSketchCanvasRef,
 
   const handleResize = (newSize: Size) => {
     const currentSize = currentSizeRef.current;
-    console.debug('[RSC] currentSize:', currentSizeRef.current);
 
     if (!currentSize) {
-      console.debug('* Set current size to:', newSize);
       currentSizeRef.current = newSize;
       return;
     }
@@ -185,7 +183,6 @@ export const ReactSketchCanvas = React.forwardRef<ReactSketchCanvasRef,
     ) {
       return;
     }
-    console.debug('* Resizing from', currentSize, 'to', newSize);
 
     currentSizeRef.current = newSize;
 
@@ -292,15 +289,13 @@ export const ReactSketchCanvas = React.forwardRef<ReactSketchCanvasRef,
     },
     loadPaths: (paths: CanvasPath[], size?: Size): void => {
       if (size) {
-        console.debug('[RSC] currentSize:', currentSizeRef.current);
-        console.debug('[RSC] svgCanvasSize:', svgCanvas.current?.size);
-        let newSize = currentSizeRef.current ?? svgCanvas.current!.size;
+        let newSize = currentSizeRef.current ?? svgCanvas.current?.size;
         if (newSize) {
-          console.debug('[RSC] scale: ', size, newSize);
           paths = scalePaths(paths, size, newSize);
           currentSizeRef.current = newSize;
         } else {
           console.error('Cannot determine new size.');
+          return;
         }
       }
       setCurrentPaths((currentPaths) => [
@@ -314,11 +309,12 @@ export const ReactSketchCanvas = React.forwardRef<ReactSketchCanvasRef,
     },
     loadTexts: (texts: CanvasText[], size?: Size): void => {
       if (size) {
-        let newSize = currentSizeRef.current ?? svgCanvas.current!.size;
+        let newSize = currentSizeRef.current ?? svgCanvas.current?.size;
         if (newSize) {
           texts = scaleTexts(texts, size, newSize);
         } else {
           console.error('Cannot determine new size.');
+          return;
         }
       }
       setCurrentTexts((currentTexts) => [...currentTexts, ...texts]);
