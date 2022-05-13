@@ -379,6 +379,7 @@ export const ReactSketchCanvas = React.forwardRef<ReactSketchCanvasRef,
             path,
           };
         });
+        onChange(currentPaths, currentTexts);
       }
       return;
     }
