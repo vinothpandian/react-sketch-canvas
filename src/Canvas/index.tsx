@@ -195,7 +195,6 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
 
   useResizeDetector({
     targetRef: canvasRef,
-    skipOnMount: true,
     onResize: resizeDetectorOnResize,
   });
 
