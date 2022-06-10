@@ -10,6 +10,7 @@
   "strokeColor": "#000000",
   "canvasColor": "#FFFFFF",
   "style": { "borderRight": "1px solid #CCC" },
+  "svgStyle": {},
   "exportWithBackgroundImage": true,
   "withTimestamp": true,
   "allowOnlyPointerType": "all"

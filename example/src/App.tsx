@@ -69,6 +69,7 @@ function App() {
     strokeColor: '#000000',
     canvasColor: '#FFFFFF',
     style: { borderRight: '1px solid #CCC' },
+    svgStyle: {},
     exportWithBackgroundImage: true,
     withTimestamp: true,
     allowOnlyPointerType: 'all',
@@ -495,6 +496,30 @@ function App() {
                   }}
                   rows={5}
                   defaultValue={JSON.stringify(canvasProps.style, null, 2)}
+                />
+              </div>
+              <div className="p-2 col-10">
+                <label htmlFor="svg-style" className="form-label">
+                  SVG style
+                </label>
+                <textarea
+                  id="svg-style"
+                  className="dataURICode col-12"
+                  onChange={(event) => {
+                    try {
+                      const svgStyle = JSON.parse(event.target.value);
+                      setCanvasProps(
+                        (prevCanvasProps: Partial<ReactSketchCanvasProps>) => ({
+                          ...prevCanvasProps,
+                          svgStyle: svgStyle,
+                        })
+                      );
+                    } catch {
+                      return;
+                    }
+                  }}
+                  rows={5}
+                  defaultValue={JSON.stringify(canvasProps.svgStyle, null, 2)}
                 />
               </div>
               <div className="p-2 col-10">
