@@ -409,9 +409,7 @@ it('should update SVG style', () => {
     .find('svg')
     .should('have.attr', 'style')
     .CssStyleToObject()
-    .and(
-      'have.any.keys', Object.keys(updatedStyle).map(Cypress._.kebabCase)
-    );
+    .and('have.any.keys', Object.keys(updatedStyle).map(Cypress._.kebabCase));
 });
 
 describe('onStroke', () => {
