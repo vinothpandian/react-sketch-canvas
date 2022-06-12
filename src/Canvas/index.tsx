@@ -270,7 +270,6 @@ release drawing even when point goes out of canvas */
   return (
     <div
       role="presentation"
-      aria-label="react-sketch-canvas"
       ref={canvasRef}
       className={className}
       style={{
