@@ -1,7 +1,7 @@
 import '@testing-library/cypress/add-commands';
 
 Cypress.Commands.add('getCanvas', function () {
-  return cy.findByRole('presentation', { name: /react\-sketch\-canvas/i });
+  return cy.findByRole('presentation');
 });
 
 Cypress.Commands.add(
@@ -12,7 +12,7 @@ Cypress.Commands.add(
     originY: number = 0,
     pointerType: Cypress.PointerEventType = 'pen'
   ) {
-    cy.findByRole('presentation', { name: /react\-sketch\-canvas/i }).then(
+    cy.findByRole('presentation').then(
       ($canvas) => {
         const x = $canvas.offset().left + originX;
         const y = $canvas.offset().top + originY;
@@ -70,7 +70,7 @@ Cypress.Commands.add(
     originY: number = 0,
     pointerType: Cypress.PointerEventType = 'pen'
   ) {
-    cy.findByRole('presentation', { name: /react\-sketch\-canvas/i }).then(
+    cy.findByRole('presentation').then(
       ($canvas) => {
         const x = $canvas.offset().left + originX;
         const y = $canvas.offset().top + originY;
@@ -107,7 +107,7 @@ Cypress.Commands.add(
     originY: number = 0,
     pointerType: Cypress.PointerEventType = 'pen'
   ) {
-    cy.findByRole('presentation', { name: /react\-sketch\-canvas/i }).then(
+    cy.findByRole('presentation').then(
       ($canvas) => {
         const x = $canvas.offset().left + originX;
         const y = $canvas.offset().top + originY;
