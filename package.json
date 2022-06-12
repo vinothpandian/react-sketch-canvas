@@ -27,7 +27,7 @@
   },
   "scripts": {
     "analyze": "size-limit --why",
-    "build:example": "cd example && cross-env NODE_ENV=production yarn build:dev",
+    "build:example": "cd example && cross-env NODE_ENV=production yarn build",
     "build": "rimraf clean && cross-env NODE_ENV=production dts build",
     "build:dev": "dts build",
     "clean": "rimraf dist/",
