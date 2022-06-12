@@ -137,6 +137,7 @@ const Canvas = class extends React.Component {
 | onChange                           | PropTypes.func    |                       | Returns the current sketch path in `CanvasPath` type on every path change                           |
 | onStroke                           | PropTypes.func    |                       | Returns the the last stroke path and whether it is an eraser stroke on every pointer up event       |
 | style                              | PropTypes.object  | false                 | Add CSS styling as CSS-in-JS object                                                                 |
+| svgStyle                           | PropTypes.object  | {}                    | Add CSS styling as CSS-in-JS object for the SVG                                                     |
 | withTimestamp                      | PropTypes.bool    | false                 | Add timestamp to individual strokes for measuring sketching time                                    |
 
 Set SVG background using CSS [background][css-bg] value
