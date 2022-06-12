@@ -376,7 +376,7 @@ it('should update style', () => {
       Object.keys(defaultProps.style).map(Cypress._.kebabCase)
     );
 
-  cy.findByRole('textbox', { name: /style/i })
+  cy.findByRole('textbox', { name: 'style', exact: true })
     .clear()
     .type(JSON.stringify(updatedStyle), {
       parseSpecialCharSequences: false,
@@ -390,6 +390,25 @@ it('should update style', () => {
       'not.have.any.keys',
       Object.keys(defaultProps.style).map(Cypress._.kebabCase)
     )
+    .and('have.any.keys', Object.keys(updatedStyle).map(Cypress._.kebabCase));
+});
+
+it('should update SVG style', () => {
+  const updatedStyle = {
+    background: 'red',
+  };
+
+  cy.findByRole('textbox', { name: 'SVG style' })
+    .clear()
+    .type(JSON.stringify(updatedStyle), {
+      parseSpecialCharSequences: false,
+      delay: 0,
+    });
+
+  cy.getCanvas()
+    .find('svg')
+    .should('have.attr', 'style')
+    .CssStyleToObject()
     .and('have.any.keys', Object.keys(updatedStyle).map(Cypress._.kebabCase));
 });
 

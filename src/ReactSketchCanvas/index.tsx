@@ -21,6 +21,7 @@ export interface ReactSketchCanvasProps {
   onChange?: (updatedPaths: CanvasPath[]) => void;
   onStroke?: (path: CanvasPath, isEraser: boolean) => void;
   style?: React.CSSProperties;
+  svgStyle?: React.CSSProperties;
   withTimestamp?: boolean;
 }
 
@@ -58,6 +59,7 @@ export const ReactSketchCanvas = React.forwardRef<
       border: '0.0625rem solid #9c9c9c',
       borderRadius: '0.25rem',
     },
+    svgStyle = {},
     onChange = (_paths: CanvasPath[]): void => {},
     onStroke = (_path: CanvasPath, _isEraser: boolean): void => {},
     withTimestamp = false,
@@ -264,6 +266,7 @@ export const ReactSketchCanvas = React.forwardRef<
       preserveBackgroundImageAspectRatio={preserveBackgroundImageAspectRatio}
       allowOnlyPointerType={allowOnlyPointerType}
       style={style}
+      svgStyle={svgStyle}
       paths={currentPaths}
       isDrawing={isDrawing}
       onPointerDown={handlePointerDown}
