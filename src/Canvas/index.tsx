@@ -64,6 +64,7 @@ export interface CanvasRef {
   exportImage: (imageType: ExportImageType) => Promise<string>;
   exportSvg: () => Promise<string>;
   readonly size?: Size;
+  readonly backgroundImageSize?: Size;
 }
 
 export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
@@ -92,6 +93,19 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
 
   const canvasRef = React.useRef<HTMLDivElement>(null);
   const lastMouseEvent = React.useRef<React.PointerEvent<HTMLDivElement>>();
+  const backgroundImageSizeRef = React.useRef<Size>();
+
+  React.useEffect(() => {
+    if (backgroundImage) {
+      loadImage(backgroundImage).then((img) => {
+        backgroundImageSizeRef.current = {
+          width: img.width,
+          height: img.height,
+        };
+        return img;
+      });
+    }
+  }, [backgroundImage]);
 
   // Converts mouse coordinates to relative coordinate based on the absolute position of svg
   const getCoordinates = (
@@ -209,6 +223,9 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
         };
       }
       return;
+    },
+    get backgroundImageSize(): Size | undefined {
+      return backgroundImageSizeRef.current;
     },
     getPathAtCurrentPoint: (): CanvasPath | undefined => {
       if (lastMouseEvent.current) {

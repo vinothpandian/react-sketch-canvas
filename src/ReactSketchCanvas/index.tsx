@@ -38,7 +38,7 @@ export interface ReactSketchCanvasRef {
   clearCanvas: () => void;
   undo: () => void;
   redo: () => void;
-  addText: (text: string, position: Point, inScale: boolean) => void;
+  addText: (text: string, position: Point) => void;
   addPath: (points: Point[], width: number, color: string) => void;
   exportImage: (imageType: ExportImageType) => Promise<string>;
   exportSvg: () => Promise<string>;
@@ -52,30 +52,38 @@ export interface ReactSketchCanvasRef {
   resetCanvas: () => void;
 }
 
+function scale<T>(
+  from: Size,
+  to: Size,
+  callback: (change?: { x: number; y: number }) => T
+) {
+  if (to.width === from.width && to.height === from.height) {
+    return callback();
+  }
+
+  return callback({
+    x: to.width / from.width,
+    y: to.height / from.height,
+  });
+}
+
 function scalePaths(
   paths: CanvasPath[],
   currentSize: Size,
   newSize: Size
 ): CanvasPath[] {
-  if (
-    newSize.width === currentSize.width &&
-    newSize.height === currentSize.height
-  ) {
+  return scale(currentSize, newSize, (change): CanvasPath[] => {
+    if (change) {
+      return paths.map((path) => ({
+        ...path,
+        paths: path.paths.map((pt: Point) => ({
+          x: pt.x * change.x,
+          y: pt.y * change.y,
+        })),
+      }));
+    }
     return paths;
-  }
-
-  let [scaleX, scaleY] = [
-    newSize.width / currentSize.width,
-    newSize.height / currentSize.height,
-  ];
-
-  return paths.map((path) => ({
-    ...path,
-    paths: path.paths.map((pt: Point) => ({
-      x: pt.x * scaleX,
-      y: pt.y * scaleY,
-    })),
-  }));
+  });
 }
 
 function scaleTexts(
@@ -83,29 +91,24 @@ function scaleTexts(
   currentSize: Size,
   newSize: Size
 ): CanvasText[] {
-  if (
-    newSize.width === currentSize.width &&
-    newSize.height === currentSize.height
-  ) {
+  return scale(currentSize, newSize, (change): CanvasText[] => {
+    if (change) {
+      return texts.map((item: CanvasText) => ({
+        ...item,
+        position: {
+          x: item.position.x * change.x,
+          y: item.position.y * change.y,
+        },
+      }));
+    }
     return texts;
-  }
-
-  let [scaleX, scaleY] = [
-    newSize.width / currentSize.width,
-    newSize.height / currentSize.height,
-  ];
-
-  return texts.map((item: CanvasText) => ({
-    ...item,
-    position: {
-      x: item.position.x * scaleX,
-      y: item.position.y * scaleY,
-    },
-  }));
+  });
 }
 
-export const ReactSketchCanvas = React.forwardRef<ReactSketchCanvasRef,
-  ReactSketchCanvasProps>((props, ref) => {
+export const ReactSketchCanvas = React.forwardRef<
+  ReactSketchCanvasRef,
+  ReactSketchCanvasProps
+>((props, ref) => {
   const uniqueIdRef = React.useRef(new UniqueId());
 
   const {
@@ -170,17 +173,12 @@ export const ReactSketchCanvas = React.forwardRef<ReactSketchCanvasRef,
   };
 
   const currentSizeRef = React.useRef<Size | undefined>();
-  const imageSizeRef = React.useRef<Size | undefined>();
 
   const handleResize = (newSize: Size) => {
     const currentSize = currentSizeRef.current;
     if (!currentSize) {
       currentSizeRef.current = newSize;
       return;
-    }
-    if (!imageSizeRef.current) {
-      // it's loaded initially in the size of the image, then scales to fit
-      imageSizeRef.current = newSize;
     }
 
     if (!keepScaleRef.current) {
@@ -294,7 +292,7 @@ export const ReactSketchCanvas = React.forwardRef<ReactSketchCanvasRef,
     },
     addText: (text, position) => {
       const texts: CanvasText[] = [createText(text, position)];
-      loadTexts(texts, imageSizeRef.current!);
+      loadTexts(texts, svgCanvas.current?.backgroundImageSize);
       onChange(currentPaths, currentTexts);
     },
     addPath: (points, width, color) => {
@@ -307,7 +305,7 @@ export const ReactSketchCanvas = React.forwardRef<ReactSketchCanvasRef,
           id: getId(),
         },
       ];
-      loadPaths(paths, imageSizeRef.current!);
+      loadPaths(paths, svgCanvas.current?.backgroundImageSize);
       onChange(currentPaths, currentTexts);
     },
     exportImage: (imageType: ExportImageType): Promise<string> => {
