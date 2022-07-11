@@ -378,25 +378,6 @@ release drawing even when point goes out of canvas */
         }}
         id={id}
       >
-        <g id={`${id}__eraser-stroke-group`} display="none">
-          <rect
-            id={`${id}__mask-background`}
-            x="0"
-            y="0"
-            width="100%"
-            height="100%"
-            fill="white"
-          />
-          {eraserPaths.map((eraserPath, i) => (
-            <SvgPath
-              key={`${id}__eraser-${i}`}
-              id={`${id}__eraser-${i}`}
-              paths={eraserPath.paths}
-              strokeColor="#000000"
-              strokeWidth={eraserPath.strokeWidth}
-            />
-          ))}
-        </g>
         <defs>
           {backgroundImage && (
             <pattern
@@ -435,6 +416,25 @@ release drawing even when point goes out of canvas */
             </mask>
           ))}
         </defs>
+        <g id={`${id}__eraser-stroke-group`} display="none">
+          <rect
+            id={`${id}__mask-background`}
+            x="0"
+            y="0"
+            width="100%"
+            height="100%"
+            fill="white"
+          />
+          {eraserPaths.map((eraserPath, i) => (
+            <SvgPath
+              key={`${id}__eraser-${i}`}
+              id={`${id}__eraser-${i}`}
+              paths={eraserPath.paths}
+              strokeColor="#000000"
+              strokeWidth={eraserPath.strokeWidth}
+            />
+          ))}
+        </g>
         <g id={`${id}__canvas-background-group`}>
           <rect
             id={`${id}__canvas-background`}
