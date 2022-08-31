@@ -12,6 +12,7 @@ export type SvgPathProps = {
   strokeColor: string;
   // Bezier command to smoothen the line
   command?: (point: Point, i: number, a: Point[]) => string;
+  onClick?: (id: string) => void;
 };
 
 /**
@@ -23,12 +24,15 @@ export const SvgPath = ({
   strokeWidth,
   strokeColor,
   command = bezierCommand,
+  onClick = undefined,
 }: SvgPathProps): JSX.Element => {
+  const areaMargin = 5; // px
+
   if (paths.length === 1) {
     const { x, y } = paths[0];
     const radius = strokeWidth / 2;
 
-    return (
+    const elem = (
       <circle
         key={id}
         id={id}
@@ -39,6 +43,23 @@ export const SvgPath = ({
         fill={strokeColor}
       />
     );
+    if (onClick) {
+      return (
+        <>
+          {elem}
+          <circle
+            key={`${id}-area`}
+            id={`${id}-area`}
+            cx={x}
+            cy={y}
+            r={radius + areaMargin * 2}
+            pointerEvents="all"
+            onClick={() => onClick(id)}
+          />
+        </>
+      );
+    }
+    return elem;
   }
 
   const d = paths.reduce(
@@ -47,7 +68,7 @@ export const SvgPath = ({
     ''
   );
 
-  return (
+  const elem = (
     <path
       key={id}
       id={id}
@@ -58,6 +79,24 @@ export const SvgPath = ({
       strokeWidth={strokeWidth}
     />
   );
+  if (onClick) {
+    return (
+      <>
+        {elem}
+        <path
+          key={`${id}-area`}
+          id={`${id}-area`}
+          d={d}
+          fill="none"
+          strokeLinecap="round"
+          strokeWidth={strokeWidth + areaMargin * 2}
+          pointerEvents="all"
+          onClick={() => onClick(id)}
+        />
+      </>
+    );
+  }
+  return elem;
 };
 
 export const line = (pointA: Point, pointB: Point) => {
@@ -133,9 +172,10 @@ export const bezierCommand = (point: Point, i: number, a: Point[]): string => {
 
 type PathProps = {
   paths: CanvasPath[];
+  onClick?: (id: string) => void;
 };
 
-const Paths = ({ paths }: PathProps): JSX.Element => (
+const Paths = ({ paths, onClick }: PathProps): JSX.Element => (
   <React.Fragment>
     {paths.map((path: CanvasPath) => (
       <SvgPath
@@ -145,6 +185,7 @@ const Paths = ({ paths }: PathProps): JSX.Element => (
         strokeWidth={path.strokeWidth}
         strokeColor={path.strokeColor}
         command={bezierCommand}
+        onClick={(id) => onClick && onClick(id) }
       />
     ))}
   </React.Fragment>

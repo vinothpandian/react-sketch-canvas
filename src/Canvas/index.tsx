@@ -48,6 +48,7 @@ export interface CanvasProps {
   onPointerUp: () => void;
   onResize?: (size: Size) => void;
   onTextChange: (oldText: CanvasText, newText: CanvasText) => void;
+  onPathClicked?: (id: string) => void;
   className?: string;
   id?: string;
   width: string | number;
@@ -76,6 +77,7 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
     onPointerMove,
     onPointerUp,
     onTextChange,
+    onPathClicked,
     onResize,
     id = 'react-sketch-canvas',
     width = '100%',
@@ -432,6 +434,7 @@ release drawing even when point goes out of canvas */
               paths={eraserPath.paths}
               strokeColor="#000000"
               strokeWidth={eraserPath.strokeWidth}
+              onClick={onPathClicked}
             />
           ))}
         </g>
@@ -451,7 +454,7 @@ release drawing even when point goes out of canvas */
             key={`${id}__stroke-group-${i}`}
             mask={`url(#${id}__eraser-mask-${i})`}
           >
-            <Paths paths={pathGroup} />
+            <Paths paths={pathGroup} onClick={onPathClicked} />
           </g>
         ))}
         <g id={`${id}__canvas-texts`}>

@@ -61,7 +61,6 @@ function App() {
     height: '100%',
     backgroundImage:
       'https://upload.wikimedia.org/wikipedia/commons/7/70/Graph_paper_scan_1600x1000_%286509259561%29.jpg',
-    preserveBackgroundImageAspectRatio: 'none',
     strokeWidth: 4,
     eraserWidth: 5,
     strokeColor: '#000000',
@@ -78,7 +77,6 @@ function App() {
     ['width', 'text'],
     ['height', 'text'],
     ['backgroundImage', 'text'],
-    ['preserveBackgroundImageAspectRatio', 'text'],
     ['strokeWidth', 'number'],
     ['eraserWidth', 'number'],
   ];

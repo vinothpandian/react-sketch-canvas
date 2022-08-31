@@ -390,8 +390,30 @@ export const ReactSketchCanvas = React.forwardRef<
     },
   }));
 
+  const onPathClicked = (id: string) => {
+    if (drawMode != CanvasMode.remove) {
+      return;
+    }
+    const path = currentPaths.filter((p) => String(p.id) == id)[0];
+    if (!path) {
+      return;
+    }
+    setCurrentPaths((paths) => paths.filter((p) => p.id !== path.id));
+    setUndoStack((paths) => {
+      return {
+        ...paths,
+        path,
+      };
+    });
+    onChange(currentPaths, currentTexts);
+  };
+
   const handlePointerDown = (point: Point): void => {
     if (drawMode === CanvasMode.none) {
+      return;
+    }
+
+    if (drawMode === CanvasMode.remove) {
       return;
     }
 
@@ -400,21 +422,6 @@ export const ReactSketchCanvas = React.forwardRef<
       setIsDrawing(false);
       setUndoStack([]);
       loadTexts([createText('Text', point)]);
-      return;
-    }
-
-    if (drawMode === CanvasMode.remove) {
-      const path = svgCanvas.current?.getPathAtCurrentPoint();
-      if (path) {
-        setCurrentPaths((paths) => paths.filter((p) => p.id !== path?.id));
-        setUndoStack((paths) => {
-          return {
-            ...paths,
-            path,
-          };
-        });
-        onChange(currentPaths, currentTexts);
-      }
       return;
     }
 
@@ -515,6 +522,7 @@ export const ReactSketchCanvas = React.forwardRef<
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       onTextChange={handleTextChange}
+      onPathClicked={onPathClicked}
       onResize={handleResize}
     />
   );
