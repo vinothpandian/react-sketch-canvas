@@ -398,13 +398,8 @@ export const ReactSketchCanvas = React.forwardRef<
     if (!path) {
       return;
     }
+    setUndoStack((undoStack) => [...undoStack, path]);
     setCurrentPaths((paths) => paths.filter((p) => p.id !== path.id));
-    setUndoStack((paths) => {
-      return {
-        ...paths,
-        path,
-      };
-    });
     onChange(currentPaths, currentTexts);
   };
 
