@@ -7,7 +7,7 @@ export type SvgPathProps = {
   // Unique ID
   id: string;
   // Width of the stroke
-  strokeWidth: number;
+  strokeWidth: number | string;
   // Color of the stroke
   strokeColor: string;
   // Bezier command to smoothen the line
@@ -30,7 +30,7 @@ export const SvgPath = ({
 
   if (paths.length === 1) {
     const { x, y } = paths[0];
-    const radius = strokeWidth / 2;
+    const radius = parseInt(strokeWidth.toString(), 10) / 2;
 
     const elem = (
       <circle
@@ -90,7 +90,7 @@ export const SvgPath = ({
           d={d}
           fill="none"
           strokeLinecap="round"
-          strokeWidth={strokeWidth + areaMargin * 2}
+          strokeWidth={parseInt(strokeWidth.toString(), 10) + areaMargin * 2}
           pointerEvents="all"
           onClick={() => onClick(id)}
         />
