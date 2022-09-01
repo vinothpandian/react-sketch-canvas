@@ -54,6 +54,7 @@ export const SvgPath = ({
             cy={y}
             r={radius + areaMargin * 2}
             pointerEvents="all"
+            fill="none"
             onClick={() => onClick(id)}
           />
         </>
