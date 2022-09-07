@@ -26,7 +26,7 @@ export const SvgPath = ({
   command = bezierCommand,
   onClick = undefined,
 }: SvgPathProps): JSX.Element => {
-  const areaMargin = 5; // px
+  const areaMargin = 10; // px
 
   if (paths.length === 1) {
     const { x, y } = paths[0];
