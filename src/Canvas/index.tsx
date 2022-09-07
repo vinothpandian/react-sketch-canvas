@@ -48,6 +48,7 @@ export interface CanvasProps {
   onPointerUp: () => void;
   onResize?: (size: Size) => void;
   onTextChange: (oldText: CanvasText, newText: CanvasText) => void;
+  onPathClicked?: (id: string) => void;
   className?: string;
   id?: string;
   width: string | number;
@@ -76,6 +77,7 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
     onPointerMove,
     onPointerUp,
     onTextChange,
+    onPathClicked,
     onResize,
     id = 'react-sketch-canvas',
     width = '100%',
@@ -378,25 +380,6 @@ release drawing even when point goes out of canvas */
         }}
         id={id}
       >
-        <g id={`${id}__eraser-stroke-group`} display="none">
-          <rect
-            id={`${id}__mask-background`}
-            x="0"
-            y="0"
-            width="100%"
-            height="100%"
-            fill="white"
-          />
-          {eraserPaths.map((eraserPath, i) => (
-            <SvgPath
-              key={`${id}__eraser-${i}`}
-              id={`${id}__eraser-${i}`}
-              paths={eraserPath.paths}
-              strokeColor="#000000"
-              strokeWidth={eraserPath.strokeWidth}
-            />
-          ))}
-        </g>
         <defs>
           {backgroundImage && (
             <pattern
@@ -435,6 +418,26 @@ release drawing even when point goes out of canvas */
             </mask>
           ))}
         </defs>
+        <g id={`${id}__eraser-stroke-group`} display="none">
+          <rect
+            id={`${id}__mask-background`}
+            x="0"
+            y="0"
+            width="100%"
+            height="100%"
+            fill="white"
+          />
+          {eraserPaths.map((eraserPath, i) => (
+            <SvgPath
+              key={`${id}__eraser-${i}`}
+              id={`${id}__eraser-${i}`}
+              paths={eraserPath.paths}
+              strokeColor="#000000"
+              strokeWidth={eraserPath.strokeWidth}
+              onClick={onPathClicked}
+            />
+          ))}
+        </g>
         <g id={`${id}__canvas-background-group`}>
           <rect
             id={`${id}__canvas-background`}
@@ -451,7 +454,7 @@ release drawing even when point goes out of canvas */
             key={`${id}__stroke-group-${i}`}
             mask={`url(#${id}__eraser-mask-${i})`}
           >
-            <Paths paths={pathGroup} />
+            <Paths paths={pathGroup} onClick={onPathClicked} />
           </g>
         ))}
         <g id={`${id}__canvas-texts`}>

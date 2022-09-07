@@ -1,6 +1,6 @@
 {
   "name": "@sarc-mediq/react-sketch-canvas",
-  "version": "1.1.0",
+  "version": "1.1.2",
   "description": "react-sketch-canvas - Freehand vector drawing tool for React using SVG as canvas",
   "author": "SARC-MedIQ",
   "homepage": "https://github.com/SARC-MedIQ/react-sketch-canvas#readme",
