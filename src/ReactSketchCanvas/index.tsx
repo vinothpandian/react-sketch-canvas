@@ -23,6 +23,7 @@ export interface ReactSketchCanvasProps {
   style?: React.CSSProperties;
   svgStyle?: React.CSSProperties;
   withTimestamp?: boolean;
+  scrollOnTouch?: boolean;
 }
 
 export interface ReactSketchCanvasRef {
@@ -63,6 +64,7 @@ export const ReactSketchCanvas = React.forwardRef<
     onChange = (_paths: CanvasPath[]): void => {},
     onStroke = (_path: CanvasPath, _isEraser: boolean): void => {},
     withTimestamp = false,
+    scrollOnTouch = false,
   } = props;
 
   const svgCanvas = React.createRef<CanvasRef>();
@@ -269,6 +271,7 @@ export const ReactSketchCanvas = React.forwardRef<
       svgStyle={svgStyle}
       paths={currentPaths}
       isDrawing={isDrawing}
+      scrollOnTouch={scrollOnTouch}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
