@@ -32,7 +32,7 @@ function getCanvasWithViewBox(canvas: HTMLDivElement) {
 export interface CanvasProps {
   paths: CanvasPath[];
   isDrawing: boolean;
-  onPointerDown: (point: Point) => void;
+  onPointerDown: (point: Point, isEraser: boolean) => void;
   onPointerMove: (point: Point) => void;
   onPointerUp: () => void;
   className?: string;
@@ -115,9 +115,10 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
 
     if (event.pointerType === 'mouse' && event.button !== 0) return;
 
+    const isEraser = event.pointerType === 'pen' && ((event.buttons & 32) === 32);
     const point = getCoordinates(event);
 
-    onPointerDown(point);
+    onPointerDown(point, isEraser);
   };
 
   const handlePointerMove = (

@@ -189,14 +189,16 @@ export const ReactSketchCanvas = React.forwardRef<
     },
   }));
 
-  const handlePointerDown = (point: Point): void => {
+  const handlePointerDown = (point: Point, isEraser: boolean): void => {
     setIsDrawing(true);
     setUndoStack([]);
 
+    const isDraw = !isEraser && drawMode;
+
     let stroke: CanvasPath = {
-      drawMode: drawMode,
-      strokeColor: drawMode ? strokeColor : '#000000', // Eraser using mask
-      strokeWidth: drawMode ? strokeWidth : eraserWidth,
+      drawMode: isDraw,
+      strokeColor: isDraw ? strokeColor : '#000000', // Eraser using mask
+      strokeWidth: isDraw ? strokeWidth : eraserWidth,
       paths: [point],
     };
 
