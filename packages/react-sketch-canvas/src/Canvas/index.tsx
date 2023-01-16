@@ -122,7 +122,7 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
 
       onPointerDown(point, isEraser);
     },
-    [allowOnlyPointerType, onPointerDown]
+    [allowOnlyPointerType, getCoordinates, onPointerDown]
   );
 
   const handlePointerMove = useCallback(
@@ -141,7 +141,7 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
 
       onPointerMove(point);
     },
-    [allowOnlyPointerType, isDrawing, onPointerMove]
+    [allowOnlyPointerType, getCoordinates, isDrawing, onPointerMove]
   );
 
   const handlePointerUp = useCallback(
