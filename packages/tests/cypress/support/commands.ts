@@ -4,12 +4,7 @@ Cypress.Commands.add("getCanvas", () => cy.findByRole("presentation"));
 
 Cypress.Commands.add(
   "drawSquare",
-  (
-    side: number,
-    originX = 0,
-    originY = 0,
-    pointerType: Cypress.PointerEventType = "pen"
-  ) => {
+  ({ side, originX = 0, originY = 0, pointerType = "pen" }) => {
     cy.findByRole("presentation").then(($canvas) => {
       const x = $canvas.offset().left + originX;
       const y = $canvas.offset().top + originY;
@@ -61,12 +56,7 @@ Cypress.Commands.add(
 
 Cypress.Commands.add(
   "drawLine",
-  (
-    length: number,
-    originX = 0,
-    originY = 0,
-    pointerType: Cypress.PointerEventType = "pen"
-  ) => {
+  ({ length, originX = 0, originY = 0, pointerType = "pen" }) => {
     cy.findByRole("presentation").then(($canvas) => {
       const x = $canvas.offset().left + originX;
       const y = $canvas.offset().top + originY;
@@ -96,7 +86,7 @@ Cypress.Commands.add(
 
 Cypress.Commands.add(
   "drawPoint",
-  (originX = 0, originY = 0, pointerType: Cypress.PointerEventType = "pen") => {
+  ({ originX = 0, originY = 0, pointerType = "pen" }) => {
     cy.findByRole("presentation").then(($canvas) => {
       const x = $canvas.offset().left + originX;
       const y = $canvas.offset().top + originY;

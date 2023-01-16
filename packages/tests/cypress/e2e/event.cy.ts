@@ -37,36 +37,64 @@ beforeEach(() => {
   cy.visit("/");
 });
 
-it("should trigger erase mode and add a mask for erasing previous strokes", () => {
-  cy.drawSquare(100, 100, 50, "pen");
+describe("erase", () => {
+  it("should trigger erase mode and add a mask for erasing previous strokes", () => {
+    cy.drawSquare({ side: 100, originX: 100, originY: 50, pointerType: "pen" });
 
-  cy.findByRole("button", { name: /eraser/i }).click();
-  cy.drawSquare(100, 150, 50, "pen");
+    cy.findByRole("button", { name: /eraser/i }).click();
+    cy.drawSquare({ side: 100, originX: 150, originY: 50, pointerType: "pen" });
 
-  cy.get(eraserStrokeGroupId).find("path").should("have.length", 1);
-  cy.get(firstEraserMask).find("use").should("have.length", 2); // background + one mask path
+    cy.get(eraserStrokeGroupId).find("path").should("have.length", 1);
+    cy.get(firstEraserMask).find("use").should("have.length", 2); // background + one mask path
 
-  cy.get(firstStrokeGroupId)
-    .should("have.attr", "mask", `url(#${firstEraserMaskId})`)
-    .find("path")
-    .should("have.length", 1);
+    cy.get(firstStrokeGroupId)
+      .should("have.attr", "mask", `url(#${firstEraserMaskId})`)
+      .find("path")
+      .should("have.length", 1);
 
-  cy.findByRole("button", { name: /pen/i }).click();
-  cy.drawSquare(105, 105, 55, "pen");
+    cy.findByRole("button", { name: /pen/i }).click();
+    cy.drawSquare({ side: 105, originX: 105, originY: 55, pointerType: "pen" });
 
-  cy.findByRole("button", { name: /eraser/i }).click();
-  cy.drawSquare(100, 150, 50, "pen");
+    cy.findByRole("button", { name: /eraser/i }).click();
+    cy.drawSquare({ side: 100, originX: 150, originY: 50, pointerType: "pen" });
 
-  cy.get(eraserStrokeGroupId).find("path").should("have.length", 2);
-  cy.get(firstEraserMask).find("use").should("have.length", 3); // background + two mask paths
-  const secondEraserMaskId = `${firstEraserMask.slice(0, -1)}1`;
-  cy.get(secondEraserMaskId).find("use").should("have.length", 2); // background + one mask path
+    cy.get(eraserStrokeGroupId).find("path").should("have.length", 2);
+    cy.get(firstEraserMask).find("use").should("have.length", 3); // background + two mask paths
+    const secondEraserMaskId = `${firstEraserMask.slice(0, -1)}1`;
+    cy.get(secondEraserMaskId).find("use").should("have.length", 2); // background + one mask path
+  });
+
+  it("should trigger erase mode with windows surface pen eraser", () => {
+    cy.drawSquare({ side: 100, originX: 100, originY: 50, pointerType: "pen" });
+
+    cy.findByRole("button", { name: /eraser/i }).click();
+    cy.drawSquare({ side: 100, originX: 150, originY: 50, pointerType: "pen" });
+
+    cy.get(eraserStrokeGroupId).find("path").should("have.length", 1);
+    cy.get(firstEraserMask).find("use").should("have.length", 2); // background + one mask path
+
+    cy.get(firstStrokeGroupId)
+      .should("have.attr", "mask", `url(#${firstEraserMaskId})`)
+      .find("path")
+      .should("have.length", 1);
+
+    cy.findByRole("button", { name: /pen/i }).click();
+    cy.drawSquare({ side: 105, originX: 105, originY: 55, pointerType: "pen" });
+
+    cy.findByRole("button", { name: /eraser/i }).click();
+    cy.drawSquare({ side: 100, originX: 150, originY: 50, pointerType: "pen" });
+
+    cy.get(eraserStrokeGroupId).find("path").should("have.length", 2);
+    cy.get(firstEraserMask).find("use").should("have.length", 3); // background + two mask paths
+    const secondEraserMaskId = `${firstEraserMask.slice(0, -1)}1`;
+    cy.get(secondEraserMaskId).find("use").should("have.length", 2); // background + one mask path
+  });
 });
 
 describe("undo", () => {
   it("should undo a stroke", () => {
     cy.getCanvas().find("path").should("have.length", 0);
-    cy.drawSquare(100, 100, 50, "pen");
+    cy.drawSquare({ side: 100, originX: 100, originY: 50, pointerType: "pen" });
     cy.getCanvas().find("path").should("have.length", 1);
 
     cy.findByRole("button", { name: /undo/i }).click();
@@ -74,9 +102,9 @@ describe("undo", () => {
   });
 
   it("should undo an eraser stroke", () => {
-    cy.drawSquare(100, 100, 50, "pen");
+    cy.drawSquare({ side: 100, originX: 100, originY: 50, pointerType: "pen" });
     cy.findByRole("button", { name: /eraser/i }).click();
-    cy.drawSquare(100, 150, 50, "pen");
+    cy.drawSquare({ side: 100, originX: 150, originY: 50, pointerType: "pen" });
 
     cy.getCanvas().find("path").should("have.length", 2);
     cy.get(eraserStrokeGroupId).find("path").should("have.length", 1);
@@ -91,7 +119,7 @@ describe("undo", () => {
 describe("redo", () => {
   it("should redo a stroke", () => {
     cy.getCanvas().find("path").should("have.length", 0);
-    cy.drawSquare(100, 100, 50, "pen");
+    cy.drawSquare({ side: 100, originX: 100, originY: 50, pointerType: "pen" });
     cy.getCanvas().find("path").should("have.length", 1);
 
     cy.findByRole("button", { name: /undo/i }).click();
@@ -102,9 +130,9 @@ describe("redo", () => {
   });
 
   it("should redo an eraser stroke", () => {
-    cy.drawSquare(100, 100, 50, "pen");
+    cy.drawSquare({ side: 100, originX: 100, originY: 50, pointerType: "pen" });
     cy.findByRole("button", { name: /eraser/i }).click();
-    cy.drawSquare(100, 150, 50, "pen");
+    cy.drawSquare({ side: 100, originX: 150, originY: 50, pointerType: "pen" });
 
     cy.getCanvas().find("path").should("have.length", 2);
     cy.get(eraserStrokeGroupId).find("path").should("have.length", 1);
@@ -125,7 +153,7 @@ describe("redo", () => {
 describe("clearCanvas", () => {
   it("should clearCanvas but still keep the stack", () => {
     cy.getCanvas().find("path").should("have.length", 0);
-    cy.drawSquare(100, 100, 50, "pen");
+    cy.drawSquare({ side: 100, originX: 100, originY: 50, pointerType: "pen" });
     cy.getCanvas().find("path").should("have.length", 1);
 
     cy.findByRole("button", { name: /clear all/i }).click();
@@ -139,9 +167,9 @@ describe("clearCanvas", () => {
   });
 
   it("should clearCanvas with an eraser stroke but still keep the stack", () => {
-    cy.drawSquare(100, 100, 50, "pen");
+    cy.drawSquare({ side: 100, originX: 100, originY: 50, pointerType: "pen" });
     cy.findByRole("button", { name: /eraser/i }).click();
-    cy.drawSquare(100, 150, 50, "pen");
+    cy.drawSquare({ side: 100, originX: 150, originY: 50, pointerType: "pen" });
 
     cy.getCanvas().find("path").should("have.length", 2);
     cy.get(eraserStrokeGroupId).find("path").should("have.length", 1);
@@ -165,7 +193,7 @@ describe("clearCanvas", () => {
 describe("resetCanvas", () => {
   it("should resetCanvas and remove the stack", () => {
     cy.getCanvas().find("path").should("have.length", 0);
-    cy.drawSquare(100, 100, 50, "pen");
+    cy.drawSquare({ side: 100, originX: 100, originY: 50, pointerType: "pen" });
     cy.getCanvas().find("path").should("have.length", 1);
 
     cy.findByRole("button", { name: /reset all/i }).click();
@@ -179,9 +207,9 @@ describe("resetCanvas", () => {
   });
 
   it("should resetCanvas with an eraser stroke and remove the stack", () => {
-    cy.drawSquare(100, 100, 50, "pen");
+    cy.drawSquare({ side: 100, originX: 100, originY: 50, pointerType: "pen" });
     cy.findByRole("button", { name: /eraser/i }).click();
-    cy.drawSquare(100, 150, 50, "pen");
+    cy.drawSquare({ side: 100, originX: 150, originY: 50, pointerType: "pen" });
 
     cy.getCanvas().find("path").should("have.length", 2);
     cy.get(eraserStrokeGroupId).find("path").should("have.length", 1);
@@ -220,7 +248,7 @@ describe("exportImage - png", () => {
       .convertDataURIToKiloBytes()
       .as("fileSizeWithoutStroke");
 
-    cy.drawSquare(100, 100, 50, "pen");
+    cy.drawSquare({ side: 100, originX: 100, originY: 50, pointerType: "pen" });
 
     cy.findByRole("button", { name: /export image/i }).click();
 
@@ -245,9 +273,9 @@ describe("exportImage - png", () => {
       .convertDataURIToKiloBytes()
       .as("fileSizeWithoutStrokeAndEraser");
 
-    cy.drawSquare(100, 100, 50, "pen");
+    cy.drawSquare({ side: 100, originX: 100, originY: 50, pointerType: "pen" });
     cy.findByRole("button", { name: /eraser/i }).click();
-    cy.drawSquare(100, 150, 50, "pen");
+    cy.drawSquare({ side: 100, originX: 150, originY: 50, pointerType: "pen" });
 
     cy.findByRole("button", { name: /export image/i }).click();
 
@@ -276,7 +304,7 @@ describe("exportImage - png", () => {
       .convertDataURIToKiloBytes()
       .as("fileSizeWithoutStroke");
 
-    cy.drawSquare(100, 100, 50, "pen");
+    cy.drawSquare({ side: 100, originX: 100, originY: 50, pointerType: "pen" });
 
     cy.findByRole("button", { name: /export image/i }).click();
 
@@ -305,9 +333,9 @@ describe("exportImage - png", () => {
       .convertDataURIToKiloBytes()
       .as("fileSizeWithoutStrokeAndEraser");
 
-    cy.drawSquare(100, 100, 50, "pen");
+    cy.drawSquare({ side: 100, originX: 100, originY: 50, pointerType: "pen" });
     cy.findByRole("button", { name: /eraser/i }).click();
-    cy.drawSquare(100, 150, 50, "pen");
+    cy.drawSquare({ side: 100, originX: 150, originY: 50, pointerType: "pen" });
 
     cy.findByRole("button", { name: /export image/i }).click();
 
@@ -344,7 +372,7 @@ describe("exportImage - jpeg", () => {
       .convertDataURIToKiloBytes()
       .as("fileSizeWithoutStroke");
 
-    cy.drawSquare(100, 100, 50, "pen");
+    cy.drawSquare({ side: 100, originX: 100, originY: 50, pointerType: "pen" });
 
     cy.findByRole("button", { name: /export image/i }).click();
 
@@ -369,9 +397,9 @@ describe("exportImage - jpeg", () => {
       .convertDataURIToKiloBytes()
       .as("fileSizeWithoutStrokeAndEraser");
 
-    cy.drawSquare(100, 100, 50, "pen");
+    cy.drawSquare({ side: 100, originX: 100, originY: 50, pointerType: "pen" });
     cy.findByRole("button", { name: /eraser/i }).click();
-    cy.drawSquare(100, 150, 50, "pen");
+    cy.drawSquare({ side: 100, originX: 150, originY: 50, pointerType: "pen" });
 
     cy.findByRole("button", { name: /export image/i }).click();
 
@@ -400,7 +428,7 @@ describe("exportImage - jpeg", () => {
       .convertDataURIToKiloBytes()
       .as("fileSizeWithoutStroke");
 
-    cy.drawSquare(100, 100, 50, "pen");
+    cy.drawSquare({ side: 100, originX: 100, originY: 50, pointerType: "pen" });
 
     cy.findByRole("button", { name: /export image/i }).click();
 
@@ -429,9 +457,9 @@ describe("exportImage - jpeg", () => {
       .convertDataURIToKiloBytes()
       .as("fileSizeWithoutStrokeAndEraser");
 
-    cy.drawSquare(100, 100, 50, "pen");
+    cy.drawSquare({ side: 100, originX: 100, originY: 50, pointerType: "pen" });
     cy.findByRole("button", { name: /eraser/i }).click();
-    cy.drawSquare(100, 150, 50, "pen");
+    cy.drawSquare({ side: 100, originX: 150, originY: 50, pointerType: "pen" });
 
     cy.findByRole("button", { name: /export image/i }).click();
 
@@ -459,16 +487,16 @@ describe("exportImage - svg", () => {
   });
 
   it("should export jpeg with stroke", () => {
-    cy.drawSquare(100, 100, 50, "pen");
+    cy.drawSquare({ side: 100, originX: 100, originY: 50, pointerType: "pen" });
 
     cy.findByRole("button", { name: /export svg/i }).click();
     cy.get(exportedSvgId).find("path").should("have.length", 1);
   });
 
   it("should export jpeg with stroke and eraser", () => {
-    cy.drawSquare(100, 100, 50, "pen");
+    cy.drawSquare({ side: 100, originX: 100, originY: 50, pointerType: "pen" });
     cy.findByRole("button", { name: /eraser/i }).click();
-    cy.drawSquare(100, 150, 50, "pen");
+    cy.drawSquare({ side: 100, originX: 150, originY: 50, pointerType: "pen" });
 
     cy.findByRole("button", { name: /export svg/i }).click();
 
@@ -487,7 +515,7 @@ describe("exportImage - svg", () => {
       exact: true,
     }).click();
 
-    cy.drawSquare(100, 100, 50, "pen");
+    cy.drawSquare({ side: 100, originX: 100, originY: 50, pointerType: "pen" });
 
     cy.findByRole("button", { name: /export svg/i }).click();
 
@@ -504,9 +532,9 @@ describe("exportImage - svg", () => {
       name: "exportWithBackgroundImage",
       exact: true,
     }).click();
-    cy.drawSquare(100, 100, 50, "pen");
+    cy.drawSquare({ side: 100, originX: 100, originY: 50, pointerType: "pen" });
     cy.findByRole("button", { name: /eraser/i }).click();
-    cy.drawSquare(100, 150, 50, "pen");
+    cy.drawSquare({ side: 100, originX: 150, originY: 50, pointerType: "pen" });
 
     cy.findByRole("button", { name: /export svg/i }).click();
     cy.get(exportedSvgId).find("path").should("have.length", 2);

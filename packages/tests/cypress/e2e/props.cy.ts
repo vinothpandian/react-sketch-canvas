@@ -124,7 +124,7 @@ it("should update preserveAspectRatio of the background image", () => {
 it("should change stroke width", () => {
   const updatedStrokeWidth = "8";
 
-  cy.drawLine(100, 100, 100);
+  cy.drawLine({ length: 100, originX: 100, originY: 100 });
   cy.get(firstStrokeGroupId)
     .find("path")
     .first()
@@ -134,7 +134,7 @@ it("should change stroke width", () => {
     .clear()
     .type(updatedStrokeWidth);
 
-  cy.drawLine(50, 50, 100);
+  cy.drawLine({ length: 50, originX: 50, originY: 100 });
   cy.get(firstStrokeGroupId)
     .find("path")
     .last()
@@ -144,7 +144,7 @@ it("should change stroke width", () => {
 it("should change eraser width", () => {
   const updatedEraserWidth = "8";
   cy.findByRole("button", { name: /eraser/i }).click();
-  cy.drawLine(100, 100, 100);
+  cy.drawLine({ length: 100, originX: 100, originY: 100 });
   cy.get(eraserStrokeGroupId)
     .find("path")
     .first()
@@ -154,7 +154,7 @@ it("should change eraser width", () => {
     .clear()
     .type(updatedEraserWidth);
 
-  cy.drawLine(50, 50, 100);
+  cy.drawLine({ length: 50, originX: 50, originY: 100 });
   cy.get(eraserStrokeGroupId)
     .find("path")
     .last()
@@ -163,7 +163,7 @@ it("should change eraser width", () => {
 
 it("should change stroke color", () => {
   const updatedStrokeColor = "#FF0000";
-  cy.drawLine(100, 100, 100);
+  cy.drawLine({ length: 100, originX: 100, originY: 100 });
   cy.get(firstStrokeGroupId)
     .find("path")
     .first()
@@ -174,7 +174,7 @@ it("should change stroke color", () => {
     .invoke("val", updatedStrokeColor)
     .trigger("change");
 
-  cy.drawLine(50, 50, 100);
+  cy.drawLine({ length: 50, originX: 50, originY: 100 });
   cy.get(firstStrokeGroupId)
     .find("path")
     .last()
@@ -282,7 +282,7 @@ it("should throw exception when attempted to get sketching time when withTimesta
     .as("sketchingTimeContainer")
     .should("contain.text", getSketchingTimeInString(initialTime));
 
-  cy.drawSquare(100);
+  cy.drawSquare({ side: 100 });
   cy.findByRole("button", { name: /get sketching time/i }).click();
 
   cy.get("@sketchingTimeContainer").then(($sketchingTimeContainer) => {
@@ -292,7 +292,7 @@ it("should throw exception when attempted to get sketching time when withTimesta
 
   cy.findByRole("switch", { name: /withTimestamp/i }).click();
 
-  cy.drawSquare(100, 200, 200);
+  cy.drawSquare({ side: 100, originX: 200, originY: 200 });
   cy.findByRole("button", { name: /get sketching time/i }).click();
   cy.get("@sketchingTimeContainer").should(
     "contain.text",
@@ -302,9 +302,14 @@ it("should throw exception when attempted to get sketching time when withTimesta
 
 describe("allowOnlyPointerType", () => {
   it("should allow sketching with mouse, touch, and stylus when allowOnlyPointerType is set as all", () => {
-    cy.drawLine(50, 0, 10, "mouse");
-    cy.drawLine(100, 50, 10, "touch");
-    cy.drawLine(200, 100, 10, "pen");
+    cy.drawLine({ length: 50, originX: 0, originY: 10, pointerType: "mouse" });
+    cy.drawLine({
+      length: 100,
+      originX: 50,
+      originY: 10,
+      pointerType: "touch",
+    });
+    cy.drawLine({ length: 200, originX: 100, originY: 10, pointerType: "pen" });
 
     cy.get(firstStrokeGroupId).find("path").should("have.length", 3);
   });
@@ -312,10 +317,15 @@ describe("allowOnlyPointerType", () => {
   it("should allow sketching only with mouse when allowOnlyPointerType is set as mouse", () => {
     cy.findByRole("radio", { name: /mouse/i }).click();
 
-    cy.drawLine(50, 0, 10, "mouse");
+    cy.drawLine({ length: 50, originX: 0, originY: 10, pointerType: "mouse" });
     cy.get(firstStrokeGroupId).find("path").should("have.length", 1);
-    cy.drawLine(100, 50, 10, "touch");
-    cy.drawLine(200, 100, 10, "pen");
+    cy.drawLine({
+      length: 100,
+      originX: 50,
+      originY: 10,
+      pointerType: "touch",
+    });
+    cy.drawLine({ length: 200, originX: 100, originY: 10, pointerType: "pen" });
 
     cy.get(firstStrokeGroupId).find("path").should("have.length", 1);
   });
@@ -323,10 +333,15 @@ describe("allowOnlyPointerType", () => {
   it("should allow sketching only with touch when allowOnlyPointerType is set as touch", () => {
     cy.findByRole("radio", { name: /touch/i }).click();
 
-    cy.drawLine(50, 0, 10, "touch");
+    cy.drawLine({ length: 50, originX: 0, originY: 10, pointerType: "touch" });
     cy.get(firstStrokeGroupId).find("path").should("have.length", 1);
-    cy.drawLine(100, 50, 10, "mouse");
-    cy.drawLine(200, 100, 10, "pen");
+    cy.drawLine({
+      length: 100,
+      originX: 50,
+      originY: 10,
+      pointerType: "mouse",
+    });
+    cy.drawLine({ length: 200, originX: 100, originY: 10, pointerType: "pen" });
 
     cy.get(firstStrokeGroupId).find("path").should("have.length", 1);
   });
@@ -334,10 +349,20 @@ describe("allowOnlyPointerType", () => {
   it("should allow sketching only with pen when allowOnlyPointerType is set as pen", () => {
     cy.findByRole("radio", { name: /pen/i }).click();
 
-    cy.drawLine(50, 0, 10, "pen");
+    cy.drawLine({ length: 50, originX: 0, originY: 10, pointerType: "pen" });
     cy.get(firstStrokeGroupId).find("path").should("have.length", 1);
-    cy.drawLine(100, 50, 10, "mouse");
-    cy.drawLine(200, 100, 10, "touch");
+    cy.drawLine({
+      length: 100,
+      originX: 50,
+      originY: 10,
+      pointerType: "mouse",
+    });
+    cy.drawLine({
+      length: 200,
+      originX: 100,
+      originY: 10,
+      pointerType: "touch",
+    });
 
     cy.get(firstStrokeGroupId).find("path").should("have.length", 1);
   });
@@ -348,7 +373,7 @@ it("should call onChange when a new stroke or eraser is added", () => {
     .as("pathsContainer")
     .should("have.text", "Sketch to get paths");
 
-  cy.drawLine(50, 0, 10, "pen");
+  cy.drawLine({ length: 50, originX: 0, originY: 10, pointerType: "pen" });
   cy.get("@pathsContainer").then(($pathsContainer) => {
     const paths = JSON.parse($pathsContainer.text());
     expect(paths).to.have.length(1);
@@ -356,7 +381,7 @@ it("should call onChange when a new stroke or eraser is added", () => {
   });
 
   cy.findByRole("button", { name: /eraser/i }).click();
-  cy.drawLine(50, 0, 10, "pen");
+  cy.drawLine({ length: 50, originX: 0, originY: 10, pointerType: "pen" });
   cy.get("@pathsContainer").then(($pathsContainer) => {
     const paths = JSON.parse($pathsContainer.text());
     expect(paths).to.have.length(2);
@@ -416,7 +441,7 @@ it("should update SVG style", () => {
 
 describe("onStroke", () => {
   it.only("should return the last stroke", () => {
-    cy.drawLine(200, 10, 20, "pen");
+    cy.drawLine({ length: 200, originX: 10, originY: 20, pointerType: "pen" });
 
     cy.findByRole("textbox", { name: /last stroke:pen/i })
       .StringToObject()
@@ -428,7 +453,7 @@ describe("onStroke", () => {
         ]);
       });
 
-    cy.drawLine(100, 0, 0, "pen");
+    cy.drawLine({ length: 100, originX: 0, originY: 0, pointerType: "pen" });
 
     cy.findByRole("textbox", { name: /last stroke:pen/i })
       .StringToObject()
@@ -442,7 +467,7 @@ describe("onStroke", () => {
   });
 
   it("should return the last eraser stroke", () => {
-    cy.drawLine(200, 10, 20, "pen");
+    cy.drawLine({ length: 200, originX: 10, originY: 20, pointerType: "pen" });
 
     cy.findByRole("textbox", { name: /last stroke:pen/i })
       .StringToObject()
@@ -455,7 +480,7 @@ describe("onStroke", () => {
       });
 
     cy.findByRole("button", { name: /eraser/i }).click();
-    cy.drawLine(100, 0, 0, "pen");
+    cy.drawLine({ length: 100, originX: 0, originY: 0, pointerType: "pen" });
 
     cy.findByRole("textbox", { name: /last stroke:eraser/i })
       .StringToObject()
@@ -471,29 +496,29 @@ describe("onStroke", () => {
 
 describe("point", () => {
   it("should create a point with circle on single point stroke", () => {
-    const x = 10;
-    const y = 20;
-    cy.drawPoint(x, y);
+    const originX = 10;
+    const originY = 20;
+    cy.drawPoint({ originX, originY });
 
     cy.getCanvas()
       .find(firstCircleId)
       .should("have.attr", "r", defaultProps.strokeWidth / 2)
-      .should("have.attr", "cx", x)
-      .should("have.attr", "cy", y);
+      .should("have.attr", "cx", originX)
+      .should("have.attr", "cy", originY);
   });
 
   it("should create a eraser point with circle on single point erase", () => {
-    const x = 10;
-    const y = 20;
+    const originX = 10;
+    const originY = 20;
 
-    cy.drawPoint(x, y);
+    cy.drawPoint({ originX, originY });
     cy.findByRole("button", { name: /eraser/i }).click();
-    cy.drawPoint(x, y);
+    cy.drawPoint({ originX, originY });
 
     cy.getCanvas()
       .find(firstEraserCircleId)
       .should("have.attr", "r", defaultProps.eraserWidth / 2)
-      .should("have.attr", "cx", x)
-      .should("have.attr", "cy", y);
+      .should("have.attr", "cx", originX)
+      .should("have.attr", "cy", originY);
   });
 });

@@ -7,7 +7,7 @@ it("should contain the canvas with svg", () => {
   const strokeCount = 4;
 
   Cypress._.range(strokeCount).forEach(() => {
-    cy.drawSquare(side);
+    cy.drawSquare({ side });
   });
 
   cy.get("svg").find("path").should("have.length", strokeCount);
