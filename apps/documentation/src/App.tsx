@@ -7,6 +7,7 @@ import {
   ReactSketchCanvasProps,
   ReactSketchCanvasRef,
 } from "react-sketch-canvas";
+import LogoImage from "./logo.png";
 
 type Handlers = [string, () => void, string][];
 
@@ -214,11 +215,7 @@ function App() {
   return (
     <main className="container-fluid p-5">
       <header className="border-bottom p-3 d-flex align-items-end">
-        <img
-          className="logo"
-          src="https://i.imgur.com/ajs39FC.png"
-          alt="React Sketch Canvas"
-        />
+        <img className="logo" src={LogoImage} alt="React Sketch Canvas" />
         <h1 className="title">ReactSketchCanvas</h1>
       </header>
       <div className="row">
