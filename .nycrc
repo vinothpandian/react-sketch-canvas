@@ -1,0 +1,5 @@
+{
+  "report-dir": "packages/tests/coverage",
+  "temp-dir": "packages/tests/.nyc_output",
+  "reporter": ["lcov", "text"]
+}

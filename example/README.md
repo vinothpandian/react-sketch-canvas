@@ -1,1 +1,0 @@
-# ReactSketchCanvas demo app
