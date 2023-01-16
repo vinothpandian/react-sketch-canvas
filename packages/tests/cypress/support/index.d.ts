@@ -9,6 +9,8 @@ declare namespace Cypress {
     originX?: number;
     originY?: number;
     pointerType?: PointerEventType;
+    eventButton?: 0 | 1 | 2 | 3 | 4;
+    eventButtons?: number;
   }
 
   interface DrawLineArgs extends Omit<DrawSquareArgs, "side"> {

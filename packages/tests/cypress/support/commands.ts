@@ -4,47 +4,58 @@ Cypress.Commands.add("getCanvas", () => cy.findByRole("presentation"));
 
 Cypress.Commands.add(
   "drawSquare",
-  ({ side, originX = 0, originY = 0, pointerType = "pen" }) => {
+  ({
+    side,
+    originX = 0,
+    originY = 0,
+    pointerType = "pen",
+    eventButton = 0,
+    eventButtons = 1,
+  }) => {
     cy.findByRole("presentation").then(($canvas) => {
       const x = $canvas.offset().left + originX;
       const y = $canvas.offset().top + originY;
 
-      cy.log("x, y", x, y, $canvas);
-
       cy.wrap($canvas)
         .trigger("pointerdown", {
           pointerType,
-          button: 0,
+          button: eventButton,
+          buttons: eventButtons,
           pageX: x,
           pageY: y,
         })
         .trigger("pointermove", {
           pointerType,
-          button: 0,
+          button: eventButton,
+          buttons: eventButtons,
           pageX: x,
           pageY: y + side,
         })
         .trigger("pointermove", {
           pointerType,
-          button: 0,
+          button: eventButton,
+          buttons: eventButtons,
           pageX: x + side,
           pageY: y + side,
         })
         .trigger("pointermove", {
           pointerType,
-          button: 0,
+          button: eventButton,
+          buttons: eventButtons,
           pageX: x + side,
           pageY: y,
         })
         .trigger("pointermove", {
           pointerType,
-          button: 0,
+          button: eventButton,
+          buttons: eventButtons,
           pageX: x,
           pageY: y,
         })
         .trigger("pointerup", {
           pointerType,
-          button: 0,
+          button: eventButton,
+          buttons: eventButtons,
           pageX: x,
           pageY: y,
         });
@@ -56,7 +67,14 @@ Cypress.Commands.add(
 
 Cypress.Commands.add(
   "drawLine",
-  ({ length, originX = 0, originY = 0, pointerType = "pen" }) => {
+  ({
+    length,
+    originX = 0,
+    originY = 0,
+    pointerType = "pen",
+    eventButton = 0,
+    eventButtons = 1,
+  }) => {
     cy.findByRole("presentation").then(($canvas) => {
       const x = $canvas.offset().left + originX;
       const y = $canvas.offset().top + originY;
@@ -64,19 +82,22 @@ Cypress.Commands.add(
       cy.wrap($canvas)
         .trigger("pointerdown", {
           pointerType,
-          button: 0,
+          button: eventButton,
+          buttons: eventButtons,
           pageX: x,
           pageY: y,
         })
         .trigger("pointermove", {
           pointerType,
-          button: 0,
+          button: eventButton,
+          buttons: eventButtons,
           pageX: x + length,
           pageY: y + length,
         })
         .trigger("pointerup", {
           pointerType,
-          button: 0,
+          button: eventButton,
+          buttons: eventButtons,
         });
 
       cy.wait(100);
@@ -86,7 +107,13 @@ Cypress.Commands.add(
 
 Cypress.Commands.add(
   "drawPoint",
-  ({ originX = 0, originY = 0, pointerType = "pen" }) => {
+  ({
+    originX = 0,
+    originY = 0,
+    pointerType = "pen",
+    eventButton = 0,
+    eventButtons = 1,
+  }) => {
     cy.findByRole("presentation").then(($canvas) => {
       const x = $canvas.offset().left + originX;
       const y = $canvas.offset().top + originY;
@@ -94,13 +121,15 @@ Cypress.Commands.add(
       cy.wrap($canvas)
         .trigger("pointerdown", {
           pointerType,
-          button: 0,
+          button: eventButton,
+          buttons: eventButtons,
           pageX: x,
           pageY: y,
         })
         .trigger("pointerup", {
           pointerType,
-          button: 0,
+          button: eventButton,
+          buttons: eventButtons,
         });
 
       cy.wait(100);

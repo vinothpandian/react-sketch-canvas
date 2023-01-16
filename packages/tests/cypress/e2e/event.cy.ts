@@ -67,8 +67,13 @@ describe("erase", () => {
   it("should trigger erase mode with windows surface pen eraser", () => {
     cy.drawSquare({ side: 100, originX: 100, originY: 50, pointerType: "pen" });
 
-    cy.findByRole("button", { name: /eraser/i }).click();
-    cy.drawSquare({ side: 100, originX: 150, originY: 50, pointerType: "pen" });
+    cy.drawSquare({
+      side: 100,
+      originX: 150,
+      originY: 50,
+      pointerType: "pen",
+      eventButtons: 32,
+    });
 
     cy.get(eraserStrokeGroupId).find("path").should("have.length", 1);
     cy.get(firstEraserMask).find("use").should("have.length", 2); // background + one mask path
