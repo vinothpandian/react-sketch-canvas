@@ -23,10 +23,6 @@
         "coverage/**",
         ".cypress/test-output.xml"
       ]
-    },
-    "ci:build": {
-      "dependsOn": ["^test", "^ci:build"],
-      "outputs": ["dist/**"]
     }
   }
 }

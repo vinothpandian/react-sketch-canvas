@@ -12,7 +12,8 @@
     "lint": "turbo run lint",
     "test": "turbo run build lint test",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "ci:build": "cp README.md packages/react-sketch-canvas/ && turbo build lint test ci:build"
+    "ci:build": "cp README.md packages/react-sketch-canvas/ && pnpm --filter react-sketch-canvas ci:build",
+    "publish-packages": "pnpm test && pnpm ci:build && changeset version && changeset publish"
   },
   "devDependencies": {
     "eslint-config-custom": "workspace:*",
