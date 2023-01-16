@@ -81,63 +81,68 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
   const canvasRef = React.useRef<HTMLDivElement>(null);
 
   // Converts mouse coordinates to relative coordinate based on the absolute position of svg
-  const getCoordinates = (
-    pointerEvent: React.PointerEvent<HTMLDivElement>
-  ): Point => {
-    const boundingArea = canvasRef.current?.getBoundingClientRect();
+  const getCoordinates = useCallback(
+    (pointerEvent: React.PointerEvent<HTMLDivElement>): Point => {
+      const boundingArea = canvasRef.current?.getBoundingClientRect();
 
-    const scrollLeft = window.scrollX ?? 0;
-    const scrollTop = window.scrollY ?? 0;
+      const scrollLeft = window.scrollX ?? 0;
+      const scrollTop = window.scrollY ?? 0;
 
-    if (!boundingArea) {
-      return { x: 0, y: 0 };
-    }
+      if (!boundingArea) {
+        return { x: 0, y: 0 };
+      }
 
-    return {
-      x: pointerEvent.pageX - boundingArea.left - scrollLeft,
-      y: pointerEvent.pageY - boundingArea.top - scrollTop,
-    };
-  };
+      return {
+        x: pointerEvent.pageX - boundingArea.left - scrollLeft,
+        y: pointerEvent.pageY - boundingArea.top - scrollTop,
+      };
+    },
+    []
+  );
 
   /* Mouse Handlers - Mouse down, move and up */
 
-  const handlePointerDown = (
-    event: React.PointerEvent<HTMLDivElement>
-  ): void => {
-    // Allow only chosen pointer type
+  const handlePointerDown = useCallback(
+    (event: React.PointerEvent<HTMLDivElement>): void => {
+      // Allow only chosen pointer type
 
-    if (
-      allowOnlyPointerType !== "all" &&
-      event.pointerType !== allowOnlyPointerType
-    ) {
-      return;
-    }
+      if (
+        allowOnlyPointerType !== "all" &&
+        event.pointerType !== allowOnlyPointerType
+      ) {
+        return;
+      }
 
-    if (event.pointerType === "mouse" && event.button !== 0) return;
+      if (event.pointerType === "mouse" && event.button !== 0) return;
 
-    const isEraser = event.pointerType === 'pen' && ((event.buttons & 32) === 32);
-    const point = getCoordinates(event);
+      const isEraser =
+        // eslint-disable-next-line no-bitwise
+        event.pointerType === "pen" && (event.buttons & 32) === 32;
+      const point = getCoordinates(event);
 
-    onPointerDown(point, isEraser);
-  };
+      onPointerDown(point, isEraser);
+    },
+    [allowOnlyPointerType, onPointerDown]
+  );
 
-  const handlePointerMove = (
-    event: React.PointerEvent<HTMLDivElement>
-  ): void => {
-    if (!isDrawing) return;
+  const handlePointerMove = useCallback(
+    (event: React.PointerEvent<HTMLDivElement>): void => {
+      if (!isDrawing) return;
 
-    // Allow only chosen pointer type
-    if (
-      allowOnlyPointerType !== "all" &&
-      event.pointerType !== allowOnlyPointerType
-    ) {
-      return;
-    }
+      // Allow only chosen pointer type
+      if (
+        allowOnlyPointerType !== "all" &&
+        event.pointerType !== allowOnlyPointerType
+      ) {
+        return;
+      }
 
-    const point = getCoordinates(event);
+      const point = getCoordinates(event);
 
-    onPointerMove(point);
-  };
+      onPointerMove(point);
+    },
+    [allowOnlyPointerType, isDrawing, onPointerMove]
+  );
 
   const handlePointerUp = useCallback(
     (event: React.PointerEvent<HTMLDivElement> | PointerEvent): void => {
@@ -160,7 +165,7 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
 
   React.useImperativeHandle(ref, () => ({
     exportImage: (imageType: ExportImageType): Promise<string> => {
-      return new Promise<string>(async (resolve, reject) => {
+      return new Promise<string>((resolve, reject) => {
         try {
           const canvas = canvasRef.current;
 
@@ -168,18 +173,23 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
             throw Error("Canvas not rendered yet");
           }
 
-          const { svgCanvas, width, height } = getCanvasWithViewBox(canvas);
+          const {
+            svgCanvas,
+            width: svgWidth,
+            height: svgHeight,
+          } = getCanvasWithViewBox(canvas);
           const canvasSketch = `data:image/svg+xml;base64,${btoa(
             svgCanvas.outerHTML
           )}`;
 
-          const loadImagePromises = [await loadImage(canvasSketch)];
+          const loadImagePromises = [loadImage(canvasSketch)];
 
-          if (exportWithBackgroundImage) {
+          if (exportWithBackgroundImage && backgroundImage) {
             try {
-              const img = await loadImage(backgroundImage);
+              const img = loadImage(backgroundImage);
               loadImagePromises.push(img);
             } catch (error) {
+              // eslint-disable-next-line no-console
               console.warn(
                 "exportWithBackgroundImage props is set without a valid background image URL. This option is ignored"
               );
@@ -189,12 +199,17 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
           Promise.all(loadImagePromises)
             .then((images) => {
               const renderCanvas = document.createElement("canvas");
-              renderCanvas.setAttribute("width", width.toString());
-              renderCanvas.setAttribute("height", height.toString());
+              renderCanvas.setAttribute("width", svgWidth.toString());
+              renderCanvas.setAttribute("height", svgHeight.toString());
               const context = renderCanvas.getContext("2d");
 
               if (!context) {
                 throw Error("Canvas not rendered yet");
+              }
+
+              if (imageType === "jpeg" && !exportWithBackgroundImage) {
+                context.fillStyle = canvasColor;
+                context.fillRect(0, 0, svgWidth, svgHeight);
               }
 
               images.reverse().forEach((image) => {
@@ -204,7 +219,7 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
               resolve(renderCanvas.toDataURL(`image/${imageType}`));
             })
             .catch((e) => {
-              throw e;
+              reject(e);
             });
         } catch (e) {
           reject(e);
@@ -249,26 +264,32 @@ release drawing even when point goes out of canvas */
     };
   }, [handlePointerUp]);
 
-  const eraserPaths = paths.filter((path) => !path.drawMode);
-
-  let currentGroup = 0;
-  const pathGroups = paths.reduce<CanvasPath[][]>(
-    (arrayGroup, path) => {
-      if (!path.drawMode) {
-        currentGroup += 1;
-        return arrayGroup;
-      }
-
-      if (arrayGroup[currentGroup] === undefined) {
-        // eslint-disable-next-line no-param-reassign
-        arrayGroup[currentGroup] = [];
-      }
-
-      arrayGroup[currentGroup].push(path);
-      return arrayGroup;
-    },
-    [[]]
+  const eraserPaths = React.useMemo(
+    () => paths.filter((path) => !path.drawMode),
+    [paths]
   );
+
+  const pathGroups = React.useMemo(() => {
+    let currentGroup = 0;
+
+    return paths.reduce<CanvasPath[][]>(
+      (arrayGroup, path) => {
+        if (!path.drawMode) {
+          currentGroup += 1;
+          return arrayGroup;
+        }
+
+        if (arrayGroup[currentGroup] === undefined) {
+          // eslint-disable-next-line no-param-reassign
+          arrayGroup[currentGroup] = [];
+        }
+
+        arrayGroup[currentGroup].push(path);
+        return arrayGroup;
+      },
+      [[]]
+    );
+  }, [paths]);
 
   return (
     <div
@@ -372,7 +393,7 @@ release drawing even when point goes out of canvas */
             key={`${id}__stroke-group-${i}`}
             mask={`url(#${id}__eraser-mask-${i})`}
           >
-            <Paths id={id} paths={pathGroup} />
+            <Paths id={`${id}__stroke-group-${i}__paths`} paths={pathGroup} />
           </g>
         ))}
       </svg>

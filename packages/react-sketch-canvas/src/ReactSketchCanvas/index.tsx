@@ -54,7 +54,7 @@ export const ReactSketchCanvas = React.forwardRef<
     eraserWidth = 8,
     allowOnlyPointerType = "all",
     style = {
-      border: "0.0625rem solid #9c9c9c",
+      border: "0.0625rem solid lightgray",
       borderRadius: "0.25rem",
     },
     svgStyle = {},
@@ -73,11 +73,7 @@ export const ReactSketchCanvas = React.forwardRef<
   const liftStrokeUp = React.useCallback((): void => {
     const lastStroke = currentPaths.slice(-1)?.[0] ?? null;
 
-    console.log(lastStroke);
-
     if (lastStroke === null) {
-      // eslint-disable-next-line no-console
-      console.warn("No stroke found!");
       return;
     }
 
@@ -190,7 +186,7 @@ export const ReactSketchCanvas = React.forwardRef<
     },
   }));
 
-  const handlePointerDown = (point: Point, isEraser: boolean): void => {
+  const handlePointerDown = (point: Point, isEraser = false): void => {
     setIsDrawing(true);
     setUndoStack([]);
 
