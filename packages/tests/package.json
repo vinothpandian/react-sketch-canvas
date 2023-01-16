@@ -2,6 +2,7 @@
   "name": "tests",
   "version": "1.0.0",
   "description": "",
+  "private": true,
   "main": "index.js",
   "scripts": {
     "dev:test": "cypress open --config baseUrl=http://localhost:5173",
