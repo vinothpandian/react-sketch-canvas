@@ -1,0 +1,26 @@
+{
+  "name": "tests",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "dev:test": "cypress open --config baseUrl=http://localhost:5173",
+    "preview": "serve -s ../../apps/documentation/dist -l 4173 -L",
+    "ci:test": "cypress run --headless --quiet",
+    "test": "start-server-and-test preview http://localhost:4173 ci:test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@cypress/code-coverage": "^3.10.0",
+    "@testing-library/cypress": "^9.0.0",
+    "cypress": "^12.3.0",
+    "eslint-config-custom": "workspace:*",
+    "react-sketch-canvas": "workspace:*",
+    "serve": "^14.1.2",
+    "start-server-and-test": "^1.15.2",
+    "tsconfig": "workspace:*"
+  }
+}

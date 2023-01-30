@@ -1,115 +1,30 @@
 {
-  "name": "react-sketch-canvas",
-  "version": "6.2.0",
-  "description": "react-sketch-canvas - Freehand vector drawing tool for React using SVG as canvas",
-  "author": "Vinoth Pandian",
-  "homepage": "https://vinoth.info/react-sketch-canvas",
-  "license": "MIT",
-  "repository": "https://github.com/vinothpandian/react-sketch-canvas.git",
-  "keywords": [
-    "react-component",
-    "sketch",
-    "canvas",
-    "drawing",
-    "freehand",
-    "vector",
-    "svg-canvas",
-    "react-sketch"
+  "name": "@vinothpandian/react-sketch-canvas",
+  "version": "0.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
   ],
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
-  "files": [
-    "dist",
-    "src"
-  ],
-  "engines": {
-    "node": ">=10"
-  },
   "scripts": {
-    "analyze": "size-limit --why",
-    "build:example": "cd example && cross-env NODE_ENV=production yarn build",
-    "build": "rimraf clean && cross-env NODE_ENV=production dts build",
-    "build:dev": "dts build",
-    "clean": "rimraf dist/",
-    "cypress:ci": "cypress run",
-    "cypress": "cypress open",
-    "e2e:ci": "nyc --silent --no-clean yarn start:example:ci cypress:ci",
-    "e2e": " yarn start:example cypress",
-    "install:example": "yarn link:lib && cd example && yarn && yarn link react-sketch-canvas",
-    "link:lib": "yarn build:dev && yarn unlink; yarn link",
-    "lint": "dts lint src",
-    "prepare": "dts build",
-    "release:beta": "yarn test && cross-env NODE_ENV=production release-it --preRelease=beta",
-    "release:notest": "cross-env NODE_ENV=production release-it",
-    "release": "yarn test && cross-env NODE_ENV=production release-it",
-    "size": "size-limit",
-    "start:example:ci": "cross-env BROWSER=none start-server-and-test watch:example http://localhost:3000",
-    "start:example": "cross-env BROWSER=none start-server-and-test watch http://localhost:3000",
-    "test": "yarn e2e:ci",
-    "unit-test:ci": "nyc --silent dts test --passWithNoTests --ci --coverage",
-    "unit-test": "dts test --passWithNoTests",
-    "watch:example": "yarn build:dev && cd example && yarn start",
-    "watch:lib": "dts watch",
-    "watch": "concurrently \"yarn:watch:example\" \"yarn:watch:lib\""
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "dts lint"
-    }
-  },
-  "prettier": {
-    "printWidth": 80,
-    "semi": true,
-    "singleQuote": true,
-    "trailingComma": "es5"
-  },
-  "module": "dist/react-sketch-canvas.esm.js",
-  "size-limit": [
-    {
-      "path": "dist/react-sketch-canvas.cjs.production.min.js",
-      "limit": "10 KB"
-    },
-    {
-      "path": "dist/react-sketch-canvas.esm.js",
-      "limit": "10 KB"
-    }
-  ],
-  "nyc": {
-    "report-dir": "cypress-coverage"
+    "build": "turbo run build",
+    "dev": "turbo run dev --parallel --no-cache",
+    "lint": "turbo run lint",
+    "test": "turbo run build lint test",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "ci:build": "cp README.md packages/react-sketch-canvas/ && pnpm --filter react-sketch-canvas ci:build",
+    "publish-packages": "pnpm test && pnpm ci:build && changeset version && changeset publish"
   },
   "devDependencies": {
-    "@babel/core": "^7.17.5",
-    "@cypress/code-coverage": "^3.9.12",
-    "@size-limit/preset-small-lib": "^7.0.8",
-    "@testing-library/cypress": "^8.0.2",
-    "@types/react": "^17.0.40",
-    "@types/react-dom": "^17.0.13",
-    "babel-loader": "^8.2.3",
-    "babel-plugin-istanbul": "^6.1.1",
-    "babel-plugin-transform-class-properties": "^6.24.1",
-    "concurrently": "^7.0.0",
-    "cross-env": "^7.0.3",
-    "cypress": "^9.5.1",
-    "dts-cli": "^1.4.0",
-    "eslint-plugin-prettier": "^4.0.0",
-    "husky": "^7.0.4",
-    "merge-cypress-jest-coverage": "^1.7.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-is": "^17.0.2",
-    "release-it": "^14.12.5",
-    "rimraf": "^3.0.2",
-    "size-limit": "^7.0.8",
-    "start-server-and-test": "^1.14.0",
-    "tslib": "^2.3.1",
-    "typescript": "^4.6.2"
+    "eslint-config-custom": "workspace:*",
+    "prettier": "^2.8.3",
+    "turbo": "^1.7.0"
   },
-  "dependencies": {},
-  "peerDependencies": {
-    "react": ">=16.8"
+  "engines": {
+    "node": ">=14.0.0"
   },
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
+  "packageManager": "pnpm@7.18.1",
+  "dependencies": {
+    "@changesets/cli": "^2.26.0"
   }
 }

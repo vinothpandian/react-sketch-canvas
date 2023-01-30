@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Mocha Tests" time="0.551" tests="1" failures="0">
+  <testsuite name="Root Suite" timestamp="2023-01-15T23:08:49" tests="0" file="cypress/e2e/props.cy.ts" time="0.000" failures="0">
+  </testsuite>
+  <testsuite name="onStroke" timestamp="2023-01-15T23:08:49" tests="1" time="0.513" failures="0">
+    <testcase name="onStroke should return the last stroke" time="0.492" classname="should return the last stroke">
+    </testcase>
+  </testsuite>
+</testsuites>
