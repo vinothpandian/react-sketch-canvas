@@ -1,0 +1,14 @@
+{
+  "mode": "pre",
+  "tag": "next",
+  "initialVersions": {
+    "documentation": "1.0.0",
+    "eslint-config-custom": "0.0.0",
+    "react-sketch-canvas": "6.2.0",
+    "tests": "1.0.0",
+    "tsconfig": "0.0.0"
+  },
+  "changesets": [
+    "serious-bobcats-burn"
+  ]
+}

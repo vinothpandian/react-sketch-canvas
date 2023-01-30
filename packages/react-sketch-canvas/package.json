@@ -1,0 +1,70 @@
+{
+  "name": "react-sketch-canvas",
+  "version": "7.0.0-next.0",
+  "description": "react-sketch-canvas - Freehand vector drawing tool for React using SVG as canvas",
+  "author": "Vinoth Pandian",
+  "homepage": "https://vinoth.info/react-sketch-canvas",
+  "license": "MIT",
+  "repository": "https://github.com/vinothpandian/react-sketch-canvas.git",
+  "keywords": [
+    "react-component",
+    "sketch",
+    "canvas",
+    "drawing",
+    "freehand",
+    "vector",
+    "svg-canvas",
+    "react-sketch"
+  ],
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "module": "dist/index.mjs",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "engines": {
+    "node": ">=10"
+  },
+  "size-limit": [
+    {
+      "path": "dist/index.js",
+      "limit": "15 KB"
+    },
+    {
+      "path": "dist/index.mjs",
+      "limit": "15 KB"
+    }
+  ],
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "pnpm clean && tsup src/index.tsx --env.NODE_ENV production --onSuccess \"npm run instrument\"",
+    "ci:build": "pnpm clean && tsup src/index.tsx --env.NODE_ENV production && npm run size",
+    "dev": "tsup src/index.tsx --env.NODE_ENV development",
+    "instrument": "nyc instrument --compact=false dist dist --in-place",
+    "lint": "eslint *.ts*",
+    "size": "size-limit"
+  },
+  "devDependencies": {
+    "@size-limit/preset-small-lib": "^8.1.0",
+    "@types/react": "^18.0.17",
+    "@types/react-dom": "^18.0.6",
+    "eslint": "^7.32.0",
+    "eslint-config-custom": "workspace:*",
+    "nyc": "^15.1.0",
+    "react": "^18.2.0",
+    "rimraf": "^3.0.2",
+    "size-limit": "^8.1.0",
+    "tsconfig": "workspace:*",
+    "tslib": "^2.4.1",
+    "tsup": "^6.5.0",
+    "typescript": "^4.5.2"
+  },
+  "peerDependencies": {
+    "react": ">=16.8"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}
