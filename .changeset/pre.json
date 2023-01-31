@@ -9,6 +9,7 @@
     "tsconfig": "0.0.0"
   },
   "changesets": [
-    "serious-bobcats-burn"
+    "serious-bobcats-burn",
+    "tricky-games-clean"
   ]
 }
