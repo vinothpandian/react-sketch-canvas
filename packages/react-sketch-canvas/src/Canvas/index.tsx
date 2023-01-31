@@ -1,6 +1,6 @@
 /* eslint-disable react/no-array-index-key */
 import * as React from "react";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import Paths, { SvgPath } from "../Paths";
 import { CanvasPath, ExportImageType, Point } from "../types";
 
@@ -35,6 +35,7 @@ export interface CanvasProps {
   paths: CanvasPath[];
   isDrawing: boolean;
   onPointerDown: (point: Point, isEraser?: boolean) => void;
+  scrollOnTouch: boolean;
   onPointerMove: (point: Point) => void;
   onPointerUp: () => void;
   className?: string;
@@ -59,6 +60,7 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
   const {
     paths,
     isDrawing,
+    scrollOnTouch,
     onPointerDown,
     onPointerMove,
     onPointerUp,
@@ -79,6 +81,7 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
   } = props;
 
   const canvasRef = React.useRef<HTMLDivElement>(null);
+  const currentPointerType = React.useRef<"pen" | "mouse" | "touch" | null>(null);
 
   // Converts mouse coordinates to relative coordinate based on the absolute position of svg
   const getCoordinates = useCallback(
@@ -104,10 +107,20 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
 
   const handlePointerDown = useCallback(
     (event: React.PointerEvent<HTMLDivElement>): void => {
-      // Allow only chosen pointer type
+      currentPointerType.current = event.pointerType;
 
-      if (
-        allowOnlyPointerType !== "all" &&
+    if (scrollOnTouch && event.pointerType === "touch") {
+      return;
+    }
+
+    if (event.pointerType === 'pen') {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
+    // Allow only chosen pointer type
+    if (
+      allowOnlyPointerType !== "all" &&
         event.pointerType !== allowOnlyPointerType
       ) {
         return;
@@ -129,9 +142,13 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
     (event: React.PointerEvent<HTMLDivElement>): void => {
       if (!isDrawing) return;
 
-      // Allow only chosen pointer type
-      if (
-        allowOnlyPointerType !== "all" &&
+      if (scrollOnTouch && event.pointerType === "touch") {
+      return;
+    }
+
+    // Allow only chosen pointer type
+    if (
+      allowOnlyPointerType !== "all" &&
         event.pointerType !== allowOnlyPointerType
       ) {
         return;
@@ -147,6 +164,9 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
   const handlePointerUp = useCallback(
     (event: React.PointerEvent<HTMLDivElement> | PointerEvent): void => {
       if (event.pointerType === "mouse" && event.button !== 0) return;
+    if (scrollOnTouch && event.pointerType === "touch") {
+      return;
+    }
 
       // Allow only chosen pointer type
       if (
@@ -291,13 +311,31 @@ release drawing even when point goes out of canvas */
     );
   }, [paths]);
 
+  // avoid pen from scrolling if scrollOnTouch
+  useEffect(() => {
+    const listener = function(
+      this: HTMLDivElement,
+      event: TouchEvent
+    ): void {
+      if (currentPointerType.current === "pen") {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    };
+
+    if (scrollOnTouch) {
+      canvasRef.current?.addEventListener("touchstart", listener, { passive: false });
+    }
+    return () => canvasRef.current?.removeEventListener("touchstart", listener);
+  }, []);
+
   return (
     <div
       role="presentation"
       ref={canvasRef}
       className={className}
       style={{
-        touchAction: "none",
+        touchAction: scrollOnTouch ? 'pan-y' : 'none',
         width,
         height,
         ...style,

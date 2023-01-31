@@ -121,7 +121,7 @@ const Canvas = class extends React.Component {
 ## List of Props
 
 | Props                              | Expected datatype | Default value         | Description                                                                                         |
-| ---------------------------------- | ----------------- | --------------------- | --------------------------------------------------------------------------------------------------- |
+|------------------------------------|-------------------| --------------------- |-----------------------------------------------------------------------------------------------------|
 | width                              | PropTypes.string  | 100%                  | canvas width (em/rem/px)                                                                            |
 | height                             | PropTypes.string  | 100%                  | canvas width (em/rem/px)                                                                            |
 | id                                 | PropTypes.string  | "react-sketch-canvas" | ID field to uniquely identify a SVG canvas (Supports multiple canvases in a single page)            |
@@ -136,6 +136,7 @@ const Canvas = class extends React.Component {
 | allowOnlyPointerType               | PropTypes.string  | all                   | allow pointer type ("all"/"mouse"/"pen"/"touch")                                                    |
 | onChange                           | PropTypes.func    |                       | Returns the current sketch path in `CanvasPath` type on every path change                           |
 | onStroke                           | PropTypes.func    |                       | Returns the the last stroke path and whether it is an eraser stroke on every pointer up event       |
+| scrollOnTouch                      | PropTypes.bool    | false                 | Scroll overflowing component instead of sketching if pointerType === touch                             |
 | style                              | PropTypes.object  | false                 | Add CSS styling as CSS-in-JS object                                                                 |
 | svgStyle                           | PropTypes.object  | {}                    | Add CSS styling as CSS-in-JS object for the SVG                                                     |
 | withTimestamp                      | PropTypes.bool    | false                 | Add timestamp to individual strokes for measuring sketching time                                    |
