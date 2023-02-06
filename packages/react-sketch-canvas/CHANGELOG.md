@@ -1,5 +1,11 @@
 # Changelog
 
+## 7.0.0-next.2
+
+### Patch Changes
+
+- Fix blank white space bug by allowing developers to set viewBox
+
 ## 7.0.0-next.1
 
 ### Patch Changes
