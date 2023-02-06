@@ -1,25 +1,20 @@
 import * as React from "react";
-import { Canvas, CanvasRef } from "../Canvas";
+import { Canvas, CanvasProps, CanvasRef } from "../Canvas";
 import { CanvasPath, ExportImageType, Point } from "../types";
 
 /* Props validation */
-export interface ReactSketchCanvasProps {
-  allowOnlyPointerType?: string;
-  backgroundImage?: string;
-  canvasColor?: string;
-  className?: string;
+export interface ReactSketchCanvasProps
+  extends Partial<
+    Omit<
+      CanvasProps,
+      "paths" | "isDrawing" | "onPointerDown" | "onPointerMove" | "onPointerUp"
+    >
+  > {
   eraserWidth?: number;
-  exportWithBackgroundImage?: boolean;
-  height?: string;
-  id?: string;
   onChange?: (updatedPaths: CanvasPath[]) => void;
   onStroke?: (path: CanvasPath, isEraser: boolean) => void;
-  preserveBackgroundImageAspectRatio?: string;
   strokeColor?: string;
   strokeWidth?: number;
-  style?: React.CSSProperties;
-  svgStyle?: React.CSSProperties;
-  width?: string;
   withTimestamp?: boolean;
 }
 
@@ -61,6 +56,7 @@ export const ReactSketchCanvas = React.forwardRef<
     onChange = (_paths: CanvasPath[]): void => undefined,
     onStroke = (_path: CanvasPath, _isEraser: boolean): void => undefined,
     withTimestamp = false,
+    withViewBox = false,
   } = props;
 
   const svgCanvas = React.createRef<CanvasRef>();
@@ -265,6 +261,7 @@ export const ReactSketchCanvas = React.forwardRef<
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
+      withViewBox={withViewBox}
     />
   );
 });
