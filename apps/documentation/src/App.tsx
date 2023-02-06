@@ -75,6 +75,7 @@ function App() {
     exportWithBackgroundImage: true,
     withTimestamp: true,
     allowOnlyPointerType: "all",
+    withViewBox: false,
   });
 
   const inputProps: Array<[keyof ReactSketchCanvasProps, "text" | "number"]> = [
@@ -300,6 +301,26 @@ function App() {
                   htmlFor="switchExportWithBackgroundImage"
                 >
                   exportWithBackgroundImage
+                </label>
+              </div>
+              <div className="form-check form-switch">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  role="switch"
+                  id="switchWithViewBox"
+                  checked={canvasProps.withViewBox}
+                  onChange={(e) => {
+                    setCanvasProps(
+                      (prevCanvasProps: Partial<ReactSketchCanvasProps>) => ({
+                        ...prevCanvasProps,
+                        withViewBox: e.target.checked,
+                      })
+                    );
+                  }}
+                />
+                <label className="form-check-label" htmlFor="switchWithViewBox">
+                  withViewBox
                 </label>
               </div>
             </div>

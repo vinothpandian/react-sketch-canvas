@@ -37,17 +37,18 @@ export interface CanvasProps {
   onPointerDown: (point: Point, isEraser?: boolean) => void;
   onPointerMove: (point: Point) => void;
   onPointerUp: () => void;
-  className?: string;
-  id?: string;
-  width: string;
-  height: string;
-  canvasColor: string;
-  backgroundImage: string;
-  exportWithBackgroundImage: boolean;
-  preserveBackgroundImageAspectRatio: string;
   allowOnlyPointerType: string;
+  backgroundImage: string;
+  canvasColor: string;
+  className?: string;
+  exportWithBackgroundImage: boolean;
+  height: string;
+  id?: string;
+  preserveBackgroundImageAspectRatio: string;
   style: React.CSSProperties;
   svgStyle: React.CSSProperties;
+  withViewBox?: boolean;
+  width: string;
 }
 
 export interface CanvasRef {
@@ -76,14 +77,24 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
       borderRadius: "0.25rem",
     },
     svgStyle = {},
+    withViewBox = false,
   } = props;
 
   const canvasRef = React.useRef<HTMLDivElement>(null);
+  const canvasSizeRef = React.useRef<{ width: number; height: number } | null>(
+    null
+  );
 
   // Converts mouse coordinates to relative coordinate based on the absolute position of svg
   const getCoordinates = useCallback(
     (pointerEvent: React.PointerEvent<HTMLDivElement>): Point => {
       const boundingArea = canvasRef.current?.getBoundingClientRect();
+      canvasSizeRef.current = boundingArea
+        ? {
+            width: boundingArea.width,
+            height: boundingArea.height,
+          }
+        : null;
 
       const scrollLeft = window.scrollX ?? 0;
       const scrollTop = window.scrollY ?? 0;
@@ -317,6 +328,14 @@ release drawing even when point goes out of canvas */
           ...svgStyle,
         }}
         id={id}
+        viewBox={
+          // eslint-disable-next-line no-nested-ternary
+          withViewBox
+            ? canvasSizeRef.current === null
+              ? undefined
+              : `0 0 ${canvasSizeRef.current.width} ${canvasSizeRef.current.height}`
+            : undefined
+        }
       >
         <g id={`${id}__eraser-stroke-group`} display="none">
           <rect
