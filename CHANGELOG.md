@@ -1,5 +1,24 @@
 # Changelog
 
+## 7.0.0-next.2
+
+### Patch Changes
+
+- Fix blank white space bug by allowing developers to set viewBox
+
+## 7.0.0-next.1
+
+### Patch Changes
+
+- Fix unused eraser masks - firefox and random gaps
+
+## 7.0.0-next.0
+
+### Major Changes
+
+- - Add option to use Windows surface pen button as eraser
+  - Memoize functions to reduce re-rendering
+
 # [6.1.0]
 
 ### Added
