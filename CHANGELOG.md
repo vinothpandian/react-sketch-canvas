@@ -1,5 +1,11 @@
 # Changelog
 
+# [6.2.0]
+
+### Added
+
+- Added disabled option
+
 # [6.1.0]
 
 ### Added

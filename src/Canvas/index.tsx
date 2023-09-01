@@ -45,6 +45,7 @@ export interface CanvasProps {
   preserveBackgroundImageAspectRatio: string;
   allowOnlyPointerType: string;
   style: React.CSSProperties;
+  disabled?: boolean;
 }
 
 export interface CanvasRef {
@@ -72,6 +73,7 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
       border: '0.0625rem solid #9c9c9c',
       borderRadius: '0.25rem',
     },
+    disabled,
   } = props;
 
   const canvasRef = React.useRef<HTMLDivElement>(null);
@@ -102,8 +104,9 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
   const handlePointerDown = (
     event: React.PointerEvent<HTMLDivElement>
   ): void => {
+    if (disabled) return;
+    
     // Allow only chosen pointer type
-
     if (
       allowOnlyPointerType !== 'all' &&
       event.pointerType !== allowOnlyPointerType
@@ -121,6 +124,8 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
   const handlePointerMove = (
     event: React.PointerEvent<HTMLDivElement>
   ): void => {
+    if (disabled) return;
+
     if (!isDrawing) return;
 
     // Allow only chosen pointer type
@@ -139,6 +144,8 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
   const handlePointerUp = (
     event: React.PointerEvent<HTMLDivElement> | PointerEvent
   ): void => {
+    if (disabled) return;
+    
     if (event.pointerType === 'mouse' && event.button !== 0) return;
 
     // Allow only chosen pointer type
