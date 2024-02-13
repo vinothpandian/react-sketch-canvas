@@ -93,7 +93,7 @@ it("should update backgroundImage on props change", () => {
   cy.get("@backgroundImage").should(
     "have.attr",
     "xlink:href",
-    updatedBackgroundImage
+    updatedBackgroundImage,
   );
 });
 
@@ -105,7 +105,7 @@ it("should update preserveAspectRatio of the background image", () => {
     .should(
       "have.attr",
       "preserveAspectRatio",
-      defaultProps.preserveBackgroundImageAspectRatio
+      defaultProps.preserveBackgroundImageAspectRatio,
     );
 
   cy.findByRole("textbox", {
@@ -117,7 +117,7 @@ it("should update preserveAspectRatio of the background image", () => {
   cy.get("@backgroundImage").should(
     "have.attr",
     "preserveAspectRatio",
-    updatedPreserveAspectRatio
+    updatedPreserveAspectRatio,
   );
 });
 
@@ -193,7 +193,7 @@ it("should change canvas color", () => {
   cy.get(canvasBackgroundId).should(
     "have.attr",
     "fill",
-    updatedCanvasColor.toLowerCase()
+    updatedCanvasColor.toLowerCase(),
   );
 });
 
@@ -208,7 +208,7 @@ describe("exportWithBackgroundImage", () => {
     cy.get(`${exportedSvgId} ${backgroundImagePatternId}`).should(
       "have.attr",
       "xlink:href",
-      defaultProps.backgroundImage
+      defaultProps.backgroundImage,
     );
 
     cy.findByRole("switch", { name: /exportWithBackgroundImage/i }).click();
@@ -217,7 +217,7 @@ describe("exportWithBackgroundImage", () => {
     cy.get("@exportedCanvasBackground").should(
       "have.attr",
       "fill",
-      defaultProps.canvasColor
+      defaultProps.canvasColor,
     );
   });
 
@@ -241,7 +241,7 @@ describe("exportWithBackgroundImage", () => {
       .then((fileSizeWithoutExportedImage) => {
         cy.get("@fileSizeWithExportedImage").should(
           "not.be.lessThan",
-          fileSizeWithoutExportedImage
+          fileSizeWithoutExportedImage,
         );
       });
   });
@@ -267,7 +267,7 @@ describe("exportWithBackgroundImage", () => {
       .then((fileSizeWithoutExportedImage) => {
         cy.get("@fileSizeWithExportedImage").should(
           "not.be.lessThan",
-          fileSizeWithoutExportedImage
+          fileSizeWithoutExportedImage,
         );
       });
   });
@@ -296,7 +296,7 @@ it("should throw exception when attempted to get sketching time when withTimesta
   cy.findByRole("button", { name: /get sketching time/i }).click();
   cy.get("@sketchingTimeContainer").should(
     "contain.text",
-    getSketchingTimeInString(initialTime)
+    getSketchingTimeInString(initialTime),
   );
 });
 
@@ -400,7 +400,7 @@ it("should update style", () => {
     .CssStyleToObject()
     .and(
       "have.any.key",
-      Object.keys(defaultProps.style).map(Cypress._.kebabCase)
+      Object.keys(defaultProps.style).map(Cypress._.kebabCase),
     );
 
   cy.findByRole("textbox", { name: "style", exact: true })
@@ -415,7 +415,7 @@ it("should update style", () => {
     .CssStyleToObject()
     .and(
       "not.have.any.keys",
-      Object.keys(defaultProps.style).map(Cypress._.kebabCase)
+      Object.keys(defaultProps.style).map(Cypress._.kebabCase),
     )
     .and("have.any.keys", Object.keys(updatedStyle).map(Cypress._.kebabCase));
 });

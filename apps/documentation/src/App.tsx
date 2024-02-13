@@ -185,7 +185,7 @@ function App() {
   const createButton = (
     label: string,
     handler: () => void,
-    themeColor: string
+    themeColor: string,
   ) => (
     <button
       key={label}
@@ -251,7 +251,7 @@ function App() {
                       (prevCanvasProps: Partial<ReactSketchCanvasProps>) => ({
                         ...prevCanvasProps,
                         strokeColor: e.target.value,
-                      })
+                      }),
                     );
                   }}
                 />
@@ -273,7 +273,7 @@ function App() {
                         ...prevCanvasProps,
                         backgroundImage: "",
                         canvasColor: e.target.value,
-                      })
+                      }),
                     );
                   }}
                 />
@@ -292,7 +292,7 @@ function App() {
                       (prevCanvasProps: Partial<ReactSketchCanvasProps>) => ({
                         ...prevCanvasProps,
                         exportWithBackgroundImage: e.target.checked,
-                      })
+                      }),
                     );
                   }}
                 />
@@ -315,7 +315,7 @@ function App() {
                       (prevCanvasProps: Partial<ReactSketchCanvasProps>) => ({
                         ...prevCanvasProps,
                         withViewBox: e.target.checked,
-                      })
+                      }),
                     );
                   }}
                 />
@@ -337,7 +337,7 @@ function App() {
                       (prevCanvasProps: Partial<ReactSketchCanvasProps>) => ({
                         ...prevCanvasProps,
                         withTimestamp: e.target.checked,
-                      })
+                      }),
                     );
                   }}
                 />
@@ -415,7 +415,7 @@ function App() {
                         (prevCanvasProps: Partial<ReactSketchCanvasProps>) => ({
                           ...prevCanvasProps,
                           allowOnlyPointerType: "all",
-                        })
+                        }),
                       );
                     }}
                   />
@@ -436,7 +436,7 @@ function App() {
                         (prevCanvasProps: Partial<ReactSketchCanvasProps>) => ({
                           ...prevCanvasProps,
                           allowOnlyPointerType: "touch",
-                        })
+                        }),
                       );
                     }}
                   />
@@ -460,7 +460,7 @@ function App() {
                         (prevCanvasProps: Partial<ReactSketchCanvasProps>) => ({
                           ...prevCanvasProps,
                           allowOnlyPointerType: "mouse",
-                        })
+                        }),
                       );
                     }}
                   />
@@ -484,7 +484,7 @@ function App() {
                         (prevCanvasProps: Partial<ReactSketchCanvasProps>) => ({
                           ...prevCanvasProps,
                           allowOnlyPointerType: "pen",
-                        })
+                        }),
                       );
                     }}
                   />
@@ -507,7 +507,7 @@ function App() {
                         (prevCanvasProps: Partial<ReactSketchCanvasProps>) => ({
                           ...prevCanvasProps,
                           style,
-                        })
+                        }),
                       );
                     } catch {}
                   }}
@@ -529,7 +529,7 @@ function App() {
                         (prevCanvasProps: Partial<ReactSketchCanvasProps>) => ({
                           ...prevCanvasProps,
                           svgStyle,
-                        })
+                        }),
                       );
                     } catch {}
                   }}
@@ -584,7 +584,7 @@ function App() {
             <div className="col-3 panel">
               <div className="d-grid gap-2">
                 {buttonsWithHandlers.map(([label, handler, themeColor]) =>
-                  createButton(label, handler, themeColor)
+                  createButton(label, handler, themeColor),
                 )}
               </div>
             </div>

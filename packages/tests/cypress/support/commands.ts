@@ -62,7 +62,7 @@ Cypress.Commands.add(
     });
 
     cy.wait(100);
-  }
+  },
 );
 
 Cypress.Commands.add(
@@ -102,7 +102,7 @@ Cypress.Commands.add(
 
       cy.wait(100);
     });
-  }
+  },
 );
 
 Cypress.Commands.add(
@@ -134,7 +134,7 @@ Cypress.Commands.add(
 
       cy.wait(100);
     });
-  }
+  },
 );
 
 Cypress.Commands.add(
@@ -145,7 +145,7 @@ Cypress.Commands.add(
     const decoded = atob(base64str);
     const fileSizeInKB = Math.floor(decoded.length / 1024);
     return cy.wrap(fileSizeInKB);
-  }
+  },
 );
 
 Cypress.Commands.add("CssStyleToObject", { prevSubject: true }, (subject) => {

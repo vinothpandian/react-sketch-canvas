@@ -264,7 +264,7 @@ describe("exportImage - png", () => {
       .then((fileSizeWithStroke) => {
         cy.get("@fileSizeWithoutStroke").should(
           "be.lessThan",
-          fileSizeWithStroke
+          fileSizeWithStroke,
         );
       });
   });
@@ -291,7 +291,7 @@ describe("exportImage - png", () => {
       .then((fileSizeWithStrokeAndEraser) => {
         cy.get("@fileSizeWithoutStrokeAndEraser").should(
           "be.lessThan",
-          fileSizeWithStrokeAndEraser
+          fileSizeWithStrokeAndEraser,
         );
       });
   });
@@ -320,7 +320,7 @@ describe("exportImage - png", () => {
       .then((fileSizeWithStroke) => {
         cy.get("@fileSizeWithoutStroke").should(
           "be.lessThan",
-          fileSizeWithStroke
+          fileSizeWithStroke,
         );
       });
   });
@@ -351,7 +351,7 @@ describe("exportImage - png", () => {
       .then((fileSizeWithStrokeAndEraser) => {
         cy.get("@fileSizeWithoutStrokeAndEraser").should(
           "be.lessThan",
-          fileSizeWithStrokeAndEraser
+          fileSizeWithStrokeAndEraser,
         );
       });
   });
@@ -388,7 +388,7 @@ describe("exportImage - jpeg", () => {
       .then((fileSizeWithStroke) => {
         cy.get("@fileSizeWithoutStroke").should(
           "be.lessThan",
-          fileSizeWithStroke
+          fileSizeWithStroke,
         );
       });
   });
@@ -415,7 +415,7 @@ describe("exportImage - jpeg", () => {
       .then((fileSizeWithStrokeAndEraser) => {
         cy.get("@fileSizeWithoutStrokeAndEraser").should(
           "be.lessThan",
-          fileSizeWithStrokeAndEraser
+          fileSizeWithStrokeAndEraser,
         );
       });
   });
@@ -444,7 +444,7 @@ describe("exportImage - jpeg", () => {
       .then((fileSizeWithStroke) => {
         cy.get("@fileSizeWithoutStroke").should(
           "be.lessThan",
-          fileSizeWithStroke
+          fileSizeWithStroke,
         );
       });
   });
@@ -475,7 +475,7 @@ describe("exportImage - jpeg", () => {
       .then((fileSizeWithStrokeAndEraser) => {
         cy.get("@fileSizeWithoutStrokeAndEraser").should(
           "be.lessThan",
-          fileSizeWithStrokeAndEraser
+          fileSizeWithStrokeAndEraser,
         );
       });
   });
@@ -528,7 +528,7 @@ describe("exportImage - svg", () => {
     cy.get(`${exportedSvgId} ${canvasBackgroundId}`).should(
       "have.attr",
       "fill",
-      defaultProps.canvasColor
+      defaultProps.canvasColor,
     );
   });
 
@@ -553,7 +553,7 @@ describe("exportImage - svg", () => {
     cy.get(`${exportedSvgId} ${canvasBackgroundId}`).should(
       "have.attr",
       "fill",
-      defaultProps.canvasColor
+      defaultProps.canvasColor,
     );
   });
 });

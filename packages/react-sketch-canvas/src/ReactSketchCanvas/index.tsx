@@ -121,7 +121,7 @@ export const ReactSketchCanvas = React.forwardRef<
     },
     exportImage: (
       imageType: ExportImageType,
-      options?: ExportImageOptions
+      options?: ExportImageOptions,
     ): Promise<string> => {
       const exportImage = svgCanvas.current?.exportImage;
 
@@ -174,7 +174,7 @@ export const ReactSketchCanvas = React.forwardRef<
 
               return totalSketchingTime + (endTimestamp - startTimestamp);
             },
-            0
+            0,
           );
 
           resolve(sketchingTime);

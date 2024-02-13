@@ -60,15 +60,7 @@ const styles = {
 };
 
 const Canvas = () => {
-  return (
-    <ReactSketchCanvas
-      style={styles}
-      width="600"
-      height="400"
-      strokeWidth={4}
-      strokeColor="red"
-    />
-  );
+  return <ReactSketchCanvas style={styles} width="600" height="400" strokeWidth={4} strokeColor="red" />;
 };
 ```
 
@@ -93,11 +85,7 @@ const Canvas = class extends React.Component {
   render() {
     return (
       <div>
-        <ReactSketchCanvas
-          ref={this.canvas}
-          strokeWidth={5}
-          strokeColor="black"
-        />
+        <ReactSketchCanvas ref={this.canvas} strokeWidth={5} strokeColor="black" />
         <button
           onClick={() => {
             this.canvas.current
