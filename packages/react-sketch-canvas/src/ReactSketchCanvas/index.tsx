@@ -1,6 +1,11 @@
 import * as React from "react";
 import { Canvas, CanvasProps, CanvasRef } from "../Canvas";
-import { CanvasPath, ExportImageType, Point } from "../types";
+import {
+  CanvasPath,
+  ExportImageOptions,
+  ExportImageType,
+  Point,
+} from "../types";
 
 /* Props validation */
 export interface ReactSketchCanvasProps
@@ -114,13 +119,16 @@ export const ReactSketchCanvas = React.forwardRef<
       setCurrentPaths((paths) => [...paths, ...undoStack.slice(-1)]);
       setUndoStack((paths) => paths.slice(0, -1));
     },
-    exportImage: (imageType: ExportImageType): Promise<string> => {
+    exportImage: (
+      imageType: ExportImageType,
+      options?: ExportImageOptions
+    ): Promise<string> => {
       const exportImage = svgCanvas.current?.exportImage;
 
       if (!exportImage) {
         throw Error("Export function called before canvas loaded");
       } else {
-        return exportImage(imageType);
+        return exportImage(imageType, options);
       }
     },
     exportSvg: (): Promise<string> => {

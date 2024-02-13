@@ -2,7 +2,12 @@
 import * as React from "react";
 import { useCallback } from "react";
 import Paths, { SvgPath } from "../Paths";
-import { CanvasPath, ExportImageType, Point } from "../types";
+import {
+  CanvasPath,
+  ExportImageType,
+  ExportImageOptions,
+  Point,
+} from "../types";
 
 const loadImage = (url: string): Promise<HTMLImageElement> =>
   new Promise((resolve, reject) => {
@@ -52,7 +57,10 @@ export interface CanvasProps {
 }
 
 export interface CanvasRef {
-  exportImage: (imageType: ExportImageType) => Promise<string>;
+  exportImage: (
+    imageType: ExportImageType,
+    options?: ExportImageOptions
+  ) => Promise<string>;
   exportSvg: () => Promise<string>;
 }
 
@@ -175,7 +183,10 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
   /* Mouse Handlers ends */
 
   React.useImperativeHandle(ref, () => ({
-    exportImage: (imageType: ExportImageType): Promise<string> => {
+    exportImage: (
+      imageType: ExportImageType,
+      options?: ExportImageOptions
+    ): Promise<string> => {
       return new Promise<string>((resolve, reject) => {
         try {
           const canvas = canvasRef.current;
@@ -189,6 +200,9 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
             width: svgWidth,
             height: svgHeight,
           } = getCanvasWithViewBox(canvas);
+          const exportWidth = options?.width ?? svgWidth;
+          const exportHeight = options?.height ?? svgHeight;
+
           const canvasSketch = `data:image/svg+xml;base64,${btoa(
             svgCanvas.outerHTML
           )}`;
@@ -210,8 +224,8 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
           Promise.all(loadImagePromises)
             .then((images) => {
               const renderCanvas = document.createElement("canvas");
-              renderCanvas.setAttribute("width", svgWidth.toString());
-              renderCanvas.setAttribute("height", svgHeight.toString());
+              renderCanvas.setAttribute("width", exportWidth.toString());
+              renderCanvas.setAttribute("height", exportHeight.toString());
               const context = renderCanvas.getContext("2d");
 
               if (!context) {
@@ -220,11 +234,11 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
 
               if (imageType === "jpeg" && !exportWithBackgroundImage) {
                 context.fillStyle = canvasColor;
-                context.fillRect(0, 0, svgWidth, svgHeight);
+                context.fillRect(0, 0, exportWidth, exportHeight);
               }
 
               images.reverse().forEach((image) => {
-                context.drawImage(image, 0, 0);
+                context.drawImage(image, 0, 0, exportWidth, exportHeight);
               });
 
               resolve(renderCanvas.toDataURL(`image/${imageType}`));
