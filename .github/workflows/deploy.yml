@@ -21,13 +21,12 @@ jobs:
         with:
           node-version: 14.x
 
-      - name: Install Yarn
-        run: npm install -g yarn
+      - name: Install Pnpm
+        run: npm install -g pnpm
 
       - name: Install deps and build (with cache)
         run: |
-          yarn install --frozen-lockfile --silent
-          yarn install:example
+          pnpm install --frozen-lockfile
 
       - name: Build documentation
         run: yarn build:example
@@ -36,5 +35,5 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@4.1.4
         with:
           branch: gh-pages
-          folder: example/build
+          folder: apps/documentation/dist
           clean: true

@@ -1,6 +1,17 @@
-/* eslint-disable react/no-array-index-key */
 import * as React from "react";
 import { CanvasPath, Point } from "../types";
+
+type ControlPoints = {
+  current: Point;
+  previous?: Point;
+  next?: Point;
+  reverse?: boolean;
+};
+
+type PathProps = {
+  id: string;
+  paths: CanvasPath[];
+};
 
 export const line = (pointA: Point, pointB: Point) => {
   const lengthX = pointB.x - pointA.x;
@@ -109,7 +120,7 @@ export function SvgPath({
   const d = paths.reduce(
     (acc, point, i, a) =>
       i === 0 ? `M ${point.x},${point.y}` : `${acc} ${command(point, i, a)}`,
-    ""
+    "",
   );
 
   return (
@@ -125,23 +136,12 @@ export function SvgPath({
   );
 }
 
-type ControlPoints = {
-  current: Point;
-  previous?: Point;
-  next?: Point;
-  reverse?: boolean;
-};
-
-type PathProps = {
-  id: string;
-  paths: CanvasPath[];
-};
-
 function Paths({ id, paths }: PathProps): JSX.Element {
   return (
     <>
       {paths.map((path: CanvasPath, index: number) => (
         <SvgPath
+          // eslint-disable-next-line react/no-array-index-key
           key={`${id}__${index}`}
           paths={path.paths}
           id={`${id}__${index}`}

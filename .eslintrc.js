@@ -7,5 +7,5 @@ module.exports = {
       rootDir: ["apps/*/"],
     },
   },
-  ignorePatterns: ["*.config.js"],
+  ignorePatterns: ["*.config.js", "*.config.ts"],
 };

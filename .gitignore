@@ -17,3 +17,4 @@ packages/tests/.nyc_output/
 packages/tests/coverage/
 packages/tests/cypress/downloads/
 .idea/
+.turbo/cookies/
