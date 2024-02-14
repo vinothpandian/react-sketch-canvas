@@ -22,9 +22,9 @@ jobs:
       - name: Install Pnpm
         run: npm install -g pnpm
 
-      - name: Install deps and build (with cache)
+      - name: Install deps
         run: |
-          pnpm install --frozen-lockfile
+          pnpm install --no-frozen-lockfile
 
       - name: Lint
         run: pnpm lint
