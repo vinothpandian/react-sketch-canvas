@@ -1,5 +1,12 @@
 # Changelog
 
+## 7.0.0-next.3
+
+### Patch Changes
+
+- Add option to customize export image size
+- Upgrade packages
+
 ## 7.0.0-next.2
 
 ### Patch Changes
