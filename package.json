@@ -17,14 +17,14 @@
   },
   "devDependencies": {
     "eslint-config-custom": "workspace:*",
-    "prettier": "^2.8.3",
-    "turbo": "^1.7.0"
+    "prettier": "^3.2.5",
+    "turbo": "^1.12.3"
   },
   "engines": {
     "node": ">=14.0.0"
   },
   "packageManager": "pnpm@7.18.1",
   "dependencies": {
-    "@changesets/cli": "^2.26.0"
+    "@changesets/cli": "^2.27.1"
   }
 }

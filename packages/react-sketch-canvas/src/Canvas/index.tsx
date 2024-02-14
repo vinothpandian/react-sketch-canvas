@@ -59,7 +59,7 @@ export interface CanvasProps {
 export interface CanvasRef {
   exportImage: (
     imageType: ExportImageType,
-    options?: ExportImageOptions
+    options?: ExportImageOptions,
   ) => Promise<string>;
   exportSvg: () => Promise<string>;
 }
@@ -90,7 +90,7 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
 
   const canvasRef = React.useRef<HTMLDivElement>(null);
   const canvasSizeRef = React.useRef<{ width: number; height: number } | null>(
-    null
+    null,
   );
 
   // Converts mouse coordinates to relative coordinate based on the absolute position of svg
@@ -116,7 +116,7 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
         y: pointerEvent.pageY - boundingArea.top - scrollTop,
       };
     },
-    []
+    [],
   );
 
   /* Mouse Handlers - Mouse down, move and up */
@@ -141,7 +141,7 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
 
       onPointerDown(point, isEraser);
     },
-    [allowOnlyPointerType, getCoordinates, onPointerDown]
+    [allowOnlyPointerType, getCoordinates, onPointerDown],
   );
 
   const handlePointerMove = useCallback(
@@ -160,7 +160,7 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
 
       onPointerMove(point);
     },
-    [allowOnlyPointerType, getCoordinates, isDrawing, onPointerMove]
+    [allowOnlyPointerType, getCoordinates, isDrawing, onPointerMove],
   );
 
   const handlePointerUp = useCallback(
@@ -177,7 +177,7 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
 
       onPointerUp();
     },
-    [allowOnlyPointerType, onPointerUp]
+    [allowOnlyPointerType, onPointerUp],
   );
 
   /* Mouse Handlers ends */
@@ -185,7 +185,7 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
   React.useImperativeHandle(ref, () => ({
     exportImage: (
       imageType: ExportImageType,
-      options?: ExportImageOptions
+      options?: ExportImageOptions,
     ): Promise<string> => {
       return new Promise<string>((resolve, reject) => {
         try {
@@ -204,7 +204,7 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
           const exportHeight = options?.height ?? svgHeight;
 
           const canvasSketch = `data:image/svg+xml;base64,${btoa(
-            svgCanvas.outerHTML
+            svgCanvas.outerHTML,
           )}`;
 
           const loadImagePromises = [loadImage(canvasSketch)];
@@ -216,7 +216,7 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
             } catch (error) {
               // eslint-disable-next-line no-console
               console.warn(
-                "exportWithBackgroundImage props is set without a valid background image URL. This option is ignored"
+                "exportWithBackgroundImage props is set without a valid background image URL. This option is ignored",
               );
             }
           }
@@ -291,7 +291,7 @@ release drawing even when point goes out of canvas */
 
   const eraserPaths = React.useMemo(
     () => paths.filter((path) => !path.drawMode),
-    [paths]
+    [paths],
   );
 
   const pathGroups = React.useMemo(() => {
@@ -312,7 +312,7 @@ release drawing even when point goes out of canvas */
         arrayGroup[currentGroup].push(path);
         return arrayGroup;
       },
-      [[]]
+      [[]],
     );
   }, [paths]);
 
@@ -400,7 +400,7 @@ release drawing even when point goes out of canvas */
               <use href={`#${id}__mask-background`} />
               {Array.from(
                 { length: eraserPaths.length - i },
-                (_i, j) => j + i
+                (_i, j) => j + i,
               ).map((k) => (
                 <use
                   key={k.toString()}

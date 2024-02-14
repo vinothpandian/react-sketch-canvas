@@ -7,7 +7,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node: ['12.x', '14.x']
+        node: ["16.x"]
         os: [ubuntu-latest]
 
     steps:
@@ -19,21 +19,15 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
 
-      - name: Install Yarn
-        run: npm install -g yarn
+      - name: Install Pnpm
+        run: npm install -g pnpm
 
-      - name: Install deps and build (with cache)
+      - name: Install deps
         run: |
-          yarn install --frozen-lockfile --silent
-          yarn install:example
+          pnpm install --no-frozen-lockfile
 
       - name: Lint
-        run: yarn lint
+        run: pnpm lint
 
       - name: Test
-        run: yarn test
-
-      - name: Upload coverage
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-        run: npx nyc report --reporter=text-lcov | npx codecov --disable=gcov --pipe
+        run: pnpm test
