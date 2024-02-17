@@ -5,14 +5,10 @@ import { WithEraserButton } from "../stories/WithEraserButton.story";
 
 test.use({ viewport: { width: 500, height: 500 } });
 
-test.describe("Eraser", () => {
+test.describe("eraser", () => {
   test("should trigger erase mode and add a mask for erasing previous strokes", async ({
     mount,
   }) => {
-    const handleChange = (updatedPaths: CanvasPath[]) => {
-      // Do nothing
-    };
-
     const canvasId = "rsc";
     const eraserButtonId = "eraser-button";
     const penButtonId = "pen-button";
@@ -22,7 +18,6 @@ test.describe("Eraser", () => {
         id={canvasId}
         eraserButtonId={eraserButtonId}
         penButtonId={penButtonId}
-        onChange={handleChange}
       />,
     );
 
@@ -106,5 +101,55 @@ test.describe("Eraser", () => {
       "mask",
       `url(#${secondEraserMaskId})`,
     );
+  });
+
+  test("should trigger erase mode with windows surface pen eraser", async ({
+    mount,
+  }) => {
+    const canvasId = "rsc";
+
+    const canvas = await mount(<ReactSketchCanvas id={canvasId} />);
+
+    const {
+      eraserStrokeGroupId,
+      firstEraserMaskId,
+      firstEraserMask,
+      firstStrokeGroupId,
+    } = getCanvasIds(canvasId);
+
+    // First stroke
+    await drawLine(canvas, {
+      length: 50,
+      originX: 0,
+      originY: 10,
+      pointerType: "pen",
+    });
+
+    // Eraser stroke with windows surface pen eraser
+    await drawLine(canvas, {
+      length: 10,
+      originX: 0,
+      originY: 10,
+      pointerType: "pen",
+      eventButtons: 32,
+    });
+
+    // Check that the eraser stroke group and a path for the eraser stroke are added
+    await expect(
+      canvas.locator(eraserStrokeGroupId).locator("path"),
+    ).toHaveCount(1);
+    // Check that the eraser mask is added
+    await expect(canvas.locator(firstEraserMask).locator("use")).toHaveCount(2);
+
+    // Check that the first stroke group has the eraser mask
+    await expect(canvas.locator(firstStrokeGroupId)).toHaveAttribute(
+      "mask",
+      `url(#${firstEraserMaskId})`,
+    );
+
+    // Check that the first stroke group has a path
+    await expect(
+      canvas.locator(firstStrokeGroupId).locator("path"),
+    ).toHaveCount(1);
   });
 });

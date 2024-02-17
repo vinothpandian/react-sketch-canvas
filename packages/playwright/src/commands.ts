@@ -194,6 +194,61 @@ export async function drawLine(
 }
 
 /**
+ * Draw eraser lines on a canvas element.
+ *
+ * @param {Locator} canvas - The canvas element to draw on.
+ * @param {DrawLineArgs} options - The options for drawing the eraser lines.
+ * @param {number} options.length - The length of the eraser line.
+ * @param {number} [options.originX=0] - The x-coordinate of the eraser line's origin.
+ * @param {number} [options.originY=0] - The y-coordinate of the eraser line's origin.
+ * @param {string} [options.pointerType="pen"] - The type of pointer used for drawing.
+ * @param {number} [options.eventButton=0] - The button used for the pointer event.
+ * @throws {Error} Throws an error if the canvas element is not found.
+ * @returns {Promise<void>} A promise that resolves when the eraser lines are drawn.
+ */
+export async function drawEraserLine(
+  canvas: Locator,
+  {
+    length,
+    originX = 0,
+    originY = 0,
+    pointerType = "pen",
+    eventButton = 0,
+  }: Omit<DrawLineArgs, "eventButtons">,
+): Promise<void> {
+  const boundingBox = await canvas.boundingBox();
+
+  if (!boundingBox) {
+    throw new Error("Canvas not found");
+  }
+
+  const x = boundingBox.x + originX;
+  const y = boundingBox.y + originY;
+
+  await canvas.dispatchEvent("pointerdown", {
+    pointerType,
+    button: eventButton,
+    buttons: 32, // Windows surface pen eraser button
+    clientX: x,
+    clientY: y,
+  });
+
+  await canvas.dispatchEvent("pointermove", {
+    pointerType,
+    button: eventButton,
+    buttons: 32, // Windows surface pen eraser button
+    clientX: x + length,
+    clientY: y + length,
+  });
+
+  await canvas.dispatchEvent("pointerup", {
+    pointerType,
+    button: eventButton,
+    buttons: 32, // Windows surface pen eraser button
+  });
+}
+
+/**
  * Draws a point on a canvas element.
  *
  * @param {Locator} canvas - The canvas element to draw on.
