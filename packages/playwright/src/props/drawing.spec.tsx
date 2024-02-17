@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/experimental-ct-react";
 import { ReactSketchCanvas } from "react-sketch-canvas";
-import { drawLine, drawPoint, getCanvasIds } from "../commands";
+import { drawLine, drawPoint, drawSquares, getCanvasIds } from "../commands";
 import { WithEraserButton } from "../stories/WithEraserButton.story";
 
 test.use({ viewport: { width: 500, height: 500 } });
@@ -190,4 +190,14 @@ test.describe("drawing with different devices", () => {
     // Should not draw with mouse or touch
     await expect(component.locator("path")).toHaveCount(1);
   });
+});
+
+test("should disable drawing when readOnly is set as true", async ({
+  mount,
+}) => {
+  const component = await mount(<ReactSketchCanvas readOnly />);
+
+  await drawSquares(component);
+
+  await expect(component.locator("path")).toHaveCount(0);
 });
