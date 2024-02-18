@@ -1,26 +1,28 @@
 {
-  "name": "tests",
+  "name": "playwright",
   "version": "1.0.0",
   "description": "",
-  "private": true,
   "main": "index.js",
   "scripts": {
-    "dev:test": "cypress open --config baseUrl=http://localhost:5173",
-    "preview": "serve -s ../../apps/documentation/dist -l 4173 -L",
-    "ci:test": "cypress run --headless --quiet",
-    "test": "start-server-and-test preview http://localhost:4173 ci:test"
+    "dev:test": "playwright test -c playwright-ct.config.ts --ui",
+    "test": "playwright test -c playwright-ct.config.ts",
+    "ci:test": "playwright test -c playwright-ct.config.ts --quiet"
   },
   "keywords": [],
-  "author": "",
-  "license": "MIT",
-  "dependencies": {
-    "@cypress/code-coverage": "^3.12.22",
-    "@testing-library/cypress": "^10.0.1",
-    "cypress": "^13.6.4",
+  "author": "Vinoth Pandian",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.11.17",
+    "@types/react": "^18.2.55",
     "eslint-config-custom": "workspace:*",
-    "react-sketch-canvas": "workspace:*",
-    "serve": "^14.2.1",
-    "start-server-and-test": "^2.0.3",
     "tsconfig": "workspace:*"
+  },
+  "dependencies": {
+    "@playwright/experimental-ct-react": "^1.41.2",
+    "playwright": "^1.41.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-sketch-canvas": "workspace:*",
+    "vite": "^5.1.2"
   }
 }
