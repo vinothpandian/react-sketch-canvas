@@ -61,14 +61,9 @@ jobs:
       - name: Build documentation
         run: pnpm build
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v3
-
-      - name: Upload artifacts
-        uses: actions/upload-pages-artifact@v2
+      - name:
+        uses: JamesIves/github-pages-deploy-action@4.1.4
         with:
-          path: "./apps/documentation/dist"
-
-      - name: Deploy Documentation 🚀
-        id: deployment
-        uses: actions/deploy-pages@v2
+          branch: gh-pages
+          folder: apps/documentation/dist
+          clean: true
