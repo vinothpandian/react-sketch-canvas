@@ -1,5 +1,13 @@
 # Changelog
 
+## 7.0.0-next.4
+
+### Patch Changes
+
+- - Add option to disable canvas (readOnly prop)
+  - Remove cypress tests
+  - Add playwright component tests
+
 ## 7.0.0-next.3
 
 ### Patch Changes
