@@ -62,6 +62,7 @@ export const ReactSketchCanvas = React.forwardRef<
     onStroke = (_path: CanvasPath, _isEraser: boolean): void => undefined,
     withTimestamp = false,
     withViewBox = false,
+    readOnly = false,
   } = props;
 
   const svgCanvas = React.createRef<CanvasRef>();
@@ -131,8 +132,8 @@ export const ReactSketchCanvas = React.forwardRef<
         return exportImage(imageType, options);
       }
     },
-    exportSvg: (): Promise<string> => {
-      return new Promise<string>((resolve, reject) => {
+    exportSvg: (): Promise<string> =>
+      new Promise<string>((resolve, reject) => {
         const exportSvg = svgCanvas.current?.exportSvg;
 
         if (!exportSvg) {
@@ -146,22 +147,20 @@ export const ReactSketchCanvas = React.forwardRef<
               reject(e);
             });
         }
-      });
-    },
-    exportPaths: (): Promise<CanvasPath[]> => {
-      return new Promise<CanvasPath[]>((resolve, reject) => {
+      }),
+    exportPaths: (): Promise<CanvasPath[]> =>
+      new Promise<CanvasPath[]>((resolve, reject) => {
         try {
           resolve(currentPaths);
         } catch (e) {
           reject(e);
         }
-      });
-    },
+      }),
     loadPaths: (paths: CanvasPath[]): void => {
       setCurrentPaths((path) => [...path, ...paths]);
     },
-    getSketchingTime: (): Promise<number> => {
-      return new Promise<number>((resolve, reject) => {
+    getSketchingTime: (): Promise<number> =>
+      new Promise<number>((resolve, reject) => {
         if (!withTimestamp) {
           reject(new Error("Set 'withTimestamp' prop to get sketching time"));
         }
@@ -181,8 +180,7 @@ export const ReactSketchCanvas = React.forwardRef<
         } catch (e) {
           reject(e);
         }
-      });
-    },
+      }),
     resetCanvas: (): void => {
       setResetStack([]);
       setUndoStack([]);
@@ -270,6 +268,9 @@ export const ReactSketchCanvas = React.forwardRef<
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       withViewBox={withViewBox}
+      readOnly={readOnly}
     />
   );
 });
+
+ReactSketchCanvas.displayName = "@react-sketch-canvas/ReactSketchCanvas";

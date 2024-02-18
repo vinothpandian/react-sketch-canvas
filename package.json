@@ -10,7 +10,7 @@
     "build": "turbo run build",
     "dev": "turbo run dev --parallel --no-cache",
     "lint": "turbo run lint",
-    "test": "turbo run build lint test",
+    "test": "turbo run build test",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "ci:build": "cp README.md packages/react-sketch-canvas/ && pnpm --filter react-sketch-canvas ci:build",
     "publish-packages": "pnpm test && pnpm ci:build && changeset version && changeset publish"
@@ -18,7 +18,7 @@
   "devDependencies": {
     "eslint-config-custom": "workspace:*",
     "prettier": "^3.2.5",
-    "turbo": "^1.12.3"
+    "turbo": "^1.12.4"
   },
   "engines": {
     "node": ">=14.0.0"

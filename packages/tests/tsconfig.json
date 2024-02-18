@@ -1,6 +1,4 @@
 {
-  "extends": "tsconfig/tests.json",
-  "include": [
-    "**/*.ts"
-  ]
+  "extends": "tsconfig/documentation.json",
+  "include": ["src"]
 }

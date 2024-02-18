@@ -54,6 +54,7 @@ export interface CanvasProps {
   svgStyle: React.CSSProperties;
   withViewBox?: boolean;
   width: string;
+  readOnly?: boolean;
 }
 
 export interface CanvasRef {
@@ -86,6 +87,7 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
     },
     svgStyle = {},
     withViewBox = false,
+    readOnly = false,
   } = props;
 
   const canvasRef = React.useRef<HTMLDivElement>(null);
@@ -186,8 +188,8 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
     exportImage: (
       imageType: ExportImageType,
       options?: ExportImageOptions,
-    ): Promise<string> => {
-      return new Promise<string>((resolve, reject) => {
+    ): Promise<string> =>
+      new Promise<string>((resolve, reject) => {
         try {
           const canvas = canvasRef.current;
 
@@ -249,10 +251,9 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
         } catch (e) {
           reject(e);
         }
-      });
-    },
-    exportSvg: (): Promise<string> => {
-      return new Promise<string>((resolve, reject) => {
+      }),
+    exportSvg: (): Promise<string> =>
+      new Promise<string>((resolve, reject) => {
         try {
           const canvas = canvasRef.current ?? null;
 
@@ -276,8 +277,7 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
         } catch (e) {
           reject(e);
         }
-      });
-    },
+      }),
   }));
 
   /* Add event listener to Mouse up and Touch up to
@@ -327,9 +327,9 @@ release drawing even when point goes out of canvas */
         height,
         ...style,
       }}
-      onPointerDown={handlePointerDown}
-      onPointerMove={handlePointerMove}
-      onPointerUp={handlePointerUp}
+      onPointerDown={readOnly ? undefined : handlePointerDown}
+      onPointerMove={readOnly ? undefined : handlePointerMove}
+      onPointerUp={readOnly ? undefined : handlePointerUp}
     >
       <svg
         version="1.1"
@@ -433,3 +433,5 @@ release drawing even when point goes out of canvas */
     </div>
   );
 });
+
+Canvas.displayName = "@react-sketch-canvas/Canvas";

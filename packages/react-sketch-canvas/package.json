@@ -38,10 +38,9 @@
   ],
   "scripts": {
     "clean": "rimraf dist",
-    "build": "pnpm clean && tsup src/index.tsx --env.NODE_ENV production --onSuccess \"npm run instrument\"",
+    "build": "pnpm clean && tsup src/index.tsx --env.NODE_ENV production",
     "ci:build": "pnpm clean && tsup src/index.tsx --env.NODE_ENV production && npm run size",
     "dev": "tsup src/index.tsx --env.NODE_ENV development",
-    "instrument": "nyc instrument --compact=false dist dist --in-place",
     "lint": "eslint *.ts*",
     "size": "size-limit"
   },
@@ -51,7 +50,6 @@
     "@types/react-dom": "^18.2.19",
     "eslint": "^8.56.0",
     "eslint-config-custom": "workspace:*",
-    "nyc": "^15.1.0",
     "react": "^18.2.0",
     "rimraf": "^5.0.5",
     "size-limit": "^11.0.2",

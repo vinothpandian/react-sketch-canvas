@@ -76,6 +76,7 @@ function App() {
     withTimestamp: true,
     allowOnlyPointerType: "all",
     withViewBox: false,
+    readOnly: false,
   });
 
   const inputProps: Array<[keyof ReactSketchCanvasProps, "text" | "number"]> = [
@@ -224,6 +225,28 @@ function App() {
           <header className="my-5">
             <h3>Props</h3>
           </header>
+          <div className="p-2 col-10">
+            <div className="form-check form-switch">
+              <input
+                className="form-check-input"
+                type="checkbox"
+                role="switch"
+                id="switchReadOnly"
+                checked={canvasProps.readOnly}
+                onChange={(e) => {
+                  setCanvasProps(
+                    (prevCanvasProps: Partial<ReactSketchCanvasProps>) => ({
+                      ...prevCanvasProps,
+                      readOnly: e.target.checked,
+                    }),
+                  );
+                }}
+              />
+              <label className="form-check-label" htmlFor="switchReadOnly">
+                readOnly (Disable drawing)
+              </label>
+            </div>
+          </div>
           <form>
             {inputProps.map(([fieldName, type]) => (
               <InputField

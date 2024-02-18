@@ -102,6 +102,7 @@ export function SvgPath({
 }: SvgPathProps): JSX.Element {
   if (paths.length === 1) {
     const { x, y } = paths[0];
+
     const radius = strokeWidth / 2;
 
     return (
