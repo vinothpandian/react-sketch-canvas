@@ -1,8 +1,7 @@
 import { expect, MountOptions, test } from "@playwright/experimental-ct-react";
 import type { Locator } from "playwright/test";
 import { ExportImageType } from "react-sketch-canvas";
-import { ReactElement } from "react";
-import { drawSquares, drawSquare, getCanvasIds } from "../commands";
+import { drawSquares, getCanvasIds } from "../commands";
 import { WithExportButton } from "../stories/WithExportButton.story";
 
 test.use({ viewport: { width: 500, height: 500 } });

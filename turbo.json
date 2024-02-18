@@ -2,8 +2,12 @@
   "$schema": "https://turbo.build/schema.json",
   "pipeline": {
     "build": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**"]
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "dist/**"
+      ]
     },
     "lint": {
       "outputs": []
@@ -15,13 +19,11 @@
       "cache": false
     },
     "test": {
-      "dependsOn": ["^build"],
-
+      "dependsOn": [
+        "^build"
+      ],
       "outputs": [
-        "dist/**",
-        ".nyc_output/**",
-        "coverage/**",
-        ".cypress/test-output.xml"
+        "dist/**"
       ]
     }
   }
