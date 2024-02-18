@@ -19,6 +19,14 @@
     "dev:test": {
       "cache": false
     },
+    "ci:test": {
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "dist/**"
+      ]
+    },
     "test": {
       "dependsOn": [
         "^build"
