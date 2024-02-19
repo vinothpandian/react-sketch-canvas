@@ -1,7 +1,7 @@
 .site-title {
   font-family: "Kalam", sans-serif;
   font-size: 1.75rem;
-  color: theme('colors.black');
+  color: theme("textColor.current");
 }
 
 #_top {

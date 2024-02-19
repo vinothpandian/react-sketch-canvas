@@ -55,7 +55,7 @@ export function HomePageDemo() {
   };
 
   return (
-    <div className="flex gap-4">
+    <div className="reset-wrapper flex gap-4">
       <ReactSketchCanvas
         ref={ref}
         canvasColor="transparent"
