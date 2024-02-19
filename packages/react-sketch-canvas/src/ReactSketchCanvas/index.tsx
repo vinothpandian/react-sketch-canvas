@@ -1,45 +1,22 @@
 import * as React from "react";
-import { Canvas, CanvasProps, CanvasRef } from "../Canvas";
+import { Canvas } from "../Canvas";
 import {
   CanvasPath,
   ExportImageOptions,
   ExportImageType,
   Point,
 } from "../types";
-
-/* Props validation */
-export interface ReactSketchCanvasProps
-  extends Partial<
-    Omit<
-      CanvasProps,
-      "paths" | "isDrawing" | "onPointerDown" | "onPointerMove" | "onPointerUp"
-    >
-  > {
-  eraserWidth?: number;
-  onChange?: (updatedPaths: CanvasPath[]) => void;
-  onStroke?: (path: CanvasPath, isEraser: boolean) => void;
-  strokeColor?: string;
-  strokeWidth?: number;
-  withTimestamp?: boolean;
-}
-
-export interface ReactSketchCanvasRef {
-  eraseMode: (_erase: boolean) => void;
-  clearCanvas: () => void;
-  undo: () => void;
-  redo: () => void;
-  exportImage: (imageType: ExportImageType) => Promise<string>;
-  exportSvg: () => Promise<string>;
-  exportPaths: () => Promise<CanvasPath[]>;
-  loadPaths: (paths: CanvasPath[]) => void;
-  getSketchingTime: () => Promise<number>;
-  resetCanvas: () => void;
-}
+import { CanvasRef } from "../Canvas/types";
+import { ReactSketchCanvasProps, ReactSketchCanvasRef } from "./types";
 
 /**
  * ReactSketchCanvas is a wrapper around Canvas component to provide a controlled way to manage the canvas paths.
  * It provides a set of methods to manage the canvas paths, undo, redo, clear and reset the canvas.
  *
+ * @param props - Props for the ReactSketchCanvas component
+ * @param ref - Reference to the ReactSketchCanvas component
+ *
+ * @returns ReactSketchCanvas component
  */
 export const ReactSketchCanvas = React.forwardRef<
   ReactSketchCanvasRef,

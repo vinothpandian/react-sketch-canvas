@@ -23,7 +23,8 @@ export default defineConfig({
         // Generate the documentation.
         starlightTypeDoc({
           entryPoints: ["../../packages/react-sketch-canvas/src/index.tsx"],
-          tsconfig: "../../packages/react-sketch-canvas/tsconfig.json"
+          tsconfig: "../../packages/react-sketch-canvas/tsconfig.json",
+          watch: false
         })
       ],
       sidebar: [
@@ -31,12 +32,6 @@ export default defineConfig({
           label: "Guides",
           autogenerate: {
             directory: "guides"
-          }
-        },
-        {
-          label: "Reference",
-          autogenerate: {
-            directory: "reference"
           }
         },
         // Add the generated sidebar group to the sidebar.
