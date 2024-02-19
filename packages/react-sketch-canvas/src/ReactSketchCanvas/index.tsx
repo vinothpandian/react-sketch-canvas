@@ -36,6 +36,11 @@ export interface ReactSketchCanvasRef {
   resetCanvas: () => void;
 }
 
+/**
+ * ReactSketchCanvas is a wrapper around Canvas component to provide a controlled way to manage the canvas paths.
+ * It provides a set of methods to manage the canvas paths, undo, redo, clear and reset the canvas.
+ *
+ */
 export const ReactSketchCanvas = React.forwardRef<
   ReactSketchCanvasRef,
   ReactSketchCanvasProps
