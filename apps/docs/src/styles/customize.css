@@ -1,0 +1,24 @@
+.site-title {
+  font-family: "Kalam";
+  font-size: 1.75rem;
+}
+
+#_top {
+  font-family: "Kalam";
+}
+
+.hero > img,
+.hero > .hero-html {
+  object-fit: contain;
+  width: min(70%, 15rem);
+  height: auto;
+  margin-inline: auto;
+}
+
+@media (min-width: 50rem) {
+  .hero > img,
+  .hero > .hero-html {
+    order: 2;
+    width: min(100%, 15rem);
+  }
+}
