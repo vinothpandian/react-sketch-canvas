@@ -1,10 +1,11 @@
 .site-title {
-  font-family: "Kalam";
+  font-family: "Kalam", sans-serif;
   font-size: 1.75rem;
+  color: theme('colors.black');
 }
 
 #_top {
-  font-family: "Kalam";
+  font-family: "Kalam", sans-serif;
 }
 
 .hero > img,
