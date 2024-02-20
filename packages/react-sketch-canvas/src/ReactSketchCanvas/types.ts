@@ -112,6 +112,9 @@ export interface ReactSketchCanvasRef extends CanvasRef {
   loadPaths: (paths: CanvasPath[]) => void;
   /**
    * Get the current drawing time in milliseconds. This will only work if withTimestamp prop is set to true.
+   *
+   * @remarks
+   * This does not include the idle time when the user is not drawing. It only includes the time when the user is drawing on the canvas.
    */
   getSketchingTime: () => Promise<number>;
   /**
