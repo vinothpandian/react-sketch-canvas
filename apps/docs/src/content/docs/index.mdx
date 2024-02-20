@@ -1,0 +1,33 @@
+---
+title: React Sketch Canvas
+description: Freehand vector drawing component for React using SVG as canvas 🖌
+template: splash
+hero:
+  tagline: Freehand vector drawing component for React using SVG as canvas 🖌
+  image:
+    file: ../../assets/logo.svg
+  actions:
+    - text: Get started
+      link: /react-sketch-canvas/guides/installation/
+      icon: right-arrow
+      variant: primary
+    - text: View on GitHub
+      link: https://github.com/vinothpandian/react-sketch-canvas/
+      icon: external
+---
+
+import { Card, CardGrid } from "@astrojs/starlight/components";
+import { HomePageDemo } from "../../components/HomePageDemo";
+
+<HomePageDemo client:load />
+
+## Features
+
+<CardGrid>
+  <Card title="Multi input support" icon="pencil">
+    Accepts input from Mouse, touch, and graphic tablets.
+  </Card>
+  <Card title="Vector-first drawing" icon="add-document">
+    Freehand drawing with vector output with PNG & JPEG export.
+  </Card>
+</CardGrid>

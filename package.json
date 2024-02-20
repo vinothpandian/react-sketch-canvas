@@ -9,6 +9,7 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev --parallel --no-cache",
+    "preview": "turbo run preview",
     "lint": "turbo run lint",
     "test": "turbo run build test",
     "ci:test": "turbo run build ci:test",
@@ -16,7 +17,6 @@
     "ci:build": "cp README.md packages/react-sketch-canvas/ && pnpm --filter react-sketch-canvas ci:build",
     "release": "pnpm test && pnpm ci:build && changeset version && changeset publish",
     "pre-release": "pnpm ci:test && pnpm ci:build && changeset && changeset publish"
-
   },
   "devDependencies": {
     "eslint-config-custom": "workspace:*",

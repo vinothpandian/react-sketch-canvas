@@ -1,0 +1,3 @@
+.reset-wrapper :not(a, strong, em, del, span, input, code) + :not(a, strong, em, del, span, input, code, :where(.not-content *)) {
+  margin: 0;
+}

@@ -1,0 +1,44 @@
+---
+title: Restrict input
+description: Restricting the input to a specific device
+sidebar:
+  order: 3
+---
+
+## Overview
+
+`ReactSketchCanvas` allows you to restrict the input to a specific device. This is useful when you want to collect
+data from a specific device or prevent users from accidentally touching to draw while using a pen.
+
+These are the available options:
+- `all` (default) - All input devices are allowed.
+- `pen` - Only pen input is allowed. This includes stylus, Apple Pencil, Wacom, Windows surface pen and other pen devices.
+- `mouse` - Only mouse input is allowed.
+- `touch` - Only touch input is allowed. This includes finger touch and other touch devices.
+
+import { LiveCode } from "../../../components/LiveCode";
+
+## Default behavior
+
+import AllInputs from "../../../examples/AllInputs.tsx?raw";
+
+<LiveCode client:load files={{ "App.tsx": AllInputs }} />
+
+
+## Only allow pen input
+
+import OnlyPen from "../../../examples/OnlyPen.tsx?raw";
+
+<LiveCode client:load files={{ "App.tsx": OnlyPen }} />
+
+## Only allow mouse input
+
+import OnlyMouse from "../../../examples/OnlyMouse.tsx?raw";
+
+<LiveCode client:load files={{ "App.tsx": OnlyMouse }} />
+
+## Only allow touch input
+
+import OnlyTouch from "../../../examples/OnlyTouch.tsx?raw";
+
+<LiveCode client:load files={{ "App.tsx": OnlyTouch }} />

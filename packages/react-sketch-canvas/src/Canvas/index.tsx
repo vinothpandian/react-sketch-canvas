@@ -4,10 +4,11 @@ import { useCallback } from "react";
 import Paths, { SvgPath } from "../Paths";
 import {
   CanvasPath,
-  ExportImageType,
   ExportImageOptions,
+  ExportImageType,
   Point,
 } from "../types";
+import { CanvasProps, CanvasRef } from "./types";
 
 const loadImage = (url: string): Promise<HTMLImageElement> =>
   new Promise((resolve, reject) => {
@@ -36,35 +37,16 @@ function getCanvasWithViewBox(canvas: HTMLDivElement) {
   return { svgCanvas, width, height };
 }
 
-export interface CanvasProps {
-  paths: CanvasPath[];
-  isDrawing: boolean;
-  onPointerDown: (point: Point, isEraser?: boolean) => void;
-  onPointerMove: (point: Point) => void;
-  onPointerUp: () => void;
-  allowOnlyPointerType: string;
-  backgroundImage: string;
-  canvasColor: string;
-  className?: string;
-  exportWithBackgroundImage: boolean;
-  height: string;
-  id?: string;
-  preserveBackgroundImageAspectRatio: string;
-  style: React.CSSProperties;
-  svgStyle: React.CSSProperties;
-  withViewBox?: boolean;
-  width: string;
-  readOnly?: boolean;
-}
-
-export interface CanvasRef {
-  exportImage: (
-    imageType: ExportImageType,
-    options?: ExportImageOptions,
-  ) => Promise<string>;
-  exportSvg: () => Promise<string>;
-}
-
+/**
+ * Canvas component
+ *
+ * This is a low-level component that is used to draw on the canvas.
+ * This component is used by the ReactSketchCanvas component with some additional features.
+ *
+ * @param props - The props for the Canvas component
+ * @param ref - The ref for the Canvas component
+ * @returns The Canvas component
+ */
 export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
   const {
     paths,
@@ -76,7 +58,7 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
     width = "100%",
     height = "100%",
     className = "react-sketch-canvas",
-    canvasColor = "red",
+    canvasColor = "white",
     backgroundImage = "",
     exportWithBackgroundImage = false,
     preserveBackgroundImageAspectRatio = "none",
