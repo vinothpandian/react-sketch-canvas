@@ -7,7 +7,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node: [ "16.x" ]
+        node: [ "18.x" ]
         os: [ ubuntu-latest ]
 
     steps:
@@ -45,7 +45,7 @@ jobs:
         run: pnpm lint
 
       - name: Install Playwright browsers
-        run: pnpx playwright install --with-deps
+        run: pnpx playwright install chromium
 
       - name: Test
         run: pnpm test

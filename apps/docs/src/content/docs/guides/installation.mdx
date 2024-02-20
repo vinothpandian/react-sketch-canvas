@@ -1,0 +1,36 @@
+---
+title: Installation
+description: How to install react-sketch-canvas
+sidebar:
+  order: 1
+---
+
+To install react-sketch-canvas, you can use npm or yarn.
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+<Tabs>
+  <TabItem label="npm">
+    ```sh title="Installing dependencies…"
+    npm install react-sketch-canvas
+    ```
+  </TabItem>
+  <TabItem label="yarn">
+    ```sh title="Installing dependencies…"
+    yarn add react-sketch-canvas
+    ```
+  </TabItem>
+  <TabItem label="pnpm">
+    ```sh title="Installing dependencies…"
+    pnpm add react-sketch-canvas
+    ```
+  </TabItem>
+</Tabs>
+
+
+## Quick Start
+
+import { LiveCode } from "../../../components/LiveCode";
+import BasicExample from "../../../examples/BasicExample.tsx?raw";
+
+<LiveCode client:load files={{ "App.tsx": BasicExample }} />

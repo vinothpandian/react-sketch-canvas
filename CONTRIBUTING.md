@@ -1,22 +1,22 @@
 ## Prerequisites
 
-[Node.js](http://nodejs.org/) >= v14.17.0 must be installed.
+[Node.js](http://nodejs.org/) >= 18.x must be installed.
 
 ## Installation
 
-- Running `yarn install` in the component's root directory will install everything you need for development.
+- Install [pnpm](https://pnpm.io/) globally using `npm install -g pnpm`
+
+- Run `pnpm install` to install the project dependencies.
 
 ## Demo Development Server
 
-- Running `yarn install:example` will install the documentation site.
-
-- `yarn watch:example` will run a documentation server with the component's demo app at [http://localhost:3000](http://localhost:3000) with hot module reloading.
+- Run `pnpm start` to start the development server.
+- Open `http://localhost:4321/react-sketch-canvas/` in your browser.
 
 ## Running Tests
 
-- Install the documentation site using `yarn install:example
-- `yarn e2e:ci` will run the tests once. `yarn e2e` will start the cypress test server.
+- Run `pnpm test` to run the tests.
 
 ## Building
 
-- `yarn build:prod` will build the component for publishing to npm.
+- Run `pnpm build` to build the project.
