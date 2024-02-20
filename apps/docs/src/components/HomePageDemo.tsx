@@ -9,7 +9,7 @@ import paths from "../assets/initialSketch.json";
 const iconButton =
   "p-2 rounded-xl border cursor-pointer dark:border-accent-900 dark:text-accent-200";
 const defaultIconButton =
-  "bg-transparent hover:bg-accent-100 dark:hover:bg-accent-800";
+  "bg-transparent text-accent-900 hover:bg-accent-100 dark:hover:bg-accent-800";
 
 export function HomePageDemo() {
   const [eraser, setEraser] = useState(false);

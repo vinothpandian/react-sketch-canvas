@@ -7,7 +7,8 @@ import starlightTypeDoc, { typeDocSidebarGroup } from "starlight-typedoc";
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://react-sketch-canvas.vercel.app/',
+  site: 'https://vinoth.info',
+  base: '/react-sketch-canvas',
   integrations: [
     starlight({
       title: "React Sketch Canvas",
