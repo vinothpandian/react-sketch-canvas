@@ -24,9 +24,10 @@
     "turbo": "^1.12.4"
   },
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
   },
-  "packageManager": "pnpm@7.18.1",
+  "packageManager": "pnpm@8.15.3",
   "dependencies": {
     "@changesets/cli": "^2.27.1"
   }
