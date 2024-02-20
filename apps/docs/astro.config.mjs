@@ -34,6 +34,12 @@ export default defineConfig({
             directory: "guides"
           }
         },
+        {
+          label: "Examples",
+          autogenerate: {
+            directory: "examples"
+          }
+        },
         // Add the generated sidebar group to the sidebar.
         typeDocSidebarGroup
       ]
