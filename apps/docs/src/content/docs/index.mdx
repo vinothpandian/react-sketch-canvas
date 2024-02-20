@@ -18,6 +18,7 @@ hero:
 
 import { Card, CardGrid } from "@astrojs/starlight/components";
 import { HomePageDemo } from "../../components/HomePageDemo";
+import { Link } from "@astrojs/check";
 
 <HomePageDemo client:load />
 
@@ -25,7 +26,7 @@ import { HomePageDemo } from "../../components/HomePageDemo";
 
 <CardGrid>
   <Card title="Multi input support" icon="pencil">
-    Accepts input from Mouse, touch, and graphic tablets.
+    Accepts input from Mouse, touch, and graphic tablets. Example <a href="/react-sketch-canvas/examples/input-devices/">here</a>.
   </Card>
   <Card title="Vector-first drawing" icon="add-document">
     Freehand drawing with vector output with PNG & JPEG export.

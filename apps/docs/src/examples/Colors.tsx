@@ -18,7 +18,7 @@ export default function App() {
   };
 
   return (
-    <div className="d-flex flex-column gap-2">
+    <div className="d-flex flex-column gap-2 p-2">
       <h1>Tools</h1>
       <div className="d-flex gap-2 align-items-center ">
         <label htmlFor="color">Stroke color</label>

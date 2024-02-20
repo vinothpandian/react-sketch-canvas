@@ -16,7 +16,7 @@ interface LiveCodeProps {
 export function LiveCode({
   files,
   editorClassName = "h-64",
-  previewClassName = "h-64",
+  previewClassName = "h-80",
 }: LiveCodeProps) {
   return (
     <div className="reset-wrapper mt-4">
@@ -42,7 +42,7 @@ export function LiveCode({
         >
           <SandpackCodeEditor showTabs />
         </SandpackLayout>
-        <div className="rounded-b-lg bg-zinc-900 p-4">
+        <div className="rounded-b-lg bg-zinc-900 p-2">
           <div className="overflow-hidden rounded bg-white p-1">
             <SandpackPreview
               className={previewClassName}

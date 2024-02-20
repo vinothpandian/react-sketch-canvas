@@ -29,18 +29,20 @@ export default function App() {
   };
 
   return (
-    <div className="d-flex flex-column gap-2">
+    <div className="d-flex flex-column gap-2 p-2">
       <h1>Tools</h1>
       <div className="d-flex gap-2 align-items-center ">
         <button
-          className="btn btn-sm btn-primary"
+          type="button"
+          className="btn btn-sm btn-outline-primary"
           disabled={!eraseMode}
           onClick={handlePenClick}
         >
           Pen
         </button>
         <button
-          className="btn btn-sm btn-primary"
+          type="button"
+          className="btn btn-sm btn-outline-primary"
           disabled={eraseMode}
           onClick={handleEraserClick}
         >
