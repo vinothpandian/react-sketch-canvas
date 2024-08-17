@@ -129,6 +129,7 @@ const Canvas = class extends React.Component {
 | withTimestamp                      | PropTypes.bool    | false                 | Add timestamp to individual strokes for measuring sketching time                                    |
 | readOnly                           | PropTypes.bool    | false                 | Disable drawing on the canvas (undo/redo, clear & reset will still work.)                           |
 | throttleTime                       | PropTypes.number  | 0                     | Throttle time for pointer move events in milliseconds                                               |
+| getSvgPathFromPoints               | PropTypes.func    |                       | Custom path generator callback that receives the current path as an array and returns an SVG path   |
 
 Set SVG background using CSS [background][css-bg] value
 

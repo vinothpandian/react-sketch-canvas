@@ -11,6 +11,7 @@ type ControlPoints = {
 type PathProps = {
   id: string;
   paths: CanvasPath[];
+  getSvgPathFromPoints?: (points: Point[]) => string;
 };
 
 export const line = (pointA: Point, pointB: Point) => {
@@ -78,27 +79,21 @@ export const bezierCommand = (point: Point, i: number, a: Point[]): string => {
 };
 
 export type SvgPathProps = {
-  // List of points to create the stroke
   paths: Point[];
-  // Unique ID
   id: string;
-  // Width of the stroke
   strokeWidth: number;
-  // Color of the stroke
   strokeColor: string;
-  // Bezier command to smoothen the line
   command?: (point: Point, i: number, a: Point[]) => string;
+  getSvgPathFromPoints?: (points: Point[]) => string;
 };
 
-/**
- * Generate SVG Path tag from the given points
- */
 export function SvgPath({
   paths,
   id,
   strokeWidth,
   strokeColor,
   command = bezierCommand,
+  getSvgPathFromPoints,
 }: SvgPathProps): JSX.Element {
   if (paths.length === 1) {
     const { x, y } = paths[0];
@@ -118,11 +113,13 @@ export function SvgPath({
     );
   }
 
-  const d = paths.reduce(
-    (acc, point, i, a) =>
-      i === 0 ? `M ${point.x},${point.y}` : `${acc} ${command(point, i, a)}`,
-    "",
-  );
+  const d = getSvgPathFromPoints
+    ? getSvgPathFromPoints(paths)
+    : paths.reduce(
+        (acc, point, i, a) =>
+          i === 0 ? `M ${point.x},${point.y}` : `${acc} ${command(point, i, a)}`,
+        "",
+      );
 
   return (
     <path
@@ -137,18 +134,18 @@ export function SvgPath({
   );
 }
 
-function Paths({ id, paths }: PathProps): JSX.Element {
+function Paths({ id, paths, getSvgPathFromPoints }: PathProps): JSX.Element {
   return (
     <>
       {paths.map((path: CanvasPath, index: number) => (
         <SvgPath
-          // eslint-disable-next-line react/no-array-index-key
           key={`${id}__${index}`}
           paths={path.paths}
           id={`${id}__${index}`}
           strokeWidth={path.strokeWidth}
           strokeColor={path.strokeColor}
           command={bezierCommand}
+          getSvgPathFromPoints={getSvgPathFromPoints}
         />
       ))}
     </>

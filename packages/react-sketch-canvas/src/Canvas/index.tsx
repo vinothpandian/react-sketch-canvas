@@ -72,6 +72,7 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
     withViewBox = false,
     readOnly = false,
     throttleTime = 0,
+    getSvgPathFromPoints,
   } = props;
 
   const canvasRef = React.useRef<HTMLDivElement>(null);
@@ -411,7 +412,11 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
             key={`${id}__stroke-group-${i}`}
             mask={`${eraserPaths[i] && `url(#${id}__eraser-mask-${i})`}`}
           >
-            <Paths id={`${id}__stroke-group-${i}__paths`} paths={pathGroup} />
+            <Paths
+              id={`${id}__stroke-group-${i}__paths`}
+              paths={pathGroup}
+              getSvgPathFromPoints={getSvgPathFromPoints}
+            />
           </g>
         ))}
       </svg>
