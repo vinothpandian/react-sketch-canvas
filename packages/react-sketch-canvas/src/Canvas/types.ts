@@ -117,7 +117,7 @@ export interface CanvasProps {
   readOnly?: boolean;
   /**
    * Throttle time for pointer move events in milliseconds.
-   * @defaultValue 20
+   * @defaultValue 0
    */
   throttleTime?: number;
 }

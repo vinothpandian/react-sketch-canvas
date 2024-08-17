@@ -71,7 +71,7 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
     svgStyle = {},
     withViewBox = false,
     readOnly = false,
-    throttleTime = 20,
+    throttleTime = 0,
   } = props;
 
   const canvasRef = React.useRef<HTMLDivElement>(null);

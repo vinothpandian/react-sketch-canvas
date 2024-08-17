@@ -67,7 +67,7 @@ export interface ReactSketchCanvasProps
   withTimestamp?: boolean;
   /**
    * Throttle time for pointer move events in milliseconds.
-   * @defaultValue 20
+   * @defaultValue 0
    */
   throttleTime?: number;
 }
