@@ -45,7 +45,7 @@ jobs:
         run: pnpx playwright install chromium
 
       - name: Unit tests
-        run: pnpm test:unit
+        run: pnpm unit:test
 
       - name: Test
         run: pnpm test
