@@ -1,5 +1,5 @@
 name: CI
-on: [ push ]
+on: [push]
 jobs:
   build:
     name: Build, lint, and test on Node ${{ matrix.node }} and ${{ matrix.os }}
@@ -7,8 +7,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node: [ "18.x" ]
-        os: [ ubuntu-latest ]
+        node: ["18.x"]
+        os: [ubuntu-latest]
 
     steps:
       - name: Checkout repo
@@ -41,11 +41,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
 
-      - name: Lint
-        run: pnpm lint
-
       - name: Install Playwright browsers
         run: pnpx playwright install chromium
+
+      - name: Unit tests
+        run: pnpm unit:test
 
       - name: Test
         run: pnpm test

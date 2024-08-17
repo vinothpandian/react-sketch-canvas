@@ -19,3 +19,5 @@ packages/tests/cypress/downloads/
 .idea/
 .turbo/cookies/
 /apps/docs/src/content/docs/api/
+.turbo/cache/
+.turbo/daemon/
