@@ -42,21 +42,26 @@
     "ci:build": "pnpm clean && tsup src/index.tsx --env.NODE_ENV production && npm run size",
     "dev": "tsup src/index.tsx --env.NODE_ENV development",
     "lint": "eslint *.ts*",
-    "size": "size-limit"
+    "size": "size-limit",
+    "unit:test": "vitest --no-watch"
   },
   "devDependencies": {
     "@size-limit/preset-small-lib": "^11.0.2",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/react": "^16.0.0",
     "@types/react": "^18.2.55",
     "@types/react-dom": "^18.2.19",
     "eslint": "^8.56.0",
     "eslint-config-custom": "workspace:*",
+    "jsdom": "^24.1.1",
     "react": "^18.2.0",
     "rimraf": "^5.0.5",
     "size-limit": "^11.0.2",
     "tsconfig": "workspace:*",
     "tslib": "^2.6.2",
     "tsup": "^8.0.2",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "vitest": "^2.0.5"
   },
   "peerDependencies": {
     "react": ">=16.8"
