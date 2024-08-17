@@ -22,7 +22,6 @@ const loadImage = (url: string): Promise<HTMLImageElement> =>
     });
     img.addEventListener("error", (err) => reject(err));
     img.src = url;
-    img.setAttribute("crossorigin", "anonymous");
   });
 
 function getCanvasWithViewBox(canvas: HTMLDivElement) {

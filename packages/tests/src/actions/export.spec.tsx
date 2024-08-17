@@ -168,6 +168,81 @@ test.describe("exportImage", () => {
           expect(size).toBeGreaterThanOrEqual(emptyCanvasSize);
           expect(size).toBeLessThan(canvasWithStrokeSize);
         });
+
+        test(`should export ${imageType} with entire background image correctly`, async ({
+          mount,
+        }) => {
+          let size = 0;
+          const handleExport = (kbs: number) => {
+            size = kbs;
+          };
+
+          const { canvas, exportButton } = await mountCanvasForExport({
+            mount,
+            imageType,
+            handleExport,
+            backgroundUrl,
+            exportWithBackgroundImage: true,
+          });
+
+          await exportButton.click();
+          const emptyCanvasSize = size;
+
+          await drawSquares(canvas);
+
+          await exportButton.click();
+          expect(size).toBeGreaterThan(emptyCanvasSize);
+        });
+
+        test(`should export ${imageType} without 'NA' symbol`, async ({
+          mount,
+        }) => {
+          let size = 0;
+          const handleExport = (kbs: number) => {
+            size = kbs;
+          };
+
+          const { canvas, exportButton } = await mountCanvasForExport({
+            mount,
+            imageType,
+            handleExport,
+            backgroundUrl,
+            exportWithBackgroundImage: true,
+          });
+
+          await exportButton.click();
+          const emptyCanvasSize = size;
+
+          await drawSquares(canvas);
+
+          await exportButton.click();
+          expect(size).toBeGreaterThan(emptyCanvasSize);
+        });
+
+        test(`should resolve issue for both public and protected URLs`, async ({
+          mount,
+        }) => {
+          let size = 0;
+          const handleExport = (kbs: number) => {
+            size = kbs;
+          };
+
+          const { canvas, exportButton } = await mountCanvasForExport({
+            mount,
+            imageType,
+            handleExport,
+            backgroundUrl,
+            exportWithBackgroundImage: true,
+          });
+
+          await exportButton.click();
+          const emptyCanvasSize = size;
+
+          await drawSquares(canvas);
+
+          await exportButton.click();
+          expect(size).toBeGreaterThan(emptyCanvasSize);
+        });
       });
 
       test.describe("with background image, but exportWithBackgroundImage is set false", () => {
