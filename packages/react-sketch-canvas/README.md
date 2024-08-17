@@ -128,6 +128,7 @@ const Canvas = class extends React.Component {
 | svgStyle                           | PropTypes.object  | {}                    | Add CSS styling as CSS-in-JS object for the SVG                                                    |
 | withTimestamp                      | PropTypes.bool    | false                 | Add timestamp to individual strokes for measuring sketching time                                   |
 | readOnly                           | PropTypes.bool    | false                 | Disable drawing on the canvas (undo/redo, clear & reset will still work.)                          |
+| throttleTime                       | PropTypes.number  | 20                    | Throttle time for pointer move events in milliseconds                                              |
 
 Set SVG background using CSS [background][css-bg] value
 

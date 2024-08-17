@@ -9,6 +9,7 @@ import {
   Point,
 } from "../types";
 import { CanvasProps, CanvasRef } from "./types";
+import { useThrottledCallback } from "./utils";
 
 const loadImage = (url: string): Promise<HTMLImageElement> =>
   new Promise((resolve, reject) => {
@@ -70,6 +71,7 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
     svgStyle = {},
     withViewBox = false,
     readOnly = false,
+    throttleTime = 20,
   } = props;
 
   const canvasRef = React.useRef<HTMLDivElement>(null);
@@ -128,7 +130,7 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
     [allowOnlyPointerType, getCoordinates, onPointerDown],
   );
 
-  const handlePointerMove = useCallback(
+  const handlePointerMove = useThrottledCallback(
     (event: React.PointerEvent<HTMLDivElement>): void => {
       if (!isDrawing) return;
 
@@ -144,6 +146,7 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
 
       onPointerMove(point);
     },
+    throttleTime,
     [allowOnlyPointerType, getCoordinates, isDrawing, onPointerMove],
   );
 
@@ -263,7 +266,7 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
   }));
 
   /* Add event listener to Mouse up and Touch up to
-release drawing even when point goes out of canvas */
+  release drawing even when point goes out of canvas */
   React.useEffect(() => {
     document.addEventListener("pointerup", handlePointerUp);
     return () => {
