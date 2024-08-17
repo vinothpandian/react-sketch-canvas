@@ -15,6 +15,7 @@ module.exports = {
     "react/jsx-filename-extension": [1, { extensions: [".tsx", ".jsx"] }],
     "import/extensions": [1, "never"],
     "import/prefer-default-export": "off",
+    "import/no-extraneous-dependencies": "off",
   },
   parser: "@typescript-eslint/parser",
   plugins: ["@typescript-eslint"],

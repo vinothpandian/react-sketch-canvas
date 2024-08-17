@@ -1,28 +1,34 @@
 import { useCallback, useRef } from "react";
 
-export function useThrottledCallback<T extends (...args: any[]) => void>(
+export function useThrottledCallback<
+  T extends (event: React.PointerEvent<HTMLDivElement>) => void,
+>(
   callback: T,
   delay: number,
-  dependencies: any[]
+  dependencies: unknown[],
 ): (...args: Parameters<T>) => void {
   const lastCallRef = useRef(0);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const throttledCallback = useCallback(
-    (...args: Parameters<T>) => {
+    (event: React.PointerEvent<HTMLDivElement>) => {
       const now = Date.now();
       if (now - lastCallRef.current >= delay) {
         lastCallRef.current = now;
-        callback(...args);
+        callback(event);
       } else {
         clearTimeout(timeoutRef.current as ReturnType<typeof setTimeout>);
-        timeoutRef.current = setTimeout(() => {
-          lastCallRef.current = Date.now();
-          callback(...args);
-        }, delay - (now - lastCallRef.current));
+        timeoutRef.current = setTimeout(
+          () => {
+            lastCallRef.current = Date.now();
+            callback(event);
+          },
+          delay - (now - lastCallRef.current),
+        );
       }
     },
-    [callback, delay, ...dependencies]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [callback, delay, ...dependencies],
   );
 
   return throttledCallback;
