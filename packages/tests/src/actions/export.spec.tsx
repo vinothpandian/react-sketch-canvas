@@ -431,3 +431,32 @@ test.describe("export SVG", () => {
     });
   });
 });
+
+test.describe("custom path generator", () => {
+  test("should use custom path generator if provided", async ({ mount }) => {
+    let svg: string | undefined;
+    const handleExportSVG = (exportedSvg: string | undefined) => {
+      svg = exportedSvg;
+    };
+
+    const customPathGenerator = (points: { x: number; y: number }[]) =>
+      `M${points.map((p) => `${p.x},${p.y}`).join(" ")}`;
+
+    const { canvas, exportSVGButton } = await mountCanvasForExport({
+      mount,
+      handleExportSVG,
+      getSvgPathFromPoints: customPathGenerator,
+    });
+
+    const { firstStrokePathId } = getCanvasIds(canvasId);
+
+    await exportSVGButton.click();
+    expect(svg).not.toContain(firstStrokePathId.slice(1));
+
+    await drawSquares(canvas);
+
+    await exportSVGButton.click();
+    expect(svg).toContain(firstStrokePathId.slice(1));
+    expect(svg).toContain("M");
+  });
+});

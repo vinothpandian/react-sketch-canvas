@@ -115,6 +115,16 @@ export interface CanvasProps {
    * @defaultValue false
    */
   readOnly?: boolean;
+  /**
+   * Throttle time for pointer move events in milliseconds.
+   * @defaultValue 0
+   */
+  throttleTime?: number;
+  /**
+   * Function to convert points to SVG path.
+   * @defaultValue A function that converts points to SVG path.
+   */
+  getSvgPathFromPoints?: (points: Point[]) => string;
 }
 
 /**

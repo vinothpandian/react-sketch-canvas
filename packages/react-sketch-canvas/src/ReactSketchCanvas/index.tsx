@@ -45,6 +45,8 @@ export const ReactSketchCanvas = React.forwardRef<
     withTimestamp = false,
     withViewBox = false,
     readOnly = false,
+    throttleTime,
+    getSvgPathFromPoints,
   } = props;
 
   const svgCanvas = React.createRef<CanvasRef>();
@@ -251,6 +253,8 @@ export const ReactSketchCanvas = React.forwardRef<
       onPointerUp={handlePointerUp}
       withViewBox={withViewBox}
       readOnly={readOnly}
+      throttleTime={throttleTime}
+      getSvgPathFromPoints={getSvgPathFromPoints}
     />
   );
 });
