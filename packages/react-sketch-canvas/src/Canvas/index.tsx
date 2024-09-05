@@ -7,8 +7,15 @@ import {
   ExportImageOptions,
   ExportImageType,
   Point,
+  TouchExtends,
 } from "../types";
 import { CanvasProps, CanvasRef } from "./types";
+
+const TOUCH_TYPE_MAP: Record<string, string> = {
+  'direct': 'touch',
+  'stylus': 'pen',
+  default: 'mouse'
+}
 
 const loadImage = (url: string): Promise<HTMLImageElement> =>
   new Promise((resolve, reject) => {
@@ -79,7 +86,7 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
 
   // Converts mouse coordinates to relative coordinate based on the absolute position of svg
   const getCoordinates = useCallback(
-    (pointerEvent: React.PointerEvent<HTMLDivElement>): Point => {
+    (pointerEvent: TouchEvent | MouseEvent): Point => {
       const boundingArea = canvasRef.current?.getBoundingClientRect();
       canvasSizeRef.current = boundingArea
         ? {
@@ -94,10 +101,20 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
       if (!boundingArea) {
         return { x: 0, y: 0 };
       }
+      let x = 0;
+      let y = 0;
+
+      if (pointerEvent instanceof TouchEvent) {
+        x = pointerEvent.touches[0].pageX;
+        y = pointerEvent.touches[0].pageY;
+      } else {
+        x = pointerEvent.pageX;
+        y = pointerEvent.pageY;
+      }
 
       return {
-        x: pointerEvent.pageX - boundingArea.left - scrollLeft,
-        y: pointerEvent.pageY - boundingArea.top - scrollTop,
+        x: x - boundingArea.left - scrollLeft,
+        y: y - boundingArea.top - scrollTop,
       };
     },
     [],
@@ -106,62 +123,75 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
   /* Mouse Handlers - Mouse down, move and up */
 
   const handlePointerDown = useCallback(
-    (event: React.PointerEvent<HTMLDivElement>): void => {
+    (event: TouchEvent | MouseEvent): void => {
+      if (event instanceof TouchEvent && event.touches.length > 1) {
+        return;
+      }
+      if (readOnly) return;
       // Allow only chosen pointer type
 
       if (
-        allowOnlyPointerType !== "all" &&
-        event.pointerType !== allowOnlyPointerType
+        allowOnlyPointerType !== "all"
       ) {
-        return;
+        if (event instanceof TouchEvent) {
+          const touch = event.touches[0] as TouchExtends;
+          if (TOUCH_TYPE_MAP[touch.touchType] !== allowOnlyPointerType) {
+            return;
+          }
+        }
       }
 
-      if (event.pointerType === "mouse" && event.button !== 0) return;
+      event.preventDefault();
 
-      const isEraser =
-        // eslint-disable-next-line no-bitwise
-        event.pointerType === "pen" && (event.buttons & 32) === 32;
       const point = getCoordinates(event);
 
-      onPointerDown(point, isEraser);
+      onPointerDown(point);
     },
-    [allowOnlyPointerType, getCoordinates, onPointerDown],
+    [allowOnlyPointerType, getCoordinates, onPointerDown, readOnly],
   );
 
   const handlePointerMove = useCallback(
-    (event: React.PointerEvent<HTMLDivElement>): void => {
-      if (!isDrawing) return;
+    (event: MouseEvent | TouchEvent): void => {
+      event.preventDefault();
+      if (!isDrawing || readOnly) return;
 
       // Allow only chosen pointer type
       if (
-        allowOnlyPointerType !== "all" &&
-        event.pointerType !== allowOnlyPointerType
+        allowOnlyPointerType !== "all"
       ) {
-        return;
+        if (event instanceof TouchEvent) {
+          const touch = event.touches[0] as TouchExtends;
+          if (TOUCH_TYPE_MAP[touch.touchType] !== allowOnlyPointerType) {
+            return;
+          }
+        }
       }
 
       const point = getCoordinates(event);
 
       onPointerMove(point);
     },
-    [allowOnlyPointerType, getCoordinates, isDrawing, onPointerMove],
+    [allowOnlyPointerType, getCoordinates, isDrawing, onPointerMove, readOnly],
   );
 
   const handlePointerUp = useCallback(
-    (event: React.PointerEvent<HTMLDivElement> | PointerEvent): void => {
-      if (event.pointerType === "mouse" && event.button !== 0) return;
-
+    (event: TouchEvent | MouseEvent): void => {
+      if (readOnly) return;
       // Allow only chosen pointer type
       if (
-        allowOnlyPointerType !== "all" &&
-        event.pointerType !== allowOnlyPointerType
+        allowOnlyPointerType !== "all"
       ) {
-        return;
+        if (event instanceof TouchEvent) {
+          const touch = event.touches[0] as TouchExtends;
+          if (TOUCH_TYPE_MAP[touch.touchType] !== allowOnlyPointerType) {
+            return;
+          }
+        }
       }
 
       onPointerUp();
     },
-    [allowOnlyPointerType, onPointerUp],
+    [allowOnlyPointerType, onPointerUp, readOnly],
   );
 
   /* Mouse Handlers ends */
@@ -263,13 +293,33 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
   }));
 
   /* Add event listener to Mouse up and Touch up to
-release drawing even when point goes out of canvas */
+  release drawing even when point goes out of canvas */
   React.useEffect(() => {
-    document.addEventListener("pointerup", handlePointerUp);
-    return () => {
-      document.removeEventListener("pointerup", handlePointerUp);
-    };
-  }, [handlePointerUp]);
+    const el = canvasRef.current;
+    if (el) {
+      el.addEventListener("touchstart", handlePointerDown);
+      el.addEventListener("mousedown", handlePointerDown);
+
+      el.addEventListener("touchmove", handlePointerMove);
+      el.addEventListener("mousemove", handlePointerMove);
+
+      el.addEventListener("touchend", handlePointerUp);
+      el.addEventListener("mouseup", handlePointerUp);
+      document.addEventListener("mouseup", handlePointerUp);
+      return () => {
+        el.removeEventListener("touchstart", handlePointerDown);
+        el.removeEventListener("mousedown", handlePointerDown);
+
+        el.removeEventListener("touchmove", handlePointerMove);
+        el.removeEventListener("mousemove", handlePointerMove);
+
+        el.removeEventListener("touchend", handlePointerUp);
+        el.removeEventListener("mouseup", handlePointerUp);
+        document.removeEventListener("mouseup", handlePointerUp);
+      };
+    }
+    return () => { }
+  }, [handlePointerDown, handlePointerMove, handlePointerUp]);
 
   const eraserPaths = React.useMemo(
     () => paths.filter((path) => !path.drawMode),
@@ -305,13 +355,12 @@ release drawing even when point goes out of canvas */
       className={className}
       style={{
         touchAction: "none",
+        userSelect: "none",
+        WebkitTouchCallout: "none",
         width,
         height,
         ...style,
       }}
-      onPointerDown={readOnly ? undefined : handlePointerDown}
-      onPointerMove={readOnly ? undefined : handlePointerMove}
-      onPointerUp={readOnly ? undefined : handlePointerUp}
     >
       <svg
         version="1.1"
