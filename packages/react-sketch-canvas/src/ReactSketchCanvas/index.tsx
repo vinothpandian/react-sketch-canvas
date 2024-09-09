@@ -50,8 +50,8 @@ export const ReactSketchCanvas = React.forwardRef<
   const svgCanvas = React.createRef<CanvasRef>();
   const [drawMode, setDrawMode] = React.useState<boolean>(true);
   const [isDrawing, setIsDrawing] = React.useState<boolean>(false);
-  const [resetStack, setResetStack] = React.useState<CanvasPath[]>([]);
-  const [undoStack, setUndoStack] = React.useState<CanvasPath[]>([]);
+  const [history, setHistory] = React.useState<CanvasPath[][]>([]);
+  const [historyPos, setHistoryPos] = React.useState<number>(-1);
   const [currentPaths, setCurrentPaths] = React.useState<CanvasPath[]>([]);
 
   const liftStrokeUp = React.useCallback((): void => {
@@ -80,27 +80,21 @@ export const ReactSketchCanvas = React.forwardRef<
       setDrawMode(!erase);
     },
     clearCanvas: (): void => {
-      setResetStack([...currentPaths]);
       setCurrentPaths([]);
+      setHistory(his => [...his.slice(0, historyPos + 1), []]);
+      setHistoryPos(pos => pos + 1);
     },
     undo: (): void => {
-      // If there was a last reset then
-      if (resetStack.length !== 0) {
-        setCurrentPaths([...resetStack]);
-        setResetStack([]);
-
-        return;
+      if (historyPos > 0) {
+        setCurrentPaths(history[historyPos - 1]);
+        setHistoryPos(pos => pos - 1);
       }
-
-      setUndoStack((paths) => [...paths, ...currentPaths.slice(-1)]);
-      setCurrentPaths((paths) => paths.slice(0, -1));
     },
     redo: (): void => {
-      // Nothing to Redo
-      if (undoStack.length === 0) return;
-
-      setCurrentPaths((paths) => [...paths, ...undoStack.slice(-1)]);
-      setUndoStack((paths) => paths.slice(0, -1));
+      if (historyPos < history.length - 1) {
+        setCurrentPaths(history[historyPos + 1]);
+        setHistoryPos(pos => pos + 1);
+      }
     },
     exportImage: (
       imageType: ExportImageType,
@@ -140,6 +134,8 @@ export const ReactSketchCanvas = React.forwardRef<
       }),
     loadPaths: (paths: CanvasPath[]): void => {
       setCurrentPaths((path) => [...path, ...paths]);
+      setHistory(his => [...his.slice(0, historyPos + 1), [...currentPaths.slice(0, -1), ...paths]]);
+      setHistoryPos(pos => pos + 1);
     },
     getSketchingTime: (): Promise<number> =>
       new Promise<number>((resolve, reject) => {
@@ -164,15 +160,14 @@ export const ReactSketchCanvas = React.forwardRef<
         }
       }),
     resetCanvas: (): void => {
-      setResetStack([]);
-      setUndoStack([]);
+      setHistory([]);
+      setHistoryPos(-1);
       setCurrentPaths([]);
     },
-  }));
+  }), [currentPaths, history, historyPos, svgCanvas, withTimestamp]);
 
   const handlePointerDown = (point: Point, isEraser = false): void => {
     setIsDrawing(true);
-    setUndoStack([]);
 
     const isDraw = !isEraser && drawMode;
 
@@ -210,13 +205,15 @@ export const ReactSketchCanvas = React.forwardRef<
       return;
     }
 
+    const currentStroke = currentPaths.slice(-1)?.[0] ?? null;
+
+    setHistory(his => [...his.slice(0, historyPos + 1), [...currentPaths.slice(0, -1), currentStroke]]);
+    setHistoryPos(pos => pos + 1);
     setIsDrawing(false);
 
     if (!withTimestamp) {
       return;
     }
-
-    const currentStroke = currentPaths.slice(-1)?.[0] ?? null;
 
     if (currentStroke === null) {
       return;
