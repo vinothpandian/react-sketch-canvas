@@ -108,26 +108,27 @@ const Canvas = class extends React.Component {
 
 ## List of Props
 
-| Props                              | Expected datatype | Default value         | Description                                                                                        |
-|------------------------------------| ----------------- | --------------------- |----------------------------------------------------------------------------------------------------|
-| width                              | PropTypes.string  | 100%                  | canvas width (em/rem/px)                                                                           |
-| height                             | PropTypes.string  | 100%                  | canvas width (em/rem/px)                                                                           |
-| id                                 | PropTypes.string  | "react-sketch-canvas" | ID field to uniquely identify a SVG canvas (Supports multiple canvases in a single page)           |
-| className                          | PropTypes.string  | ""                    | Class for using with CSS selectors                                                                 |
-| strokeColor                        | PropTypes.string  | black                 | Pen color                                                                                          |
-| canvasColor                        | PropTypes.string  | white                 | canvas color (HTML colors)                                                                         |
-| backgroundImage                    | PropTypes.string  | ''                    | Set SVG background with image URL                                                                  |
-| exportWithBackgroundImage          | PropTypes.bool    | false                 | Keep background image on image/SVG export (on false, canvasColor will be set as background)        |
+| Props                              | Expected datatype | Default value         | Description                                                                                         |
+| ---------------------------------- | ----------------- | --------------------- | --------------------------------------------------------------------------------------------------- |
+| width                              | PropTypes.string  | 100%                  | canvas width (em/rem/px)                                                                            |
+| height                             | PropTypes.string  | 100%                  | canvas width (em/rem/px)                                                                            |
+| id                                 | PropTypes.string  | "react-sketch-canvas" | ID field to uniquely identify a SVG canvas (Supports multiple canvases in a single page)            |
+| className                          | PropTypes.string  | ""                    | Class for using with CSS selectors                                                                  |
+| strokeColor                        | PropTypes.string  | black                 | Pen color                                                                                           |
+| canvasColor                        | PropTypes.string  | white                 | canvas color (HTML colors)                                                                          |
+| backgroundImage                    | PropTypes.string  | ''                    | Set SVG background with image URL                                                                   |
+| exportWithBackgroundImage          | PropTypes.bool    | false                 | Keep background image on image/SVG export (on false, canvasColor will be set as background)         |
 | preserveBackgroundImageAspectRatio | PropTypes.string  | none                  | Set aspect ratio of the background image. For possible values check [MDN docs][preserveaspectratio] |
-| strokeWidth                        | PropTypes.number  | 4                     | Pen stroke size                                                                                    |
-| eraserWidth                        | PropTypes.number  | 8                     | Erase size                                                                                         |
-| allowOnlyPointerType               | PropTypes.string  | all                   | allow pointer type ("all"/"mouse"/"pen"/"touch")                                                   |
-| onChange                           | PropTypes.func    |                       | Returns the current sketch path in `CanvasPath` type on every path change                          |
-| onStroke                           | PropTypes.func    |                       | Returns the the last stroke path and whether it is an eraser stroke on every pointer up event      |
-| style                              | PropTypes.object  | false                 | Add CSS styling as CSS-in-JS object                                                                |
-| svgStyle                           | PropTypes.object  | {}                    | Add CSS styling as CSS-in-JS object for the SVG                                                    |
-| withTimestamp                      | PropTypes.bool    | false                 | Add timestamp to individual strokes for measuring sketching time                                   |
-| readOnly                           | PropTypes.bool    | false                 | Disable drawing on the canvas (undo/redo, clear & reset will still work.)                          |
+| strokeWidth                        | PropTypes.number  | 4                     | Pen stroke size                                                                                     |
+| eraserWidth                        | PropTypes.number  | 8                     | Erase size                                                                                          |
+| allowOnlyPointerType               | PropTypes.string  | all                   | allow pointer type ("all"/"mouse"/"pen"/"touch")                                                    |
+| onChange                           | PropTypes.func    |                       | Returns the current sketch path in `CanvasPath` type on every path change                           |
+| onStroke                           | PropTypes.func    |                       | Returns the the last stroke path and whether it is an eraser stroke on every pointer up event       |
+| style                              | PropTypes.object  | false                 | Add CSS styling as CSS-in-JS object                                                                 |
+| svgStyle                           | PropTypes.object  | {}                    | Add CSS styling as CSS-in-JS object for the SVG                                                     |
+| withTimestamp                      | PropTypes.bool    | false                 | Add timestamp to individual strokes for measuring sketching time                                    |
+| readOnly                           | PropTypes.bool    | false                 | Disable drawing on the canvas (undo/redo, clear & reset will still work.)                           |
+| throttleTime                       | PropTypes.number  | 0                     | Throttle time for pointer move events in milliseconds                                               |
 
 Set SVG background using CSS [background][css-bg] value
 

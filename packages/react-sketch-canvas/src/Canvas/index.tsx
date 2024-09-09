@@ -10,6 +10,7 @@ import {
   TouchExtends,
 } from "../types";
 import { CanvasProps, CanvasRef } from "./types";
+import { useThrottledCallback } from "./utils";
 
 const TOUCH_TYPE_MAP: Record<string, string> = {
   'direct': 'touch',
@@ -77,6 +78,7 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
     svgStyle = {},
     withViewBox = false,
     readOnly = false,
+    throttleTime = 0,
   } = props;
 
   const canvasRef = React.useRef<HTMLDivElement>(null);
@@ -150,7 +152,7 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
     [allowOnlyPointerType, getCoordinates, onPointerDown, readOnly],
   );
 
-  const handlePointerMove = useCallback(
+  const handlePointerMove = useThrottledCallback(
     (event: MouseEvent | TouchEvent): void => {
       event.preventDefault();
       if (!isDrawing || readOnly) return;
@@ -171,6 +173,7 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
 
       onPointerMove(point);
     },
+    throttleTime,
     [allowOnlyPointerType, getCoordinates, isDrawing, onPointerMove, readOnly],
   );
 
