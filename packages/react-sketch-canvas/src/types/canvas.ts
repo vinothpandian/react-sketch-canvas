@@ -71,5 +71,5 @@ export interface CanvasPath {
 }
 
 export interface TouchExtends extends Touch {
-  touchType: "direct" | " stylus";
+  touchType: "direct" | "stylus";
 }
