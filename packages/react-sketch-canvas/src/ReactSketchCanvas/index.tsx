@@ -50,8 +50,8 @@ export const ReactSketchCanvas = React.forwardRef<
   const svgCanvas = React.createRef<CanvasRef>();
   const [drawMode, setDrawMode] = React.useState<boolean>(true);
   const [isDrawing, setIsDrawing] = React.useState<boolean>(false);
-  const [history, setHistory] = React.useState<CanvasPath[][]>([]);
-  const [historyPos, setHistoryPos] = React.useState<number>(-1);
+  const [history, setHistory] = React.useState<CanvasPath[][]>([[]]);
+  const [historyPos, setHistoryPos] = React.useState<number>(0);
   const [currentPaths, setCurrentPaths] = React.useState<CanvasPath[]>([]);
 
   const liftStrokeUp = React.useCallback((): void => {
