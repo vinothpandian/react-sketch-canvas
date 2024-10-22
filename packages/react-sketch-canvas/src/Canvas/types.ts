@@ -105,6 +105,13 @@ export interface CanvasProps {
    * @defaultValue false
    */
   withViewBox?: boolean;
+
+  /**
+   * When using the viewbox, we set the specific height and width
+   */
+  viewBoxWidth?: number;
+  viewBoxHeight?: number;
+  
   /**
    * Width of the canvas.
    * @defaultValue 100%
