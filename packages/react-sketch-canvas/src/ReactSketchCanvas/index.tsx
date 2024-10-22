@@ -250,6 +250,8 @@ export const ReactSketchCanvas = React.forwardRef<
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       withViewBox={withViewBox}
+      viewBoxWidth={props.viewBoxWidth}
+      viewBoxHeight={props.viewBoxHeight}
       readOnly={readOnly}
     />
   );
