@@ -69,8 +69,8 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
     },
     svgStyle = {},
     withViewBox = false,
-    viewBoxHeight,
-    viewBoxWidth,
+    viewBoxHeight = 0,
+    viewBoxWidth = 0,
     readOnly = false,
   } = props;
 
@@ -80,8 +80,9 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
   );
 
   // Converts mouse coordinates to relative coordinate based on the absolute position of svg
-  const getCoordinates = 
-  (pointerEvent: React.PointerEvent<HTMLDivElement>): Point => {
+  const getCoordinates = (
+    pointerEvent: React.PointerEvent<HTMLDivElement>,
+  ): Point => {
     const boundingArea = canvasRef.current?.getBoundingClientRect();
     canvasSizeRef.current = boundingArea
       ? {
@@ -97,7 +98,7 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
       return { x: 0, y: 0 };
     }
 
-    const coordinates =  {
+    const coordinates = {
       x: pointerEvent.pageX - boundingArea.left - scrollLeft,
       y: pointerEvent.pageY - boundingArea.top - scrollTop,
     };
@@ -105,7 +106,7 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
     if (props.withViewBox && props.viewBoxHeight && props.viewBoxWidth) {
       const scaleX = boundingArea.width / props.viewBoxWidth;
       const scaleY = boundingArea.height / props.viewBoxHeight;
-       // Height scaling factor
+      // Height scaling factor
       const viewBoxCoordinates = {
         x: coordinates.x / scaleX,
         y: coordinates.y / scaleY,
@@ -114,7 +115,7 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
     } else {
       return coordinates;
     }
-  }
+  };
 
   /* Mouse Handlers - Mouse down, move and up */
 
@@ -340,12 +341,13 @@ release drawing even when point goes out of canvas */
         viewBox={
           // eslint-disable-next-line no-nested-ternary
           withViewBox
-          ? (viewBoxWidth && viewBoxHeight)
-            ? `0 0 ${viewBoxWidth} ${viewBoxHeight}`
-            : (canvasSizeRef.current !== null)
-              ? `0 0 ${canvasSizeRef.current.width} ${canvasSizeRef.current.height}`
-              : undefined
-          : undefined        }
+            ? viewBoxWidth && viewBoxHeight
+              ? `0 0 ${viewBoxWidth} ${viewBoxHeight}`
+              : canvasSizeRef.current !== null
+                ? `0 0 ${canvasSizeRef.current.width} ${canvasSizeRef.current.height}`
+                : undefined
+            : undefined
+        }
       >
         <g id={`${id}__eraser-stroke-group`} display="none">
           <rect
