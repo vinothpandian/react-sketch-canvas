@@ -248,6 +248,9 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
           reject(e);
         }
       }),
+    getEl: (): HTMLDivElement | null => {
+      return canvasRef.current ?? null;
+    },
     exportSvg: (): Promise<string> =>
       new Promise<string>((resolve, reject) => {
         try {
