@@ -111,7 +111,7 @@ export interface CanvasProps {
    */
   viewBoxWidth?: number;
   viewBoxHeight?: number;
-  
+
   /**
    * Width of the canvas.
    * @defaultValue 100%
@@ -147,4 +147,5 @@ export interface CanvasRef {
    * @returns A promise that resolves to a string of the SVG.
    */
   exportSvg: () => Promise<string>;
+  getEl: () => HTMLDivElement | null;
 }
