@@ -102,6 +102,9 @@ export const ReactSketchCanvas = React.forwardRef<
       setCurrentPaths((paths) => [...paths, ...undoStack.slice(-1)]);
       setUndoStack((paths) => paths.slice(0, -1));
     },
+    getEl: (): HTMLDivElement | null => {
+      return svgCanvas.current?.getEl() ?? null;
+    },
     exportImage: (
       imageType: ExportImageType,
       options?: ExportImageOptions,
@@ -250,6 +253,8 @@ export const ReactSketchCanvas = React.forwardRef<
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       withViewBox={withViewBox}
+      viewBoxWidth={props.viewBoxWidth}
+      viewBoxHeight={props.viewBoxHeight}
       readOnly={readOnly}
     />
   );

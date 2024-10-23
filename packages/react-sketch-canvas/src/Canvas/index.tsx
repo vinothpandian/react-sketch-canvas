@@ -69,6 +69,8 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
     },
     svgStyle = {},
     withViewBox = false,
+    viewBoxHeight = 0,
+    viewBoxWidth = 0,
     readOnly = false,
   } = props;
 
@@ -78,30 +80,42 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
   );
 
   // Converts mouse coordinates to relative coordinate based on the absolute position of svg
-  const getCoordinates = useCallback(
-    (pointerEvent: React.PointerEvent<HTMLDivElement>): Point => {
-      const boundingArea = canvasRef.current?.getBoundingClientRect();
-      canvasSizeRef.current = boundingArea
-        ? {
-            width: boundingArea.width,
-            height: boundingArea.height,
-          }
-        : null;
+  const getCoordinates = (
+    pointerEvent: React.PointerEvent<HTMLDivElement>,
+  ): Point => {
+    const boundingArea = canvasRef.current?.getBoundingClientRect();
+    canvasSizeRef.current = boundingArea
+      ? {
+          width: boundingArea.width,
+          height: boundingArea.height,
+        }
+      : null;
 
-      const scrollLeft = window.scrollX ?? 0;
-      const scrollTop = window.scrollY ?? 0;
+    const scrollLeft = window.scrollX ?? 0;
+    const scrollTop = window.scrollY ?? 0;
 
-      if (!boundingArea) {
-        return { x: 0, y: 0 };
-      }
+    if (!boundingArea) {
+      return { x: 0, y: 0 };
+    }
 
-      return {
-        x: pointerEvent.pageX - boundingArea.left - scrollLeft,
-        y: pointerEvent.pageY - boundingArea.top - scrollTop,
+    const coordinates = {
+      x: pointerEvent.pageX - boundingArea.left - scrollLeft,
+      y: pointerEvent.pageY - boundingArea.top - scrollTop,
+    };
+
+    if (props.withViewBox && props.viewBoxHeight && props.viewBoxWidth) {
+      const scaleX = boundingArea.width / props.viewBoxWidth;
+      const scaleY = boundingArea.height / props.viewBoxHeight;
+      // Height scaling factor
+      const viewBoxCoordinates = {
+        x: coordinates.x / scaleX,
+        y: coordinates.y / scaleY,
       };
-    },
-    [],
-  );
+      return viewBoxCoordinates;
+    } else {
+      return coordinates;
+    }
+  };
 
   /* Mouse Handlers - Mouse down, move and up */
 
@@ -234,6 +248,9 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
           reject(e);
         }
       }),
+    getEl: (): HTMLDivElement | null => {
+      return canvasRef.current ?? null;
+    },
     exportSvg: (): Promise<string> =>
       new Promise<string>((resolve, reject) => {
         try {
@@ -327,9 +344,11 @@ release drawing even when point goes out of canvas */
         viewBox={
           // eslint-disable-next-line no-nested-ternary
           withViewBox
-            ? canvasSizeRef.current === null
-              ? undefined
-              : `0 0 ${canvasSizeRef.current.width} ${canvasSizeRef.current.height}`
+            ? viewBoxWidth && viewBoxHeight
+              ? `0 0 ${viewBoxWidth} ${viewBoxHeight}`
+              : canvasSizeRef.current !== null
+                ? `0 0 ${canvasSizeRef.current.width} ${canvasSizeRef.current.height}`
+                : undefined
             : undefined
         }
       >
