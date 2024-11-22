@@ -69,3 +69,7 @@ export interface CanvasPath {
    */
   readonly endTimestamp?: number;
 }
+
+export interface TouchExtends extends Touch {
+  touchType: "direct" | "stylus";
+}

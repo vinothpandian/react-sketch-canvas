@@ -1,7 +1,7 @@
 import { useCallback, useRef } from "react";
 
 export function useThrottledCallback<
-  T extends (event: React.PointerEvent<HTMLDivElement>) => void,
+  T extends (event: MouseEvent | TouchEvent) => void,
 >(
   callback: T,
   delay: number,
@@ -11,7 +11,7 @@ export function useThrottledCallback<
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const throttledCallback = useCallback(
-    (event: React.PointerEvent<HTMLDivElement>) => {
+    (event: MouseEvent | TouchEvent) => {
       const now = Date.now();
       if (now - lastCallRef.current >= delay) {
         lastCallRef.current = now;
