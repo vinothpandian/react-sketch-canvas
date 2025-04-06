@@ -1,4 +1,5 @@
 import * as React from "react";
+import {useCallback} from "react";
 import { Canvas } from "../Canvas";
 import {
   CanvasPath,
@@ -52,7 +53,15 @@ export const ReactSketchCanvas = React.forwardRef<
   const [isDrawing, setIsDrawing] = React.useState<boolean>(false);
   const [history, setHistory] = React.useState<CanvasPath[][]>([[]]);
   const [historyPos, setHistoryPos] = React.useState<number>(0);
+  const [historySynced, setHistorySynced] = React.useState<boolean>(false);
   const [currentPaths, setCurrentPaths] = React.useState<CanvasPath[]>([]);
+
+  const addLastStroke = useCallback(():void => {
+    if (!historySynced) {
+      setHistory(his => [...his.slice(0, historyPos), [...currentPaths]]);
+      setHistorySynced(true);
+    }
+  }, [currentPaths, historyPos, historySynced]);
 
   const liftStrokeUp = React.useCallback((): void => {
     const lastStroke = currentPaths.slice(-1)?.[0] ?? null;
@@ -80,18 +89,21 @@ export const ReactSketchCanvas = React.forwardRef<
       setDrawMode(!erase);
     },
     clearCanvas: (): void => {
+      addLastStroke();
       setCurrentPaths([]);
       setHistory(his => [...his.slice(0, historyPos + 1), []]);
       setHistoryPos(pos => pos + 1);
     },
     undo: (): void => {
       if (historyPos > 0) {
+        addLastStroke();
         setCurrentPaths(history[historyPos - 1]);
         setHistoryPos(pos => pos - 1);
       }
     },
     redo: (): void => {
       if (historyPos < history.length - 1) {
+        addLastStroke();
         setCurrentPaths(history[historyPos + 1]);
         setHistoryPos(pos => pos + 1);
       }
@@ -163,7 +175,7 @@ export const ReactSketchCanvas = React.forwardRef<
       setHistoryPos(-1);
       setCurrentPaths([]);
     },
-  }), [currentPaths, history, historyPos, svgCanvas, withTimestamp]);
+  }), [currentPaths, history, historyPos, svgCanvas, withTimestamp, addLastStroke]);
 
   const handlePointerDown = (point: Point, isEraser = false): void => {
     setIsDrawing(true);
@@ -184,7 +196,9 @@ export const ReactSketchCanvas = React.forwardRef<
         endTimestamp: 0,
       };
     }
-
+    setHistoryPos(pos => pos + 1);
+    addLastStroke();
+    setHistorySynced(false);
     setCurrentPaths((paths) => [...paths, stroke]);
   };
 
@@ -206,8 +220,6 @@ export const ReactSketchCanvas = React.forwardRef<
 
     const currentStroke = currentPaths.slice(-1)?.[0] ?? null;
 
-    setHistory(his => [...his.slice(0, historyPos + 1), [...currentPaths.slice(0, -1), currentStroke]]);
-    setHistoryPos(pos => pos + 1);
     setIsDrawing(false);
 
     if (!withTimestamp) {
