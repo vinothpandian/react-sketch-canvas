@@ -145,8 +145,10 @@ export const ReactSketchCanvas = React.forwardRef<
         }
       }),
     loadPaths: (paths: CanvasPath[]): void => {
+      addLastStroke();
       setCurrentPaths((path) => [...path, ...paths]);
-      setHistory([[...currentPaths.slice(0, -1), ...paths]]);
+      setHistoryPos(pos => pos + 1);
+      setHistory(his => [...his.slice(0, historyPos+1), [...currentPaths, ...paths]]);
     },
     getSketchingTime: (): Promise<number> =>
       new Promise<number>((resolve, reject) => {

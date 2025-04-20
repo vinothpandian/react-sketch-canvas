@@ -3,6 +3,7 @@ import {
   ReactSketchCanvas,
   ReactSketchCanvasProps,
   ReactSketchCanvasRef,
+  CanvasPath
 } from "react-sketch-canvas";
 
 interface WithUndoRedoButtonsProps extends ReactSketchCanvasProps {
@@ -10,6 +11,8 @@ interface WithUndoRedoButtonsProps extends ReactSketchCanvasProps {
   redoButtonId?: string;
   clearCanvasButtonId?: string;
   resetCanvasButtonId?: string;
+  loadPathsButtonId?: string;
+  paths: CanvasPath[];
 }
 
 export function WithUndoRedoButtons({
@@ -17,6 +20,8 @@ export function WithUndoRedoButtons({
   redoButtonId = "redo-button",
   clearCanvasButtonId = "clear-canvas-button",
   resetCanvasButtonId = "reset-canvas-button",
+  loadPathsButtonId = "load-paths-button",
+  paths,
   ...canvasProps
 }: WithUndoRedoButtonsProps) {
   const canvasRef = useRef<ReactSketchCanvasRef>(null);
@@ -35,6 +40,10 @@ export function WithUndoRedoButtons({
 
   const handleResetCanvasClick = () => {
     canvasRef.current?.resetCanvas();
+  };
+
+  const handleLoadPathsClick = () => {
+    canvasRef.current?.loadPaths(paths);
   };
 
   return (
@@ -60,6 +69,9 @@ export function WithUndoRedoButtons({
         onClick={handleResetCanvasClick}
       >
         Reset Canvas
+      </button>
+      <button id={loadPathsButtonId} onClick={handleLoadPathsClick}>
+        Load Paths
       </button>
     </div>
   );

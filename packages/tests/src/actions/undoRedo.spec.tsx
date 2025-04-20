@@ -2,6 +2,7 @@ import { expect, test } from "@playwright/experimental-ct-react";
 
 import { drawEraserLine, drawLine, getCanvasIds } from "../commands";
 import { WithUndoRedoButtons } from "../stories/WithUndoRedoButtons";
+import penStrokes from "../fixtures/penStroke.json";
 
 test.use({ viewport: { width: 500, height: 500 } });
 
@@ -10,6 +11,7 @@ const undoButtonId = "undo-button";
 const redoButtonId = "redo-button";
 const clearCanvasButtonId = "clear-canvas-button";
 const resetCanvasButtonId = "reset-canvas-button";
+const loadPathsButtonId = "load-paths-button";
 
 const { firstStrokeGroupId, eraserStrokeGroupId } = getCanvasIds(canvasId);
 
@@ -22,6 +24,7 @@ test.describe("undo", () => {
         redoButtonId={redoButtonId}
         clearCanvasButtonId={clearCanvasButtonId}
         resetCanvasButtonId={resetCanvasButtonId}
+        paths={penStrokes}
       />,
     );
 
@@ -53,6 +56,7 @@ test.describe("undo", () => {
         redoButtonId={redoButtonId}
         clearCanvasButtonId={clearCanvasButtonId}
         resetCanvasButtonId={resetCanvasButtonId}
+        paths={penStrokes}
       />,
     );
 
@@ -100,6 +104,7 @@ test.describe("redo", () => {
         redoButtonId={redoButtonId}
         clearCanvasButtonId={clearCanvasButtonId}
         resetCanvasButtonId={resetCanvasButtonId}
+        paths={penStrokes}
       />,
     );
 
@@ -137,6 +142,7 @@ test.describe("redo", () => {
         redoButtonId={redoButtonId}
         clearCanvasButtonId={clearCanvasButtonId}
         resetCanvasButtonId={resetCanvasButtonId}
+        paths={penStrokes}
       />,
     );
 
@@ -193,6 +199,7 @@ test("should still keep the stack on clearCanvas", async ({ mount }) => {
       redoButtonId={redoButtonId}
       clearCanvasButtonId={clearCanvasButtonId}
       resetCanvasButtonId={resetCanvasButtonId}
+      paths={penStrokes}
     />,
   );
 
@@ -258,6 +265,7 @@ test("should undo a stroke after clear canvas", async ({ mount }) => {
       redoButtonId={redoButtonId}
       clearCanvasButtonId={clearCanvasButtonId}
       resetCanvasButtonId={resetCanvasButtonId}
+      paths={penStrokes}
     />,
   );
 
@@ -304,6 +312,88 @@ test("should undo a stroke after clear canvas", async ({ mount }) => {
   ).toHaveCount(2);
 });
 
+test("should undo loaded paths", async ({ mount }) => {
+  const component = await mount(
+    <WithUndoRedoButtons
+      id={canvasId}
+      undoButtonId={undoButtonId}
+      redoButtonId={redoButtonId}
+      clearCanvasButtonId={clearCanvasButtonId}
+      resetCanvasButtonId={resetCanvasButtonId}
+      loadPathsButtonId={loadPathsButtonId}
+      paths={penStrokes}
+    />,
+  );
+
+  const canvas = component.locator(`#${canvasId}`);
+  const undoButton = component.locator(`#${undoButtonId}`);
+  const loadPathsButton = component.locator(`#${loadPathsButtonId}`);
+
+  await drawLine(canvas, {
+    length: 50,
+    originX: 0,
+    originY: 10,
+  });
+
+  await expect(
+    component.locator(firstStrokeGroupId).locator("path"),
+  ).toHaveCount(1);
+
+  await loadPathsButton.click();
+
+  // Load 1 stroke + 1 existing = 2
+  await expect(
+    component.locator(firstStrokeGroupId).locator("path"),
+  ).toHaveCount(2);
+
+  // Undo load action should reset to 1 original stroke
+  await undoButton.click();
+  await expect(
+    component.locator(firstStrokeGroupId).locator("path"),
+  ).toHaveCount(1);
+});
+
+test("should undo draw after load", async ({ mount }) => {
+  const component = await mount(
+    <WithUndoRedoButtons
+      id={canvasId}
+      undoButtonId={undoButtonId}
+      redoButtonId={redoButtonId}
+      clearCanvasButtonId={clearCanvasButtonId}
+      resetCanvasButtonId={resetCanvasButtonId}
+      loadPathsButtonId={loadPathsButtonId}
+      paths={penStrokes}
+    />,
+  );
+
+  const canvas = component.locator(`#${canvasId}`);
+  const undoButton = component.locator(`#${undoButtonId}`);
+  const loadPathsButton = component.locator(`#${loadPathsButtonId}`);
+  await loadPathsButton.click();
+
+  // Load 1 stroke + 1 existing = 2
+  await expect(
+    component.locator(firstStrokeGroupId).locator("path"),
+  ).toHaveCount(1);
+
+  await drawLine(canvas, {
+    length: 50,
+    originX: 0,
+    originY: 10,
+  });
+
+  // Load 1 stroke + 1 new stroke = 2
+  await expect(
+    component.locator(firstStrokeGroupId).locator("path"),
+  ).toHaveCount(2);
+
+  // Undo => 2 total - 1 last stroke = 1
+  await undoButton.click();
+  await expect(
+    component.locator(firstStrokeGroupId).locator("path"),
+  ).toHaveCount(1);
+});
+
 test("should clear the stack on resetCanvas", async ({ mount }) => {
   const component = await mount(
     <WithUndoRedoButtons
@@ -312,6 +402,7 @@ test("should clear the stack on resetCanvas", async ({ mount }) => {
       redoButtonId={redoButtonId}
       clearCanvasButtonId={clearCanvasButtonId}
       resetCanvasButtonId={resetCanvasButtonId}
+      paths={penStrokes}
     />,
   );
 
