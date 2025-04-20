@@ -174,7 +174,7 @@ export const ReactSketchCanvas = React.forwardRef<
       }),
     resetCanvas: (): void => {
       setHistory([]);
-      setHistoryPos(-1);
+      setHistoryPos(0);
       setCurrentPaths([]);
     },
   }), [currentPaths, history, historyPos, svgCanvas, withTimestamp, addLastStroke]);
