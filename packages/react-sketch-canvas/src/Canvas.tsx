@@ -1,14 +1,14 @@
 /* eslint-disable react/no-array-index-key */
 import * as React from "react";
 import { useCallback } from "react";
-import Paths, { SvgPath } from "../Paths";
+import Paths, { SvgPath } from "./Paths";
 import {
   CanvasPath,
   ExportImageOptions,
   ExportImageType,
   Point,
-} from "../types";
-import { CanvasProps, CanvasRef } from "./types";
+} from "./core.types";
+import { CanvasProps, CanvasRef } from "./Canvas.types";
 import { useThrottledCallback } from "./utils";
 
 const loadImage = (url: string): Promise<HTMLImageElement> =>

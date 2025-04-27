@@ -1,14 +1,17 @@
 import * as React from "react";
 import { useCallback } from "react";
-import { Canvas } from "../Canvas";
+import { Canvas } from "./Canvas";
 import {
   CanvasPath,
   ExportImageOptions,
   ExportImageType,
   Point,
-} from "../types";
-import { CanvasRef } from "../Canvas/types";
-import { ReactSketchCanvasProps, ReactSketchCanvasRef } from "./types";
+} from "./core.types";
+import { CanvasRef } from "./Canvas.types";
+import {
+  ReactSketchCanvasProps,
+  ReactSketchCanvasRef,
+} from "./ReactSketchCanvas.types";
 
 type Operation = {
   type: "undo" | "redo" | "clear" | "loadPaths";

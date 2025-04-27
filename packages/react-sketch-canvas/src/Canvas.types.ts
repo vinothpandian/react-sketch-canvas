@@ -4,7 +4,7 @@ import {
   ExportImageOptions,
   ExportImageType,
   Point,
-} from "../types";
+} from "./core.types";
 
 /**
  * The pointer type to allow drawing with.
