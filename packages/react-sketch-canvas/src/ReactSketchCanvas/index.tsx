@@ -122,9 +122,15 @@ export const ReactSketchCanvas = React.forwardRef<
         case 'loadPaths':
           if (operation.payload) {
             addLastStroke();
-            setCurrentPaths((path) => [...path, ...operation.payload!]);
-            setHistoryPos(pos => pos + 1);
-            setHistory(his => [...his.slice(0, historyPos+1), [...currentPaths, ...operation.payload!]]);
+            setCurrentPaths((paths) => {
+              const newPaths = [...paths, ...operation.payload!];
+              setHistory(his => {
+                const newHistoryPos = historyPos + 1;
+                setHistoryPos(newHistoryPos);
+                return [...his.slice(0, newHistoryPos), newPaths];
+              });
+              return newPaths;
+            });
           }
           break;
       }
@@ -243,8 +249,8 @@ export const ReactSketchCanvas = React.forwardRef<
         endTimestamp: 0,
       };
     }
-    setHistoryPos(pos => pos + 1);
     addLastStroke();
+    setHistoryPos(pos => pos + 1);
     setHistorySynced(false);
     setCurrentPaths((paths) => [...paths, stroke]);
   };
