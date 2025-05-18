@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useCallback } from "react";
 import { Canvas } from "../Canvas";
 import {
   CanvasPath,
@@ -8,6 +9,11 @@ import {
 } from "../types";
 import { CanvasRef } from "../Canvas/types";
 import { ReactSketchCanvasProps, ReactSketchCanvasRef } from "./types";
+
+type Operation = {
+  type: "undo" | "redo" | "clear" | "loadPaths";
+  payload?: CanvasPath[];
+};
 
 /**
  * ReactSketchCanvas is a wrapper around Canvas component to provide a controlled way to manage the canvas paths.
@@ -50,9 +56,19 @@ export const ReactSketchCanvas = React.forwardRef<
   const svgCanvas = React.createRef<CanvasRef>();
   const [drawMode, setDrawMode] = React.useState<boolean>(true);
   const [isDrawing, setIsDrawing] = React.useState<boolean>(false);
-  const [resetStack, setResetStack] = React.useState<CanvasPath[]>([]);
-  const [undoStack, setUndoStack] = React.useState<CanvasPath[]>([]);
+  const [history, setHistory] = React.useState<CanvasPath[][]>([[]]);
+  const [historyPos, setHistoryPos] = React.useState<number>(0);
+  const [historySynced, setHistorySynced] = React.useState<boolean>(false);
   const [currentPaths, setCurrentPaths] = React.useState<CanvasPath[]>([]);
+  const [operationQueue, setOperationQueue] = React.useState<Operation[]>([]);
+  const [isProcessingQueue, setIsProcessingQueue] = React.useState(false);
+
+  const addLastStroke = useCallback((): void => {
+    if (!historySynced) {
+      setHistory((his) => [...his.slice(0, historyPos), [...currentPaths]]);
+      setHistorySynced(true);
+    }
+  }, [currentPaths, historyPos, historySynced]);
 
   const liftStrokeUp = React.useCallback((): void => {
     const lastStroke = currentPaths.slice(-1)?.[0] ?? null;
@@ -75,104 +91,170 @@ export const ReactSketchCanvas = React.forwardRef<
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPaths]);
 
-  React.useImperativeHandle(ref, () => ({
-    eraseMode: (erase: boolean): void => {
-      setDrawMode(!erase);
-    },
-    clearCanvas: (): void => {
-      setResetStack([...currentPaths]);
-      setCurrentPaths([]);
-    },
-    undo: (): void => {
-      // If there was a last reset then
-      if (resetStack.length !== 0) {
-        setCurrentPaths([...resetStack]);
-        setResetStack([]);
+  const processQueue = React.useCallback(async () => {
+    if (isProcessingQueue || operationQueue.length === 0) return;
 
-        return;
-      }
+    setIsProcessingQueue(true);
+    const operation = operationQueue[0];
 
-      setUndoStack((paths) => [...paths, ...currentPaths.slice(-1)]);
-      setCurrentPaths((paths) => paths.slice(0, -1));
-    },
-    redo: (): void => {
-      // Nothing to Redo
-      if (undoStack.length === 0) return;
-
-      setCurrentPaths((paths) => [...paths, ...undoStack.slice(-1)]);
-      setUndoStack((paths) => paths.slice(0, -1));
-    },
-    exportImage: (
-      imageType: ExportImageType,
-      options?: ExportImageOptions,
-    ): Promise<string> => {
-      const exportImage = svgCanvas.current?.exportImage;
-
-      if (!exportImage) {
-        throw Error("Export function called before canvas loaded");
-      } else {
-        return exportImage(imageType, options);
-      }
-    },
-    exportSvg: (): Promise<string> =>
-      new Promise<string>((resolve, reject) => {
-        const exportSvg = svgCanvas.current?.exportSvg;
-
-        if (!exportSvg) {
-          reject(Error("Export function called before canvas loaded"));
-        } else {
-          exportSvg()
-            .then((data) => {
-              resolve(data);
-            })
-            .catch((e) => {
-              reject(e);
+    try {
+      switch (operation.type) {
+        case "undo":
+          if (historyPos > 0) {
+            addLastStroke();
+            setCurrentPaths(history[historyPos - 1]);
+            setHistoryPos((pos) => pos - 1);
+          }
+          break;
+        case "redo":
+          if (historyPos < history.length - 1) {
+            addLastStroke();
+            setCurrentPaths(history[historyPos + 1]);
+            setHistoryPos((pos) => pos + 1);
+          }
+          break;
+        case "clear":
+          addLastStroke();
+          setCurrentPaths([]);
+          setHistory((his) => [...his.slice(0, historyPos + 1), []]);
+          setHistoryPos((pos) => pos + 1);
+          break;
+        case "loadPaths":
+          if (operation.payload) {
+            addLastStroke();
+            setCurrentPaths((paths) => {
+              const newPaths = [...paths, ...operation.payload!];
+              setHistory((his) => {
+                const newHistoryPos = historyPos + 1;
+                setHistoryPos(newHistoryPos);
+                return [...his.slice(0, newHistoryPos), newPaths];
+              });
+              return newPaths;
             });
-        }
-      }),
-    exportPaths: (): Promise<CanvasPath[]> =>
-      new Promise<CanvasPath[]>((resolve, reject) => {
-        try {
-          resolve(currentPaths);
-        } catch (e) {
-          reject(e);
-        }
-      }),
-    loadPaths: (paths: CanvasPath[]): void => {
-      setCurrentPaths((path) => [...path, ...paths]);
-    },
-    getSketchingTime: (): Promise<number> =>
-      new Promise<number>((resolve, reject) => {
-        if (!withTimestamp) {
-          reject(new Error("Set 'withTimestamp' prop to get sketching time"));
-        }
+          }
+          break;
+        default:
+          throw new Error(`Unknown operation type: ${operation.type}`);
+      }
+    } finally {
+      setOperationQueue((queue) => queue.slice(1));
+      setIsProcessingQueue(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    operationQueue,
+    isProcessingQueue,
+    historyPos,
+    history,
+    currentPaths,
+    addLastStroke,
+  ]);
 
-        try {
-          const sketchingTime = currentPaths.reduce(
-            (totalSketchingTime, path) => {
-              const startTimestamp = path.startTimestamp ?? 0;
-              const endTimestamp = path.endTimestamp ?? 0;
+  React.useEffect(() => {
+    processQueue();
+  }, [processQueue, operationQueue]);
 
-              return totalSketchingTime + (endTimestamp - startTimestamp);
-            },
-            0,
-          );
+  const enqueueOperation = useCallback((operation: Operation) => {
+    setOperationQueue((queue) => [...queue, operation]);
+  }, []);
 
-          resolve(sketchingTime);
-        } catch (e) {
-          reject(e);
+  React.useImperativeHandle(
+    ref,
+    () => ({
+      eraseMode: (erase: boolean): void => {
+        setDrawMode(!erase);
+      },
+      clearCanvas: (): void => {
+        enqueueOperation({ type: "clear" });
+      },
+      undo: (): void => {
+        enqueueOperation({ type: "undo" });
+      },
+      redo: (): void => {
+        enqueueOperation({ type: "redo" });
+      },
+      exportImage: (
+        imageType: ExportImageType,
+        options?: ExportImageOptions,
+      ): Promise<string> => {
+        const exportImage = svgCanvas.current?.exportImage;
+
+        if (!exportImage) {
+          throw Error("Export function called before canvas loaded");
+        } else {
+          return exportImage(imageType, options);
         }
-      }),
-    resetCanvas: (): void => {
-      setResetStack([]);
-      setUndoStack([]);
-      setCurrentPaths([]);
-    },
-  }));
+      },
+      exportSvg: (): Promise<string> =>
+        new Promise<string>((resolve, reject) => {
+          const exportSvg = svgCanvas.current?.exportSvg;
+
+          if (!exportSvg) {
+            reject(Error("Export function called before canvas loaded"));
+          } else {
+            exportSvg()
+              .then((data) => {
+                resolve(data);
+              })
+              .catch((e) => {
+                reject(e);
+              });
+          }
+        }),
+      exportPaths: (): Promise<CanvasPath[]> =>
+        new Promise<CanvasPath[]>((resolve, reject) => {
+          try {
+            resolve(currentPaths);
+          } catch (e) {
+            reject(e);
+          }
+        }),
+      loadPaths: (paths: CanvasPath[]): void => {
+        enqueueOperation({ type: "loadPaths", payload: paths });
+      },
+      getSketchingTime: (): Promise<number> =>
+        new Promise<number>((resolve, reject) => {
+          if (!withTimestamp) {
+            reject(new Error("Set 'withTimestamp' prop to get sketching time"));
+          }
+
+          try {
+            const sketchingTime = currentPaths.reduce(
+              (totalSketchingTime, path) => {
+                const startTimestamp = path.startTimestamp ?? 0;
+                const endTimestamp = path.endTimestamp ?? 0;
+
+                return totalSketchingTime + (endTimestamp - startTimestamp);
+              },
+              0,
+            );
+
+            resolve(sketchingTime);
+          } catch (e) {
+            reject(e);
+          }
+        }),
+      resetCanvas: (): void => {
+        setHistory([]);
+        setHistoryPos(0);
+        setCurrentPaths([]);
+        setOperationQueue([]);
+      },
+    }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
+      currentPaths,
+      history,
+      historyPos,
+      svgCanvas,
+      withTimestamp,
+      addLastStroke,
+      enqueueOperation,
+    ],
+  );
 
   const handlePointerDown = (point: Point, isEraser = false): void => {
     setIsDrawing(true);
-    setUndoStack([]);
 
     const isDraw = !isEraser && drawMode;
 
@@ -190,7 +272,9 @@ export const ReactSketchCanvas = React.forwardRef<
         endTimestamp: 0,
       };
     }
-
+    addLastStroke();
+    setHistoryPos((pos) => pos + 1);
+    setHistorySynced(false);
     setCurrentPaths((paths) => [...paths, stroke]);
   };
 
@@ -210,13 +294,13 @@ export const ReactSketchCanvas = React.forwardRef<
       return;
     }
 
+    const currentStroke = currentPaths.slice(-1)?.[0] ?? null;
+
     setIsDrawing(false);
 
     if (!withTimestamp) {
       return;
     }
-
-    const currentStroke = currentPaths.slice(-1)?.[0] ?? null;
 
     if (currentStroke === null) {
       return;
