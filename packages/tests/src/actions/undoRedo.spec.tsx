@@ -459,3 +459,61 @@ test("should clear the stack on resetCanvas", async ({ mount }) => {
     component.locator(eraserStrokeGroupId).locator("path"),
   ).toHaveCount(0);
 });
+
+// test should draw -> clear -> draw -> undo should clear the stack
+test("should clear the stack on undo after clear", async ({ mount }) => {
+  const component = await mount(
+    <WithUndoRedoButtons
+      id={canvasId}
+      undoButtonId={undoButtonId}
+      redoButtonId={redoButtonId}
+      clearCanvasButtonId={clearCanvasButtonId}
+      resetCanvasButtonId={resetCanvasButtonId}
+      paths={penStrokes}
+    />,
+  );
+
+  const canvas = component.locator(`#${canvasId}`);
+  const undoButton = component.locator(`#${undoButtonId}`);
+  const clearCanvasButton = component.locator(`#${clearCanvasButtonId}`);
+
+  await drawLine(canvas, {
+    length: 50,
+    originX: 0,
+    originY: 10,
+  });
+
+  await expect(
+    component.locator(firstStrokeGroupId).locator("path"),
+  ).toHaveCount(1);
+
+  // Clear the canvas
+  await clearCanvasButton.click();
+  await expect(
+    component.locator(firstStrokeGroupId).locator("path"),
+  ).toHaveCount(0);
+
+  // Draw again
+  await drawLine(canvas, {
+    length: 50,
+    originX: 10,
+    originY: 10,
+  });
+
+  // Should have one stroke now
+  await expect(
+    component.locator(firstStrokeGroupId).locator("path"),
+  ).toHaveCount(1);
+
+  // Undo should clear the stack
+  await undoButton.click();
+  await expect(
+    component.locator(firstStrokeGroupId).locator("path"),
+  ).toHaveCount(0);
+
+  // Undo again should show the first stroke
+  await undoButton.click();
+  await expect(
+    component.locator(firstStrokeGroupId).locator("path"),
+  ).toHaveCount(1);
+});
