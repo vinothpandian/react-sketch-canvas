@@ -1,5 +1,5 @@
 import * as React from "react";
-import {useCallback} from "react";
+import { useCallback } from "react";
 import { Canvas } from "../Canvas";
 import {
   CanvasPath,
@@ -11,7 +11,7 @@ import { CanvasRef } from "../Canvas/types";
 import { ReactSketchCanvasProps, ReactSketchCanvasRef } from "./types";
 
 type Operation = {
-  type: 'undo' | 'redo' | 'clear' | 'loadPaths';
+  type: "undo" | "redo" | "clear" | "loadPaths";
   payload?: CanvasPath[];
 };
 
@@ -63,9 +63,9 @@ export const ReactSketchCanvas = React.forwardRef<
   const [operationQueue, setOperationQueue] = React.useState<Operation[]>([]);
   const [isProcessingQueue, setIsProcessingQueue] = React.useState(false);
 
-  const addLastStroke = useCallback(():void => {
+  const addLastStroke = useCallback((): void => {
     if (!historySynced) {
-      setHistory(his => [...his.slice(0, historyPos), [...currentPaths]]);
+      setHistory((his) => [...his.slice(0, historyPos), [...currentPaths]]);
       setHistorySynced(true);
     }
   }, [currentPaths, historyPos, historySynced]);
@@ -99,32 +99,32 @@ export const ReactSketchCanvas = React.forwardRef<
 
     try {
       switch (operation.type) {
-        case 'undo':
+        case "undo":
           if (historyPos > 0) {
             addLastStroke();
             setCurrentPaths(history[historyPos - 1]);
-            setHistoryPos(pos => pos - 1);
+            setHistoryPos((pos) => pos - 1);
           }
           break;
-        case 'redo':
+        case "redo":
           if (historyPos < history.length - 1) {
             addLastStroke();
             setCurrentPaths(history[historyPos + 1]);
-            setHistoryPos(pos => pos + 1);
+            setHistoryPos((pos) => pos + 1);
           }
           break;
-        case 'clear':
+        case "clear":
           addLastStroke();
           setCurrentPaths([]);
-          setHistory(his => [...his.slice(0, historyPos + 1), []]);
-          setHistoryPos(pos => pos + 1);
+          setHistory((his) => [...his.slice(0, historyPos + 1), []]);
+          setHistoryPos((pos) => pos + 1);
           break;
-        case 'loadPaths':
+        case "loadPaths":
           if (operation.payload) {
             addLastStroke();
             setCurrentPaths((paths) => {
               const newPaths = [...paths, ...operation.payload!];
-              setHistory(his => {
+              setHistory((his) => {
                 const newHistoryPos = historyPos + 1;
                 setHistoryPos(newHistoryPos);
                 return [...his.slice(0, newHistoryPos), newPaths];
@@ -133,102 +133,125 @@ export const ReactSketchCanvas = React.forwardRef<
             });
           }
           break;
+        default:
+          throw new Error(`Unknown operation type: ${operation.type}`);
       }
     } finally {
-      setOperationQueue(queue => queue.slice(1));
+      setOperationQueue((queue) => queue.slice(1));
       setIsProcessingQueue(false);
     }
-  }, [operationQueue, isProcessingQueue, historyPos, history, currentPaths, addLastStroke]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    operationQueue,
+    isProcessingQueue,
+    historyPos,
+    history,
+    currentPaths,
+    addLastStroke,
+  ]);
 
   React.useEffect(() => {
     processQueue();
   }, [processQueue, operationQueue]);
 
   const enqueueOperation = useCallback((operation: Operation) => {
-    setOperationQueue(queue => [...queue, operation]);
+    setOperationQueue((queue) => [...queue, operation]);
   }, []);
 
-  React.useImperativeHandle(ref, () => ({
-    eraseMode: (erase: boolean): void => {
-      setDrawMode(!erase);
-    },
-    clearCanvas: (): void => {
-      enqueueOperation({ type: 'clear' });
-    },
-    undo: (): void => {
-      enqueueOperation({ type: 'undo' });
-    },
-    redo: (): void => {
-      enqueueOperation({ type: 'redo' });
-    },
-    exportImage: (
-      imageType: ExportImageType,
-      options?: ExportImageOptions,
-    ): Promise<string> => {
-      const exportImage = svgCanvas.current?.exportImage;
+  React.useImperativeHandle(
+    ref,
+    () => ({
+      eraseMode: (erase: boolean): void => {
+        setDrawMode(!erase);
+      },
+      clearCanvas: (): void => {
+        enqueueOperation({ type: "clear" });
+      },
+      undo: (): void => {
+        enqueueOperation({ type: "undo" });
+      },
+      redo: (): void => {
+        enqueueOperation({ type: "redo" });
+      },
+      exportImage: (
+        imageType: ExportImageType,
+        options?: ExportImageOptions,
+      ): Promise<string> => {
+        const exportImage = svgCanvas.current?.exportImage;
 
-      if (!exportImage) {
-        throw Error("Export function called before canvas loaded");
-      } else {
-        return exportImage(imageType, options);
-      }
-    },
-    exportSvg: (): Promise<string> =>
-      new Promise<string>((resolve, reject) => {
-        const exportSvg = svgCanvas.current?.exportSvg;
-
-        if (!exportSvg) {
-          reject(Error("Export function called before canvas loaded"));
+        if (!exportImage) {
+          throw Error("Export function called before canvas loaded");
         } else {
-          exportSvg()
-            .then((data) => {
-              resolve(data);
-            })
-            .catch((e) => {
-              reject(e);
-            });
+          return exportImage(imageType, options);
         }
-      }),
-    exportPaths: (): Promise<CanvasPath[]> =>
-      new Promise<CanvasPath[]>((resolve, reject) => {
-        try {
-          resolve(currentPaths);
-        } catch (e) {
-          reject(e);
-        }
-      }),
-    loadPaths: (paths: CanvasPath[]): void => {
-      enqueueOperation({ type: 'loadPaths', payload: paths });
-    },
-    getSketchingTime: (): Promise<number> =>
-      new Promise<number>((resolve, reject) => {
-        if (!withTimestamp) {
-          reject(new Error("Set 'withTimestamp' prop to get sketching time"));
-        }
+      },
+      exportSvg: (): Promise<string> =>
+        new Promise<string>((resolve, reject) => {
+          const exportSvg = svgCanvas.current?.exportSvg;
 
-        try {
-          const sketchingTime = currentPaths.reduce(
-            (totalSketchingTime, path) => {
-              const startTimestamp = path.startTimestamp ?? 0;
-              const endTimestamp = path.endTimestamp ?? 0;
+          if (!exportSvg) {
+            reject(Error("Export function called before canvas loaded"));
+          } else {
+            exportSvg()
+              .then((data) => {
+                resolve(data);
+              })
+              .catch((e) => {
+                reject(e);
+              });
+          }
+        }),
+      exportPaths: (): Promise<CanvasPath[]> =>
+        new Promise<CanvasPath[]>((resolve, reject) => {
+          try {
+            resolve(currentPaths);
+          } catch (e) {
+            reject(e);
+          }
+        }),
+      loadPaths: (paths: CanvasPath[]): void => {
+        enqueueOperation({ type: "loadPaths", payload: paths });
+      },
+      getSketchingTime: (): Promise<number> =>
+        new Promise<number>((resolve, reject) => {
+          if (!withTimestamp) {
+            reject(new Error("Set 'withTimestamp' prop to get sketching time"));
+          }
 
-              return totalSketchingTime + (endTimestamp - startTimestamp);
-            },
-            0,
-          );
+          try {
+            const sketchingTime = currentPaths.reduce(
+              (totalSketchingTime, path) => {
+                const startTimestamp = path.startTimestamp ?? 0;
+                const endTimestamp = path.endTimestamp ?? 0;
 
-          resolve(sketchingTime);
-        } catch (e) {
-          reject(e);
-        }
-      }),
-    resetCanvas: (): void => {
-      setHistory([]);
-      setHistoryPos(0);
-      setCurrentPaths([]);
-      setOperationQueue([]);
-    },
-  }), [currentPaths, history, historyPos, svgCanvas, withTimestamp, addLastStroke, enqueueOperation]);
+                return totalSketchingTime + (endTimestamp - startTimestamp);
+              },
+              0,
+            );
+
+            resolve(sketchingTime);
+          } catch (e) {
+            reject(e);
+          }
+        }),
+      resetCanvas: (): void => {
+        setHistory([]);
+        setHistoryPos(0);
+        setCurrentPaths([]);
+        setOperationQueue([]);
+      },
+    }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
+      currentPaths,
+      history,
+      historyPos,
+      svgCanvas,
+      withTimestamp,
+      addLastStroke,
+      enqueueOperation,
+    ],
+  );
 
   const handlePointerDown = (point: Point, isEraser = false): void => {
     setIsDrawing(true);
@@ -250,7 +273,7 @@ export const ReactSketchCanvas = React.forwardRef<
       };
     }
     addLastStroke();
-    setHistoryPos(pos => pos + 1);
+    setHistoryPos((pos) => pos + 1);
     setHistorySynced(false);
     setCurrentPaths((paths) => [...paths, stroke]);
   };

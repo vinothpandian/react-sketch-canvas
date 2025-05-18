@@ -3,7 +3,7 @@ import {
   ReactSketchCanvas,
   ReactSketchCanvasProps,
   ReactSketchCanvasRef,
-  CanvasPath
+  CanvasPath,
 } from "react-sketch-canvas";
 
 interface WithUndoRedoButtonsProps extends ReactSketchCanvasProps {
