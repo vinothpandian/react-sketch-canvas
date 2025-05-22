@@ -70,6 +70,7 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
     svgStyle = {},
     withViewBox = false,
     readOnly = false,
+    getSvgPathFromPoints,
   } = props;
 
   const canvasRef = React.useRef<HTMLDivElement>(null);
@@ -408,7 +409,11 @@ release drawing even when point goes out of canvas */
             key={`${id}__stroke-group-${i}`}
             mask={`${eraserPaths[i] && `url(#${id}__eraser-mask-${i})`}`}
           >
-            <Paths id={`${id}__stroke-group-${i}__paths`} paths={pathGroup} />
+            <Paths
+              id={`${id}__stroke-group-${i}__paths`}
+              paths={pathGroup}
+              getSvgPathFromPoints={getSvgPathFromPoints}
+            />
           </g>
         ))}
       </svg>

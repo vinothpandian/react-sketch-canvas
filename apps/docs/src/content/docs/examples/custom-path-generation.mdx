@@ -1,0 +1,11 @@
+---
+title: Custom Path Generation
+description: Demonstrates how to provide a custom function to generate SVG path strings from points using the getSvgPathFromPoints prop.
+---
+import { CustomPathGenerationExample } from "../../../examples/CustomPathGeneration";
+
+The `getSvgPathFromPoints` prop allows you to define your own logic for converting a series of points into an SVG path string. This gives you full control over the appearance of the strokes, enabling you to create straight lines, dashed lines, or any other custom path shape.
+
+Below is an example that uses `getSvgPathFromPoints` to render dashed lines.
+
+<CustomPathGenerationExample client:load />

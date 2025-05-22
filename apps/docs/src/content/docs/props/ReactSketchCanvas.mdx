@@ -1,0 +1,10 @@
+---
+title: ReactSketchCanvas Props
+description: Props for the ReactSketchCanvas component.
+---
+
+The `ReactSketchCanvas` component accepts the following props:
+
+-   **`getSvgPathFromPoints`**:
+    -   **Type**: `(points: Point[]) => string`
+    -   **Description**: Optional. Callback to generate a custom SVG path string from points. This allows you to override the default bezier curve smoothing and implement any path generation logic you need. The function receives an array of `Point` objects and should return a valid SVG path string.
