@@ -128,6 +128,7 @@ const Canvas = class extends React.Component {
 | svgStyle                           | PropTypes.object  | {}                    | Add CSS styling as CSS-in-JS object for the SVG                                                     |
 | withTimestamp                      | PropTypes.bool    | false                 | Add timestamp to individual strokes for measuring sketching time                                    |
 | readOnly                           | PropTypes.bool    | false                 | Disable drawing on the canvas (undo/redo, clear & reset will still work.)                           |
+| `getSvgPathFromPoints`             | `(points: Point[]) => string` | `undefined`           | Optional. Callback to generate a custom SVG path string from points.                                |
 
 Set SVG background using CSS [background][css-bg] value
 
@@ -157,6 +158,12 @@ _Use ref to access the element and call the following functions to export image_
 ## Types
 
 ```ts
+// -- Point -- (This type is already defined above, adding for context if needed)
+// interface Point {
+//   x: number;
+//   y: number;
+// }
+
 type ExportImageType = "jpeg" | "png";
 
 interface Point {
@@ -172,6 +179,52 @@ interface CanvasPath {
   startTimestamp?: number;
   endTimestamp?: number;
 }
+```
+
+---
+
+## Advanced Usage
+
+### Custom Path Generation
+
+You can provide a custom function to generate the SVG path string from an array of points. This allows you to override the default bezier curve smoothing and implement any path generation logic you need.
+
+The `getSvgPathFromPoints` prop takes a function that receives an array of `Point` objects and should return a valid SVG path string.
+
+```jsx
+import * as React from "react";
+import { ReactSketchCanvas, Point } from "react-sketch-canvas";
+
+const MyCustomSketch = () => {
+  const styles = {
+    border: "0.0625rem solid #9c9c9c",
+    borderRadius: "0.25rem",
+  };
+
+  const generateStraightLinePath = (points: Point[]): string => {
+    if (points.length === 0) {
+      return "";
+    }
+    let path = `M ${points[0].x} ${points[0].y}`;
+    for (let i = 1; i < points.length; i++) {
+      path += ` L ${points[i].x} ${points[i].y}`;
+    }
+    return path;
+  };
+
+  return (
+    <ReactSketchCanvas
+      style={styles}
+      width="600"
+      height="400"
+      strokeWidth={4}
+      strokeColor="red"
+      getSvgPathFromPoints={generateStraightLinePath}
+    />
+  );
+};
+
+export default MyCustomSketch;
 ```
 
 ---

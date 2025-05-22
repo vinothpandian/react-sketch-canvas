@@ -11,8 +11,11 @@ type ControlPoints = {
 type PathProps = {
   id: string;
   paths: CanvasPath[];
+  getSvgPathFromPoints?: (points: Point[]) => string;
 };
 
+// This export was removed in the prompt, but it is used in other files.
+// Keeping it to avoid breaking changes.
 export const line = (pointA: Point, pointB: Point) => {
   const lengthX = pointB.x - pointA.x;
   const lengthY = pointB.y - pointA.y;
@@ -88,6 +91,8 @@ export type SvgPathProps = {
   strokeColor: string;
   // Bezier command to smoothen the line
   command?: (point: Point, i: number, a: Point[]) => string;
+  // Custom path generator
+  getSvgPathFromPoints?: (points: Point[]) => string;
 };
 
 /**
@@ -99,6 +104,7 @@ export function SvgPath({
   strokeWidth,
   strokeColor,
   command = bezierCommand,
+  getSvgPathFromPoints,
 }: SvgPathProps): JSX.Element {
   if (paths.length === 1) {
     const { x, y } = paths[0];
@@ -118,11 +124,16 @@ export function SvgPath({
     );
   }
 
-  const d = paths.reduce(
-    (acc, point, i, a) =>
-      i === 0 ? `M ${point.x},${point.y}` : `${acc} ${command(point, i, a)}`,
-    "",
-  );
+  let d: string;
+  if (getSvgPathFromPoints) {
+    d = getSvgPathFromPoints(paths);
+  } else {
+    d = paths.reduce(
+      (acc, point, i, a) =>
+        i === 0 ? `M ${point.x},${point.y}` : `${acc} ${command(point, i, a)}`,
+      "",
+    );
+  }
 
   return (
     <path
@@ -137,7 +148,7 @@ export function SvgPath({
   );
 }
 
-function Paths({ id, paths }: PathProps): JSX.Element {
+function Paths({ id, paths, getSvgPathFromPoints }: PathProps): JSX.Element {
   return (
     <>
       {paths.map((path: CanvasPath, index: number) => (
@@ -149,6 +160,7 @@ function Paths({ id, paths }: PathProps): JSX.Element {
           strokeWidth={path.strokeWidth}
           strokeColor={path.strokeColor}
           command={bezierCommand}
+          getSvgPathFromPoints={getSvgPathFromPoints}
         />
       ))}
     </>

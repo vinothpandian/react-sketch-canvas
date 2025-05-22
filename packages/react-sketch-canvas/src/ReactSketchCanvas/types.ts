@@ -65,6 +65,12 @@ export interface ReactSketchCanvasProps
    * @defaultValue false
    */
   withTimestamp?: boolean;
+  /**
+   * Optional function to generate custom SVG path string from points.
+   * @param points - Array of points to generate the path from.
+   * @returns SVG path string.
+   */
+  getSvgPathFromPoints?: (points: Point[]) => string;
 }
 
 /**
