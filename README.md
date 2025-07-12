@@ -151,7 +151,7 @@ _Use ref to access the element and call the following functions to export image_
 | exportImage(imageTypeString) | Accepts an image type as argument (`ExportImageType`) and returns a Promise which resolves to base64 data url of the sketch.                     |
 | exportSvg()                  | returns a Promise which resolves to an inline SVG element.                                                                                       |
 | exportPaths()                | returns a Promise which resolves to an instance of `CanvasPath`.                                                                                 |
-| loadPaths(CanvasPath)        | Accepts an `CanvasPath` exported from exportPaths() and loads it on the canvas.                                                                  |
+| loadPaths(CanvasPath)        | Accepts a `CanvasPath` exported from exportPaths() and loads it on the canvas.                                                                  |
 | getSketchingTime()           | returns a Promise which resolves the time that user sketched in the canvas (considers only when the user made the strokes or erased the strokes) |
 
 ## Types
