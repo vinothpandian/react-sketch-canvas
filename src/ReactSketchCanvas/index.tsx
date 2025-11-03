@@ -169,20 +169,12 @@ export const ReactSketchCanvas = React.forwardRef<
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isDrawing])
 
-  // Call onChange when paths or texts change (outside of render cycle)
-  React.useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      onChange(currentPaths, currentTexts)
-    }, 0)
-
-    return () => clearTimeout(timeoutId)
-  }, [currentPaths, currentTexts, onChange])
-
   const resetCanvas = () => {
     setResetStack([])
     setUndoStack([])
     setCurrentPaths([])
     setCurrentTexts([])
+    onChange([], [])
   }
 
   const currentSizeRef = React.useRef<Size | undefined>()
@@ -327,11 +319,14 @@ export const ReactSketchCanvas = React.forwardRef<
       setResetStack([...currentPaths])
       setCurrentPaths([])
       setCurrentTexts([])
+      onChange([], [])
     },
     undo: (): void => {
       if (resetStack.length !== 0) {
-        setCurrentPaths([...resetStack])
+        const restoredPaths = [...resetStack]
+        setCurrentPaths(restoredPaths)
         setResetStack([])
+        onChange(restoredPaths, currentTexts)
         return
       }
 
@@ -339,6 +334,7 @@ export const ReactSketchCanvas = React.forwardRef<
       const updatedPaths = currentPaths.slice(0, -1)
       setUndoStack((undoStack) => [...undoStack, ...pathToUndo])
       setCurrentPaths(updatedPaths)
+      onChange(updatedPaths, currentTexts)
     },
     redo: (): void => {
       if (undoStack.length === 0) return
@@ -347,11 +343,13 @@ export const ReactSketchCanvas = React.forwardRef<
       const updatedPaths = [...currentPaths, ...pathToRedo]
       setCurrentPaths(updatedPaths)
       setUndoStack((undoStack) => undoStack.slice(0, -1))
+      onChange(updatedPaths, currentTexts)
     },
     addText: (text, position) => {
       getCanvasDimensions((currentCanvasSize, referenceDimensions) => {
         const texts: CanvasText[] = [createText(text, position)]
         loadTexts(texts, referenceDimensions, currentCanvasSize)
+        onChange(currentPaths, currentTexts)
       })
     },
     addPath: (points, width, color) => {
@@ -367,6 +365,7 @@ export const ReactSketchCanvas = React.forwardRef<
         ]
 
         loadPaths(paths, referenceDimensions, currentCanvasSize)
+        onChange(currentPaths, currentTexts)
       })
     },
     exportImage: (imageType: ExportImageType): Promise<string> => {
@@ -409,9 +408,11 @@ export const ReactSketchCanvas = React.forwardRef<
     },
     loadPaths: (paths: CanvasPath[], size?: Size): void => {
       loadPaths(paths, size, undefined)
+      onChange(currentPaths, currentTexts)
     },
     loadTexts: (texts: CanvasText[], size?: Size): void => {
       loadTexts(texts, size, undefined)
+      onChange(currentPaths, currentTexts)
     },
     getSketchingTime: (): Promise<number> => {
       return new Promise<number>((resolve, reject) => {
@@ -451,6 +452,7 @@ export const ReactSketchCanvas = React.forwardRef<
     }
     setUndoStack((undoStack) => [...undoStack, path])
     setCurrentPaths((paths) => paths.filter((p) => p.id !== path.id))
+    onChange(currentPaths, currentTexts)
   }
 
   const handlePointerDown = (point: Point): void => {
@@ -532,12 +534,14 @@ export const ReactSketchCanvas = React.forwardRef<
       ...currentPaths.slice(0, -1),
       updatedStroke,
     ])
+    onChange(currentPaths, currentTexts)
   }
 
   const handleTextChange = (oldText: CanvasText, newText: CanvasText): void => {
     setCurrentTexts((texts) =>
       texts.map((t) => (t.id === oldText.id ? newText : t))
     )
+    onChange(currentPaths, currentTexts)
   }
 
   return (
