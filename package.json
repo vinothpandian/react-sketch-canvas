@@ -15,9 +15,9 @@
     "unit:test": "turbo run unit:test",
     "ci:test": "turbo run build ci:test",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "ci:build": "cp README.md packages/react-sketch-canvas/ && pnpm --filter react-sketch-canvas ci:build",
-    "release": "pnpm test && pnpm ci:build && changeset version && changeset publish",
-    "pre-release": "pnpm ci:test && pnpm ci:build && changeset && changeset publish"
+    "ci:build": "cp README.md packages/react-sketch-canvas/ && bun run --filter react-sketch-canvas ci:build",
+    "release": "bun run test && bun run ci:build && changeset version && changeset publish",
+    "pre-release": "bun run ci:test && bun run ci:build && changeset && changeset publish"
   },
   "devDependencies": {
     "eslint-config-custom": "workspace:*",
@@ -26,9 +26,9 @@
   },
   "engines": {
     "node": ">=18.0.0",
-    "pnpm": ">=8.0.0"
+    "bun": ">=1.0.0"
   },
-  "packageManager": "pnpm@8.15.3",
+  "packageManager": "bun@1.2.20",
   "dependencies": {
     "@changesets/cli": "^2.27.7"
   }

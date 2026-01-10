@@ -2,12 +2,12 @@
 
 ## Phase 1: Bun Package Manager Migration
 
-- [ ] Task: Set up Bun and migrate from pnpm
-    - [ ] Install Bun globally and verify installation
-    - [ ] Remove pnpm-lock.yaml
-    - [ ] Run `bun install` to generate bun.lockb
-    - [ ] Verify all dependencies install correctly
-    - [ ] Update root package.json scripts to use `bun run` instead of `pnpm`
+- [~] Task: Set up Bun and migrate from pnpm
+    - [x] Install Bun globally and verify installation
+    - [x] Remove pnpm-lock.yaml
+    - [x] Run `bun install` to generate bun.lockb
+    - [x] Verify all dependencies install correctly
+    - [x] Update root package.json scripts to use `bun run` instead of `pnpm`
 
 - [ ] Task: Configure Bun workspaces
     - [ ] Verify workspace configuration in root package.json works with Bun

@@ -38,8 +38,8 @@
   ],
   "scripts": {
     "clean": "rimraf dist",
-    "build": "pnpm clean && tsup src/index.tsx --env.NODE_ENV production",
-    "ci:build": "pnpm clean && tsup src/index.tsx --env.NODE_ENV production && npm run size",
+    "build": "bun run clean && tsup src/index.tsx --env.NODE_ENV production",
+    "ci:build": "bun run clean && tsup src/index.tsx --env.NODE_ENV production && bun run size",
     "dev": "tsup src/index.tsx --env.NODE_ENV development",
     "lint": "eslint *.ts*",
     "size": "size-limit",
