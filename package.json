@@ -7,13 +7,15 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "turbo run build",
-    "dev": "turbo run dev --parallel --no-cache",
-    "preview": "turbo run preview",
-    "lint": "turbo run lint",
-    "test": "turbo run build test",
-    "unit:test": "turbo run unit:test",
-    "ci:test": "turbo run build ci:test",
+    "build": "bun run --filter react-sketch-canvas build",
+    "build:docs": "bun run --filter documentation build",
+    "dev": "bun run --filter react-sketch-canvas dev",
+    "dev:docs": "bun run --filter documentation dev",
+    "preview": "bun run --filter documentation preview",
+    "lint": "bun run --filter react-sketch-canvas lint",
+    "test": "bun run build && bun run --filter tests test",
+    "unit:test": "bun run --filter react-sketch-canvas unit:test",
+    "ci:test": "bun run build && bun run --filter tests ci:test",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "ci:build": "cp README.md packages/react-sketch-canvas/ && bun run --filter react-sketch-canvas ci:build",
     "release": "bun run test && bun run ci:build && changeset version && changeset publish",
@@ -21,8 +23,7 @@
   },
   "devDependencies": {
     "eslint-config-custom": "workspace:*",
-    "prettier": "^3.3.3",
-    "turbo": "^2.0.14"
+    "prettier": "^3.3.3"
   },
   "engines": {
     "node": ">=18.0.0",

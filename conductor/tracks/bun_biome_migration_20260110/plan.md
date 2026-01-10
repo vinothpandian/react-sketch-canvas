@@ -14,11 +14,11 @@
     - [x] Test that workspace dependencies resolve correctly
     - [x] Verify `bun run build` works across all packages
 
-- [ ] Task: Remove Turborepo
-    - [ ] Delete turbo.json
-    - [ ] Remove turbo from devDependencies
-    - [ ] Update package.json scripts to work without Turborepo task runner
-    - [ ] Test that build, lint, and test commands work correctly
+- [~] Task: Remove Turborepo
+    - [x] Delete turbo.json
+    - [x] Remove turbo from devDependencies
+    - [x] Update package.json scripts to work without Turborepo task runner
+    - [x] Test that build, lint, and test commands work correctly
 
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Bun Package Manager Migration' (Protocol in workflow.md)
 
