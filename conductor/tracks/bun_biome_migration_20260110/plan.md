@@ -29,11 +29,11 @@
     - [x] Identify test patterns, mocks, and assertions used
     - [x] List any Vitest-specific APIs that need migration
 
-- [ ] Task: Migrate unit tests to Bun test runner
-    - [ ] Update test file imports to use Bun test APIs
-    - [ ] Migrate test assertions to Bun's built-in expect
-    - [ ] Update any mock implementations for Bun compatibility
-    - [ ] Ensure test files use .test.ts extension (Bun convention)
+- [~] Task: Migrate unit tests to Bun test runner
+    - [x] Update test file imports to use Bun test APIs
+    - [x] Migrate test assertions to Bun's built-in expect
+    - [x] Update any mock implementations for Bun compatibility
+    - [x] Ensure test files use .test.ts extension (Bun convention)
 
 - [ ] Task: Update test scripts and configuration
     - [ ] Update package.json test scripts to use `bun test`

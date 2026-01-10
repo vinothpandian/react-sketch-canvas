@@ -1,11 +1,11 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, mock, beforeEach, afterEach } from "bun:test";
 import { renderHook, act } from "@testing-library/react";
 
 import { useThrottledCallback } from "../utils";
 
 describe("useThrottledCallback", () => {
   it("should call the callback immediately if delay is 0", () => {
-    const callback = vi.fn();
+    const callback = mock();
     const { result } = renderHook(() => useThrottledCallback(callback, 0, []));
 
     act(() => {
@@ -15,10 +15,10 @@ describe("useThrottledCallback", () => {
     expect(callback).toHaveBeenCalledTimes(1);
   });
 
-  it("should throttle the callback", () => {
-    vi.useFakeTimers();
-    const callback = vi.fn();
-    const { result } = renderHook(() => useThrottledCallback(callback, 20, []));
+  it("should throttle the callback", async () => {
+    const callback = mock();
+    const delay = 20;
+    const { result } = renderHook(() => useThrottledCallback(callback, delay, []));
 
     act(() => {
       result.current();
@@ -26,14 +26,13 @@ describe("useThrottledCallback", () => {
       result.current();
     });
 
+    // First call is immediate
     expect(callback).toHaveBeenCalledTimes(1);
 
-    act(() => {
-      vi.advanceTimersByTime(20);
-    });
+    // Wait for throttle delay to pass
+    await new Promise((resolve) => setTimeout(resolve, delay + 10));
 
+    // Throttled call should have fired
     expect(callback).toHaveBeenCalledTimes(2);
-
-    vi.useRealTimers();
   });
 });
