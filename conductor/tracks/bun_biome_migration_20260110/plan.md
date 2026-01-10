@@ -41,10 +41,10 @@
     - [x] Verify all unit tests pass with Bun test runner
     - [x] Ensure coverage meets >80% threshold
 
-- [ ] Task: Remove Vitest dependencies
-    - [ ] Remove vitest from devDependencies
-    - [ ] Remove vitest configuration files
-    - [ ] Clean up any Vitest-specific imports
+- [~] Task: Remove Vitest dependencies
+    - [x] Remove vitest from devDependencies
+    - [x] Remove vitest configuration files
+    - [x] Clean up any Vitest-specific imports
 
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Test Runner Migration' (Protocol in workflow.md)
 
