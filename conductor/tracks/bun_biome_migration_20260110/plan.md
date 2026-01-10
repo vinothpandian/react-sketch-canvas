@@ -35,11 +35,11 @@
     - [x] Update any mock implementations for Bun compatibility
     - [x] Ensure test files use .test.ts extension (Bun convention)
 
-- [ ] Task: Update test scripts and configuration
-    - [ ] Update package.json test scripts to use `bun test`
-    - [ ] Configure test coverage reporting with Bun
-    - [ ] Verify all unit tests pass with Bun test runner
-    - [ ] Ensure coverage meets >80% threshold
+- [~] Task: Update test scripts and configuration
+    - [x] Update package.json test scripts to use `bun test`
+    - [x] Configure test coverage reporting with Bun
+    - [x] Verify all unit tests pass with Bun test runner
+    - [x] Ensure coverage meets >80% threshold
 
 - [ ] Task: Remove Vitest dependencies
     - [ ] Remove vitest from devDependencies

@@ -43,7 +43,8 @@
     "dev": "tsup src/index.tsx --env.NODE_ENV development",
     "lint": "eslint *.ts*",
     "size": "size-limit",
-    "unit:test": "vitest --no-watch"
+    "unit:test": "bun test",
+    "unit:test:coverage": "bun test --coverage"
   },
   "devDependencies": {
     "@size-limit/preset-small-lib": "^11.0.2",
