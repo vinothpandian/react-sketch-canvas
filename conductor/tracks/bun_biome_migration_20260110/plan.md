@@ -2,7 +2,7 @@
 
 ## Phase 1: Bun Package Manager Migration
 
-- [~] Task: Set up Bun and migrate from pnpm
+- [x] Task: Set up Bun and migrate from pnpm [e7ef4ac]
     - [x] Install Bun globally and verify installation
     - [x] Remove pnpm-lock.yaml
     - [x] Run `bun install` to generate bun.lockb
