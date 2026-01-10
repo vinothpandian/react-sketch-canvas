@@ -14,7 +14,7 @@
     - [x] Test that workspace dependencies resolve correctly
     - [x] Verify `bun run build` works across all packages
 
-- [~] Task: Remove Turborepo
+- [x] Task: Remove Turborepo [a69636e]
     - [x] Delete turbo.json
     - [x] Remove turbo from devDependencies
     - [x] Update package.json scripts to work without Turborepo task runner
