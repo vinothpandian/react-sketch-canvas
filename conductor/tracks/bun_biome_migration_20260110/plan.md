@@ -20,7 +20,7 @@
     - [x] Update package.json scripts to work without Turborepo task runner
     - [x] Test that build, lint, and test commands work correctly
 
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Bun Package Manager Migration' (Protocol in workflow.md)
+- [~] Task: Conductor - User Manual Verification 'Phase 1: Bun Package Manager Migration' (Protocol in workflow.md)
 
 ## Phase 2: Test Runner Migration
 
