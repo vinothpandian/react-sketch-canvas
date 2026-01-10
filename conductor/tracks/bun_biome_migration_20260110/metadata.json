@@ -1,0 +1,8 @@
+{
+  "track_id": "bun_biome_migration_20260110",
+  "type": "migration",
+  "status": "new",
+  "created_at": "2026-01-10T00:00:00Z",
+  "updated_at": "2026-01-10T00:00:00Z",
+  "description": "Migrate from pnpm/Turborepo to Bun workspaces and replace ESLint/Prettier with Biome"
+}
