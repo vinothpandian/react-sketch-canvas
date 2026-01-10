@@ -46,7 +46,7 @@
     - [x] Remove vitest configuration files
     - [x] Clean up any Vitest-specific imports
 
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Test Runner Migration' (Protocol in workflow.md)
+- [~] Task: Conductor - User Manual Verification 'Phase 2: Test Runner Migration' (Protocol in workflow.md)
 
 ## Phase 3: Biome Migration
 
