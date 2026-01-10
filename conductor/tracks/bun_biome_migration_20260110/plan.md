@@ -9,10 +9,10 @@
     - [x] Verify all dependencies install correctly
     - [x] Update root package.json scripts to use `bun run` instead of `pnpm`
 
-- [ ] Task: Configure Bun workspaces
-    - [ ] Verify workspace configuration in root package.json works with Bun
-    - [ ] Test that workspace dependencies resolve correctly
-    - [ ] Verify `bun run build` works across all packages
+- [x] Task: Configure Bun workspaces [verified]
+    - [x] Verify workspace configuration in root package.json works with Bun
+    - [x] Test that workspace dependencies resolve correctly
+    - [x] Verify `bun run build` works across all packages
 
 - [ ] Task: Remove Turborepo
     - [ ] Delete turbo.json
