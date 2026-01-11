@@ -8,11 +8,10 @@ React Sketch Canvas is a freehand vector drawing React component library using S
 
 ## Monorepo Structure
 
-This is a Turborepo + pnpm workspace monorepo:
+This is a Bun workspace monorepo:
 
 - `packages/react-sketch-canvas/` - Main library (published to npm)
 - `packages/tests/` - Playwright component tests
-- `packages/eslint-config-custom/` - Shared ESLint configuration
 - `packages/tsconfig/` - Shared TypeScript configurations
 - `apps/docs/` - Astro-based documentation site
 
@@ -20,34 +19,37 @@ This is a Turborepo + pnpm workspace monorepo:
 
 ```bash
 # Install dependencies
-pnpm install
+bun install
 
 # Build all packages
-pnpm build
+bun run build
 
-# Development mode (parallel, no cache)
-pnpm dev
+# Development mode
+bun run dev
 
 # Run all tests (builds first, then runs Playwright tests)
-pnpm test
+bun run test
 
-# Run unit tests only (Vitest)
-pnpm unit:test
+# Run unit tests only (Bun test runner)
+bun run unit:test
 
-# Lint all packages
-pnpm lint
+# Lint all packages (Biome)
+bun run lint
 
-# Format code
-pnpm format
+# Lint and auto-fix
+bun run lint:fix
+
+# Format code (Biome)
+bun run format
 
 # Run a single Playwright test file
-pnpm --filter tests test src/actions/undo-redo.spec.tsx
+bun run --filter tests test src/actions/undo-redo.spec.tsx
 
 # Run Playwright tests with UI mode (interactive debugging)
-pnpm --filter tests dev:test
+bun run --filter tests dev:test
 
 # Build library with size check
-pnpm ci:build
+bun run ci:build
 ```
 
 ## Architecture
@@ -91,12 +93,17 @@ type ExportImageType = "jpeg" | "png";
 
 ## Testing
 
-- **Unit tests**: Vitest in `packages/react-sketch-canvas/src/__test__/`
+- **Unit tests**: Bun test runner in `packages/react-sketch-canvas/src/__test__/`
 - **Integration tests**: Playwright component tests in `packages/tests/src/`
   - `props/` - Property validation tests
   - `actions/` - Feature tests (erase, export, import, undo/redo)
   - `canvas/` - Canvas rendering tests
   - `events/` - Event handling tests
+
+## Code Quality
+
+- **Linting**: Biome (`biome.json` at root)
+- **Formatting**: Biome (2 spaces, double quotes, semicolons)
 
 ## Build Output
 

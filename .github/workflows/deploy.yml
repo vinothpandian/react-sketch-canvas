@@ -21,38 +21,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout your repository using git
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v3
-        name: Install pnpm
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          version: 8
-          run_install: false
-
-      - name: Get pnpm store directory
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-
-      - uses: actions/cache@v3
-        name: Setup pnpm cache
-        with:
-          path: ${{ env.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
+          bun-version: latest
 
       - name: Install dependencies
-        run: pnpm install --no-frozen-lockfile
+        run: bun install
 
       - name: Build packages
-        run: pnpm build
+        run: bun run build
 
       - name: Install, build, and upload your site
-        uses: withastro/action@v1
+        uses: withastro/action@v3
         with:
-         path: ./apps/docs
-         package-manager: pnpm@latest
+          path: ./apps/docs
+          package-manager: bun@latest
 
   deploy:
     needs: build
@@ -63,4 +49,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v1
+        uses: actions/deploy-pages@v4

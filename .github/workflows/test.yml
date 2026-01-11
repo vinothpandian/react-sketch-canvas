@@ -5,55 +5,35 @@ on:
 
 jobs:
   build:
-    name: Build, lint, and test on Node ${{ matrix.node }} and ${{ matrix.os }}
+    name: Build, lint, and test
 
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        node: ["18.x"]
-        os: [ubuntu-latest]
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Use Node ${{ matrix.node }}
-        uses: actions/setup-node@v3
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          node-version: ${{ matrix.node }}
-
-      - uses: pnpm/action-setup@v3
-        name: Install pnpm
-        with:
-          version: 8
-          run_install: false
-
-      - name: Get pnpm store directory
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-
-      - uses: actions/cache@v3
-        name: Setup pnpm cache
-        with:
-          path: ${{ env.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
+          bun-version: latest
 
       - name: Install dependencies
-        run: pnpm install --no-frozen-lockfile
+        run: bun install
 
-      - name: Install Playwright browsers
-        run: pnpx playwright install chromium
+      - name: Lint
+        run: bun run lint
 
       - name: Unit tests
-        run: pnpm unit:test
+        run: bun run unit:test
 
-      - name: Test
-        run: pnpm test
+      - name: Install Playwright browsers
+        run: bunx playwright install chromium
 
-      - uses: actions/upload-artifact@v3
+      - name: Build and test
+        run: bun run test
+
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: playwright-report

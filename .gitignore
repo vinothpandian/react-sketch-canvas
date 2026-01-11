@@ -3,21 +3,16 @@
 node_modules
 .cache
 dist
-# Cypress
-cypress/screenshots/
-cypress/videos/
-.nyc_output/
+
+# Playwright
+packages/tests/playwright-report/
+packages/tests/test-results/
+
+# Coverage
 coverage/
-jest-coverage/
-cypress-coverage/
-reports/
-packages/tests/cypress/screenshots/
-packages/tests/cypress/videos/
-packages/tests/.nyc_output/
-packages/tests/coverage/
-packages/tests/cypress/downloads/
+
+# IDE
 .idea/
-.turbo/cookies/
+
+# Generated docs
 /apps/docs/src/content/docs/api/
-.turbo/cache/
-.turbo/daemon/
