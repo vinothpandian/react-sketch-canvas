@@ -56,17 +56,17 @@
     - [x] Configure linting rules equivalent to current ESLint setup
     - [x] Configure formatting rules equivalent to current Prettier setup
 
-- [ ] Task: Migrate linting rules
-    - [ ] Analyze current ESLint configuration in eslint-config-custom
-    - [ ] Map ESLint rules to Biome equivalents
-    - [ ] Document any rules that cannot be migrated
-    - [ ] Test Biome linting on codebase
+- [~] Task: Migrate linting rules
+    - [x] Analyze current ESLint configuration in eslint-config-custom
+    - [x] Map ESLint rules to Biome equivalents
+    - [x] Document any rules that cannot be migrated
+    - [x] Test Biome linting on codebase
 
-- [ ] Task: Migrate formatting rules
-    - [ ] Analyze current Prettier configuration
-    - [ ] Configure Biome formatter with equivalent settings
-    - [ ] Run Biome format on entire codebase
-    - [ ] Verify formatting output matches expectations
+- [~] Task: Migrate formatting rules
+    - [x] Analyze current Prettier configuration
+    - [x] Configure Biome formatter with equivalent settings
+    - [x] Run Biome format on entire codebase
+    - [x] Verify formatting output matches expectations
 
 - [ ] Task: Update package.json scripts for Biome
     - [ ] Update lint script to use `biome check`

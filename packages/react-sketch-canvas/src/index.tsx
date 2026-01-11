@@ -1,8 +1,8 @@
 export * from "./Canvas";
+export { AllowOnlyPointerType, CanvasProps, CanvasRef } from "./Canvas.types";
 export * from "./ReactSketchCanvas";
+export {
+  ReactSketchCanvasProps,
+  ReactSketchCanvasRef,
+} from "./ReactSketchCanvas.types";
 export * from "./types";
-export { CanvasRef } from "./Canvas.types";
-export { CanvasProps } from "./Canvas.types";
-export { AllowOnlyPointerType } from "./Canvas.types";
-export { ReactSketchCanvasProps } from "./ReactSketchCanvas.types";
-export { ReactSketchCanvasRef } from "./ReactSketchCanvas.types";

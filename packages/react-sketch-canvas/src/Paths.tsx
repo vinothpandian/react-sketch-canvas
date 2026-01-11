@@ -1,5 +1,4 @@
-import * as React from "react";
-import { CanvasPath, Point } from "./core.types";
+import type { CanvasPath, Point } from "./core.types";
 
 type ControlPoints = {
   current: Point;

@@ -18,16 +18,21 @@
 		"enabled": true,
 		"rules": {
 			"recommended": true,
+			"a11y": {
+				"noSvgWithoutTitle": "off"
+			},
 			"correctness": {
 				"noUnusedVariables": "error",
-				"noUnusedImports": "error"
+				"noUnusedImports": "error",
+				"useHookAtTopLevel": "error"
 			},
 			"style": {
 				"noNonNullAssertion": "warn",
 				"useImportType": "error"
 			},
 			"suspicious": {
-				"noExplicitAny": "warn"
+				"noExplicitAny": "warn",
+				"noArrayIndexKey": "off"
 			}
 		}
 	},

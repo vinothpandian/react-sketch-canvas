@@ -1,14 +1,14 @@
 /* eslint-disable react/no-array-index-key */
 import * as React from "react";
 import { useCallback } from "react";
-import Paths, { SvgPath } from "./Paths";
-import {
+import type { CanvasProps, CanvasRef } from "./Canvas.types";
+import type {
   CanvasPath,
   ExportImageOptions,
   ExportImageType,
   Point,
 } from "./core.types";
-import { CanvasProps, CanvasRef } from "./Canvas.types";
+import Paths, { SvgPath } from "./Paths";
 import { useThrottledCallback } from "./utils";
 
 const loadImage = (url: string): Promise<HTMLImageElement> =>
@@ -200,7 +200,7 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
             try {
               const img = loadImage(backgroundImage);
               loadImagePromises.push(img);
-            } catch (error) {
+            } catch (_error) {
               // eslint-disable-next-line no-console
               console.warn(
                 "exportWithBackgroundImage props is set without a valid background image URL. This option is ignored",

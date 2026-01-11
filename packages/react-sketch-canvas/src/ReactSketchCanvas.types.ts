@@ -1,6 +1,6 @@
 /* Props validation */
-import { CanvasProps, CanvasRef } from "./Canvas.types";
-import { CanvasPath } from "./core.types";
+import type { CanvasProps, CanvasRef } from "./Canvas.types";
+import type { CanvasPath } from "./core.types";
 
 /**
  * React Sketch Canvas component props.

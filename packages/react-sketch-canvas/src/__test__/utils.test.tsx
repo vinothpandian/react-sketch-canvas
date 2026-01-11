@@ -1,5 +1,5 @@
-import { describe, it, expect, mock, beforeEach, afterEach } from "bun:test";
-import { renderHook, act } from "@testing-library/react";
+import { describe, expect, it, mock } from "bun:test";
+import { act, renderHook } from "@testing-library/react";
 
 import { useThrottledCallback } from "../utils";
 
@@ -18,7 +18,9 @@ describe("useThrottledCallback", () => {
   it("should throttle the callback", async () => {
     const callback = mock();
     const delay = 20;
-    const { result } = renderHook(() => useThrottledCallback(callback, delay, []));
+    const { result } = renderHook(() =>
+      useThrottledCallback(callback, delay, []),
+    );
 
     act(() => {
       result.current();

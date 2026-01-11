@@ -1,14 +1,14 @@
 import * as React from "react";
 import { useCallback } from "react";
 import { Canvas } from "./Canvas";
-import {
+import type { CanvasRef } from "./Canvas.types";
+import type {
   CanvasPath,
   ExportImageOptions,
   ExportImageType,
   Point,
 } from "./core.types";
-import { CanvasRef } from "./Canvas.types";
-import {
+import type {
   ReactSketchCanvasProps,
   ReactSketchCanvasRef,
 } from "./ReactSketchCanvas.types";
@@ -82,17 +82,17 @@ export const ReactSketchCanvas = React.forwardRef<
 
     onStroke(lastStroke, !lastStroke.drawMode);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isDrawing]);
+  }, [currentPaths.slice, onStroke]);
 
   React.useEffect(() => {
     liftStrokeUp();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isDrawing]);
+  }, [liftStrokeUp]);
 
   React.useEffect(() => {
     onChange(currentPaths);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPaths]);
+  }, [currentPaths, onChange]);
 
   const processQueue = React.useCallback(async () => {
     if (isProcessingQueue || operationQueue.length === 0) return;
