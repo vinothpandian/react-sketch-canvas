@@ -1,9 +1,9 @@
 import { useRef } from "react";
 import {
-  ExportImageType,
+  type ExportImageType,
   ReactSketchCanvas,
-  ReactSketchCanvasProps,
-  ReactSketchCanvasRef,
+  type ReactSketchCanvasProps,
+  type ReactSketchCanvasRef,
 } from "react-sketch-canvas";
 import { convertDataURItoKiloBytes } from "../commands";
 

@@ -1,9 +1,9 @@
+import { IconEraser, IconPencil, IconRestore } from "@tabler/icons-react";
+import { type ChangeEvent, useEffect, useRef, useState } from "react";
 import {
   ReactSketchCanvas,
   type ReactSketchCanvasRef,
 } from "react-sketch-canvas";
-import { type ChangeEvent, useEffect, useRef, useState } from "react";
-import { IconEraser, IconPencil, IconRestore } from "@tabler/icons-react";
 import paths from "../assets/initialSketch.json";
 
 const iconButton =

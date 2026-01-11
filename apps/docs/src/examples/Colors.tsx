@@ -1,8 +1,8 @@
+import { type ChangeEvent, useRef, useState } from "react";
 import {
   ReactSketchCanvas,
   type ReactSketchCanvasRef,
 } from "react-sketch-canvas";
-import { type ChangeEvent, useRef, useState } from "react";
 
 export default function App() {
   const canvasRef = useRef<ReactSketchCanvasRef>(null);

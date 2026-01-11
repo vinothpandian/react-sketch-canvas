@@ -56,31 +56,31 @@
     - [x] Configure linting rules equivalent to current ESLint setup
     - [x] Configure formatting rules equivalent to current Prettier setup
 
-- [~] Task: Migrate linting rules
+- [x] Task: Migrate linting rules
     - [x] Analyze current ESLint configuration in eslint-config-custom
     - [x] Map ESLint rules to Biome equivalents
-    - [x] Document any rules that cannot be migrated
+    - [x] Document any rules that cannot be migrated (CSS linting disabled for Tailwind)
     - [x] Test Biome linting on codebase
 
-- [~] Task: Migrate formatting rules
+- [x] Task: Migrate formatting rules
     - [x] Analyze current Prettier configuration
     - [x] Configure Biome formatter with equivalent settings
     - [x] Run Biome format on entire codebase
     - [x] Verify formatting output matches expectations
 
-- [ ] Task: Update package.json scripts for Biome
-    - [ ] Update lint script to use `biome check`
-    - [ ] Update format script to use `biome format`
-    - [ ] Add `biome check --write` for auto-fix capability
-    - [ ] Test all scripts work correctly
+- [x] Task: Update package.json scripts for Biome
+    - [x] Update lint script to use `biome check`
+    - [x] Update format script to use `biome format`
+    - [x] Add `biome check --write` for auto-fix capability
+    - [x] Test all scripts work correctly
 
-- [ ] Task: Remove ESLint and Prettier
-    - [ ] Remove eslint and all eslint plugins from devDependencies
-    - [ ] Remove prettier from devDependencies
-    - [ ] Delete .eslintrc, .eslintignore files
-    - [ ] Delete .prettierrc, .prettierignore files
-    - [ ] Remove packages/eslint-config-custom package entirely
-    - [ ] Update workspace configuration to remove eslint-config-custom
+- [x] Task: Remove ESLint and Prettier
+    - [x] Remove eslint and all eslint plugins from devDependencies
+    - [x] Remove prettier from devDependencies
+    - [x] Delete .eslintrc, .eslintignore files
+    - [x] Delete .prettierrc, .prettierignore files (none existed)
+    - [x] Remove packages/eslint-config-custom package entirely
+    - [x] Update workspace configuration to remove eslint-config-custom
 
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Biome Migration' (Protocol in workflow.md)
 

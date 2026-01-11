@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/experimental-ct-react";
-import { CanvasPath, ReactSketchCanvas } from "react-sketch-canvas";
+import { type CanvasPath, ReactSketchCanvas } from "react-sketch-canvas";
 import { drawLine } from "../commands";
 import { WithEraserButton } from "../stories/WithEraserButton.story";
 

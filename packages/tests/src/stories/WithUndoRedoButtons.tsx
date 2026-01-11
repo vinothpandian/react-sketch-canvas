@@ -1,9 +1,9 @@
 import { useRef } from "react";
 import {
   ReactSketchCanvas,
-  ReactSketchCanvasProps,
-  ReactSketchCanvasRef,
-  CanvasPath,
+  type CanvasPath,
+  type ReactSketchCanvasProps,
+  type ReactSketchCanvasRef,
 } from "react-sketch-canvas";
 
 interface WithUndoRedoButtonsProps extends ReactSketchCanvasProps {
@@ -48,7 +48,6 @@ export function WithUndoRedoButtons({
 
   return (
     <div>
-      {/* eslint-disable-next-line react/jsx-props-no-spreading */}
       <ReactSketchCanvas ref={canvasRef} {...canvasProps} />
       <button id={undoButtonId} type="button" onClick={handleUndoClick}>
         Undo
@@ -70,7 +69,11 @@ export function WithUndoRedoButtons({
       >
         Reset Canvas
       </button>
-      <button id={loadPathsButtonId} onClick={handleLoadPathsClick}>
+      <button
+        type="button"
+        id={loadPathsButtonId}
+        onClick={handleLoadPathsClick}
+      >
         Load Paths
       </button>
     </div>

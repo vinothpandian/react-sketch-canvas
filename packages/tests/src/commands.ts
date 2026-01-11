@@ -1,5 +1,5 @@
-import { Locator } from "playwright/test";
-import { DrawLineArgs, DrawPointArgs, DrawSquareArgs } from "./types";
+import type { Locator } from "playwright/test";
+import type { DrawLineArgs, DrawPointArgs, DrawSquareArgs } from "./types";
 
 export function getCanvasIds(id: string) {
   const canvasBackgroundId = `#${id}__canvas-background`;

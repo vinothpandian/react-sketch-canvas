@@ -12,19 +12,18 @@
     "dev": "bun run --filter react-sketch-canvas dev",
     "dev:docs": "bun run --filter documentation dev",
     "preview": "bun run --filter documentation preview",
-    "lint": "bun run --filter react-sketch-canvas lint",
+    "lint": "biome check",
+    "lint:fix": "biome check --write",
     "test": "bun run build && bun run --filter tests test",
     "unit:test": "bun run --filter react-sketch-canvas unit:test",
     "ci:test": "bun run build && bun run --filter tests ci:test",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "format": "biome format --write .",
     "ci:build": "cp README.md packages/react-sketch-canvas/ && bun run --filter react-sketch-canvas ci:build",
     "release": "bun run test && bun run ci:build && changeset version && changeset publish",
     "pre-release": "bun run ci:test && bun run ci:build && changeset && changeset publish"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.3.11",
-    "eslint-config-custom": "workspace:*",
-    "prettier": "^3.3.3"
+    "@biomejs/biome": "^2.3.11"
   },
   "engines": {
     "node": ">=18.0.0",

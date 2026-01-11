@@ -1,8 +1,8 @@
 import { useRef } from "react";
 import {
   ReactSketchCanvas,
-  ReactSketchCanvasProps,
-  ReactSketchCanvasRef,
+  type ReactSketchCanvasProps,
+  type ReactSketchCanvasRef,
 } from "react-sketch-canvas";
 
 interface WithEraserButtonProps extends ReactSketchCanvasProps {

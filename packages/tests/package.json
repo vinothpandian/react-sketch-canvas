@@ -15,7 +15,6 @@
   "devDependencies": {
     "@types/node": "^20.11.17",
     "@types/react": "^18.2.55",
-    "eslint-config-custom": "workspace:*",
     "tsconfig": "workspace:*"
   },
   "dependencies": {

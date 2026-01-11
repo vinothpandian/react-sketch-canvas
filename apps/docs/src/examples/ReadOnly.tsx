@@ -1,5 +1,5 @@
-import { ReactSketchCanvas } from "react-sketch-canvas";
 import { type ChangeEvent, useState } from "react";
+import { ReactSketchCanvas } from "react-sketch-canvas";
 
 export default function App() {
   const [readOnly, setReadOnly] = useState(false);
@@ -19,6 +19,7 @@ export default function App() {
             role="switch"
             id="readOnly"
             checked={readOnly}
+            aria-checked={readOnly}
             onChange={handleReadOnlyChange}
           />
           <label className="form-check-label" htmlFor="readOnly">

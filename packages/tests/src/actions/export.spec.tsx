@@ -1,6 +1,10 @@
-import { expect, MountOptions, test } from "@playwright/experimental-ct-react";
+import {
+  expect,
+  type MountOptions,
+  test,
+} from "@playwright/experimental-ct-react";
 import type { Locator } from "playwright/test";
-import { ExportImageType } from "react-sketch-canvas";
+import type { ExportImageType } from "react-sketch-canvas";
 import { drawSquares, getCanvasIds } from "../commands";
 import { WithExportButton } from "../stories/WithExportButton.story";
 

@@ -1,9 +1,9 @@
 import { useRef } from "react";
 import {
+  type CanvasPath,
   ReactSketchCanvas,
-  ReactSketchCanvasProps,
-  ReactSketchCanvasRef,
-  CanvasPath,
+  type ReactSketchCanvasProps,
+  type ReactSketchCanvasRef,
 } from "react-sketch-canvas";
 
 interface WithLoadPathsButtonProps extends ReactSketchCanvasProps {
@@ -24,9 +24,12 @@ export function WithLoadPathsButton({
 
   return (
     <div>
-      {/* eslint-disable-next-line react/jsx-props-no-spreading */}
       <ReactSketchCanvas ref={canvasRef} {...canvasProps} />
-      <button id={loadPathsButtonId} onClick={handleLoadPathsClick}>
+      <button
+        type="button"
+        id={loadPathsButtonId}
+        onClick={handleLoadPathsClick}
+      >
         Load Paths
       </button>
     </div>
