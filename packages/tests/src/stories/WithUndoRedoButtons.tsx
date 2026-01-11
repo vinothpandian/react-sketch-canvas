@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import {
-  ReactSketchCanvas,
   type CanvasPath,
+  ReactSketchCanvas,
   type ReactSketchCanvasProps,
   type ReactSketchCanvasRef,
 } from "react-sketch-canvas";
