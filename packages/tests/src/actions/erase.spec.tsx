@@ -103,6 +103,75 @@ test.describe("eraser", () => {
     );
   });
 
+  test("should not set mask attribute on stroke group when no eraser paths exist", async ({
+    mount,
+  }) => {
+    const canvasId = "rsc";
+
+    const component = await mount(<ReactSketchCanvas id={canvasId} />);
+
+    const { firstStrokeGroupId } = getCanvasIds(canvasId);
+
+    const canvas = component.locator(`#${canvasId}`);
+
+    // Draw a stroke without using the eraser
+    await drawLine(canvas, {
+      length: 50,
+      originX: 0,
+      originY: 10,
+    });
+
+    // The stroke group should not have a mask attribute when there are no eraser paths
+    await expect(canvas.locator(firstStrokeGroupId)).not.toHaveAttribute(
+      "mask",
+    );
+
+    // Verify the stroke path exists
+    await expect(
+      canvas.locator(firstStrokeGroupId).locator("path"),
+    ).toHaveCount(1);
+  });
+
+  test("should not set mask attribute on last stroke group after erasing", async ({
+    mount,
+  }) => {
+    const canvasId = "rsc";
+    const eraserButtonId = "eraser-button";
+    const penButtonId = "pen-button";
+
+    const component = await mount(
+      <WithEraserButton
+        id={canvasId}
+        eraserButtonId={eraserButtonId}
+        penButtonId={penButtonId}
+      />,
+    );
+
+    const { firstStrokeGroupId, secondStrokeGroupId } = getCanvasIds(canvasId);
+
+    const canvas = component.locator(`#${canvasId}`);
+    const eraserButton = component.locator(`#${eraserButtonId}`);
+    const penButton = component.locator(`#${penButtonId}`);
+
+    // Draw → Erase → Draw (creates 2 stroke groups, only first has a mask)
+    await drawLine(canvas, { length: 50, originX: 0, originY: 10 });
+    await eraserButton.click();
+    await drawLine(canvas, { length: 10, originX: 0, originY: 10 });
+    await penButton.click();
+    await drawLine(canvas, { length: 50, originX: 10, originY: 20 });
+
+    // First stroke group should have the eraser mask
+    await expect(canvas.locator(firstStrokeGroupId)).toHaveAttribute(
+      "mask",
+      `url(#${canvasId}__eraser-mask-0)`,
+    );
+
+    // Second stroke group (after last eraser) should NOT have a mask
+    await expect(canvas.locator(secondStrokeGroupId)).not.toHaveAttribute(
+      "mask",
+    );
+  });
+
   test("should trigger erase mode with windows surface pen eraser", async ({
     mount,
   }) => {

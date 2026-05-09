@@ -406,7 +406,9 @@ release drawing even when point goes out of canvas */
           <g
             id={`${id}__stroke-group-${i}`}
             key={`${id}__stroke-group-${i}`}
-            mask={`${eraserPaths[i] && `url(#${id}__eraser-mask-${i})`}`}
+            {...(eraserPaths[i]
+              ? { mask: `url(#${id}__eraser-mask-${i})` }
+              : {})}
           >
             <Paths id={`${id}__stroke-group-${i}__paths`} paths={pathGroup} />
           </g>
