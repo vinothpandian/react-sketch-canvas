@@ -10,7 +10,7 @@
 
 ## Demo Development Server
 
-- Run `pnpm start` to start the development server.
+- Run `pnpm dev` to start the development server.
 - Open `http://localhost:4321/react-sketch-canvas/` in your browser.
 
 ## Running Tests
