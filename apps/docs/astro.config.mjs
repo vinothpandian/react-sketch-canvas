@@ -9,6 +9,11 @@ import starlightTypeDoc, { typeDocSidebarGroup } from "starlight-typedoc";
 export default defineConfig({
   site: 'https://vinoth.info',
   base: '/react-sketch-canvas',
+  image: {
+    service: {
+      entrypoint: 'astro/assets/services/noop',
+    },
+  },
   integrations: [
     starlight({
       title: "React Sketch Canvas",
