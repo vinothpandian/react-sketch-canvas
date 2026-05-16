@@ -379,7 +379,10 @@ release drawing even when point goes out of canvas */
               key={`${id}__eraser-mask-${i}`}
               maskUnits="userSpaceOnUse"
             >
-              <use href={`#${id}__mask-background`} />
+              <use
+                href={`#${id}__mask-background`}
+                xlinkHref={`#${id}__mask-background`}
+              />
               {Array.from(
                 { length: eraserPaths.length - i },
                 (_i, j) => j + i,
@@ -387,6 +390,7 @@ release drawing even when point goes out of canvas */
                 <use
                   key={k.toString()}
                   href={`#${id}__eraser-${k.toString()}`}
+                  xlinkHref={`#${id}__eraser-${k.toString()}`}
                 />
               ))}
             </mask>
