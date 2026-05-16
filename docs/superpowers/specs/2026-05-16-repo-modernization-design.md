@@ -94,7 +94,9 @@ Biome migration:
 
 - Add Biome as the formatting and linting tool.
 - Remove Prettier, ESLint, and the shared ESLint config package.
-- Convert suppressions that still matter from ESLint comments to Biome-compatible suppressions or targeted config exceptions.
+- Use Biome defaults rather than preserving Airbnb ESLint behavior.
+- Run Biome formatting and safe lint fixes across the repo, accepting the required formatting churn as part of Phase 2.
+- Convert only suppressions that still represent intentional exceptions after Biome has run.
 - Keep formatting/lint scripts simple and runnable from the root.
 
 TypeScript config cleanup:
@@ -156,7 +158,7 @@ Moving tests into the library package increases the chance of publishing test fi
 
 Lint migration risk:
 
-Biome does not map one-to-one with the existing Airbnb ESLint stack. Mitigate by converting only meaningful suppressions and avoiding unrelated style rewrites beyond the required formatter pass.
+Biome does not map one-to-one with the existing Airbnb ESLint stack. This migration intentionally adopts Biome defaults and accepts the resulting formatter/lint-fix churn. Mitigate review risk by keeping Biome's mechanical changes in the Phase 2 tooling step and avoiding unrelated behavioral edits in the same files.
 
 Bundle-size risk:
 
