@@ -1,5 +1,41 @@
 # Changelog
 
+## 7.0.0-next.6
+
+### Patch Changes
+
+- Fix: remove invalid mask attribute from stroke groups without eraser
+
+## 7.0.0-next.5
+
+### Patch Changes
+
+- Fix undo/redo behavior:
+  - Fix timing issues by moving history update logic into mouse-down/redo/undo/clear functions
+  - Prevent extra strokes from being recorded during history updates
+  - Fix bug where canvas couldn't undo to empty state
+  - Improve loadPath function to properly handle history state
+  - Add proper history handling when using loadPaths
+  - Fix reset canvas history logic
+  - Implement event queue for undo/redo operations
+  - Fix order of operations in history management
+  - Add tests for undo behavior after clear and with loadPaths
+
+## 7.0.0-next.4
+
+### Patch Changes
+
+- Add option to disable canvas (readOnly prop)
+- Remove cypress tests
+- Add playwright component tests
+
+## 7.0.0-next.3
+
+### Patch Changes
+
+- Add option to customize export image size
+- Upgrade packages
+
 ## 7.0.0-next.2
 
 ### Patch Changes
