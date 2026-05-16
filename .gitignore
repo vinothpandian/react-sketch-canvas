@@ -18,4 +18,6 @@ packages/tests/coverage/
 packages/tests/cypress/downloads/
 .idea/
 .turbo/
+playwright-report/
+test-results/
 /apps/docs/src/content/docs/api/
