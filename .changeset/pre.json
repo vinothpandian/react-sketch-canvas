@@ -2,9 +2,7 @@
 	"mode": "pre",
 	"tag": "next",
 	"initialVersions": {
-		"documentation": "1.0.0",
-		"react-sketch-canvas": "6.2.0",
-		"tests": "1.0.0"
+		"react-sketch-canvas": "6.2.0"
 	},
 	"changesets": [
 		"cold-nails-wave",
