@@ -1,8 +1,5 @@
 import { useRef, useState } from "react";
-import {
-	ReactSketchCanvas,
-	type ReactSketchCanvasRef,
-} from "../../src/ReactSketchCanvas";
+import { ReactSketchCanvas, type ReactSketchCanvasRef } from "../../src";
 
 export function WithSizedExportButton() {
 	const canvasRef = useRef<ReactSketchCanvasRef>(null);

@@ -1,4 +1,3 @@
-import type { CanvasPath } from "../../types";
 import type { CanvasProps } from "../types";
 import { BackgroundPattern, BackgroundRect } from "./Background";
 import { EraserMaskDefs, HiddenEraserStrokes } from "./EraserMasks";
