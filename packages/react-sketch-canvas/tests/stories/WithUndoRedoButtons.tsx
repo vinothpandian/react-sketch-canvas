@@ -4,7 +4,7 @@ import {
   ReactSketchCanvasProps,
   ReactSketchCanvasRef,
   CanvasPath,
-} from "react-sketch-canvas";
+} from "../../src";
 
 interface WithUndoRedoButtonsProps extends ReactSketchCanvasProps {
   undoButtonId?: string;

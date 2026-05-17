@@ -3,7 +3,7 @@ import {
   ReactSketchCanvas,
   ReactSketchCanvasProps,
   ReactSketchCanvasRef,
-} from "react-sketch-canvas";
+} from "../../src";
 
 interface WithEraserButtonProps extends ReactSketchCanvasProps {
   eraserButtonId?: string;

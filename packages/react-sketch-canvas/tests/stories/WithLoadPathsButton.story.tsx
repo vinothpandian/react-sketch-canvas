@@ -4,7 +4,7 @@ import {
   ReactSketchCanvasProps,
   ReactSketchCanvasRef,
   CanvasPath,
-} from "react-sketch-canvas";
+} from "../../src";
 
 interface WithLoadPathsButtonProps extends ReactSketchCanvasProps {
   loadPathsButtonId?: string;

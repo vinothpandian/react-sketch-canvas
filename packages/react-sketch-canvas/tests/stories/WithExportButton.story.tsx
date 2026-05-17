@@ -4,7 +4,7 @@ import {
   ReactSketchCanvas,
   ReactSketchCanvasProps,
   ReactSketchCanvasRef,
-} from "react-sketch-canvas";
+} from "../../src";
 import { convertDataURItoKiloBytes } from "../commands";
 
 interface WithExportButtonProps extends ReactSketchCanvasProps {

@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/experimental-ct-react";
-import { ReactSketchCanvas } from "react-sketch-canvas";
+import { ReactSketchCanvas } from "../../src";
 import { drawSquares } from "../commands";
 
 test.use({ viewport: { width: 500, height: 500 } });
