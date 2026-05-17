@@ -1,6 +1,5 @@
 import react from "@astrojs/react";
 import starlight from "@astrojs/starlight";
-import tailwind from "@astrojs/tailwind";
 import { defineConfig } from "astro/config";
 import starlightTypeDoc, { typeDocSidebarGroup } from "starlight-typedoc";
 
@@ -21,9 +20,13 @@ export default defineConfig({
 				"./src/styles/customize.css",
 				"@fontsource/kalam/400.css",
 			],
-			social: {
-				github: "https://github.com/vinothpandian/react-sketch-canvas",
-			},
+			social: [
+				{
+					icon: "github",
+					label: "GitHub",
+					href: "https://github.com/vinothpandian/react-sketch-canvas",
+				},
+			],
 			plugins: [
 				// Generate the documentation.
 				starlightTypeDoc({
@@ -35,22 +38,15 @@ export default defineConfig({
 			sidebar: [
 				{
 					label: "Guides",
-					autogenerate: {
-						directory: "guides",
-					},
+					items: [{ autogenerate: { directory: "guides" } }],
 				},
 				{
 					label: "Examples",
-					autogenerate: {
-						directory: "examples",
-					},
+					items: [{ autogenerate: { directory: "examples" } }],
 				},
 				// Add the generated sidebar group to the sidebar.
 				typeDocSidebarGroup,
 			],
-		}),
-		tailwind({
-			applyBaseStyles: false,
 		}),
 		react(),
 	],

@@ -10,7 +10,7 @@ import { getSketchingTime } from "../state/sketchingTime";
 import type { ReactSketchCanvasRef } from "../types";
 
 type UseSketchCanvasImperativeHandleParams = {
-	canvasRef: React.RefObject<CanvasRef>;
+	canvasRef: React.RefObject<CanvasRef | null>;
 	currentPaths: CanvasPath[];
 	withTimestamp: boolean;
 	setEraseMode: (erase: boolean) => void;

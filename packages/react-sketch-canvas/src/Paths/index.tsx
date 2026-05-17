@@ -1,6 +1,7 @@
+import type * as React from "react";
 import type { CanvasPath } from "../types";
-import { SvgPath } from "./SvgPath";
 import { bezierCommand } from "./geometry";
+import { SvgPath } from "./SvgPath";
 
 type PathProps = {
 	id: string;
@@ -14,7 +15,7 @@ type PathProps = {
  * Eraser paths are handled by SVG masks before this component receives its path
  * group, so every path rendered here is a visible stroke.
  */
-function Paths({ id, paths }: PathProps): JSX.Element {
+function Paths({ id, paths }: PathProps): React.JSX.Element {
 	return (
 		<>
 			{paths.map((path: CanvasPath, index: number) => (
@@ -37,10 +38,9 @@ function Paths({ id, paths }: PathProps): JSX.Element {
  * rendering experiments.
  */
 export { bezierCommand, line } from "./geometry";
-export { SvgPath };
-
 /**
  * Props used by the internal SVG path renderer.
  */
 export type { SvgPathProps } from "./SvgPath";
+export { SvgPath };
 export default Paths;

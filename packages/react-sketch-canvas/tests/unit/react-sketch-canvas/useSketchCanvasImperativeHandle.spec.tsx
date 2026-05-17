@@ -29,7 +29,7 @@ function Harness({
 	resetCanvas = vi.fn(),
 	setEraseMode = vi.fn(),
 }: {
-	forwardedRef: React.RefObject<ReactSketchCanvasRef>;
+	forwardedRef: React.RefObject<ReactSketchCanvasRef | null>;
 	withTimestamp?: boolean;
 	canvasRefOverride?: CanvasRef | null;
 	enqueueOperation?: (operation: Operation) => void;

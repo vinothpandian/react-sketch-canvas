@@ -1,3 +1,4 @@
+import type * as React from "react";
 import { SvgPath } from "../../Paths";
 import type { CanvasPath } from "../../types";
 import type { CanvasProps } from "../types";
@@ -17,7 +18,7 @@ type EraserMasksProps = Required<Pick<CanvasProps, "id">> & {
 export function HiddenEraserStrokes({
 	id,
 	eraserPaths,
-}: EraserMasksProps): JSX.Element {
+}: EraserMasksProps): React.JSX.Element {
 	return (
 		<g id={`${id}__eraser-stroke-group`}>
 			<rect
@@ -53,7 +54,7 @@ export function HiddenEraserStrokes({
 export function EraserMaskDefs({
 	id,
 	eraserPaths,
-}: EraserMasksProps): JSX.Element {
+}: EraserMasksProps): React.JSX.Element {
 	return (
 		<>
 			{eraserPaths.map((_, i) => (

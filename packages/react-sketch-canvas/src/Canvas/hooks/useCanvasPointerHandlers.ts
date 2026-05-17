@@ -33,7 +33,7 @@ type UseCanvasPointerHandlersParams = Pick<
 	| "onPointerMove"
 	| "onPointerUp"
 > & {
-	canvasRef: React.RefObject<HTMLDivElement>;
+	canvasRef: React.RefObject<HTMLDivElement | null>;
 	canvasSizeRef: CanvasSizeRef;
 };
 

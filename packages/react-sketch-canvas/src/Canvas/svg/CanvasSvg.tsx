@@ -1,8 +1,9 @@
+import type * as React from "react";
 import type { CanvasProps } from "../types";
 import { BackgroundPattern, BackgroundRect } from "./Background";
 import { EraserMaskDefs, HiddenEraserStrokes } from "./EraserMasks";
-import { StrokeGroups } from "./StrokeGroups";
 import { getEraserPaths, getPathGroups } from "./grouping";
+import { StrokeGroups } from "./StrokeGroups";
 
 type CanvasSvgProps = Required<Pick<CanvasProps, "id">> &
 	Pick<
@@ -32,7 +33,7 @@ export function CanvasSvg({
 	preserveBackgroundImageAspectRatio,
 	svgStyle,
 	viewBox,
-}: CanvasSvgProps): JSX.Element {
+}: CanvasSvgProps): React.JSX.Element {
 	const eraserPaths = getEraserPaths(paths);
 	const pathGroups = getPathGroups(paths);
 
