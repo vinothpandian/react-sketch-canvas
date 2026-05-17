@@ -1,12 +1,18 @@
-import type * as React from "react";
+import type { CanvasProps } from "../types";
 
-type BackgroundProps = {
-	id: string;
-	backgroundImage: string;
-	canvasColor: string;
-	preserveBackgroundImageAspectRatio?: React.SVGAttributes<HTMLImageElement>["preserveAspectRatio"];
-};
+type BackgroundProps = Required<Pick<CanvasProps, "id">> &
+	Pick<
+		CanvasProps,
+		"backgroundImage" | "canvasColor" | "preserveBackgroundImageAspectRatio"
+	>;
 
+/**
+ * Defines the SVG pattern used to paint a configured background image.
+ *
+ * @remarks
+ * The pattern is rendered only when a background image exists. The visible
+ * rectangle decides whether to reference this pattern or use `canvasColor`.
+ */
 export function BackgroundPattern({
 	id,
 	backgroundImage,
@@ -38,6 +44,13 @@ export function BackgroundPattern({
 	);
 }
 
+/**
+ * Renders the background rectangle that sits behind all sketch strokes.
+ *
+ * @remarks
+ * The rectangle id is stable because export code uses it to remove or recolor
+ * the background when producing SVG output.
+ */
 export function BackgroundRect({
 	id,
 	backgroundImage,

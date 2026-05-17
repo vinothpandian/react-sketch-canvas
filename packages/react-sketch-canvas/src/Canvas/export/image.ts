@@ -2,6 +2,13 @@ import type { ExportImageOptions, ExportImageType } from "../../types";
 
 type LoadImageReturns = Promise<HTMLImageElement>;
 
+/**
+ * Load an image URL or data URL for canvas export.
+ *
+ * @remarks
+ * The image is configured for anonymous cross-origin loading so browser canvas
+ * security rules allow `toDataURL` when the remote server permits it.
+ */
 export const loadImage = (url: string): LoadImageReturns =>
 	new Promise((resolve, reject) => {
 		const img = new Image();
@@ -30,6 +37,14 @@ type ExportImageFromSvgParams = {
 
 type ExportImageFromSvgReturns = Promise<string>;
 
+/**
+ * Render a cloned SVG canvas into a raster image data URL.
+ *
+ * @remarks
+ * The SVG is serialized, loaded into an HTML image, then painted onto a
+ * temporary `<canvas>`. Background images are painted first so strokes remain
+ * visible above them.
+ */
 export async function exportImageFromSvg({
 	svgCanvas,
 	svgWidth,

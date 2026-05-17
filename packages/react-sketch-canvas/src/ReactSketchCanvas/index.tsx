@@ -7,15 +7,34 @@ import { useSketchCanvasImperativeHandle } from "./hooks/useSketchCanvasImperati
 import type { ReactSketchCanvasProps, ReactSketchCanvasRef } from "./types";
 
 /**
- * ReactSketchCanvas is a wrapper around Canvas component to provide a controlled way to manage the canvas paths.
- * It provides a set of methods to manage the canvas paths, undo, redo, clear and reset the canvas.
+ * Type of the stateful sketch canvas component.
  *
- * @param props - Props for the ReactSketchCanvas component
- * @param ref - Reference to the ReactSketchCanvas component
- *
- * @returns ReactSketchCanvas component
+ * @remarks
+ * Keeping this explicit makes the generated declarations show the composed
+ * props and ref types used by the public React component.
  */
-export const ReactSketchCanvas = React.forwardRef<
+type ReactSketchCanvasComponent = React.ForwardRefExoticComponent<
+	ReactSketchCanvasProps & React.RefAttributes<ReactSketchCanvasRef>
+>;
+
+/**
+ * Stateful sketch canvas component for freehand SVG drawing.
+ *
+ * @remarks
+ * `ReactSketchCanvas` manages paths, draw/erase mode, undo/redo history,
+ * timestamp capture, and public imperative methods. It is the primary component
+ * intended for application use.
+ *
+ * Use a ref when you need to export images or paths, toggle erasing from a
+ * toolbar, or control history from parent UI.
+ *
+ * @param props - Public drawing, styling, export, and callback options.
+ * @param ref - Ref exposing {@link ReactSketchCanvasRef} methods.
+ * @returns The sketch canvas component.
+ *
+ * @public
+ */
+export const ReactSketchCanvas: ReactSketchCanvasComponent = React.forwardRef<
 	ReactSketchCanvasRef,
 	ReactSketchCanvasProps
 >((props, ref) => {

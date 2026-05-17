@@ -1,11 +1,19 @@
 import { SvgPath } from "../../Paths";
 import type { CanvasPath } from "../../types";
+import type { CanvasProps } from "../types";
 
-type EraserMasksProps = {
-	id: string;
+type EraserMasksProps = Required<Pick<CanvasProps, "id">> & {
 	eraserPaths: CanvasPath[];
 };
 
+/**
+ * Renders hidden eraser strokes that SVG masks can reference by id.
+ *
+ * @remarks
+ * The strokes are not visible in the final canvas. They provide reusable mask
+ * shapes so each drawing group can be clipped by the erasers that occur after
+ * it in path order.
+ */
 export function HiddenEraserStrokes({
 	id,
 	eraserPaths,
@@ -34,6 +42,14 @@ export function HiddenEraserStrokes({
 	);
 }
 
+/**
+ * Defines one SVG mask for each eraser stroke.
+ *
+ * @remarks
+ * Each mask includes the current eraser and all later erasers. This preserves
+ * path ordering: a drawing group is erased only by eraser strokes that were
+ * created after that drawing group.
+ */
 export function EraserMaskDefs({
 	id,
 	eraserPaths,

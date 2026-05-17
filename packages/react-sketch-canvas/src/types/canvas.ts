@@ -1,71 +1,115 @@
 /**
- * Image type to export the canvas as.
+ * Raster image format used by {@link ReactSketchCanvasRef.exportImage} and
+ * {@link CanvasRef.exportImage}.
+ *
+ * @remarks
+ * Use `"png"` when you need transparency. Use `"jpeg"` for smaller files or
+ * when the exported image should always include a solid background color.
+ *
+ * @public
  */
 export type ExportImageType = "jpeg" | "png";
 
 /**
- * Options for exporting the canvas as an image.
+ * Size options for raster image exports.
+ *
+ * @remarks
+ * When omitted, the exported image uses the rendered canvas element's current
+ * width and height. Provide both values to export a fixed-size image regardless
+ * of the on-screen canvas size.
+ *
+ * @public
  */
 export interface ExportImageOptions {
 	/**
-	 * Width of the exported image.
+	 * Width of the exported image in pixels.
+	 *
+	 * @defaultValue The current rendered canvas width.
 	 */
 	readonly width?: number;
 	/**
-	 * Height of the exported image.
+	 * Height of the exported image in pixels.
+	 *
+	 * @defaultValue The current rendered canvas height.
 	 */
 	readonly height?: number;
 }
 
 /**
- * Point on the canvas.
+ * A two-dimensional coordinate on the canvas.
  *
  * @remarks
- * The origin (0, 0) is the top-left corner of the canvas.
+ * Coordinates are measured in CSS pixels from the top-left corner of the
+ * rendered canvas. Pointer events, exported paths, and loaded paths all use
+ * this coordinate system.
+ *
+ * @public
  */
 export interface Point {
 	/**
-	 * The x coordinate of the point.
+	 * Horizontal coordinate in pixels from the left edge of the canvas.
 	 */
 	readonly x: number;
 	/**
-	 * The y coordinate of the point.
+	 * Vertical coordinate in pixels from the top edge of the canvas.
 	 */
 	readonly y: number;
 }
 
 /**
- * Path to draw on the canvas.
+ * A single stroke recorded by the sketch canvas.
+ *
+ * @remarks
+ * `CanvasPath` is the persistence format returned by
+ * {@link ReactSketchCanvasRef.exportPaths} and accepted by
+ * {@link ReactSketchCanvasRef.loadPaths}. Store this object if you want to save
+ * a drawing and replay it later.
+ *
+ * `drawMode` decides whether the stroke paints (`true`) or erases (`false`).
+ * Eraser strokes are stored as paths so exports and undo/redo can preserve the
+ * same visual result.
+ *
+ * @public
  */
 export interface CanvasPath {
 	/**
-	 * The paths to draw. Each path is an array of points.
+	 * Ordered points that make up this stroke.
+	 *
+	 * @remarks
+	 * A stroke can contain a single point, which is rendered as a dot.
 	 */
 	readonly paths: Point[];
 	/**
-	 * The stroke width of the path.
+	 * Stroke width in pixels.
 	 */
 	readonly strokeWidth: number;
 	/**
-	 * Color of the stroke.
+	 * Stroke color used when `drawMode` is `true`.
+	 *
+	 * @remarks
+	 * Eraser paths are stored with an internal mask color, but consumers usually
+	 * only need to preserve the value returned by `exportPaths`.
 	 */
 	readonly strokeColor: string;
 	/**
-	 * Whether the path is a draw mode or erase mode.
+	 * Whether the stroke draws color (`true`) or erases existing strokes
+	 * (`false`).
 	 */
 	readonly drawMode: boolean;
 	/**
-	 * The timestamp when the path was created. This is used to determine the order of the paths.
+	 * Timestamp captured when the stroke starts, in milliseconds since the Unix
+	 * epoch.
 	 *
 	 * @remarks
-	 * This will only be set when the withTimestamp option is set to true.
+	 * This is only present when `withTimestamp` is enabled.
 	 */
 	readonly startTimestamp?: number;
 	/**
-	 * The timestamp when the path was last updated. This is used to determine the order of the paths.
+	 * Timestamp captured when the stroke ends, in milliseconds since the Unix
+	 * epoch.
 	 *
 	 * @remarks
-	 * This will only be set when the withTimestamp option is set to true.
+	 * This is only present when `withTimestamp` is enabled.
 	 */
 	readonly endTimestamp?: number;
 }

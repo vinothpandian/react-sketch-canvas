@@ -12,6 +12,13 @@ type CreateStrokeParams = {
 
 type CreateStrokeReturns = CanvasPath;
 
+/**
+ * Create the first path object for a new draw or erase stroke.
+ *
+ * @remarks
+ * Eraser strokes are stored as black paths with `drawMode: false`; SVG mask
+ * rendering interprets that shape as erased content later.
+ */
 export function createStroke({
 	point,
 	drawMode,
@@ -39,6 +46,9 @@ export function createStroke({
 	};
 }
 
+/**
+ * Add a point to the most recent stroke without mutating existing path arrays.
+ */
 export function appendPointToLastStroke(
 	paths: CanvasPath[],
 	point: Point,
@@ -57,6 +67,9 @@ export function appendPointToLastStroke(
 	return [...paths.slice(0, -1), updatedStroke];
 }
 
+/**
+ * Mark the most recent stroke as complete when timestamp tracking is enabled.
+ */
 export function finishStroke(
 	paths: CanvasPath[],
 	withTimestamp: boolean,

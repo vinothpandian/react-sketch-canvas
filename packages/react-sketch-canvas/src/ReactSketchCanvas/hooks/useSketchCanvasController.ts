@@ -17,15 +17,19 @@ import {
 	createStroke,
 	finishStroke,
 } from "../state/strokes";
+import type { ReactSketchCanvasProps } from "../types";
 
-type UseSketchCanvasControllerParams = {
-	strokeColor: string;
-	strokeWidth: number;
-	eraserWidth: number;
-	withTimestamp: boolean;
-	onChange: (updatedPaths: CanvasPath[]) => void;
-	onStroke: (path: CanvasPath, isEraser: boolean) => void;
-};
+type UseSketchCanvasControllerParams = Required<
+	Pick<
+		ReactSketchCanvasProps,
+		| "strokeColor"
+		| "strokeWidth"
+		| "eraserWidth"
+		| "withTimestamp"
+		| "onChange"
+		| "onStroke"
+	>
+>;
 
 type UseSketchCanvasControllerReturns = {
 	currentPaths: CanvasPath[];
@@ -39,6 +43,14 @@ type UseSketchCanvasControllerReturns = {
 	handlePointerUp: () => void;
 };
 
+/**
+ * Owns state transitions for `ReactSketchCanvas`.
+ *
+ * @remarks
+ * This hook is the stateful controller for drawing, erasing, undo/redo queue
+ * processing, timestamp capture, and change callbacks. Rendering and ref
+ * methods stay in separate hooks so this logic can be unit tested directly.
+ */
 export function useSketchCanvasController({
 	strokeColor,
 	strokeWidth,
@@ -54,6 +66,8 @@ export function useSketchCanvasController({
 	const currentPaths = state.currentPaths;
 	const isDrawing = state.isDrawing;
 
+	// Keep the legacy stroke callback timing: the completed stroke is reported
+	// on the render after drawing transitions from active to inactive.
 	// biome-ignore lint/correctness/useExhaustiveDependencies: preserve legacy stroke-lift timing tied only to drawing state changes.
 	const liftStrokeUp = React.useCallback((): void => {
 		const lastStroke = currentPaths.slice(-1)?.[0] ?? null;

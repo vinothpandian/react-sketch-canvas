@@ -1,6 +1,14 @@
 import type { CanvasPath } from "../../types";
 import type { Operation } from "./operations";
 
+/**
+ * Internal state model for `ReactSketchCanvas`.
+ *
+ * @remarks
+ * `currentPaths` is the rendered drawing. `history` stores snapshots for
+ * undo/redo. `operationQueue` serializes imperative ref operations so multiple
+ * calls in the same render cycle are applied in order.
+ */
 export type SketchState = {
 	drawMode: boolean;
 	isDrawing: boolean;
@@ -12,6 +20,9 @@ export type SketchState = {
 	isProcessingQueue: boolean;
 };
 
+/**
+ * Create the initial interactive drawing state.
+ */
 export function createInitialSketchState(): SketchState {
 	return {
 		drawMode: true,
@@ -25,6 +36,14 @@ export function createInitialSketchState(): SketchState {
 	};
 }
 
+/**
+ * Persist the current path list into history when it has not been synced yet.
+ *
+ * @remarks
+ * Drawing mutates `currentPaths` first. History is synced lazily before the next
+ * history operation so continuous pointer updates do not create one history
+ * entry per point.
+ */
 export function addLastStrokeToHistory(state: SketchState): SketchState {
 	if (state.historySynced) return state;
 
@@ -38,6 +57,9 @@ export function addLastStrokeToHistory(state: SketchState): SketchState {
 	};
 }
 
+/**
+ * Move the state one step backward in history.
+ */
 export function undoState(state: SketchState): SketchState {
 	if (state.historyPos <= 0) return state;
 	const synced = addLastStrokeToHistory(state);
@@ -49,6 +71,9 @@ export function undoState(state: SketchState): SketchState {
 	};
 }
 
+/**
+ * Move the state one step forward in history.
+ */
 export function redoState(state: SketchState): SketchState {
 	if (state.historyPos >= state.history.length - 1) return state;
 	const synced = addLastStrokeToHistory(state);
@@ -60,6 +85,9 @@ export function redoState(state: SketchState): SketchState {
 	};
 }
 
+/**
+ * Clear rendered paths while preserving undo history.
+ */
 export function clearCanvasState(state: SketchState): SketchState {
 	const synced = addLastStrokeToHistory(state);
 
@@ -71,6 +99,9 @@ export function clearCanvasState(state: SketchState): SketchState {
 	};
 }
 
+/**
+ * Append externally supplied paths and add the result to history.
+ */
 export function loadPathsState(
 	state: SketchState,
 	paths: CanvasPath[],
@@ -87,6 +118,9 @@ export function loadPathsState(
 	};
 }
 
+/**
+ * Reset paths, history, drawing mode, and queued operations to a fresh canvas.
+ */
 export function resetCanvasState(): SketchState {
 	return {
 		...createInitialSketchState(),

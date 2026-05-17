@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useCallback } from "react";
 import type { Point } from "../../types";
-import type { AllowOnlyPointerType } from "../types";
+import type { AllowOnlyPointerType, CanvasProps } from "../types";
 
 const ERASER_BUTTON_MASK = 32;
 
@@ -20,33 +20,57 @@ type ScrollLike = {
 	scrollY: number;
 };
 
-type UseCanvasPointerHandlersParams = {
+type CanvasSizeRef = React.MutableRefObject<{
+	width: number;
+	height: number;
+} | null>;
+
+type UseCanvasPointerHandlersParams = Pick<
+	CanvasProps,
+	| "isDrawing"
+	| "allowOnlyPointerType"
+	| "onPointerDown"
+	| "onPointerMove"
+	| "onPointerUp"
+> & {
 	canvasRef: React.RefObject<HTMLDivElement>;
-	canvasSizeRef: React.MutableRefObject<{
-		width: number;
-		height: number;
-	} | null>;
-	isDrawing: boolean;
-	allowOnlyPointerType: AllowOnlyPointerType;
-	onPointerDown: (point: Point, isEraser?: boolean) => void;
-	onPointerMove: (point: Point) => void;
-	onPointerUp: () => void;
+	canvasSizeRef: CanvasSizeRef;
 };
 
+type UseCanvasPointerHandlersReturns = {
+	handlePointerDown: (event: React.PointerEvent<HTMLDivElement>) => void;
+	handlePointerMove: (event: React.PointerEvent<HTMLDivElement>) => void;
+	handlePointerUp: (
+		event: React.PointerEvent<HTMLDivElement> | PointerEvent,
+	) => void;
+};
+
+/**
+ * Check whether a pointer event matches the configured input device filter.
+ */
 export const isAllowedPointerType = (
 	allowOnlyPointerType: AllowOnlyPointerType,
 	pointerType: string,
 ): boolean =>
 	allowOnlyPointerType === "all" || pointerType === allowOnlyPointerType;
 
+/**
+ * Ignore non-primary mouse buttons while allowing pen and touch pointer events.
+ */
 export const shouldHandlePointerButton = (
 	pointerType: string,
 	button: number,
 ): boolean => !(pointerType === "mouse" && button !== 0);
 
+/**
+ * Detect the barrel/eraser button used by pointer events from pen devices.
+ */
 export const isPenEraser = (pointerType: string, buttons: number): boolean =>
 	pointerType === "pen" && Math.floor(buttons / ERASER_BUTTON_MASK) % 2 === 1;
 
+/**
+ * Convert a page-level pointer coordinate into a canvas-relative point.
+ */
 export const getCanvasPoint = (
 	pointerEvent: PointerLike,
 	boundingArea: BoundsLike,
@@ -56,6 +80,14 @@ export const getCanvasPoint = (
 	y: pointerEvent.pageY - boundingArea.top - scroll.scrollY,
 });
 
+/**
+ * Build stable pointer handlers for the low-level canvas.
+ *
+ * @remarks
+ * The hook keeps DOM coordinate normalization, input filtering, and document
+ * level `pointerup` handling out of the `Canvas` component. It also records the
+ * latest canvas size so viewBox export can mirror the rendered dimensions.
+ */
 export function useCanvasPointerHandlers({
 	canvasRef,
 	canvasSizeRef,
@@ -64,7 +96,7 @@ export function useCanvasPointerHandlers({
 	onPointerDown,
 	onPointerMove,
 	onPointerUp,
-}: UseCanvasPointerHandlersParams) {
+}: UseCanvasPointerHandlersParams): UseCanvasPointerHandlersReturns {
 	const getCoordinates = useCallback(
 		(pointerEvent: React.PointerEvent<HTMLDivElement>): Point => {
 			const boundingArea = canvasRef.current?.getBoundingClientRect();

@@ -20,6 +20,13 @@ type UseSketchCanvasImperativeHandleParams = {
 
 type UseSketchCanvasImperativeHandleReturns = ReturnType<() => void>;
 
+/**
+ * Expose the public `ReactSketchCanvas` imperative API.
+ *
+ * @remarks
+ * This hook adapts the low-level canvas export ref and the state controller into
+ * the user-facing methods documented by `ReactSketchCanvasRef`.
+ */
 export function useSketchCanvasImperativeHandle(
 	ref: React.ForwardedRef<ReactSketchCanvasRef>,
 	{

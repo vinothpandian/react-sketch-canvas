@@ -7,11 +7,17 @@ import {
 	undoState,
 } from "./history";
 
+/**
+ * Queued imperative operation requested through `ReactSketchCanvasRef`.
+ */
 export type Operation = {
 	type: "undo" | "redo" | "clear" | "loadPaths";
 	payload?: CanvasPath[];
 };
 
+/**
+ * Add an imperative operation to the end of the state queue.
+ */
 export function enqueueOperation(
 	state: SketchState,
 	operation: Operation,
@@ -22,6 +28,13 @@ export function enqueueOperation(
 	};
 }
 
+/**
+ * Apply a queued operation to sketch state.
+ *
+ * @remarks
+ * Keeping this function pure makes imperative behavior easy to test without
+ * rendering React components.
+ */
 export function applyOperation(
 	state: SketchState,
 	operation: Operation,

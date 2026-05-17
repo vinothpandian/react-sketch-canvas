@@ -7,7 +7,19 @@ type ControlPoints = {
 	reverse?: boolean;
 };
 
-export const line = (pointA: Point, pointB: Point) => {
+type LineReturns = {
+	length: number;
+	angle: number;
+};
+
+/**
+ * Calculate distance and angle between two points.
+ *
+ * @remarks
+ * The Bezier smoothing code uses this vector to place control points relative
+ * to neighboring stroke points.
+ */
+export const line = (pointA: Point, pointB: Point): LineReturns => {
 	const lengthX = pointB.x - pointA.x;
 	const lengthY = pointB.y - pointA.y;
 
@@ -32,6 +44,13 @@ const controlPoint = (controlPoints: ControlPoints): [number, number] => {
 	];
 };
 
+/**
+ * Create a cubic Bezier SVG command for a stroke point.
+ *
+ * @remarks
+ * The command uses the previous, current, and next points to create a smoothed
+ * freehand stroke while preserving the original point list.
+ */
 export const bezierCommand = (point: Point, i: number, a: Point[]): string => {
 	let cpsX: number;
 	let cpsY: number;

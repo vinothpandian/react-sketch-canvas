@@ -1,20 +1,30 @@
-import type * as React from "react";
 import type { CanvasPath } from "../../types";
+import type { CanvasProps } from "../types";
 import { BackgroundPattern, BackgroundRect } from "./Background";
 import { EraserMaskDefs, HiddenEraserStrokes } from "./EraserMasks";
 import { StrokeGroups } from "./StrokeGroups";
 import { getEraserPaths, getPathGroups } from "./grouping";
 
-type CanvasSvgProps = {
-	id: string;
-	paths: CanvasPath[];
-	canvasColor: string;
-	backgroundImage: string;
-	preserveBackgroundImageAspectRatio?: React.SVGAttributes<HTMLImageElement>["preserveAspectRatio"];
-	svgStyle: React.CSSProperties;
-	viewBox?: string;
-};
+type CanvasSvgProps = Required<Pick<CanvasProps, "id">> &
+	Pick<
+		CanvasProps,
+		| "paths"
+		| "canvasColor"
+		| "backgroundImage"
+		| "preserveBackgroundImageAspectRatio"
+		| "svgStyle"
+	> & {
+		viewBox?: string;
+	};
 
+/**
+ * Renders the complete SVG tree for the canvas.
+ *
+ * @remarks
+ * This component keeps SVG construction separate from pointer and export logic.
+ * It renders hidden eraser strokes, mask definitions, background markup, and
+ * visible stroke groups in the order required for erasing to work.
+ */
 export function CanvasSvg({
 	id,
 	paths,

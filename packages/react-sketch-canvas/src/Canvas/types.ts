@@ -7,137 +7,224 @@ import type {
 } from "../types";
 
 /**
- * The pointer type to allow drawing with.
+ * Pointer device class accepted by the drawing surface.
  *
+ * @remarks
+ * Use `"all"` to accept mouse, pen, and touch input. Use a specific pointer
+ * type when the canvas should ignore other input devices, for example a
+ * pen-only signing flow.
+ *
+ * @public
  */
 export type AllowOnlyPointerType = "all" | "pen" | "mouse" | "touch";
 
 /**
- * Canvas component props.
+ * Props for the low-level {@link Canvas} component.
+ *
+ * @remarks
+ * These props are primarily useful for composing a custom state manager around
+ * the low-level SVG canvas. Application code normally uses
+ * {@link ReactSketchCanvasProps}.
+ *
+ * @public
  */
 export interface CanvasProps {
 	/**
-	 * Array of paths to be drawn on the canvas
+	 * Paths rendered on the SVG canvas.
+	 *
+	 * @remarks
+	 * `Canvas` is controlled. Pass the complete path list for each render.
 	 */
 	paths: CanvasPath[];
 	/**
-	 * Whether the user is currently drawing
+	 * Whether a pointer stroke is currently active.
+	 *
+	 * @remarks
+	 * While this is `true`, pointer movement is forwarded to `onPointerMove`.
 	 */
 	isDrawing: boolean;
 	/**
-	 * Callback to be called when the user starts drawing.
-	 * This is triggered when the user presses the mouse button or touches the canvas
-	 * with a pen or a touch screen.
+	 * Called when the user starts a stroke.
 	 *
-	 * @param point - The point where the user started drawing
-	 * @param isEraser - Whether the user is using the eraser
-	 * @returns void
+	 * @remarks
+	 * The callback receives the pointer coordinate normalized to the canvas and
+	 * an eraser flag when a pen eraser button is detected.
+	 *
+	 * @param point - Canvas-relative point where the stroke starts.
+	 * @param isEraser - Whether the pointer should create an eraser stroke.
+	 * @returns Nothing.
 	 */
 	onPointerDown: (point: Point, isEraser?: boolean) => void;
 	/**
-	 * Callback to be called when the user is drawing.
-	 * This is triggered when the user moves the mouse or pen or finger on the canvas.
+	 * Called when the active pointer moves while drawing.
 	 *
-	 * @param point - The point where the user is currently drawing
-	 * @param isEraser - Whether the user is using the eraser
-	 * @returns void
+	 * @param point - Canvas-relative point for the current pointer position.
+	 * @returns Nothing.
 	 */
 	onPointerMove: (point: Point) => void;
 	/**
-	 * Callback to be called when the user stops drawing.
-	 * This is triggered when the user releases the mouse button or lifts the pen or finger from the canvas.
-	 * @returns void
+	 * Called when the active stroke ends.
+	 *
+	 * @remarks
+	 * `Canvas` listens for `pointerup` on the document so a stroke can finish
+	 * even when the pointer is released outside the canvas element.
+	 *
+	 * @returns Nothing.
 	 */
 	onPointerUp: () => void;
 	/**
-	 * The pointer type to allow drawing with.
-	 * @defaultValue all
+	 * Pointer device class allowed to draw on the canvas.
+	 *
+	 * @remarks
+	 * Other pointer devices can still interact with the page, but their drawing
+	 * events are ignored by the canvas.
+	 *
+	 * @defaultValue `"all"`
 	 */
 	allowOnlyPointerType: AllowOnlyPointerType;
 	/**
-	 * Background image to be displayed on the canvas.
-	 * This can be a URL or a base64 encoded image.
-	 * @defaultValue No background image is displayed
+	 * Background image shown behind all strokes.
+	 *
+	 * @remarks
+	 * Accepts any SVG `<image>` `href` value, including a URL or data URI. When
+	 * exporting with the background image enabled, remote images must allow
+	 * cross-origin access.
+	 *
+	 * @defaultValue `""`
 	 */
 	backgroundImage: string;
 	/**
-	 * Background color of the canvas.
-	 * @defaultValue white
+	 * Background color shown when no background image is configured.
+	 *
+	 * @remarks
+	 * This color is also used behind JPEG exports when the background image is
+	 * not included.
+	 *
+	 * @defaultValue `"white"`
 	 */
 	canvasColor: string;
 	/**
-	 * Class name to be applied to the canvas.
-	 * @defaultValue react-sketch-canvas
+	 * CSS class name applied to the outer canvas wrapper.
+	 *
+	 * @defaultValue `"react-sketch-canvas"`
 	 */
 	className?: string;
 	/**
-	 * Whether the canvas should be exported with the background image.
+	 * Whether exported images and SVGs include `backgroundImage`.
+	 *
+	 * @remarks
+	 * Set this to `false` when the background image is only a drawing guide and
+	 * should not be part of exported output.
+	 *
 	 * @defaultValue false
 	 */
 	exportWithBackgroundImage: boolean;
 	/**
-	 * Height of the canvas.
-	 * @defaultValue 100%
+	 * CSS height of the canvas wrapper.
+	 *
+	 * @remarks
+	 * Accepts any valid CSS height value, such as `"400px"`, `"60vh"`, or
+	 * `"100%"`.
+	 *
+	 * @defaultValue `"100%"`
 	 */
 	height: string;
 	/**
-	 * ID of the canvas.
-	 * @defaultValue the ID is `react-sketch-canvas`
+	 * Base DOM id used for the SVG canvas and generated SVG definitions.
+	 *
+	 * @remarks
+	 * Use a unique id when rendering more than one canvas on the same page.
+	 *
+	 * @defaultValue `"react-sketch-canvas"`
 	 */
 	id?: string;
 	/**
-	 * Set aspect ratio of the background image. For possible values check MDN docs
-	 * @link https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/preserveAspectRatio
+	 * SVG `preserveAspectRatio` value used for `backgroundImage`.
+	 *
+	 * @remarks
+	 * See the MDN reference for accepted values:
+	 * {@link https://developer.mozilla.org/docs/Web/SVG/Attribute/preserveAspectRatio}.
+	 *
+	 * @defaultValue `"none"`
 	 */
 	preserveBackgroundImageAspectRatio?: React.SVGAttributes<HTMLImageElement>["preserveAspectRatio"];
 	/**
-	 * Style to be applied to the canvas.
-	 * @defaultValue No style is applied.
+	 * Inline styles applied to the outer canvas wrapper.
+	 *
+	 * @remarks
+	 * The component always sets `touchAction: "none"` to keep touch and pen
+	 * drawing from scrolling the page.
+	 *
+	 * @defaultValue The package default canvas border style.
 	 */
 	style: React.CSSProperties;
 	/**
-	 * Style to be applied to the SVG.
-	 * @defaultValue No style is applied.
+	 * Inline styles applied to the internal SVG element.
+	 *
+	 * @defaultValue `{}`
 	 */
 	svgStyle: React.CSSProperties;
 	/**
-	 * Whether the canvas should be exported with the viewBox.
+	 * Whether the internal SVG should include a viewBox based on the latest
+	 * measured canvas size.
+	 *
+	 * @remarks
+	 * Enable this when you need SVG output that scales predictably with the
+	 * rendered canvas dimensions.
+	 *
 	 * @defaultValue false
 	 */
 	withViewBox?: boolean;
 	/**
-	 * Width of the canvas.
-	 * @defaultValue 100%
+	 * CSS width of the canvas wrapper.
+	 *
+	 * @remarks
+	 * Accepts any valid CSS width value, such as `"600px"`, `"100%"`, or
+	 * `"80vw"`.
+	 *
+	 * @defaultValue `"100%"`
 	 */
 	width: string;
 	/**
-	 * Whether the canvas is read-only. This disables drawing on the canvas.
+	 * Whether pointer drawing is disabled.
+	 *
+	 * @remarks
+	 * Existing paths are still rendered and ref export methods still work.
+	 *
 	 * @defaultValue false
 	 */
 	readOnly?: boolean;
 }
 
 /**
- * Canvas component ref
+ * Imperative ref API exposed by the low-level {@link Canvas} component.
+ *
+ * @public
  */
 export interface CanvasRef {
 	/**
-	 * Export the canvas as an image.
-	 * This returns a promise that resolves to a data URL of the image.
+	 * Export the current canvas as a raster image data URL.
 	 *
-	 * @param imageType - The type of image to be exported.
-	 * @param options - Options to be applied to the exported image.
-	 * @returns A promise that resolves to a data URL of the image.
+	 * @remarks
+	 * The output includes the currently rendered strokes. Background image export
+	 * depends on the `exportWithBackgroundImage` prop.
+	 *
+	 * @param imageType - Image format to create.
+	 * @param options - Optional export dimensions.
+	 * @returns Promise that resolves to a `data:image/*` URL.
 	 */
 	exportImage: (
 		imageType: ExportImageType,
 		options?: ExportImageOptions,
 	) => Promise<string>;
 	/**
-	 * Export the canvas as an SVG.
-	 * This returns a promise that resolves to a string of the SVG.
+	 * Export the current canvas as SVG markup.
 	 *
-	 * @returns A promise that resolves to a string of the SVG.
+	 * @remarks
+	 * The returned string contains the cloned SVG element after export-specific
+	 * background handling has been applied.
+	 *
+	 * @returns Promise that resolves to SVG markup.
 	 */
 	exportSvg: () => Promise<string>;
 }

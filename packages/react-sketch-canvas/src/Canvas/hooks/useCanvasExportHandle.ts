@@ -3,18 +3,25 @@ import type { ExportImageOptions, ExportImageType } from "../../types";
 import { getCanvasWithViewBox } from "../export/dom";
 import { exportImageFromSvg } from "../export/image";
 import { prepareSvgForExport } from "../export/svg";
-import type { CanvasRef } from "../types";
+import type { CanvasProps, CanvasRef } from "../types";
 
-type UseCanvasExportHandleParams = {
-	canvasRef: React.RefObject<HTMLDivElement>;
-	id: string;
-	canvasColor: string;
-	backgroundImage: string;
-	exportWithBackgroundImage: boolean;
-};
+type UseCanvasExportHandleParams = Required<Pick<CanvasProps, "id">> &
+	Pick<
+		CanvasProps,
+		"canvasColor" | "backgroundImage" | "exportWithBackgroundImage"
+	> & {
+		canvasRef: React.RefObject<HTMLDivElement>;
+	};
 
 type UseCanvasExportHandleReturns = ReturnType<() => void>;
 
+/**
+ * Expose export methods from the low-level `Canvas` ref.
+ *
+ * @remarks
+ * The hook centralizes all DOM cloning and SVG/image export wiring so the
+ * component can stay focused on rendering and pointer handlers.
+ */
 export function useCanvasExportHandle(
 	ref: React.ForwardedRef<CanvasRef>,
 	{
