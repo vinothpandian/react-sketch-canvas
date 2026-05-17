@@ -1,12 +1,16 @@
-/* Props validation */
 import type { CanvasProps, CanvasRef } from "../Canvas/types";
 import type { CanvasPath } from "../types";
 
 /**
- * React Sketch Canvas component props.
+ * Props for the stateful {@link ReactSketchCanvas} component.
  *
  * @remarks
- * This is an extension of the CanvasProps with additional props specific to the React Sketch Canvas component.
+ * `ReactSketchCanvas` composes the low-level {@link CanvasProps} with drawing
+ * state management. You can pass sizing, styling, background, pointer, and
+ * export props from `CanvasProps`; path state and pointer callbacks are managed
+ * internally by the component.
+ *
+ * @public
  */
 export interface ReactSketchCanvasProps
 	extends Partial<
@@ -16,51 +20,65 @@ export interface ReactSketchCanvasProps
 		>
 	> {
 	/**
-	 * Width of the eraser.
-	 * @remarks This is only applicable when the eraseMode is set to true.
+	 * Width of eraser strokes in pixels.
 	 *
-	 * @defaultValue 8
+	 * @remarks
+	 * This width is used when `eraseMode(true)` is active or when a pen eraser
+	 * button is detected.
+	 *
+	 * @defaultValue `8`
 	 */
 	eraserWidth?: number;
 	/**
-	 * Optional callback that is called when the user starts drawing.
-	 * This is triggered when the user when user creates a stroke on the canvas
-	 * with a pen or an eraser.
+	 * Called whenever the rendered path list changes.
 	 *
-	 * @param updatedPaths - The updated paths drawn on the canvas
+	 * @remarks
+	 * Use this callback to persist drawings as the user sketches. The callback is
+	 * invoked after strokes, undo, redo, clear, reset, and `loadPaths` updates.
+	 *
+	 * @param updatedPaths - Complete current path list.
+	 * @returns Nothing.
 	 */
 	onChange?: (updatedPaths: CanvasPath[]) => void;
 	/**
-	 * Optional callback that is called when the user creates a stroke on the canvas
-	 * with a pen or an eraser.
+	 * Called when the user completes a stroke.
 	 *
-	 * @param path - The path drawn on the canvas
-	 * @param isEraser - Whether the user is using the eraser
+	 * @remarks
+	 * This callback fires for both drawing and erasing strokes. It is intended
+	 * for event-style handling; use `onChange` when you need the complete drawing
+	 * state.
+	 *
+	 * @param path - Stroke that was just completed.
+	 * @param isEraser - Whether the completed stroke erased existing content.
+	 * @returns Nothing.
 	 */
 	onStroke?: (path: CanvasPath, isEraser: boolean) => void;
 	/**
-	 * Color of the stroke.
+	 * Color used for drawing strokes.
 	 *
-	 * @remarks This is only applicable when the eraseMode is set to false.
+	 * @remarks
+	 * Accepts any SVG stroke color value, including named colors, hex colors,
+	 * RGB values, and CSS variables.
 	 *
 	 * @defaultValue "red"
 	 */
 	strokeColor?: string;
 	/**
-	 * Width of the stroke.
+	 * Width of drawing strokes in pixels.
 	 *
-	 * @remarks This is only applicable when the eraseMode is set to false.
+	 * @remarks
+	 * Eraser strokes use `eraserWidth` instead.
 	 *
-	 * @defaultValue 4
+	 * @defaultValue `4`
 	 */
 	strokeWidth?: number;
 	/**
-	 * Whether to record the timestamp of the drawing. This will be stored in
-	 * the CanvasPath object in milliseconds. This can be used to calculate the time taken to draw
-	 * on the canvas.
+	 * Whether strokes should include start and end timestamps.
 	 *
 	 * @remarks
-	 * use getSketchingTime method to get the time taken to draw on the canvas.
+	 * Enable this before drawing if you want `CanvasPath.startTimestamp`,
+	 * `CanvasPath.endTimestamp`, and `getSketchingTime()` to report active
+	 * drawing time.
 	 *
 	 * @defaultValue false
 	 */
@@ -68,60 +86,95 @@ export interface ReactSketchCanvasProps
 }
 
 /**
- * React Sketch Canvas component ref.
+ * Imperative ref API exposed by {@link ReactSketchCanvas}.
  *
  * @remarks
- * This is an extension of the CanvasRef with additional methods specific to the React Sketch Canvas component.
+ * Use this ref to control drawing mode, history, exports, and path loading
+ * from parent components.
+ *
+ * @public
  */
 export interface ReactSketchCanvasRef extends CanvasRef {
 	/**
-	 * Set the drawing mode to either draw or erase
+	 * Switch between drawing and erasing.
 	 *
-	 * @param erase - Whether to set the mode to erase
+	 * @remarks
+	 * Passing `true` enables erasing for future strokes. Passing `false` returns
+	 * to normal drawing mode. Existing paths are not changed.
+	 *
+	 * @param erase - Whether future pointer strokes should erase.
+	 * @returns Nothing.
 	 */
 	eraseMode: (erase: boolean) => void;
 	/**
-	 * Clear the canvas. This will remove all the paths drawn on the canvas.
-	 * But it will not clear the Undo/Redo stack.
+	 * Remove all paths from the canvas while preserving history.
 	 *
-	 * @remarks To clear the Undo/Redo stack, use the resetCanvas method.
+	 * @remarks
+	 * Users can still undo back to the previous drawing after `clearCanvas()`.
+	 * Use `resetCanvas()` when you want to remove paths and clear undo/redo
+	 * history.
+	 *
+	 * @returns Nothing.
 	 */
 	clearCanvas: () => void;
 	/**
-	 * Undo the last drawn path
+	 * Restore the previous history entry.
+	 *
+	 * @remarks
+	 * Calling `undo()` when there is no earlier history entry leaves the canvas
+	 * unchanged.
+	 *
+	 * @returns Nothing.
 	 */
 	undo: () => void;
 	/**
-	 * Redo the last undone path
+	 * Restore the next history entry after an undo.
+	 *
+	 * @remarks
+	 * Calling `redo()` when there is no later history entry leaves the canvas
+	 * unchanged.
+	 *
+	 * @returns Nothing.
 	 */
 	redo: () => void;
 	/**
-	 * Export the paths draw on the canvas as a JSON object with list of CanvasPaths
+	 * Export the current path data.
 	 *
-	 * @returns Promise<CanvasPath[]> - The paths drawn on the canvas
+	 * @remarks
+	 * The returned paths can be stored and later passed to `loadPaths()`.
+	 *
+	 * @returns Promise that resolves with the current path list.
 	 */
 	exportPaths: () => Promise<CanvasPath[]>;
 	/**
-	 * Import the paths to be drawn on the canvas.
+	 * Append paths to the canvas.
 	 *
 	 * @remarks
-	 * This will remove all the existing paths on the canvas and replace them with the new paths.
+	 * Existing paths are preserved. The provided paths are appended to the end
+	 * of the current path list and become part of undo/redo history.
 	 *
-	 * @param paths - The paths to be drawn on the canvas
+	 * @param paths - Paths to append to the current drawing.
+	 * @returns Nothing.
 	 */
 	loadPaths: (paths: CanvasPath[]) => void;
 	/**
-	 * Get the current drawing time in milliseconds. This will only work if withTimestamp prop is set to true.
+	 * Get the total active drawing time in milliseconds.
 	 *
 	 * @remarks
-	 * This does not include the idle time when the user is not drawing. It only includes the time when the user is drawing on the canvas.
+	 * This only works when `withTimestamp` is enabled before drawing. Idle time
+	 * between strokes is not included.
+	 *
+	 * @returns Promise that resolves with the total sketching time.
 	 */
 	getSketchingTime: () => Promise<number>;
 	/**
-	 * Reset the canvas. This will remove all the paths drawn on the canvas and clear the Undo/Redo stack.
+	 * Remove all paths and clear undo/redo history.
 	 *
 	 * @remarks
-	 * If you only want to clear the paths drawn on the canvas, use the clearCanvas method.
+	 * Use `clearCanvas()` instead when the user should be able to undo the
+	 * clearing action.
+	 *
+	 * @returns Nothing.
 	 */
 	resetCanvas: () => void;
 }
