@@ -1,35 +1,8 @@
 import * as React from "react";
-import type { ExportImageOptions, ExportImageType } from "../types";
+import { useCanvasExportHandle } from "./hooks/useCanvasExportHandle";
 import { useCanvasPointerHandlers } from "./hooks/useCanvasPointerHandlers";
 import { CanvasSvg } from "./svg/CanvasSvg";
 import type { CanvasProps, CanvasRef } from "./types";
-
-const loadImage = (url: string): Promise<HTMLImageElement> =>
-	new Promise((resolve, reject) => {
-		const img = new Image();
-		img.addEventListener("load", () => {
-			if (img.width > 0) {
-				resolve(img);
-			}
-			reject(new Error("Image not found"));
-		});
-		img.addEventListener("error", (err) => reject(err));
-		img.src = url;
-		img.setAttribute("crossorigin", "anonymous");
-	});
-
-function getCanvasWithViewBox(canvas: HTMLDivElement) {
-	const svgCanvas = canvas.firstChild?.cloneNode(true) as SVGElement;
-
-	const width = canvas.offsetWidth;
-	const height = canvas.offsetHeight;
-
-	svgCanvas.setAttribute("viewBox", `0 0 ${width} ${height}`);
-
-	svgCanvas.setAttribute("width", width.toString());
-	svgCanvas.setAttribute("height", height.toString());
-	return { svgCanvas, width, height };
-}
 
 /**
  * Canvas component
@@ -71,6 +44,14 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
 		null,
 	);
 
+	useCanvasExportHandle(ref, {
+		canvasRef,
+		id,
+		canvasColor,
+		backgroundImage,
+		exportWithBackgroundImage,
+	});
+
 	const { handlePointerDown, handlePointerMove, handlePointerUp } =
 		useCanvasPointerHandlers({
 			canvasRef,
@@ -81,101 +62,6 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
 			onPointerMove,
 			onPointerUp,
 		});
-
-	React.useImperativeHandle(ref, () => ({
-		exportImage: (
-			imageType: ExportImageType,
-			options?: ExportImageOptions,
-		): Promise<string> =>
-			new Promise<string>((resolve, reject) => {
-				try {
-					const canvas = canvasRef.current;
-
-					if (!canvas) {
-						throw Error("Canvas not rendered yet");
-					}
-
-					const {
-						svgCanvas,
-						width: svgWidth,
-						height: svgHeight,
-					} = getCanvasWithViewBox(canvas);
-					const exportWidth = options?.width ?? svgWidth;
-					const exportHeight = options?.height ?? svgHeight;
-
-					const canvasSketch = `data:image/svg+xml;base64,${btoa(
-						svgCanvas.outerHTML,
-					)}`;
-
-					const loadImagePromises = [loadImage(canvasSketch)];
-
-					if (exportWithBackgroundImage && backgroundImage) {
-						try {
-							const img = loadImage(backgroundImage);
-							loadImagePromises.push(img);
-						} catch (error) {
-							console.warn(
-								"exportWithBackgroundImage props is set without a valid background image URL. This option is ignored",
-							);
-						}
-					}
-
-					Promise.all(loadImagePromises)
-						.then((images) => {
-							const renderCanvas = document.createElement("canvas");
-							renderCanvas.setAttribute("width", exportWidth.toString());
-							renderCanvas.setAttribute("height", exportHeight.toString());
-							const context = renderCanvas.getContext("2d");
-
-							if (!context) {
-								throw Error("Canvas not rendered yet");
-							}
-
-							if (imageType === "jpeg" && !exportWithBackgroundImage) {
-								context.fillStyle = canvasColor;
-								context.fillRect(0, 0, exportWidth, exportHeight);
-							}
-
-							for (const image of images.reverse()) {
-								context.drawImage(image, 0, 0, exportWidth, exportHeight);
-							}
-
-							resolve(renderCanvas.toDataURL(`image/${imageType}`));
-						})
-						.catch((e) => {
-							reject(e);
-						});
-				} catch (e) {
-					reject(e);
-				}
-			}),
-		exportSvg: (): Promise<string> =>
-			new Promise<string>((resolve, reject) => {
-				try {
-					const canvas = canvasRef.current ?? null;
-
-					if (canvas !== null) {
-						const { svgCanvas } = getCanvasWithViewBox(canvas);
-
-						if (exportWithBackgroundImage) {
-							resolve(svgCanvas.outerHTML);
-							return;
-						}
-
-						svgCanvas.querySelector(`#${id}__background`)?.remove();
-						svgCanvas
-							.querySelector(`#${id}__canvas-background`)
-							?.setAttribute("fill", canvasColor);
-
-						resolve(svgCanvas.outerHTML);
-					}
-
-					reject(new Error("Canvas not loaded"));
-				} catch (e) {
-					reject(e);
-				}
-			}),
-	}));
 
 	const viewBox =
 		withViewBox && canvasSizeRef.current !== null
