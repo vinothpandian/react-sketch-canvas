@@ -28,7 +28,7 @@
 		"lefthook": "^2.1.6"
 	},
 	"engines": {
-		"node": ">=20.0.0",
+		"node": ">=22.13.0",
 		"pnpm": ">=11.0.0"
 	},
 	"packageManager": "pnpm@11.1.2",
