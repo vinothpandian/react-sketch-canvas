@@ -1,12 +1,7 @@
 import * as React from "react";
 import { useCallback } from "react";
-import Paths, { SvgPath } from "../Paths";
-import type {
-	CanvasPath,
-	ExportImageOptions,
-	ExportImageType,
-	Point,
-} from "../types";
+import type { ExportImageOptions, ExportImageType, Point } from "../types";
+import { CanvasSvg } from "./svg/CanvasSvg";
 import type { CanvasProps, CanvasRef } from "./types";
 
 const ERASER_BUTTON_MASK = 32;
@@ -271,32 +266,6 @@ release drawing even when point goes out of canvas */
 		};
 	}, [handlePointerUp]);
 
-	const eraserPaths = React.useMemo(
-		() => paths.filter((path) => !path.drawMode),
-		[paths],
-	);
-
-	const pathGroups = React.useMemo(() => {
-		let currentGroup = 0;
-
-		return paths.reduce<CanvasPath[][]>(
-			(arrayGroup, path) => {
-				if (!path.drawMode) {
-					currentGroup += 1;
-					return arrayGroup;
-				}
-
-				if (arrayGroup[currentGroup] === undefined) {
-					arrayGroup[currentGroup] = [];
-				}
-
-				arrayGroup[currentGroup].push(path);
-				return arrayGroup;
-			},
-			[[]],
-		);
-	}, [paths]);
-
 	const viewBox =
 		withViewBox && canvasSizeRef.current !== null
 			? `0 0 ${canvasSizeRef.current.width} ${canvasSizeRef.current.height}`
@@ -317,108 +286,15 @@ release drawing even when point goes out of canvas */
 			onPointerMove={readOnly ? undefined : handlePointerMove}
 			onPointerUp={readOnly ? undefined : handlePointerUp}
 		>
-			<svg
-				version="1.1"
-				baseProfile="full"
-				xmlns="http://www.w3.org/2000/svg"
-				xmlnsXlink="http://www.w3.org/1999/xlink"
-				aria-hidden="true"
-				style={{
-					width: "100%",
-					height: "100%",
-					...svgStyle,
-				}}
+			<CanvasSvg
 				id={id}
+				paths={paths}
+				canvasColor={canvasColor}
+				backgroundImage={backgroundImage}
+				preserveBackgroundImageAspectRatio={preserveBackgroundImageAspectRatio}
+				svgStyle={svgStyle}
 				viewBox={viewBox}
-			>
-				<g id={`${id}__eraser-stroke-group`} display="none">
-					<rect
-						id={`${id}__mask-background`}
-						x="0"
-						y="0"
-						width="100%"
-						height="100%"
-						fill="white"
-					/>
-					{eraserPaths.map((eraserPath, i) => (
-						<SvgPath
-							// biome-ignore lint/suspicious/noArrayIndexKey: eraser masks are generated from ordered strokes with no domain id.
-							key={`${id}__eraser-${i}`}
-							id={`${id}__eraser-${i}`}
-							paths={eraserPath.paths}
-							strokeColor="#000000"
-							strokeWidth={eraserPath.strokeWidth}
-						/>
-					))}
-				</g>
-				<defs>
-					{backgroundImage && (
-						<pattern
-							id={`${id}__background`}
-							x="0"
-							y="0"
-							width="100%"
-							height="100%"
-							patternUnits="userSpaceOnUse"
-						>
-							<image
-								x="0"
-								y="0"
-								width="100%"
-								height="100%"
-								xlinkHref={backgroundImage}
-								preserveAspectRatio={preserveBackgroundImageAspectRatio}
-							/>
-						</pattern>
-					)}
-
-					{eraserPaths.map((_, i) => (
-						<mask
-							id={`${id}__eraser-mask-${i}`}
-							// biome-ignore lint/suspicious/noArrayIndexKey: mask order is tied to ordered eraser strokes.
-							key={`${id}__eraser-mask-${i}`}
-							maskUnits="userSpaceOnUse"
-						>
-							<use
-								href={`#${id}__mask-background`}
-								xlinkHref={`#${id}__mask-background`}
-							/>
-							{Array.from(
-								{ length: eraserPaths.length - i },
-								(_i, j) => j + i,
-							).map((k) => (
-								<use
-									key={k.toString()}
-									href={`#${id}__eraser-${k.toString()}`}
-									xlinkHref={`#${id}__eraser-${k.toString()}`}
-								/>
-							))}
-						</mask>
-					))}
-				</defs>
-				<g id={`${id}__canvas-background-group`}>
-					<rect
-						id={`${id}__canvas-background`}
-						x="0"
-						y="0"
-						width="100%"
-						height="100%"
-						fill={backgroundImage ? `url(#${id}__background)` : canvasColor}
-					/>
-				</g>
-				{pathGroups.map((pathGroup, i) => (
-					<g
-						id={`${id}__stroke-group-${i}`}
-						// biome-ignore lint/suspicious/noArrayIndexKey: stroke groups are ordered drawing segments with no domain id.
-						key={`${id}__stroke-group-${i}`}
-						{...(eraserPaths[i]
-							? { mask: `url(#${id}__eraser-mask-${i})` }
-							: {})}
-					>
-						<Paths id={`${id}__stroke-group-${i}__paths`} paths={pathGroup} />
-					</g>
-				))}
-			</svg>
+			/>
 		</div>
 	);
 });
