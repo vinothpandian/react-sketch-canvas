@@ -12,15 +12,9 @@ importers:
         specifier: ^2.27.1
         version: 2.27.1
     devDependencies:
-      eslint-config-custom:
-        specifier: workspace:*
-        version: link:packages/eslint-config-custom
-      prettier:
-        specifier: ^3.2.5
-        version: 3.2.5
-      turbo:
-        specifier: ^1.12.4
-        version: 1.12.4
+      '@biomejs/biome':
+        specifier: ^1.9.4
+        version: 1.9.4
 
   apps/docs:
     dependencies:
@@ -4554,40 +4548,6 @@ packages:
   tunnel-agent@0.6.0:
     resolution: {integrity: sha512-McnNiV1l8RYeY8tBgEpuodCC1mLUdbSN+CYBL7kJsJNInOP8UjDDEwdk6Mw60vdLLrr5NHKZhMAOSrR2NZuQ+w==}
 
-  turbo-darwin-64@1.12.4:
-    resolution: {integrity: sha512-dBwFxhp9isTa9RS/fz2gDVk5wWhKQsPQMozYhjM7TT4jTrnYn0ZJMzr7V3B/M/T8QF65TbniW7w1gtgxQgX5Zg==}
-    cpu: [x64]
-    os: [darwin]
-
-  turbo-darwin-arm64@1.12.4:
-    resolution: {integrity: sha512-1Uo5iI6xsJ1j9ObsqxYRsa3W26mEbUe6fnj4rQYV6kDaqYD54oAMJ6hM53q9rB8JvFxwdrUXGp3PwTw9A0qqkA==}
-    cpu: [arm64]
-    os: [darwin]
-
-  turbo-linux-64@1.12.4:
-    resolution: {integrity: sha512-ONg2aSqKP7LAQOg7ysmU5WpEQp4DGNxSlAiR7um+LKtbmC/UxogbR5+T+Uuq6zGuQ5kJyKjWJ4NhtvUswOqBsA==}
-    cpu: [x64]
-    os: [linux]
-
-  turbo-linux-arm64@1.12.4:
-    resolution: {integrity: sha512-9FPufkwdgfIKg/9jj87Cdtftw8o36y27/S2vLN7FTR2pp9c0MQiTBOLVYadUr1FlShupddmaMbTkXEhyt9SdrA==}
-    cpu: [arm64]
-    os: [linux]
-
-  turbo-windows-64@1.12.4:
-    resolution: {integrity: sha512-2mOtxHW5Vjh/5rDVu/aFwsMzI+chs8XcEuJHlY1sYOpEymYTz+u6AXbnzRvwZFMrLKr7J7fQOGl+v96sLKbNdA==}
-    cpu: [x64]
-    os: [win32]
-
-  turbo-windows-arm64@1.12.4:
-    resolution: {integrity: sha512-nOY5wae9qnxPOpT1fRuYO0ks6dTwpKMPV6++VkDkamFDLFHUDVM/9kmD2UTeh1yyrKnrZksbb9zmShhmfj1wog==}
-    cpu: [arm64]
-    os: [win32]
-
-  turbo@1.12.4:
-    resolution: {integrity: sha512-yUJ7elEUSToiGwFZogXpYKJpQ0BvaMbkEuQECIWtkBLcmWzlMOt6bActsIm29oN83mRU0WbzGt4e8H1KHWedhg==}
-    hasBin: true
-
   type-check@0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
     engines: {node: '>= 0.8.0'}
@@ -6384,7 +6344,7 @@ snapshots:
       '@typescript-eslint/types': 6.21.0
       '@typescript-eslint/typescript-estree': 6.21.0(typescript@5.3.3)
       '@typescript-eslint/visitor-keys': 6.21.0
-      debug: 4.3.4
+      debug: 4.4.3
       eslint: 8.56.0
     optionalDependencies:
       typescript: 5.3.3
@@ -6467,7 +6427,7 @@ snapshots:
     dependencies:
       '@typescript-eslint/types': 6.21.0
       '@typescript-eslint/visitor-keys': 6.21.0
-      debug: 4.3.4
+      debug: 4.4.3
       globby: 11.1.0
       is-glob: 4.0.3
       minimatch: 9.0.3
@@ -10525,33 +10485,6 @@ snapshots:
     dependencies:
       safe-buffer: 5.2.1
 
-  turbo-darwin-64@1.12.4:
-    optional: true
-
-  turbo-darwin-arm64@1.12.4:
-    optional: true
-
-  turbo-linux-64@1.12.4:
-    optional: true
-
-  turbo-linux-arm64@1.12.4:
-    optional: true
-
-  turbo-windows-64@1.12.4:
-    optional: true
-
-  turbo-windows-arm64@1.12.4:
-    optional: true
-
-  turbo@1.12.4:
-    optionalDependencies:
-      turbo-darwin-64: 1.12.4
-      turbo-darwin-arm64: 1.12.4
-      turbo-linux-64: 1.12.4
-      turbo-linux-arm64: 1.12.4
-      turbo-windows-64: 1.12.4
-      turbo-windows-arm64: 1.12.4
-
   type-check@0.4.0:
     dependencies:
       prelude-ls: 1.2.1
@@ -10939,7 +10872,7 @@ snapshots:
 
   vue-eslint-parser@9.4.2(eslint@8.56.0):
     dependencies:
-      debug: 4.3.4
+      debug: 4.4.3
       eslint: 8.56.0
       eslint-scope: 7.2.2
       eslint-visitor-keys: 3.4.3

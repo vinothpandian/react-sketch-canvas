@@ -7,21 +7,22 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "turbo run build",
-    "dev": "turbo run dev --parallel --no-cache",
-    "preview": "turbo run preview",
-    "lint": "turbo run lint",
-    "test": "turbo run build test",
-    "ci:test": "turbo run build ci:test",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "ci:build": "cp README.md packages/react-sketch-canvas/ && pnpm --filter react-sketch-canvas ci:build",
-    "release": "pnpm test && pnpm ci:build && changeset version && changeset publish",
+    "build": "pnpm --filter react-sketch-canvas build && pnpm --filter documentation build",
+    "dev": "pnpm --filter documentation dev",
+    "preview": "pnpm --filter documentation preview",
+    "lint": "biome check .",
+    "format": "biome format --write .",
+    "test:unit": "pnpm --filter react-sketch-canvas test:unit",
+    "test:watch": "pnpm --filter react-sketch-canvas test:watch",
+    "test:ct": "pnpm --filter react-sketch-canvas test:ct",
+    "test": "pnpm --filter react-sketch-canvas test",
+    "ci:test": "pnpm lint && pnpm build && pnpm test",
+    "ci:build": "pnpm --filter react-sketch-canvas ci:build",
+    "release": "pnpm ci:test && pnpm ci:build && changeset version && changeset publish",
     "pre-release": "pnpm ci:test && pnpm ci:build && changeset && changeset publish"
   },
   "devDependencies": {
-    "eslint-config-custom": "workspace:*",
-    "prettier": "^3.2.5",
-    "turbo": "^1.12.4"
+    "@biomejs/biome": "^1.9.4"
   },
   "engines": {
     "node": ">=18.0.0",
