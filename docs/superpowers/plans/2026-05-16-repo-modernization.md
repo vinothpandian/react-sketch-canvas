@@ -629,7 +629,7 @@ Expected: Biome rewrites formatting/imports and applies safe fixes across the re
 Run:
 
 ```bash
-rg -n "<legacy ESLint suppression tokens>" .
+rg -n "eslint-disable|eslint-disable-next-line|eslint-disable-line" . --glob "!docs/superpowers/**"
 ```
 
 For each remaining meaningful suppression, replace with a Biome suppression comment on the smallest possible node. Example conversions:
