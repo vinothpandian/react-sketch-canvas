@@ -1,6 +1,6 @@
 import {
-	type MountOptions,
 	expect,
+	type MountOptions,
 	test,
 } from "@playwright/experimental-ct-react";
 import type { Locator } from "playwright/test";

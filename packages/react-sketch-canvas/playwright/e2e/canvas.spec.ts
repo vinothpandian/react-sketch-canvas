@@ -1,4 +1,4 @@
-import { type Page, expect, test } from "playwright/test";
+import { expect, type Page, test } from "playwright/test";
 import { drawLine } from "../../tests/commands";
 
 async function getSvgPixel(page: Page, selector: string, x: number, y: number) {
