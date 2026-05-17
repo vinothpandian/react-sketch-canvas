@@ -1,5 +1,26 @@
 {
-	"extends": "tsconfig/react-library.json",
+	"$schema": "https://json.schemastore.org/tsconfig",
+	"compilerOptions": {
+		"target": "ES6",
+		"module": "ESNext",
+		"lib": ["DOM", "ESNext"],
+		"importHelpers": true,
+		"declaration": true,
+		"sourceMap": true,
+		"strict": true,
+		"noImplicitReturns": true,
+		"noFallthroughCasesInSwitch": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"moduleResolution": "Node",
+		"jsx": "react-jsx",
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"noEmit": true,
+		"resolveJsonModule": true,
+		"types": ["node", "vitest/globals"]
+	},
 	"include": [
 		"src",
 		"tests",
@@ -14,11 +35,5 @@
 		"playwright-report",
 		"test-results",
 		"coverage"
-	],
-	"compilerOptions": {
-		"jsx": "react-jsx",
-		"resolveJsonModule": true,
-		"rootDir": ".",
-		"types": ["node", "vitest/globals"]
-	}
+	]
 }

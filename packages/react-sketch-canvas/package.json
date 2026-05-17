@@ -61,7 +61,6 @@
 		"react-dom": "^18.2.0",
 		"rimraf": "^5.0.5",
 		"size-limit": "^11.0.2",
-		"tsconfig": "workspace:*",
 		"tslib": "^2.6.2",
 		"tsup": "^8.0.2",
 		"typescript": "^5.3.3",
