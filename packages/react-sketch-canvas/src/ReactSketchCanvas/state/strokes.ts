@@ -1,6 +1,6 @@
 import type { CanvasPath, Point } from "../../types";
 
-type CreateStrokeOptions = {
+type CreateStrokeParams = {
 	point: Point;
 	drawMode: boolean;
 	strokeColor: string;
@@ -10,6 +10,8 @@ type CreateStrokeOptions = {
 	now: number;
 };
 
+type CreateStrokeReturns = CanvasPath;
+
 export function createStroke({
 	point,
 	drawMode,
@@ -18,7 +20,7 @@ export function createStroke({
 	eraserWidth,
 	withTimestamp,
 	now,
-}: CreateStrokeOptions): CanvasPath {
+}: CreateStrokeParams): CreateStrokeReturns {
 	const stroke: CanvasPath = {
 		drawMode,
 		strokeColor: drawMode ? strokeColor : "#000000",

@@ -1,6 +1,8 @@
 import type { ExportImageOptions, ExportImageType } from "../../types";
 
-export const loadImage = (url: string): Promise<HTMLImageElement> =>
+type LoadImageReturns = Promise<HTMLImageElement>;
+
+export const loadImage = (url: string): LoadImageReturns =>
 	new Promise((resolve, reject) => {
 		const img = new Image();
 		img.addEventListener("load", () => {
@@ -15,7 +17,7 @@ export const loadImage = (url: string): Promise<HTMLImageElement> =>
 		img.setAttribute("crossorigin", "anonymous");
 	});
 
-type ExportImageFromSvgOptions = {
+type ExportImageFromSvgParams = {
 	svgCanvas: SVGElement;
 	svgWidth: number;
 	svgHeight: number;
@@ -26,6 +28,8 @@ type ExportImageFromSvgOptions = {
 	options?: ExportImageOptions;
 };
 
+type ExportImageFromSvgReturns = Promise<string>;
+
 export async function exportImageFromSvg({
 	svgCanvas,
 	svgWidth,
@@ -35,7 +39,7 @@ export async function exportImageFromSvg({
 	backgroundImage,
 	exportWithBackgroundImage,
 	options,
-}: ExportImageFromSvgOptions): Promise<string> {
+}: ExportImageFromSvgParams): ExportImageFromSvgReturns {
 	const exportWidth = options?.width ?? svgWidth;
 	const exportHeight = options?.height ?? svgHeight;
 	const canvasSketch = `data:image/svg+xml;base64,${btoa(svgCanvas.outerHTML)}`;
@@ -46,7 +50,7 @@ export async function exportImageFromSvg({
 			loadImagePromises.push(loadImage(backgroundImage));
 		} catch {
 			console.warn(
-				"exportWithBackgroundImage props is set without a valid background image URL. This option is ignored",
+				"React Sketch Canvas could not load the background image while exporting. Check that backgroundImage points to a reachable image and allows cross-origin access.",
 			);
 		}
 	}

@@ -18,13 +18,25 @@ import {
 	finishStroke,
 } from "../state/strokes";
 
-type UseSketchCanvasControllerOptions = {
+type UseSketchCanvasControllerParams = {
 	strokeColor: string;
 	strokeWidth: number;
 	eraserWidth: number;
 	withTimestamp: boolean;
 	onChange: (updatedPaths: CanvasPath[]) => void;
 	onStroke: (path: CanvasPath, isEraser: boolean) => void;
+};
+
+type UseSketchCanvasControllerReturns = {
+	currentPaths: CanvasPath[];
+	isDrawing: boolean;
+	drawMode: boolean;
+	setEraseMode: (erase: boolean) => void;
+	enqueueOperation: (operation: Operation) => void;
+	resetCanvas: () => void;
+	handlePointerDown: (point: Point, isEraser?: boolean) => void;
+	handlePointerMove: (point: Point) => void;
+	handlePointerUp: () => void;
 };
 
 export function useSketchCanvasController({
@@ -34,7 +46,7 @@ export function useSketchCanvasController({
 	withTimestamp,
 	onChange,
 	onStroke,
-}: UseSketchCanvasControllerOptions) {
+}: UseSketchCanvasControllerParams): UseSketchCanvasControllerReturns {
 	const [state, setState] = React.useState<SketchState>(
 		createInitialSketchState,
 	);

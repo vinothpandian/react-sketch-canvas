@@ -1,13 +1,15 @@
-type PrepareSvgForExportOptions = {
+type PrepareSvgForExportParams = {
 	id: string;
 	canvasColor: string;
 	exportWithBackgroundImage: boolean;
 };
 
+type PrepareSvgForExportReturns = SVGElement;
+
 export function prepareSvgForExport(
 	svgCanvas: SVGElement,
-	{ id, canvasColor, exportWithBackgroundImage }: PrepareSvgForExportOptions,
-): SVGElement {
+	{ id, canvasColor, exportWithBackgroundImage }: PrepareSvgForExportParams,
+): PrepareSvgForExportReturns {
 	if (exportWithBackgroundImage) {
 		return svgCanvas;
 	}

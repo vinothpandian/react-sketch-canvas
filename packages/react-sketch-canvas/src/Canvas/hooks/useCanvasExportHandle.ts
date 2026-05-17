@@ -5,13 +5,15 @@ import { exportImageFromSvg } from "../export/image";
 import { prepareSvgForExport } from "../export/svg";
 import type { CanvasRef } from "../types";
 
-type UseCanvasExportHandleOptions = {
+type UseCanvasExportHandleParams = {
 	canvasRef: React.RefObject<HTMLDivElement>;
 	id: string;
 	canvasColor: string;
 	backgroundImage: string;
 	exportWithBackgroundImage: boolean;
 };
+
+type UseCanvasExportHandleReturns = ReturnType<() => void>;
 
 export function useCanvasExportHandle(
 	ref: React.ForwardedRef<CanvasRef>,
@@ -21,8 +23,8 @@ export function useCanvasExportHandle(
 		canvasColor,
 		backgroundImage,
 		exportWithBackgroundImage,
-	}: UseCanvasExportHandleOptions,
-): void {
+	}: UseCanvasExportHandleParams,
+): UseCanvasExportHandleReturns {
 	React.useImperativeHandle(ref, () => ({
 		exportImage: async (
 			imageType: ExportImageType,

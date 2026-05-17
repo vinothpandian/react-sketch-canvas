@@ -9,7 +9,7 @@ import type { Operation } from "../state/operations";
 import { getSketchingTime } from "../state/sketchingTime";
 import type { ReactSketchCanvasRef } from "../types";
 
-type UseSketchCanvasImperativeHandleOptions = {
+type UseSketchCanvasImperativeHandleParams = {
 	canvasRef: React.RefObject<CanvasRef>;
 	currentPaths: CanvasPath[];
 	withTimestamp: boolean;
@@ -17,6 +17,8 @@ type UseSketchCanvasImperativeHandleOptions = {
 	enqueueOperation: (operation: Operation) => void;
 	resetCanvas: () => void;
 };
+
+type UseSketchCanvasImperativeHandleReturns = ReturnType<() => void>;
 
 export function useSketchCanvasImperativeHandle(
 	ref: React.ForwardedRef<ReactSketchCanvasRef>,
@@ -27,8 +29,8 @@ export function useSketchCanvasImperativeHandle(
 		setEraseMode,
 		enqueueOperation,
 		resetCanvas,
-	}: UseSketchCanvasImperativeHandleOptions,
-): void {
+	}: UseSketchCanvasImperativeHandleParams,
+): UseSketchCanvasImperativeHandleReturns {
 	React.useImperativeHandle(
 		ref,
 		() => ({
