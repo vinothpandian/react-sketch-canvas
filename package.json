@@ -20,7 +20,8 @@
 		"pre-release": "pnpm ci:test && pnpm ci:build && changeset && changeset publish"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^1.9.4"
+		"@biomejs/biome": "^1.9.4",
+		"lefthook": "^2.1.6"
 	},
 	"engines": {
 		"node": ">=20.0.0",

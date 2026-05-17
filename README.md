@@ -38,10 +38,10 @@ If you use npm
 npm i react-sketch-canvas
 ```
 
-or with yarn
+or with pnpm
 
 ```sh
-yarn add react-sketch-canvas
+pnpm add react-sketch-canvas
 ```
 
 ## Example
