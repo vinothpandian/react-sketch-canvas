@@ -19,18 +19,18 @@
 	"main": "dist/index.js",
 	"typings": "dist/index.d.ts",
 	"module": "dist/index.mjs",
-	"files": ["dist", "src"],
+	"files": ["dist", "README.md", "LICENSE", "CHANGELOG.md"],
 	"engines": {
-		"node": ">=10"
+		"node": ">=20.0.0"
 	},
 	"size-limit": [
 		{
 			"path": "dist/index.js",
-			"limit": "15 KB"
+			"limit": "5 KB"
 		},
 		{
 			"path": "dist/index.mjs",
-			"limit": "15 KB"
+			"limit": "5 KB"
 		}
 	],
 	"scripts": {
@@ -40,6 +40,8 @@
 		"dev": "tsup src/index.tsx --env.NODE_ENV development",
 		"lint": "biome check .",
 		"format": "biome format --write .",
+		"prepack": "cp ../../README.md README.md",
+		"postpack": "rm -f README.md",
 		"test:ct": "playwright test -c playwright-ct.config.ts",
 		"test:ct:ui": "playwright test -c playwright-ct.config.ts --ui",
 		"test:unit": "vitest run",
@@ -68,7 +70,7 @@
 		"vitest": "^3.2.4"
 	},
 	"peerDependencies": {
-		"react": ">=16.8"
+		"react": ">=18.0.0"
 	},
 	"publishConfig": {
 		"access": "public",
