@@ -1,6 +1,6 @@
 ## Prerequisites
 
-[Node.js](http://nodejs.org/) >= 18.x must be installed.
+[Node.js](http://nodejs.org/) >= 20.x must be installed.
 
 ## Installation
 

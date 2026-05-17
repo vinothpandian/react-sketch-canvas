@@ -6,7 +6,7 @@
 			"script": "dev",
 			"problemMatcher": [],
 			"label": "npm: dev",
-			"detail": "turbo run dev --parallel --no-cache"
+			"detail": "pnpm --filter documentation dev"
 		}
 	]
 }
