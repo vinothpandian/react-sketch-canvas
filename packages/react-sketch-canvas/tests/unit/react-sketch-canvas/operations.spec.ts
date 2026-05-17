@@ -30,6 +30,12 @@ describe("operations", () => {
 		expect(next.currentPaths).toEqual([path("red")]);
 	});
 
+	it("keeps state unchanged when loadPaths has no payload", () => {
+		const state = createInitialSketchState();
+
+		expect(applyOperation(state, { type: "loadPaths" })).toBe(state);
+	});
+
 	it("throws on unknown operations", () => {
 		expect(() =>
 			applyOperation(createInitialSketchState(), { type: "unknown" } as never),

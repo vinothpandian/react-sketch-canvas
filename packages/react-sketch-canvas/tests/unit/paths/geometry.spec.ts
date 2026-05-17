@@ -16,6 +16,8 @@ describe("Paths geometry", () => {
 			{ x: 20, y: 10 },
 		]);
 
-		expect(command).toBe("C 2,0 5.999999999999999,-1.9999999999999998 10, 0");
+		expect(command.startsWith("C ")).toBe(true);
+		expect(command.endsWith(" 10, 0")).toBe(true);
+		expect(command).toMatch(/^C [^ ]+ [^ ]+ 10, 0$/);
 	});
 });

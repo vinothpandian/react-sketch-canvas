@@ -89,6 +89,40 @@ describe("useCanvasPointerHandlers", () => {
 		expect(onPointerMove).not.toHaveBeenCalled();
 	});
 
+	it("ignores pointer down events from disallowed pointer types", () => {
+		const onPointerDown = vi.fn();
+		const { getByTestId } = render(
+			<Harness allowOnlyPointerType="pen" onPointerDown={onPointerDown} />,
+		);
+
+		fireEvent.pointerDown(getByTestId("canvas"), {
+			pointerType: "mouse",
+			button: 0,
+			buttons: 1,
+		});
+
+		expect(onPointerDown).not.toHaveBeenCalled();
+	});
+
+	it("normalizes pointer move while drawing", () => {
+		const onPointerMove = vi.fn();
+		const { getByTestId } = render(
+			<Harness isDrawing onPointerMove={onPointerMove} />,
+		);
+
+		const event = createEvent.pointerMove(getByTestId("canvas"), {
+			pointerType: "mouse",
+		});
+		Object.defineProperties(event, {
+			pageX: { value: 42 },
+			pageY: { value: 64 },
+		});
+
+		fireEvent(getByTestId("canvas"), event);
+
+		expect(onPointerMove).toHaveBeenCalledWith({ x: 32, y: 44 });
+	});
+
 	it("wires document pointerup", () => {
 		const onPointerUp = vi.fn();
 		render(<Harness onPointerUp={onPointerUp} />);

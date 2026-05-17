@@ -50,6 +50,20 @@ describe("history state", () => {
 		expect(redone.historyPos).toBe(2);
 	});
 
+	it("keeps state unchanged at undo and redo boundaries", () => {
+		const initial = createInitialSketchState();
+		expect(undoState(initial)).toBe(initial);
+
+		const atLatestHistory = {
+			...createInitialSketchState(),
+			history: [[], [path("red")]],
+			historyPos: 1,
+			currentPaths: [path("red")],
+			historySynced: true,
+		};
+		expect(redoState(atLatestHistory)).toBe(atLatestHistory);
+	});
+
 	it("clear appends an empty history entry", () => {
 		const state = {
 			...createInitialSketchState(),
@@ -72,6 +86,26 @@ describe("history state", () => {
 		);
 
 		expect(loaded.currentPaths).toEqual([path("red"), path("blue")]);
+	});
+
+	it("loadPaths drops redo history after the current position", () => {
+		const loaded = loadPathsState(
+			{
+				...createInitialSketchState(),
+				history: [[], [path("red")], [path("red"), path("green")]],
+				historyPos: 1,
+				historySynced: true,
+				currentPaths: [path("red")],
+			},
+			[path("blue")],
+		);
+
+		expect(loaded.history).toEqual([
+			[],
+			[path("red")],
+			[path("red"), path("blue")],
+		]);
+		expect(loaded.historyPos).toBe(2);
 	});
 
 	it("reset clears paths, history, and operation queue state", () => {

@@ -36,4 +36,8 @@ describe("canvas SVG grouping", () => {
 	it("keeps an initial empty group when the first stroke is an eraser", () => {
 		expect(getPathGroups([erase(1), draw(2)])).toEqual([[], [draw(2)]]);
 	});
+
+	it("does not create a trailing empty group after the last stroke is an eraser", () => {
+		expect(getPathGroups([draw(1), erase(2)])).toEqual([[draw(1)]]);
+	});
 });

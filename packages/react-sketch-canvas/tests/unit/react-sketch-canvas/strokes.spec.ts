@@ -65,6 +65,12 @@ describe("stroke state helpers", () => {
 		]);
 	});
 
+	it("keeps an empty path list unchanged when appending a point", () => {
+		const paths = [] as ReturnType<typeof createStroke>[];
+
+		expect(appendPointToLastStroke(paths, { x: 3, y: 4 })).toBe(paths);
+	});
+
 	it("finishes timestamped last stroke", () => {
 		const paths = [
 			createStroke({
@@ -80,5 +86,11 @@ describe("stroke state helpers", () => {
 
 		expect(finishStroke(paths, true, 250)[0].endTimestamp).toBe(250);
 		expect(finishStroke(paths, false, 250)[0].endTimestamp).toBe(0);
+	});
+
+	it("keeps an empty path list unchanged when finishing a stroke", () => {
+		const paths = [] as ReturnType<typeof createStroke>[];
+
+		expect(finishStroke(paths, true, 250)).toBe(paths);
 	});
 });
