@@ -221,4 +221,28 @@ test.describe("eraser", () => {
 			canvas.locator(firstStrokeGroupId).locator("path"),
 		).toHaveCount(1);
 	});
+
+	test("should keep eraser mask source paths in defs for Firefox rendering", async ({
+		mount,
+	}) => {
+		const canvasId = "rsc";
+		const eraserButtonId = "eraser-button";
+
+		const component = await mount(
+			<WithEraserButton id={canvasId} eraserButtonId={eraserButtonId} />,
+		);
+
+		const canvas = component.locator(`#${canvasId}`);
+
+		await drawLine(canvas, { length: 50, originX: 0, originY: 10 });
+		await component.locator(`#${eraserButtonId}`).click();
+		await drawLine(canvas, { length: 10, originX: 0, originY: 10 });
+
+		const eraserStrokeGroup = canvas.locator(
+			`defs > #${canvasId}__eraser-stroke-group`,
+		);
+
+		await expect(eraserStrokeGroup.locator("path")).toHaveCount(1);
+		await expect(eraserStrokeGroup).not.toHaveAttribute("display", "none");
+	});
 });

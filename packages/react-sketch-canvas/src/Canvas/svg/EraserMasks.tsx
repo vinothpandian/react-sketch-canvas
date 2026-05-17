@@ -19,7 +19,7 @@ export function HiddenEraserStrokes({
 	eraserPaths,
 }: EraserMasksProps): JSX.Element {
 	return (
-		<g id={`${id}__eraser-stroke-group`} display="none">
+		<g id={`${id}__eraser-stroke-group`}>
 			<rect
 				id={`${id}__mask-background`}
 				x="0"

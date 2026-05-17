@@ -52,8 +52,8 @@ export function CanvasSvg({
 			id={id}
 			viewBox={viewBox}
 		>
-			<HiddenEraserStrokes id={id} eraserPaths={eraserPaths} />
 			<defs>
+				<HiddenEraserStrokes id={id} eraserPaths={eraserPaths} />
 				<BackgroundPattern
 					id={id}
 					backgroundImage={backgroundImage}
