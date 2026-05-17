@@ -2,7 +2,7 @@
 	"name": "@vinothpandian/react-sketch-canvas",
 	"version": "0.0.0",
 	"private": true,
-	"workspaces": ["apps/*", "packages/*"],
+	"workspaces": ["apps/docs", "packages/react-sketch-canvas"],
 	"scripts": {
 		"build": "pnpm --filter react-sketch-canvas build && pnpm --filter documentation build",
 		"dev": "pnpm --filter documentation dev",

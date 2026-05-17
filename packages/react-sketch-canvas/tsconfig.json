@@ -19,6 +19,7 @@
 		"forceConsistentCasingInFileNames": true,
 		"noEmit": true,
 		"resolveJsonModule": true,
+		"rootDir": ".",
 		"types": ["node", "vitest/globals"]
 	},
 	"include": [
