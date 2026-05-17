@@ -1,21 +1,17 @@
 {
-  "mode": "pre",
-  "tag": "next",
-  "initialVersions": {
-    "documentation": "1.0.0",
-    "eslint-config-custom": "0.0.0",
-    "react-sketch-canvas": "6.2.0",
-    "tests": "1.0.0",
-    "tsconfig": "0.0.0"
-  },
-  "changesets": [
-    "cold-nails-wave",
-    "curly-icons-hear",
-    "famous-onions-brush",
-    "forty-pans-cover",
-    "moody-kings-poke",
-    "serious-bobcats-burn",
-    "shy-ghosts-poke",
-    "tricky-games-clean"
-  ]
+	"mode": "pre",
+	"tag": "next",
+	"initialVersions": {
+		"react-sketch-canvas": "6.2.0"
+	},
+	"changesets": [
+		"cold-nails-wave",
+		"curly-icons-hear",
+		"famous-onions-brush",
+		"forty-pans-cover",
+		"moody-kings-poke",
+		"serious-bobcats-burn",
+		"shy-ghosts-poke",
+		"tricky-games-clean"
+	]
 }

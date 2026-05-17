@@ -11,13 +11,9 @@ coverage/
 jest-coverage/
 cypress-coverage/
 reports/
-packages/tests/cypress/screenshots/
-packages/tests/cypress/videos/
-packages/tests/.nyc_output/
-packages/tests/coverage/
-packages/tests/cypress/downloads/
 .idea/
-.turbo/
 playwright-report/
 test-results/
+packages/react-sketch-canvas/playwright-report/
+packages/react-sketch-canvas/test-results/
 /apps/docs/src/content/docs/api/

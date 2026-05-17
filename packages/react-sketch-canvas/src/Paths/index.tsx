@@ -1,158 +1,157 @@
-import * as React from "react";
-import { CanvasPath, Point } from "../types";
+import type { CanvasPath, Point } from "../types";
 
 type ControlPoints = {
-  current: Point;
-  previous?: Point;
-  next?: Point;
-  reverse?: boolean;
+	current: Point;
+	previous?: Point;
+	next?: Point;
+	reverse?: boolean;
 };
 
 type PathProps = {
-  id: string;
-  paths: CanvasPath[];
+	id: string;
+	paths: CanvasPath[];
 };
 
 export const line = (pointA: Point, pointB: Point) => {
-  const lengthX = pointB.x - pointA.x;
-  const lengthY = pointB.y - pointA.y;
+	const lengthX = pointB.x - pointA.x;
+	const lengthY = pointB.y - pointA.y;
 
-  return {
-    length: Math.sqrt(lengthX ** 2 + lengthY ** 2),
-    angle: Math.atan2(lengthY, lengthX),
-  };
+	return {
+		length: Math.sqrt(lengthX ** 2 + lengthY ** 2),
+		angle: Math.atan2(lengthY, lengthX),
+	};
 };
 
 const controlPoint = (controlPoints: ControlPoints): [number, number] => {
-  const { current, next, previous, reverse } = controlPoints;
+	const { current, next, previous, reverse } = controlPoints;
 
-  const p = previous || current;
-  const n = next || current;
+	const p = previous || current;
+	const n = next || current;
 
-  const smoothing = 0.2;
+	const smoothing = 0.2;
 
-  const o = line(p, n);
+	const o = line(p, n);
 
-  const angle = o.angle + (reverse ? Math.PI : 0);
-  const length = o.length * smoothing;
+	const angle = o.angle + (reverse ? Math.PI : 0);
+	const length = o.length * smoothing;
 
-  const x = current.x + Math.cos(angle) * length;
-  const y = current.y + Math.sin(angle) * length;
+	const x = current.x + Math.cos(angle) * length;
+	const y = current.y + Math.sin(angle) * length;
 
-  return [x, y];
+	return [x, y];
 };
 
 export const bezierCommand = (point: Point, i: number, a: Point[]): string => {
-  let cpsX: number;
-  let cpsY: number;
+	let cpsX: number;
+	let cpsY: number;
 
-  switch (i) {
-    case 0:
-      [cpsX, cpsY] = controlPoint({
-        current: point,
-      });
-      break;
-    case 1:
-      [cpsX, cpsY] = controlPoint({
-        current: a[i - 1],
-        next: point,
-      });
-      break;
-    default:
-      [cpsX, cpsY] = controlPoint({
-        current: a[i - 1],
-        previous: a[i - 2],
-        next: point,
-      });
-      break;
-  }
+	switch (i) {
+		case 0:
+			[cpsX, cpsY] = controlPoint({
+				current: point,
+			});
+			break;
+		case 1:
+			[cpsX, cpsY] = controlPoint({
+				current: a[i - 1],
+				next: point,
+			});
+			break;
+		default:
+			[cpsX, cpsY] = controlPoint({
+				current: a[i - 1],
+				previous: a[i - 2],
+				next: point,
+			});
+			break;
+	}
 
-  const [cpeX, cpeY] = controlPoint({
-    current: point,
-    previous: a[i - 1],
-    next: a[i + 1],
-    reverse: true,
-  });
+	const [cpeX, cpeY] = controlPoint({
+		current: point,
+		previous: a[i - 1],
+		next: a[i + 1],
+		reverse: true,
+	});
 
-  return `C ${cpsX},${cpsY} ${cpeX},${cpeY} ${point.x}, ${point.y}`;
+	return `C ${cpsX},${cpsY} ${cpeX},${cpeY} ${point.x}, ${point.y}`;
 };
 
 export type SvgPathProps = {
-  // List of points to create the stroke
-  paths: Point[];
-  // Unique ID
-  id: string;
-  // Width of the stroke
-  strokeWidth: number;
-  // Color of the stroke
-  strokeColor: string;
-  // Bezier command to smoothen the line
-  command?: (point: Point, i: number, a: Point[]) => string;
+	// List of points to create the stroke
+	paths: Point[];
+	// Unique ID
+	id: string;
+	// Width of the stroke
+	strokeWidth: number;
+	// Color of the stroke
+	strokeColor: string;
+	// Bezier command to smoothen the line
+	command?: (point: Point, i: number, a: Point[]) => string;
 };
 
 /**
  * Generate SVG Path tag from the given points
  */
 export function SvgPath({
-  paths,
-  id,
-  strokeWidth,
-  strokeColor,
-  command = bezierCommand,
+	paths,
+	id,
+	strokeWidth,
+	strokeColor,
+	command = bezierCommand,
 }: SvgPathProps): JSX.Element {
-  if (paths.length === 1) {
-    const { x, y } = paths[0];
+	if (paths.length === 1) {
+		const { x, y } = paths[0];
 
-    const radius = strokeWidth / 2;
+		const radius = strokeWidth / 2;
 
-    return (
-      <circle
-        key={id}
-        id={id}
-        cx={x}
-        cy={y}
-        r={radius}
-        stroke={strokeColor}
-        fill={strokeColor}
-      />
-    );
-  }
+		return (
+			<circle
+				key={id}
+				id={id}
+				cx={x}
+				cy={y}
+				r={radius}
+				stroke={strokeColor}
+				fill={strokeColor}
+			/>
+		);
+	}
 
-  const d = paths.reduce(
-    (acc, point, i, a) =>
-      i === 0 ? `M ${point.x},${point.y}` : `${acc} ${command(point, i, a)}`,
-    "",
-  );
+	const d = paths.reduce(
+		(acc, point, i, a) =>
+			i === 0 ? `M ${point.x},${point.y}` : `${acc} ${command(point, i, a)}`,
+		"",
+	);
 
-  return (
-    <path
-      key={id}
-      id={id}
-      d={d}
-      fill="none"
-      strokeLinecap="round"
-      stroke={strokeColor}
-      strokeWidth={strokeWidth}
-    />
-  );
+	return (
+		<path
+			key={id}
+			id={id}
+			d={d}
+			fill="none"
+			strokeLinecap="round"
+			stroke={strokeColor}
+			strokeWidth={strokeWidth}
+		/>
+	);
 }
 
 function Paths({ id, paths }: PathProps): JSX.Element {
-  return (
-    <>
-      {paths.map((path: CanvasPath, index: number) => (
-        <SvgPath
-          // eslint-disable-next-line react/no-array-index-key
-          key={`${id}__${index}`}
-          paths={path.paths}
-          id={`${id}__${index}`}
-          strokeWidth={path.strokeWidth}
-          strokeColor={path.strokeColor}
-          command={bezierCommand}
-        />
-      ))}
-    </>
-  );
+	return (
+		<>
+			{paths.map((path: CanvasPath, index: number) => (
+				<SvgPath
+					// biome-ignore lint/suspicious/noArrayIndexKey: stroke path order is stable and has no domain id.
+					key={`${id}__${index}`}
+					paths={path.paths}
+					id={`${id}__${index}`}
+					strokeWidth={path.strokeWidth}
+					strokeColor={path.strokeColor}
+					command={bezierCommand}
+				/>
+			))}
+		</>
+	);
 }
 
 export default Paths;

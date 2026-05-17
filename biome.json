@@ -1,0 +1,31 @@
+{
+	"$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+	"vcs": {
+		"enabled": true,
+		"clientKind": "git",
+		"useIgnoreFile": true
+	},
+	"files": {
+		"ignore": [
+			"node_modules",
+			"dist",
+			"coverage",
+			"playwright-report",
+			"test-results",
+			"apps/docs/.astro",
+			"packages/react-sketch-canvas/dist",
+			"packages/react-sketch-canvas/playwright-report",
+			"packages/react-sketch-canvas/test-results",
+			"apps/docs/src/content/docs/api"
+		]
+	},
+	"formatter": {
+		"enabled": true
+	},
+	"linter": {
+		"enabled": true
+	},
+	"organizeImports": {
+		"enabled": true
+	}
+}

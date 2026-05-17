@@ -1,68 +1,79 @@
 {
-  "name": "react-sketch-canvas",
-  "version": "7.0.0-next.7",
-  "description": "react-sketch-canvas - Freehand vector drawing tool for React using SVG as canvas",
-  "author": "Vinoth Pandian",
-  "homepage": "https://vinoth.info/react-sketch-canvas",
-  "license": "MIT",
-  "repository": "https://github.com/vinothpandian/react-sketch-canvas.git",
-  "keywords": [
-    "react-component",
-    "sketch",
-    "canvas",
-    "drawing",
-    "freehand",
-    "vector",
-    "svg-canvas",
-    "react-sketch"
-  ],
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
-  "module": "dist/index.mjs",
-  "files": [
-    "dist",
-    "src"
-  ],
-  "engines": {
-    "node": ">=10"
-  },
-  "size-limit": [
-    {
-      "path": "dist/index.js",
-      "limit": "15 KB"
-    },
-    {
-      "path": "dist/index.mjs",
-      "limit": "15 KB"
-    }
-  ],
-  "scripts": {
-    "clean": "rimraf dist",
-    "build": "pnpm clean && tsup src/index.tsx --env.NODE_ENV production",
-    "ci:build": "pnpm clean && tsup src/index.tsx --env.NODE_ENV production && npm run size",
-    "dev": "tsup src/index.tsx --env.NODE_ENV development",
-    "lint": "eslint *.ts*",
-    "size": "size-limit"
-  },
-  "devDependencies": {
-    "@size-limit/preset-small-lib": "^11.0.2",
-    "@types/react": "^18.2.55",
-    "@types/react-dom": "^18.2.19",
-    "eslint": "^8.56.0",
-    "eslint-config-custom": "workspace:*",
-    "react": "^18.2.0",
-    "rimraf": "^5.0.5",
-    "size-limit": "^11.0.2",
-    "tsconfig": "workspace:*",
-    "tslib": "^2.6.2",
-    "tsup": "^8.0.2",
-    "typescript": "^5.3.3"
-  },
-  "peerDependencies": {
-    "react": ">=16.8"
-  },
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
-  }
+	"name": "react-sketch-canvas",
+	"version": "7.0.0-next.7",
+	"description": "react-sketch-canvas - Freehand vector drawing tool for React using SVG as canvas",
+	"author": "Vinoth Pandian",
+	"homepage": "https://vinoth.info/react-sketch-canvas",
+	"license": "MIT",
+	"repository": "https://github.com/vinothpandian/react-sketch-canvas.git",
+	"keywords": [
+		"react-component",
+		"sketch",
+		"canvas",
+		"drawing",
+		"freehand",
+		"vector",
+		"svg-canvas",
+		"react-sketch"
+	],
+	"main": "dist/index.js",
+	"typings": "dist/index.d.ts",
+	"module": "dist/index.mjs",
+	"files": ["dist", "README.md", "LICENSE", "CHANGELOG.md"],
+	"engines": {
+		"node": ">=20.0.0"
+	},
+	"size-limit": [
+		{
+			"path": "dist/index.js",
+			"limit": "5 KB"
+		},
+		{
+			"path": "dist/index.mjs",
+			"limit": "5 KB"
+		}
+	],
+	"scripts": {
+		"clean": "rimraf dist",
+		"build": "pnpm clean && tsup src/index.tsx --env.NODE_ENV production",
+		"ci:build": "pnpm clean && tsup src/index.tsx --env.NODE_ENV production && pnpm size",
+		"dev": "tsup src/index.tsx --env.NODE_ENV development",
+		"lint": "biome check .",
+		"format": "biome format --write .",
+		"prepack": "node ../../scripts/package-assets.mjs prepack",
+		"postpack": "node ../../scripts/package-assets.mjs postpack",
+		"test:ct": "playwright test -c playwright-ct.config.ts",
+		"test:ct:ui": "playwright test -c playwright-ct.config.ts --ui",
+		"test:unit": "vitest run",
+		"test:watch": "vitest",
+		"test": "pnpm test:unit && pnpm test:ct",
+		"size": "size-limit"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^1.9.4",
+		"@playwright/experimental-ct-react": "^1.60.0",
+		"@size-limit/preset-small-lib": "^11.0.2",
+		"@testing-library/react": "^16.3.2",
+		"@types/node": "^20.11.17",
+		"@types/react": "^18.2.55",
+		"@types/react-dom": "^18.2.19",
+		"happy-dom": "^20.9.0",
+		"playwright": "^1.60.0",
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0",
+		"rimraf": "^5.0.5",
+		"size-limit": "^11.0.2",
+		"tslib": "^2.6.2",
+		"tsup": "^8.0.2",
+		"typescript": "^5.3.3",
+		"vite": "^5.1.2",
+		"vitest": "^3.2.4"
+	},
+	"peerDependencies": {
+		"react": ">=18.0.0"
+	},
+	"publishConfig": {
+		"access": "public",
+		"registry": "https://registry.npmjs.org/"
+	}
 }
