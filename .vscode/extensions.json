@@ -1,8 +1,8 @@
 {
-  "recommendations": [
-    "esbenp.prettier-vscode",
-    "rvest.vs-code-prettier-eslint",
-    "astro-build.astro-vscode"
-  ],
-  "unwantedRecommendations": []
+	"recommendations": [
+		"esbenp.prettier-vscode",
+		"rvest.vs-code-prettier-eslint",
+		"astro-build.astro-vscode"
+	],
+	"unwantedRecommendations": []
 }

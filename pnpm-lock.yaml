@@ -81,10 +81,6 @@ importers:
       typescript:
         specifier: ^5.3.3
         version: 5.3.3
-    devDependencies:
-      eslint-config-custom:
-        specifier: workspace:*
-        version: link:../../packages/eslint-config-custom
 
   packages/eslint-config-custom:
     dependencies:
@@ -167,12 +163,6 @@ importers:
       '@types/react-dom':
         specifier: ^18.2.19
         version: 18.2.19
-      eslint:
-        specifier: ^8.56.0
-        version: 8.56.0
-      eslint-config-custom:
-        specifier: workspace:*
-        version: link:../eslint-config-custom
       happy-dom:
         specifier: ^20.9.0
         version: 20.9.0

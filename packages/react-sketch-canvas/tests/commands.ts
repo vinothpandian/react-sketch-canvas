@@ -1,33 +1,33 @@
-import { Locator } from "playwright/test";
-import { DrawLineArgs, DrawPointArgs, DrawSquareArgs } from "./types";
+import type { Locator } from "playwright/test";
+import type { DrawLineArgs, DrawPointArgs, DrawSquareArgs } from "./types";
 
 export function getCanvasIds(id: string) {
-  const canvasBackgroundId = `#${id}__canvas-background`;
-  const backgroundImagePatternId = `pattern#${id}__background image`;
-  const firstStrokeGroupId = `#${id}__stroke-group-0`;
-  const secondStrokeGroupId = `#${id}__stroke-group-1`;
-  const eraserStrokeGroupId = `#${id}__eraser-stroke-group`;
+	const canvasBackgroundId = `#${id}__canvas-background`;
+	const backgroundImagePatternId = `pattern#${id}__background image`;
+	const firstStrokeGroupId = `#${id}__stroke-group-0`;
+	const secondStrokeGroupId = `#${id}__stroke-group-1`;
+	const eraserStrokeGroupId = `#${id}__eraser-stroke-group`;
 
-  const firstStrokePathId = `#${id}__stroke-group-0__paths__0`;
-  const firstEraserStrokeId = `#${id}__eraser-0`;
-  const firstEraserMaskId = `${id}__eraser-mask-0`;
-  const firstEraserMask = `mask#${firstEraserMaskId}`;
-  const secondEraserMaskId = `${id}__eraser-mask-1`;
-  const secondEraserMask = `mask#${secondEraserMaskId}`;
+	const firstStrokePathId = `#${id}__stroke-group-0__paths__0`;
+	const firstEraserStrokeId = `#${id}__eraser-0`;
+	const firstEraserMaskId = `${id}__eraser-mask-0`;
+	const firstEraserMask = `mask#${firstEraserMaskId}`;
+	const secondEraserMaskId = `${id}__eraser-mask-1`;
+	const secondEraserMask = `mask#${secondEraserMaskId}`;
 
-  return {
-    canvasBackgroundId,
-    backgroundImagePatternId,
-    firstStrokeGroupId,
-    secondStrokeGroupId,
-    eraserStrokeGroupId,
-    firstStrokePathId,
-    firstEraserStrokeId,
-    firstEraserMaskId,
-    firstEraserMask,
-    secondEraserMaskId,
-    secondEraserMask,
-  };
+	return {
+		canvasBackgroundId,
+		backgroundImagePatternId,
+		firstStrokeGroupId,
+		secondStrokeGroupId,
+		eraserStrokeGroupId,
+		firstStrokePathId,
+		firstEraserStrokeId,
+		firstEraserMaskId,
+		firstEraserMask,
+		secondEraserMaskId,
+		secondEraserMask,
+	};
 }
 
 /**
@@ -45,66 +45,66 @@ export function getCanvasIds(id: string) {
  * @returns {Promise<void>} - A promise that resolves when the square is drawn.
  */
 export async function drawSquare(
-  canvas: Locator,
-  {
-    side,
-    originX = 10,
-    originY = 10,
-    pointerType = "pen",
-    eventButton = 0,
-    eventButtons = 1,
-  }: DrawSquareArgs,
+	canvas: Locator,
+	{
+		side,
+		originX = 10,
+		originY = 10,
+		pointerType = "pen",
+		eventButton = 0,
+		eventButtons = 1,
+	}: DrawSquareArgs,
 ): Promise<void> {
-  const boundingBox = await canvas.boundingBox();
+	const boundingBox = await canvas.boundingBox();
 
-  if (!boundingBox) {
-    throw new Error("Canvas not found");
-  }
+	if (!boundingBox) {
+		throw new Error("Canvas not found");
+	}
 
-  const x = boundingBox.x + originX;
-  const y = boundingBox.y + originY;
+	const x = boundingBox.x + originX;
+	const y = boundingBox.y + originY;
 
-  await canvas.dispatchEvent("pointerdown", {
-    pointerType,
-    button: eventButton,
-    buttons: eventButtons,
-    clientX: x,
-    clientY: y,
-  });
+	await canvas.dispatchEvent("pointerdown", {
+		pointerType,
+		button: eventButton,
+		buttons: eventButtons,
+		clientX: x,
+		clientY: y,
+	});
 
-  await canvas.dispatchEvent("pointermove", {
-    pointerType,
-    button: eventButton,
-    buttons: eventButtons,
-    clientX: x,
-    clientY: y + side,
-  });
-  await canvas.dispatchEvent("pointermove", {
-    pointerType,
-    button: eventButton,
-    buttons: eventButtons,
-    clientX: x + side,
-    clientY: y + side,
-  });
-  await canvas.dispatchEvent("pointermove", {
-    pointerType,
-    button: eventButton,
-    buttons: eventButtons,
-    clientX: x + side,
-    clientY: y,
-  });
-  await canvas.dispatchEvent("pointermove", {
-    pointerType,
-    button: eventButton,
-    buttons: eventButtons,
-    clientX: x,
-    clientY: y,
-  });
-  await canvas.dispatchEvent("pointerup", {
-    pointerType,
-    button: eventButton,
-    buttons: eventButtons,
-  });
+	await canvas.dispatchEvent("pointermove", {
+		pointerType,
+		button: eventButton,
+		buttons: eventButtons,
+		clientX: x,
+		clientY: y + side,
+	});
+	await canvas.dispatchEvent("pointermove", {
+		pointerType,
+		button: eventButton,
+		buttons: eventButtons,
+		clientX: x + side,
+		clientY: y + side,
+	});
+	await canvas.dispatchEvent("pointermove", {
+		pointerType,
+		button: eventButton,
+		buttons: eventButtons,
+		clientX: x + side,
+		clientY: y,
+	});
+	await canvas.dispatchEvent("pointermove", {
+		pointerType,
+		button: eventButton,
+		buttons: eventButtons,
+		clientX: x,
+		clientY: y,
+	});
+	await canvas.dispatchEvent("pointerup", {
+		pointerType,
+		button: eventButton,
+		buttons: eventButtons,
+	});
 }
 
 /**
@@ -117,23 +117,23 @@ export async function drawSquare(
  * @returns {Promise<void>} - A promise that resolves when all squares are drawn.
  */
 export async function drawSquares(
-  component: Locator,
-  count: number = 3,
-  staticPointerType?: "pen" | "mouse" | "touch",
+	component: Locator,
+	count = 3,
+	staticPointerType?: "pen" | "mouse" | "touch",
 ): Promise<void> {
-  const pointerTypes = ["pen", "mouse", "touch"] as const;
+	const pointerTypes = ["pen", "mouse", "touch"] as const;
 
-  await Array.from({ length: count }, (_, i) => i).reduce(
-    async (promise, i) => {
-      await promise;
-      return drawSquare(component, {
-        side: 100,
-        pointerType: staticPointerType || pointerTypes[i % pointerTypes.length],
-        originX: 50 + i * 50,
-      });
-    },
-    Promise.resolve(),
-  );
+	await Array.from({ length: count }, (_, i) => i).reduce(
+		async (promise, i) => {
+			await promise;
+			return drawSquare(component, {
+				side: 100,
+				pointerType: staticPointerType || pointerTypes[i % pointerTypes.length],
+				originX: 50 + i * 50,
+			});
+		},
+		Promise.resolve(),
+	);
 }
 
 /**
@@ -151,46 +151,46 @@ export async function drawSquares(
  * @returns {Promise<void>} A promise that resolves when the line is drawn.
  */
 export async function drawLine(
-  canvas: Locator,
-  {
-    length,
-    originX = 0,
-    originY = 0,
-    pointerType = "pen",
-    eventButton = 0,
-    eventButtons = 1,
-  }: DrawLineArgs,
+	canvas: Locator,
+	{
+		length,
+		originX = 0,
+		originY = 0,
+		pointerType = "pen",
+		eventButton = 0,
+		eventButtons = 1,
+	}: DrawLineArgs,
 ): Promise<void> {
-  const boundingBox = await canvas.boundingBox();
+	const boundingBox = await canvas.boundingBox();
 
-  if (!boundingBox) {
-    throw new Error("Canvas not found");
-  }
+	if (!boundingBox) {
+		throw new Error("Canvas not found");
+	}
 
-  const x = boundingBox.x + originX;
-  const y = boundingBox.y + originY;
+	const x = boundingBox.x + originX;
+	const y = boundingBox.y + originY;
 
-  await canvas.dispatchEvent("pointerdown", {
-    pointerType,
-    button: eventButton,
-    buttons: eventButtons,
-    clientX: x,
-    clientY: y,
-  });
+	await canvas.dispatchEvent("pointerdown", {
+		pointerType,
+		button: eventButton,
+		buttons: eventButtons,
+		clientX: x,
+		clientY: y,
+	});
 
-  await canvas.dispatchEvent("pointermove", {
-    pointerType,
-    button: eventButton,
-    buttons: eventButtons,
-    clientX: x + length,
-    clientY: y + length,
-  });
+	await canvas.dispatchEvent("pointermove", {
+		pointerType,
+		button: eventButton,
+		buttons: eventButtons,
+		clientX: x + length,
+		clientY: y + length,
+	});
 
-  await canvas.dispatchEvent("pointerup", {
-    pointerType,
-    button: eventButton,
-    buttons: eventButtons,
-  });
+	await canvas.dispatchEvent("pointerup", {
+		pointerType,
+		button: eventButton,
+		buttons: eventButtons,
+	});
 }
 
 /**
@@ -207,45 +207,45 @@ export async function drawLine(
  * @returns {Promise<void>} A promise that resolves when the eraser lines are drawn.
  */
 export async function drawEraserLine(
-  canvas: Locator,
-  {
-    length,
-    originX = 0,
-    originY = 0,
-    pointerType = "pen",
-    eventButton = 0,
-  }: Omit<DrawLineArgs, "eventButtons">,
+	canvas: Locator,
+	{
+		length,
+		originX = 0,
+		originY = 0,
+		pointerType = "pen",
+		eventButton = 0,
+	}: Omit<DrawLineArgs, "eventButtons">,
 ): Promise<void> {
-  const boundingBox = await canvas.boundingBox();
+	const boundingBox = await canvas.boundingBox();
 
-  if (!boundingBox) {
-    throw new Error("Canvas not found");
-  }
+	if (!boundingBox) {
+		throw new Error("Canvas not found");
+	}
 
-  const x = boundingBox.x + originX;
-  const y = boundingBox.y + originY;
+	const x = boundingBox.x + originX;
+	const y = boundingBox.y + originY;
 
-  await canvas.dispatchEvent("pointerdown", {
-    pointerType,
-    button: eventButton,
-    buttons: 32, // Windows surface pen eraser button
-    clientX: x,
-    clientY: y,
-  });
+	await canvas.dispatchEvent("pointerdown", {
+		pointerType,
+		button: eventButton,
+		buttons: 32, // Windows surface pen eraser button
+		clientX: x,
+		clientY: y,
+	});
 
-  await canvas.dispatchEvent("pointermove", {
-    pointerType,
-    button: eventButton,
-    buttons: 32, // Windows surface pen eraser button
-    clientX: x + length,
-    clientY: y + length,
-  });
+	await canvas.dispatchEvent("pointermove", {
+		pointerType,
+		button: eventButton,
+		buttons: 32, // Windows surface pen eraser button
+		clientX: x + length,
+		clientY: y + length,
+	});
 
-  await canvas.dispatchEvent("pointerup", {
-    pointerType,
-    button: eventButton,
-    buttons: 32, // Windows surface pen eraser button
-  });
+	await canvas.dispatchEvent("pointerup", {
+		pointerType,
+		button: eventButton,
+		buttons: 32, // Windows surface pen eraser button
+	});
 }
 
 /**
@@ -262,37 +262,37 @@ export async function drawEraserLine(
  * @returns {Promise<void>} A promise that resolves when the point is drawn.
  */
 export async function drawPoint(
-  canvas: Locator,
-  {
-    originX = 0,
-    originY = 0,
-    pointerType = "pen",
-    eventButton = 0,
-    eventButtons = 1,
-  }: DrawPointArgs,
+	canvas: Locator,
+	{
+		originX = 0,
+		originY = 0,
+		pointerType = "pen",
+		eventButton = 0,
+		eventButtons = 1,
+	}: DrawPointArgs,
 ): Promise<void> {
-  const boundingBox = await canvas.boundingBox();
+	const boundingBox = await canvas.boundingBox();
 
-  if (!boundingBox) {
-    throw new Error("Canvas not found");
-  }
+	if (!boundingBox) {
+		throw new Error("Canvas not found");
+	}
 
-  const x = boundingBox.x + originX;
-  const y = boundingBox.y + originY;
+	const x = boundingBox.x + originX;
+	const y = boundingBox.y + originY;
 
-  await canvas.dispatchEvent("pointerdown", {
-    pointerType,
-    button: eventButton,
-    buttons: eventButtons,
-    clientX: x,
-    clientY: y,
-  });
+	await canvas.dispatchEvent("pointerdown", {
+		pointerType,
+		button: eventButton,
+		buttons: eventButtons,
+		clientX: x,
+		clientY: y,
+	});
 
-  await canvas.dispatchEvent("pointerup", {
-    pointerType,
-    button: eventButton,
-    buttons: eventButtons,
-  });
+	await canvas.dispatchEvent("pointerup", {
+		pointerType,
+		button: eventButton,
+		buttons: eventButtons,
+	});
 }
 
 /**
@@ -302,12 +302,12 @@ export async function drawPoint(
  * @returns {number} - The size of the data URI in kilobytes.
  */
 export function convertDataURItoKiloBytes(dataURI?: string): number {
-  if (!dataURI) {
-    return 0;
-  }
+	if (!dataURI) {
+		return 0;
+	}
 
-  const base64str = dataURI.split("base64,")[1];
-  const decoded = atob(base64str);
+	const base64str = dataURI.split("base64,")[1];
+	const decoded = atob(base64str);
 
-  return decoded.length / 1024;
+	return decoded.length / 1024;
 }
