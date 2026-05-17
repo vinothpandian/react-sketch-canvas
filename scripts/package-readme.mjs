@@ -6,7 +6,15 @@ import { fileURLToPath } from "node:url";
 const command = process.argv[2];
 const repoRoot = dirname(dirname(fileURLToPath(import.meta.url)));
 const rootReadmePath = join(repoRoot, "README.md");
-const packageReadmePath = join(process.cwd(), "README.md");
+const packageRoot = join(repoRoot, "packages", "react-sketch-canvas");
+const packageReadmePath = join(packageRoot, "README.md");
+
+if (process.cwd() !== packageRoot) {
+	console.error(
+		`Run this script from ${packageRoot}; current directory is ${process.cwd()}.`,
+	);
+	process.exit(1);
+}
 
 async function read(path) {
 	return readFile(path, "utf8");
