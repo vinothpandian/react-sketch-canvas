@@ -12,8 +12,17 @@ export default defineConfig({
 	use: {
 		baseURL: "http://127.0.0.1:3200",
 		trace: "on-first-retry",
-		...devices["Desktop Chrome"],
 	},
+	projects: [
+		{
+			name: "chromium",
+			use: { ...devices["Desktop Chrome"] },
+		},
+		{
+			name: "firefox",
+			use: { ...devices["Desktop Firefox"] },
+		},
+	],
 	webServer: {
 		command: "pnpm exec vite playwright/e2e --host 127.0.0.1 --port 3200",
 		url: "http://127.0.0.1:3200",

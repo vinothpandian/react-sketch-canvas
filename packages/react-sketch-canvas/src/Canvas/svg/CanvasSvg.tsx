@@ -1,4 +1,3 @@
-import type { CanvasPath } from "../../types";
 import type { CanvasProps } from "../types";
 import { BackgroundPattern, BackgroundRect } from "./Background";
 import { EraserMaskDefs, HiddenEraserStrokes } from "./EraserMasks";
@@ -52,8 +51,8 @@ export function CanvasSvg({
 			id={id}
 			viewBox={viewBox}
 		>
-			<HiddenEraserStrokes id={id} eraserPaths={eraserPaths} />
 			<defs>
+				<HiddenEraserStrokes id={id} eraserPaths={eraserPaths} />
 				<BackgroundPattern
 					id={id}
 					backgroundImage={backgroundImage}
