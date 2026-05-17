@@ -15,7 +15,8 @@
 		"test": "pnpm --filter react-sketch-canvas test",
 		"ci:test": "pnpm lint && pnpm build && pnpm test",
 		"ci:build": "pnpm --filter react-sketch-canvas ci:build",
-		"release": "pnpm ci:test && pnpm ci:build && changeset version && changeset publish",
+		"changeset:version": "node scripts/changeset-version.mjs",
+		"release": "pnpm ci:test && pnpm ci:build && pnpm changeset:version && changeset publish",
 		"pre-release": "pnpm ci:test && pnpm ci:build && changeset && changeset publish"
 	},
 	"devDependencies": {
