@@ -38,8 +38,14 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - name: Test
-        run: pnpm test
+      - name: Unit tests
+        run: pnpm test:unit
+
+      - name: Component tests
+        run: pnpm test:ct
+
+      - name: E2E tests
+        run: pnpm test:e2e
 
       - uses: actions/upload-artifact@v4
         if: always()

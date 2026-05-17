@@ -27,6 +27,7 @@
 		"tests",
 		"playwright",
 		"playwright-ct.config.ts",
+		"playwright-e2e.config.ts",
 		"vitest.config.ts"
 	],
 	"exclude": [
