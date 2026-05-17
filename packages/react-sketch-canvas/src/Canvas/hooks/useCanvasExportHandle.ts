@@ -10,7 +10,7 @@ type UseCanvasExportHandleParams = Required<Pick<CanvasProps, "id">> &
 		CanvasProps,
 		"canvasColor" | "backgroundImage" | "exportWithBackgroundImage"
 	> & {
-		canvasRef: React.RefObject<HTMLDivElement>;
+		canvasRef: React.RefObject<HTMLDivElement | null>;
 	};
 
 type UseCanvasExportHandleReturns = ReturnType<() => void>;

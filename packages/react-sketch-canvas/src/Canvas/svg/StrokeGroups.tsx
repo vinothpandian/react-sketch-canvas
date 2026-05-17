@@ -1,3 +1,4 @@
+import type * as React from "react";
 import Paths from "../../Paths";
 import type { CanvasPath } from "../../types";
 import type { CanvasProps } from "../types";
@@ -19,7 +20,7 @@ export function StrokeGroups({
 	id,
 	pathGroups,
 	eraserPaths,
-}: StrokeGroupsProps): JSX.Element {
+}: StrokeGroupsProps): React.JSX.Element {
 	return (
 		<>
 			{pathGroups.map((pathGroup, i) => (

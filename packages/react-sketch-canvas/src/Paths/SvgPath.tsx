@@ -1,3 +1,4 @@
+import type * as React from "react";
 import type { CanvasPath, Point } from "../types";
 import { bezierCommand } from "./geometry";
 
@@ -29,7 +30,7 @@ export function SvgPath({
 	strokeWidth,
 	strokeColor,
 	command = bezierCommand,
-}: SvgPathProps): JSX.Element {
+}: SvgPathProps): React.JSX.Element {
 	if (paths.length === 1) {
 		const { x, y } = paths[0];
 		const radius = strokeWidth / 2;

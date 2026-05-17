@@ -2,15 +2,15 @@ import * as React from "react";
 import { useCallback } from "react";
 import type { CanvasPath, Point } from "../../types";
 import {
-	type SketchState,
 	addLastStrokeToHistory,
 	createInitialSketchState,
 	resetCanvasState,
+	type SketchState,
 } from "../state/history";
 import {
-	type Operation,
 	applyOperation,
 	enqueueOperation as enqueueOperationInState,
+	type Operation,
 } from "../state/operations";
 import {
 	appendPointToLastStroke,

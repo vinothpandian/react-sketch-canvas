@@ -1,3 +1,4 @@
+import type * as React from "react";
 import type { CanvasProps } from "../types";
 
 type BackgroundProps = Required<Pick<CanvasProps, "id">> &
@@ -20,7 +21,7 @@ export function BackgroundPattern({
 }: Pick<
 	BackgroundProps,
 	"id" | "backgroundImage" | "preserveBackgroundImageAspectRatio"
->): JSX.Element | null {
+>): React.JSX.Element | null {
 	if (!backgroundImage) return null;
 
 	return (
@@ -58,7 +59,7 @@ export function BackgroundRect({
 }: Pick<
 	BackgroundProps,
 	"id" | "backgroundImage" | "canvasColor"
->): JSX.Element {
+>): React.JSX.Element {
 	return (
 		<g id={`${id}__canvas-background-group`}>
 			<rect
