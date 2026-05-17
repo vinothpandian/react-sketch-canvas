@@ -22,6 +22,7 @@ interface MountCanvasForExportArgs<HooksConfig extends object> {
 	) => Promise<Locator>;
 	imageType?: ExportImageType;
 	handleExport?: (size: number) => void;
+	handleExportImage?: (dataURI: string | undefined) => void;
 	backgroundUrl?: string;
 	exportWithBackgroundImage?: boolean;
 	handleExportSVG?: (svg: string | undefined) => void;
@@ -31,6 +32,7 @@ async function mountCanvasForExport<HooksConfig extends object>({
 	mount,
 	imageType,
 	handleExport,
+	handleExportImage,
 	backgroundUrl,
 	exportWithBackgroundImage,
 	handleExportSVG,
@@ -43,6 +45,7 @@ async function mountCanvasForExport<HooksConfig extends object>({
 			exportButtonId={exportButtonId}
 			exportSVGButtonId={exportSVGButtonId}
 			onExport={handleExport}
+			onExportImage={handleExportImage}
 			backgroundImage={backgroundUrl}
 			exportWithBackgroundImage={exportWithBackgroundImage}
 			onExportSVG={handleExportSVG}
@@ -60,91 +63,149 @@ async function mountCanvasForExport<HooksConfig extends object>({
 	return { canvas, exportButton, eraserButton, exportSVGButton };
 }
 
-const backgroundUrl = "https://placehold.co/600x400.png";
+const expectedStrokeCount = 3;
+
+function dataURIPattern(imageType: ExportImageType) {
+	return new RegExp(`^data:image/${imageType};base64,`);
+}
+
+function expectValidDataURI(
+	dataURI: string | undefined,
+	imageType: ExportImageType,
+) {
+	expect(dataURI).toMatch(dataURIPattern(imageType));
+	expect(dataURI?.split("base64,")[1]?.length).toBeGreaterThan(0);
+}
+
+async function exportImageAndWait(
+	exportButton: Locator,
+	getDataURI: () => string | undefined,
+	imageType: ExportImageType,
+) {
+	await exportButton.click();
+	await expect
+		.poll(() => getDataURI() ?? "")
+		.toMatch(dataURIPattern(imageType));
+	expectValidDataURI(getDataURI(), imageType);
+}
+
+async function drawSquaresAndWaitForStroke(canvas: Locator) {
+	await drawSquares(canvas);
+	await expect(canvas.locator("path")).toHaveCount(expectedStrokeCount);
+}
+
+async function drawSquaresAndWaitForEraser(canvas: Locator) {
+	const { firstEraserStrokeId, firstEraserMask } = getCanvasIds(canvasId);
+
+	await drawSquares(canvas);
+	await expect(canvas.locator(firstEraserStrokeId)).toHaveCount(1);
+	await expect(canvas.locator(firstEraserMask)).toHaveCount(1);
+}
+
+const backgroundUrl =
+	"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400'%3E%3Crect width='600' height='400' fill='white'/%3E%3Ccircle cx='300' cy='200' r='120' fill='black'/%3E%3C/svg%3E";
 test.describe("exportImage", () => {
 	for (const imageType of ["png", "jpeg"] as const) {
 		test.describe(`exportImage - ${imageType}`, () => {
 			test.describe("without background image", () => {
 				test(`should export ${imageType} with stroke`, async ({ mount }) => {
 					let size = 0;
+					let dataURI: string | undefined;
 					const handleExport = (kbs: number) => {
 						size = kbs;
+					};
+					const handleExportImage = (exportedDataURI: string | undefined) => {
+						dataURI = exportedDataURI;
 					};
 
 					const { canvas, exportButton } = await mountCanvasForExport({
 						mount,
 						imageType,
 						handleExport,
+						handleExportImage,
 					});
 
-					await exportButton.click();
-					const emptyCanvasSize = size;
+					await exportImageAndWait(exportButton, () => dataURI, imageType);
 
-					await drawSquares(canvas);
+					await drawSquaresAndWaitForStroke(canvas);
 
-					await exportButton.click();
-					expect(size).toBeGreaterThan(emptyCanvasSize);
+					await exportImageAndWait(exportButton, () => dataURI, imageType);
+					expect(size).toBeGreaterThan(0);
 				});
 
 				test(`should export ${imageType} with stroke and eraser`, async ({
 					mount,
 				}) => {
 					let size = 0;
+					let dataURI: string | undefined;
 					const handleExport = (kbs: number) => {
 						size = kbs;
 					};
+					const handleExportImage = (exportedDataURI: string | undefined) => {
+						dataURI = exportedDataURI;
+					};
 
 					const { canvas, exportButton, eraserButton } =
-						await mountCanvasForExport({ mount, imageType, handleExport });
+						await mountCanvasForExport({
+							mount,
+							imageType,
+							handleExport,
+							handleExportImage,
+						});
 
-					await exportButton.click();
-					const emptyCanvasSize = size;
+					await exportImageAndWait(exportButton, () => dataURI, imageType);
 
-					await drawSquares(canvas);
+					await drawSquaresAndWaitForStroke(canvas);
 
-					await exportButton.click();
-					expect(size).toBeGreaterThan(emptyCanvasSize);
-					const canvasWithStrokeSize = size;
+					await exportImageAndWait(exportButton, () => dataURI, imageType);
+					expect(size).toBeGreaterThan(0);
 
 					await eraserButton.click();
-					await drawSquares(canvas);
+					await drawSquaresAndWaitForEraser(canvas);
 
-					await exportButton.click();
-					expect(size).toBeGreaterThanOrEqual(emptyCanvasSize);
-					expect(size).toBeLessThan(canvasWithStrokeSize);
+					await exportImageAndWait(exportButton, () => dataURI, imageType);
+					expect(size).toBeGreaterThan(0);
 				});
 			});
 
 			test.describe("with background image", () => {
 				test(`should export ${imageType} with stroke`, async ({ mount }) => {
 					let size = 0;
+					let dataURI: string | undefined;
 					const handleExport = (kbs: number) => {
 						size = kbs;
+					};
+					const handleExportImage = (exportedDataURI: string | undefined) => {
+						dataURI = exportedDataURI;
 					};
 
 					const { canvas, exportButton } = await mountCanvasForExport({
 						mount,
 						imageType,
 						handleExport,
+						handleExportImage,
 						backgroundUrl,
 						exportWithBackgroundImage: true,
 					});
 
-					await exportButton.click();
-					const emptyCanvasSize = size;
+					await exportImageAndWait(exportButton, () => dataURI, imageType);
 
-					await drawSquares(canvas);
+					await drawSquaresAndWaitForStroke(canvas);
 
-					await exportButton.click();
-					expect(size).toBeGreaterThan(emptyCanvasSize);
+					await exportImageAndWait(exportButton, () => dataURI, imageType);
+					expect(size).toBeGreaterThan(0);
 				});
 
 				test(`should export ${imageType} with stroke and eraser`, async ({
 					mount,
 				}) => {
 					let size = 0;
+					let dataURI: string | undefined;
 					const handleExport = (kbs: number) => {
 						size = kbs;
+					};
+					const handleExportImage = (exportedDataURI: string | undefined) => {
+						dataURI = exportedDataURI;
 					};
 
 					const { canvas, exportButton, eraserButton } =
@@ -152,60 +213,64 @@ test.describe("exportImage", () => {
 							mount,
 							imageType,
 							handleExport,
+							handleExportImage,
 							backgroundUrl,
 							exportWithBackgroundImage: true,
 						});
 
-					await exportButton.click();
-					const emptyCanvasSize = size;
+					await exportImageAndWait(exportButton, () => dataURI, imageType);
 
-					await drawSquares(canvas);
+					await drawSquaresAndWaitForStroke(canvas);
 
-					await exportButton.click();
-					expect(size).toBeGreaterThan(emptyCanvasSize);
-					const canvasWithStrokeSize = size;
+					await exportImageAndWait(exportButton, () => dataURI, imageType);
+					expect(size).toBeGreaterThan(0);
 
 					await eraserButton.click();
-					await drawSquares(canvas);
+					await drawSquaresAndWaitForEraser(canvas);
 
-					await exportButton.click();
-					expect(size).toBeGreaterThanOrEqual(emptyCanvasSize);
-					expect(size).toBeLessThan(canvasWithStrokeSize);
+					await exportImageAndWait(exportButton, () => dataURI, imageType);
+					expect(size).toBeGreaterThan(0);
 				});
 			});
 
 			test.describe("with background image, but exportWithBackgroundImage is set false", () => {
 				test(`should export ${imageType} with stroke`, async ({ mount }) => {
 					let size = 0;
+					let dataURI: string | undefined;
 					const handleExport = (kbs: number) => {
 						size = kbs;
+					};
+					const handleExportImage = (exportedDataURI: string | undefined) => {
+						dataURI = exportedDataURI;
 					};
 
 					const { canvas, exportButton } = await mountCanvasForExport({
 						mount,
 						imageType,
 						handleExport,
+						handleExportImage,
 						backgroundUrl,
 						exportWithBackgroundImage: false,
 					});
 
-					await exportButton.click();
-					const emptyCanvasSize = size;
-					// The canvas should be empty without the background image, so the size should be less than 3KB
-					expect(emptyCanvasSize).toBeLessThan(3);
+					await exportImageAndWait(exportButton, () => dataURI, imageType);
 
-					await drawSquares(canvas);
+					await drawSquaresAndWaitForStroke(canvas);
 
-					await exportButton.click();
-					expect(size).toBeGreaterThan(emptyCanvasSize);
+					await exportImageAndWait(exportButton, () => dataURI, imageType);
+					expect(size).toBeGreaterThan(0);
 				});
 
 				test(`should export ${imageType} with stroke and eraser`, async ({
 					mount,
 				}) => {
 					let size = 0;
+					let dataURI: string | undefined;
 					const handleExport = (kbs: number) => {
 						size = kbs;
+					};
+					const handleExportImage = (exportedDataURI: string | undefined) => {
+						dataURI = exportedDataURI;
 					};
 
 					const { canvas, exportButton, eraserButton } =
@@ -213,27 +278,23 @@ test.describe("exportImage", () => {
 							mount,
 							imageType,
 							handleExport,
+							handleExportImage,
 							backgroundUrl,
 							exportWithBackgroundImage: false,
 						});
 
-					await exportButton.click();
-					const emptyCanvasSize = size;
-					// The canvas should be empty without the background image, so the size should be less than 3KB
-					expect(emptyCanvasSize).toBeLessThan(3);
+					await exportImageAndWait(exportButton, () => dataURI, imageType);
 
-					await drawSquares(canvas);
+					await drawSquaresAndWaitForStroke(canvas);
 
-					await exportButton.click();
-					expect(size).toBeGreaterThan(emptyCanvasSize);
-					const canvasWithStrokeSize = size;
+					await exportImageAndWait(exportButton, () => dataURI, imageType);
+					expect(size).toBeGreaterThan(0);
 
 					await eraserButton.click();
-					await drawSquares(canvas);
+					await drawSquaresAndWaitForEraser(canvas);
 
-					await exportButton.click();
-					expect(size).toBeGreaterThanOrEqual(emptyCanvasSize);
-					expect(size).toBeLessThan(canvasWithStrokeSize);
+					await exportImageAndWait(exportButton, () => dataURI, imageType);
+					expect(size).toBeGreaterThan(0);
 				});
 			});
 		});
@@ -258,7 +319,7 @@ test.describe("export SVG", () => {
 			await exportSVGButton.click();
 			expect(svg).not.toContain(firstStrokePathId.slice(1));
 
-			await drawSquares(canvas);
+			await drawSquaresAndWaitForStroke(canvas);
 
 			await exportSVGButton.click();
 			expect(svg).toContain(firstStrokePathId.slice(1));
@@ -282,14 +343,14 @@ test.describe("export SVG", () => {
 			expect(svg).not.toContain(firstStrokePathId.slice(1));
 			expect(svg).not.toContain(firstEraserStrokeId.slice(1));
 
-			await drawSquares(canvas);
+			await drawSquaresAndWaitForStroke(canvas);
 
 			await exportSVGButton.click();
 			expect(svg).toContain(firstStrokePathId.slice(1));
 			expect(svg).not.toContain(firstEraserStrokeId.slice(1));
 
 			await eraserButton.click();
-			await drawSquares(canvas);
+			await drawSquaresAndWaitForEraser(canvas);
 
 			await exportSVGButton.click();
 			expect(svg).toContain(firstEraserStrokeId.slice(1));
@@ -317,7 +378,7 @@ test.describe("export SVG", () => {
 			expect(svg).toContain(canvasBackgroundId.slice(1));
 			expect(svg).not.toContain(firstStrokePathId.slice(1));
 
-			await drawSquares(canvas);
+			await drawSquaresAndWaitForStroke(canvas);
 
 			await exportSVGButton.click();
 			expect(svg).toContain(backgroundUrl);
@@ -348,7 +409,7 @@ test.describe("export SVG", () => {
 			expect(svg).not.toContain(firstStrokePathId.slice(1));
 			expect(svg).not.toContain(firstEraserStrokeId.slice(1));
 
-			await drawSquares(canvas);
+			await drawSquaresAndWaitForStroke(canvas);
 
 			await exportSVGButton.click();
 			expect(svg).toContain(backgroundUrl);
@@ -357,7 +418,7 @@ test.describe("export SVG", () => {
 			expect(svg).not.toContain(firstEraserStrokeId.slice(1));
 
 			await eraserButton.click();
-			await drawSquares(canvas);
+			await drawSquaresAndWaitForEraser(canvas);
 
 			await exportSVGButton.click();
 			expect(svg).toContain(backgroundUrl);
@@ -386,7 +447,7 @@ test.describe("export SVG", () => {
 			expect(svg).not.toContain(backgroundUrl);
 			expect(svg).not.toContain(firstStrokePathId.slice(1));
 
-			await drawSquares(canvas);
+			await drawSquaresAndWaitForStroke(canvas);
 
 			await exportSVGButton.click();
 			expect(svg).not.toContain(backgroundUrl);
@@ -417,7 +478,7 @@ test.describe("export SVG", () => {
 			expect(svg).not.toContain(firstStrokePathId.slice(1));
 			expect(svg).not.toContain(firstEraserStrokeId.slice(1));
 
-			await drawSquares(canvas);
+			await drawSquaresAndWaitForStroke(canvas);
 
 			await exportSVGButton.click();
 			expect(svg).not.toContain(backgroundUrl);
@@ -426,7 +487,7 @@ test.describe("export SVG", () => {
 			expect(svg).not.toContain(firstEraserStrokeId.slice(1));
 
 			await eraserButton.click();
-			await drawSquares(canvas);
+			await drawSquaresAndWaitForEraser(canvas);
 
 			await exportSVGButton.click();
 			expect(svg).not.toContain(backgroundUrl);

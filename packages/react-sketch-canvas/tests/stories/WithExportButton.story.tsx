@@ -13,6 +13,7 @@ interface WithExportButtonProps extends ReactSketchCanvasProps {
 	exportSVGButtonId: string;
 	imageType: ExportImageType;
 	onExport?: (size: number) => void;
+	onExportImage?: (dataURI: string | undefined) => void;
 	onExportSVG?: (svg: string | undefined) => void;
 }
 
@@ -22,6 +23,7 @@ export function WithExportButton({
 	exportSVGButtonId,
 	imageType,
 	onExport,
+	onExportImage,
 	onExportSVG,
 	...canvasProps
 }: WithExportButtonProps) {
@@ -32,6 +34,7 @@ export function WithExportButton({
 
 		const size = convertDataURItoKiloBytes(dataURI);
 		onExport?.(size);
+		onExportImage?.(dataURI);
 	};
 
 	const handleEraserClick = () => {

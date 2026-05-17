@@ -70,6 +70,8 @@ export async function drawSquare(
 		buttons: eventButtons,
 		clientX: x,
 		clientY: y,
+		pageX: x,
+		pageY: y,
 	});
 
 	await canvas.dispatchEvent("pointermove", {
@@ -78,6 +80,8 @@ export async function drawSquare(
 		buttons: eventButtons,
 		clientX: x,
 		clientY: y + side,
+		pageX: x,
+		pageY: y + side,
 	});
 	await canvas.dispatchEvent("pointermove", {
 		pointerType,
@@ -85,6 +89,8 @@ export async function drawSquare(
 		buttons: eventButtons,
 		clientX: x + side,
 		clientY: y + side,
+		pageX: x + side,
+		pageY: y + side,
 	});
 	await canvas.dispatchEvent("pointermove", {
 		pointerType,
@@ -92,6 +98,8 @@ export async function drawSquare(
 		buttons: eventButtons,
 		clientX: x + side,
 		clientY: y,
+		pageX: x + side,
+		pageY: y,
 	});
 	await canvas.dispatchEvent("pointermove", {
 		pointerType,
@@ -99,6 +107,8 @@ export async function drawSquare(
 		buttons: eventButtons,
 		clientX: x,
 		clientY: y,
+		pageX: x,
+		pageY: y,
 	});
 	await canvas.dispatchEvent("pointerup", {
 		pointerType,
@@ -176,6 +186,8 @@ export async function drawLine(
 		buttons: eventButtons,
 		clientX: x,
 		clientY: y,
+		pageX: x,
+		pageY: y,
 	});
 
 	await canvas.dispatchEvent("pointermove", {
@@ -184,6 +196,8 @@ export async function drawLine(
 		buttons: eventButtons,
 		clientX: x + length,
 		clientY: y + length,
+		pageX: x + length,
+		pageY: y + length,
 	});
 
 	await canvas.dispatchEvent("pointerup", {
@@ -231,6 +245,8 @@ export async function drawEraserLine(
 		buttons: 32, // Windows surface pen eraser button
 		clientX: x,
 		clientY: y,
+		pageX: x,
+		pageY: y,
 	});
 
 	await canvas.dispatchEvent("pointermove", {
@@ -239,6 +255,8 @@ export async function drawEraserLine(
 		buttons: 32, // Windows surface pen eraser button
 		clientX: x + length,
 		clientY: y + length,
+		pageX: x + length,
+		pageY: y + length,
 	});
 
 	await canvas.dispatchEvent("pointerup", {
@@ -286,6 +304,8 @@ export async function drawPoint(
 		buttons: eventButtons,
 		clientX: x,
 		clientY: y,
+		pageX: x,
+		pageY: y,
 	});
 
 	await canvas.dispatchEvent("pointerup", {
