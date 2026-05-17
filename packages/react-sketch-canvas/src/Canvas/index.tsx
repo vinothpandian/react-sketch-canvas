@@ -1,10 +1,8 @@
 import * as React from "react";
-import { useCallback } from "react";
-import type { ExportImageOptions, ExportImageType, Point } from "../types";
+import type { ExportImageOptions, ExportImageType } from "../types";
+import { useCanvasPointerHandlers } from "./hooks/useCanvasPointerHandlers";
 import { CanvasSvg } from "./svg/CanvasSvg";
 import type { CanvasProps, CanvasRef } from "./types";
-
-const ERASER_BUTTON_MASK = 32;
 
 const loadImage = (url: string): Promise<HTMLImageElement> =>
 	new Promise((resolve, reject) => {
@@ -73,94 +71,16 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
 		null,
 	);
 
-	// Converts mouse coordinates to relative coordinate based on the absolute position of svg
-	const getCoordinates = useCallback(
-		(pointerEvent: React.PointerEvent<HTMLDivElement>): Point => {
-			const boundingArea = canvasRef.current?.getBoundingClientRect();
-			canvasSizeRef.current = boundingArea
-				? {
-						width: boundingArea.width,
-						height: boundingArea.height,
-					}
-				: null;
-
-			const scrollLeft = window.scrollX ?? 0;
-			const scrollTop = window.scrollY ?? 0;
-
-			if (!boundingArea) {
-				return { x: 0, y: 0 };
-			}
-
-			return {
-				x: pointerEvent.pageX - boundingArea.left - scrollLeft,
-				y: pointerEvent.pageY - boundingArea.top - scrollTop,
-			};
-		},
-		[],
-	);
-
-	/* Mouse Handlers - Mouse down, move and up */
-
-	const handlePointerDown = useCallback(
-		(event: React.PointerEvent<HTMLDivElement>): void => {
-			// Allow only chosen pointer type
-
-			if (
-				allowOnlyPointerType !== "all" &&
-				event.pointerType !== allowOnlyPointerType
-			) {
-				return;
-			}
-
-			if (event.pointerType === "mouse" && event.button !== 0) return;
-
-			const isEraser =
-				event.pointerType === "pen" &&
-				Math.floor(event.buttons / ERASER_BUTTON_MASK) % 2 === 1;
-			const point = getCoordinates(event);
-
-			onPointerDown(point, isEraser);
-		},
-		[allowOnlyPointerType, getCoordinates, onPointerDown],
-	);
-
-	const handlePointerMove = useCallback(
-		(event: React.PointerEvent<HTMLDivElement>): void => {
-			if (!isDrawing) return;
-
-			// Allow only chosen pointer type
-			if (
-				allowOnlyPointerType !== "all" &&
-				event.pointerType !== allowOnlyPointerType
-			) {
-				return;
-			}
-
-			const point = getCoordinates(event);
-
-			onPointerMove(point);
-		},
-		[allowOnlyPointerType, getCoordinates, isDrawing, onPointerMove],
-	);
-
-	const handlePointerUp = useCallback(
-		(event: React.PointerEvent<HTMLDivElement> | PointerEvent): void => {
-			if (event.pointerType === "mouse" && event.button !== 0) return;
-
-			// Allow only chosen pointer type
-			if (
-				allowOnlyPointerType !== "all" &&
-				event.pointerType !== allowOnlyPointerType
-			) {
-				return;
-			}
-
-			onPointerUp();
-		},
-		[allowOnlyPointerType, onPointerUp],
-	);
-
-	/* Mouse Handlers ends */
+	const { handlePointerDown, handlePointerMove, handlePointerUp } =
+		useCanvasPointerHandlers({
+			canvasRef,
+			canvasSizeRef,
+			isDrawing,
+			allowOnlyPointerType,
+			onPointerDown,
+			onPointerMove,
+			onPointerUp,
+		});
 
 	React.useImperativeHandle(ref, () => ({
 		exportImage: (
@@ -256,15 +176,6 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
 				}
 			}),
 	}));
-
-	/* Add event listener to Mouse up and Touch up to
-release drawing even when point goes out of canvas */
-	React.useEffect(() => {
-		document.addEventListener("pointerup", handlePointerUp);
-		return () => {
-			document.removeEventListener("pointerup", handlePointerUp);
-		};
-	}, [handlePointerUp]);
 
 	const viewBox =
 		withViewBox && canvasSizeRef.current !== null
