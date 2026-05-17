@@ -2,6 +2,7 @@ import { defineConfig, devices } from "@playwright/experimental-ct-react";
 
 export default defineConfig({
   testDir: "./tests",
+  testIgnore: ["unit/**"],
   snapshotDir: "./tests/__snapshots__",
   outputDir: "./test-results",
   timeout: 10 * 1000,

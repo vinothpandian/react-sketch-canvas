@@ -1,8 +1,9 @@
 {
   "extends": "tsconfig/react-library.json",
-  "include": ["src", "src/types"],
-  "exclude": ["dist", "build", "node_modules"],
+  "include": ["src", "tests", "playwright", "playwright-ct.config.ts", "vitest.config.ts"],
+  "exclude": ["dist", "build", "node_modules", "playwright-report", "test-results", "coverage"],
   "compilerOptions": {
-    "rootDir": "./src"
+    "rootDir": ".",
+    "types": ["node", "vitest/globals"]
   }
 }
