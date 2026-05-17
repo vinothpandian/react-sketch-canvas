@@ -1,4 +1,3 @@
-import * as React from "react";
 import { CanvasPath, Point } from "../types";
 
 type ControlPoints = {

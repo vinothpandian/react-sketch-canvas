@@ -3,6 +3,8 @@
   "include": ["src", "tests", "playwright", "playwright-ct.config.ts", "vitest.config.ts"],
   "exclude": ["dist", "build", "node_modules", "playwright-report", "test-results", "coverage"],
   "compilerOptions": {
+    "jsx": "react-jsx",
+    "resolveJsonModule": true,
     "rootDir": ".",
     "types": ["node", "vitest/globals"]
   }
