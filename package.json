@@ -2,7 +2,10 @@
 	"name": "@vinothpandian/react-sketch-canvas",
 	"version": "0.0.0",
 	"private": true,
-	"workspaces": ["apps/docs", "packages/react-sketch-canvas"],
+	"workspaces": [
+		"apps/docs",
+		"packages/react-sketch-canvas"
+	],
 	"scripts": {
 		"build": "pnpm --filter react-sketch-canvas build && pnpm --filter documentation build",
 		"dev": "pnpm --filter documentation dev",
@@ -21,15 +24,15 @@
 		"pre-release": "pnpm ci:test && pnpm ci:build && changeset && changeset publish"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^1.9.4",
+		"@biomejs/biome": "^2.4.15",
 		"lefthook": "^2.1.6"
 	},
 	"engines": {
 		"node": ">=20.0.0",
-		"pnpm": ">=8.0.0"
+		"pnpm": ">=11.0.0"
 	},
-	"packageManager": "pnpm@10.10.0",
+	"packageManager": "pnpm@11.1.2",
 	"dependencies": {
-		"@changesets/cli": "^2.27.1"
+		"@changesets/cli": "^2.31.0"
 	}
 }

@@ -1,3 +1,9 @@
 packages:
   - "apps/docs"
   - "packages/react-sketch-canvas"
+allowBuilds:
+  '@biomejs/biome': true
+  es5-ext: true
+  esbuild: true
+  lefthook: true
+  sharp: true
