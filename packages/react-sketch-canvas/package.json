@@ -44,9 +44,10 @@
 		"postpack": "node ../../scripts/package-assets.mjs postpack",
 		"test:ct": "playwright test -c playwright-ct.config.ts",
 		"test:ct:ui": "playwright test -c playwright-ct.config.ts --ui",
+		"test:e2e": "playwright test -c playwright-e2e.config.ts",
 		"test:unit": "vitest run",
 		"test:watch": "vitest",
-		"test": "pnpm test:unit && pnpm test:ct",
+		"test": "pnpm test:unit && pnpm test:ct && pnpm test:e2e",
 		"size": "size-limit"
 	},
 	"devDependencies": {
