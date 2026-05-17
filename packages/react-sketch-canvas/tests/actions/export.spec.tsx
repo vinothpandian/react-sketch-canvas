@@ -69,6 +69,10 @@ function dataURIPattern(imageType: ExportImageType) {
 	return new RegExp(`^data:image/${imageType};base64,`);
 }
 
+function exportedIdFragment(idOrSelector: string) {
+	return idOrSelector.replace(/^#?[^_]+__/, "");
+}
+
 function expectValidDataURI(
 	dataURI: string | undefined,
 	imageType: ExportImageType,
@@ -322,7 +326,7 @@ test.describe("export SVG", () => {
 			await drawSquaresAndWaitForStroke(canvas);
 
 			await exportSVGButton.click();
-			expect(svg).toContain(firstStrokePathId.slice(1));
+			expect(svg).toContain(exportedIdFragment(firstStrokePathId));
 		});
 
 		test("should export svg with stroke and eraser", async ({ mount }) => {
@@ -346,14 +350,14 @@ test.describe("export SVG", () => {
 			await drawSquaresAndWaitForStroke(canvas);
 
 			await exportSVGButton.click();
-			expect(svg).toContain(firstStrokePathId.slice(1));
-			expect(svg).not.toContain(firstEraserStrokeId.slice(1));
+			expect(svg).toContain(exportedIdFragment(firstStrokePathId));
+			expect(svg).not.toContain(exportedIdFragment(firstEraserStrokeId));
 
 			await eraserButton.click();
 			await drawSquaresAndWaitForEraser(canvas);
 
 			await exportSVGButton.click();
-			expect(svg).toContain(firstEraserStrokeId.slice(1));
+			expect(svg).toContain(exportedIdFragment(firstEraserStrokeId));
 		});
 	});
 
@@ -375,15 +379,15 @@ test.describe("export SVG", () => {
 
 			await exportSVGButton.click();
 			expect(svg).toContain(backgroundUrl);
-			expect(svg).toContain(canvasBackgroundId.slice(1));
+			expect(svg).toContain(exportedIdFragment(canvasBackgroundId));
 			expect(svg).not.toContain(firstStrokePathId.slice(1));
 
 			await drawSquaresAndWaitForStroke(canvas);
 
 			await exportSVGButton.click();
 			expect(svg).toContain(backgroundUrl);
-			expect(svg).toContain(canvasBackgroundId.slice(1));
-			expect(svg).toContain(firstStrokePathId.slice(1));
+			expect(svg).toContain(exportedIdFragment(canvasBackgroundId));
+			expect(svg).toContain(exportedIdFragment(firstStrokePathId));
 		});
 
 		test("should export svg with stroke and eraser", async ({ mount }) => {
@@ -405,7 +409,7 @@ test.describe("export SVG", () => {
 
 			await exportSVGButton.click();
 			expect(svg).toContain(backgroundUrl);
-			expect(svg).toContain(canvasBackgroundId.slice(1));
+			expect(svg).toContain(exportedIdFragment(canvasBackgroundId));
 			expect(svg).not.toContain(firstStrokePathId.slice(1));
 			expect(svg).not.toContain(firstEraserStrokeId.slice(1));
 
@@ -413,8 +417,8 @@ test.describe("export SVG", () => {
 
 			await exportSVGButton.click();
 			expect(svg).toContain(backgroundUrl);
-			expect(svg).toContain(canvasBackgroundId.slice(1));
-			expect(svg).toContain(firstStrokePathId.slice(1));
+			expect(svg).toContain(exportedIdFragment(canvasBackgroundId));
+			expect(svg).toContain(exportedIdFragment(firstStrokePathId));
 			expect(svg).not.toContain(firstEraserStrokeId.slice(1));
 
 			await eraserButton.click();
@@ -422,8 +426,8 @@ test.describe("export SVG", () => {
 
 			await exportSVGButton.click();
 			expect(svg).toContain(backgroundUrl);
-			expect(svg).toContain(canvasBackgroundId.slice(1));
-			expect(svg).toContain(firstEraserStrokeId.slice(1));
+			expect(svg).toContain(exportedIdFragment(canvasBackgroundId));
+			expect(svg).toContain(exportedIdFragment(firstEraserStrokeId));
 		});
 	});
 
@@ -451,8 +455,8 @@ test.describe("export SVG", () => {
 
 			await exportSVGButton.click();
 			expect(svg).not.toContain(backgroundUrl);
-			expect(svg).toContain(canvasBackgroundId.slice(1));
-			expect(svg).toContain(firstStrokePathId.slice(1));
+			expect(svg).toContain(exportedIdFragment(canvasBackgroundId));
+			expect(svg).toContain(exportedIdFragment(firstStrokePathId));
 		});
 
 		test("should export svg with stroke and eraser", async ({ mount }) => {
@@ -474,7 +478,7 @@ test.describe("export SVG", () => {
 
 			await exportSVGButton.click();
 			expect(svg).not.toContain(backgroundUrl);
-			expect(svg).toContain(canvasBackgroundId.slice(1));
+			expect(svg).toContain(exportedIdFragment(canvasBackgroundId));
 			expect(svg).not.toContain(firstStrokePathId.slice(1));
 			expect(svg).not.toContain(firstEraserStrokeId.slice(1));
 
@@ -482,8 +486,8 @@ test.describe("export SVG", () => {
 
 			await exportSVGButton.click();
 			expect(svg).not.toContain(backgroundUrl);
-			expect(svg).toContain(canvasBackgroundId.slice(1));
-			expect(svg).toContain(firstStrokePathId.slice(1));
+			expect(svg).toContain(exportedIdFragment(canvasBackgroundId));
+			expect(svg).toContain(exportedIdFragment(firstStrokePathId));
 			expect(svg).not.toContain(firstEraserStrokeId.slice(1));
 
 			await eraserButton.click();
@@ -491,8 +495,8 @@ test.describe("export SVG", () => {
 
 			await exportSVGButton.click();
 			expect(svg).not.toContain(backgroundUrl);
-			expect(svg).toContain(canvasBackgroundId.slice(1));
-			expect(svg).toContain(firstEraserStrokeId.slice(1));
+			expect(svg).toContain(exportedIdFragment(canvasBackgroundId));
+			expect(svg).toContain(exportedIdFragment(firstEraserStrokeId));
 		});
 	});
 });

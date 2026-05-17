@@ -46,6 +46,7 @@ export function useCanvasExportHandle(
 			const { svgCanvas, width, height } = getCanvasWithViewBox(canvas);
 
 			return exportImageFromSvg({
+				id,
 				svgCanvas,
 				svgWidth: width,
 				svgHeight: height,

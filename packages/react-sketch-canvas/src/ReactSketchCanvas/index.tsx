@@ -52,7 +52,7 @@ export const ReactSketchCanvas = React.forwardRef<
 		readOnly = false,
 	} = props;
 
-	const svgCanvas = React.createRef<CanvasRef>();
+	const svgCanvas = React.useRef<CanvasRef>(null);
 	const {
 		currentPaths,
 		isDrawing,
