@@ -33,6 +33,19 @@ function shouldUseAnonymousCrossOrigin(url: string): boolean {
 }
 
 /**
+ * Decide whether a configured background image must be painted outside the SVG.
+ *
+ * @remarks
+ * Embedded data/blob URLs can stay inside the serialized SVG layer, preserving
+ * SVG image sizing and avoiding an extra duplicate raster draw. External image
+ * URLs are painted separately because browsers do not reliably load external
+ * resources from an SVG that is itself being rasterized as an image.
+ */
+function shouldPaintBackgroundAsRasterLayer(url: string): boolean {
+	return !(url.startsWith("data:") || url.startsWith("blob:"));
+}
+
+/**
  * Load an image URL or data URL for canvas export.
  *
  * @remarks
@@ -44,7 +57,7 @@ export const loadImage = (url: string): LoadImageReturns =>
 		const img = new Image();
 
 		if (shouldUseAnonymousCrossOrigin(url)) {
-			img.setAttribute("crossorigin", "anonymous");
+			img.crossOrigin = "anonymous";
 		}
 
 		img.addEventListener("load", () => {
@@ -83,7 +96,11 @@ type ExportImageFromSvgReturns = Promise<string>;
  */
 type PrepareStrokeSvgForRasterExportArgs = Pick<
 	ExportImageFromSvgParams,
-	"id" | "svgCanvas" | "canvasColor" | "exportWithBackgroundImage"
+	| "id"
+	| "svgCanvas"
+	| "canvasColor"
+	| "backgroundImage"
+	| "exportWithBackgroundImage"
 >;
 
 /**
@@ -98,9 +115,19 @@ type PrepareStrokeSvgForRasterExportArgs = Pick<
 function prepareStrokeSvgForRasterExport(
 	params: PrepareStrokeSvgForRasterExportArgs,
 ): SVGElement {
-	const { id, svgCanvas, canvasColor, exportWithBackgroundImage } = params;
+	const {
+		id,
+		svgCanvas,
+		canvasColor,
+		backgroundImage,
+		exportWithBackgroundImage,
+	} = params;
 
-	if (exportWithBackgroundImage) {
+	if (
+		exportWithBackgroundImage &&
+		backgroundImage &&
+		shouldPaintBackgroundAsRasterLayer(backgroundImage)
+	) {
 		const strokeOnlySvg = removeBackgroundImageFromSvg(svgCanvas, id);
 
 		return prepareSvgForExport(strokeOnlySvg, {
@@ -113,7 +140,7 @@ function prepareStrokeSvgForRasterExport(
 	return prepareSvgForExport(svgCanvas, {
 		id,
 		canvasColor,
-		exportWithBackgroundImage: false,
+		exportWithBackgroundImage,
 	});
 }
 
@@ -176,7 +203,11 @@ async function loadBackgroundLayer(
 	backgroundImage: string,
 	exportWithBackgroundImage: boolean,
 ): Promise<HTMLImageElement | null> {
-	if (!exportWithBackgroundImage || !backgroundImage) {
+	if (
+		!exportWithBackgroundImage ||
+		!backgroundImage ||
+		!shouldPaintBackgroundAsRasterLayer(backgroundImage)
+	) {
 		return null;
 	}
 
@@ -215,6 +246,7 @@ export async function exportImageFromSvg({
 		id,
 		svgCanvas,
 		canvasColor,
+		backgroundImage,
 		exportWithBackgroundImage,
 	});
 	const strokeImage = await loadImage(encodeSvgDataUrl(preparedSvg));

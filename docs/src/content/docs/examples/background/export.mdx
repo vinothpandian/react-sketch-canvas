@@ -1,0 +1,16 @@
+---
+title: Export with background
+description: Export raster images with the configured canvas background.
+---
+
+import ExampleBlock from "../../../../components/ExampleBlock";
+import BackgroundExport from "../../../../examples/BackgroundExport";
+import BackgroundExportSource from "../../../../examples/BackgroundExport.tsx?raw";
+
+Raster exports can include the configured `backgroundImage` when `exportWithBackgroundImage` is enabled. Use this when consumers need a PNG or JPEG that combines the drawing strokes with the same background image shown in the canvas.
+
+If the browser cannot load a remote background image during export, the drawing can still export without that background layer.
+
+<ExampleBlock source={BackgroundExportSource}>
+  <BackgroundExport />
+</ExampleBlock>

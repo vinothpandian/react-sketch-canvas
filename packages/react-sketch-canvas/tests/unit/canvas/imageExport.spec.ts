@@ -14,6 +14,8 @@ class MockImage {
 
 	public attributes = new Map<string, string>();
 
+	public crossOrigin: string | null = null;
+
 	private listeners = new Map<string, Array<() => void>>();
 
 	private _src = "";
@@ -76,7 +78,7 @@ describe("exportImageFromSvg", () => {
 			drawImage,
 			fillRect,
 			fillStyle: "",
-		})) as typeof HTMLCanvasElement.prototype.getContext;
+		})) as unknown as typeof HTMLCanvasElement.prototype.getContext;
 		HTMLCanvasElement.prototype.toDataURL = vi.fn(
 			(type: string) => `data:${type};base64,export`,
 		);
@@ -140,6 +142,7 @@ describe("exportImageFromSvg", () => {
 
 		expect(serializedSvg).not.toContain("canvas__background");
 		expect(serializedSvg).not.toContain("https://example.com/bg.png");
+		expect(backgroundLayer.crossOrigin).toBe("anonymous");
 		expect(backgroundLayer.src).toBe("https://example.com/bg.png");
 		expect(drawImage).toHaveBeenNthCalledWith(
 			1,
@@ -150,6 +153,36 @@ describe("exportImageFromSvg", () => {
 			100,
 		);
 		expect(drawImage).toHaveBeenNthCalledWith(2, strokeImage, 0, 0, 200, 100);
+	});
+
+	it("keeps data URL background images in the serialized SVG layer", async () => {
+		const backgroundImage = "data:image/png;base64,bg";
+		const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+		svg.innerHTML = `
+			<defs><pattern id="canvas__background"><image href="${backgroundImage}" /></pattern></defs>
+			<rect id="canvas__canvas-background" fill="url(#canvas__background)"></rect>
+			<g id="canvas__stroke-group-0"></g>
+		`;
+
+		await exportImageFromSvg({
+			id: "canvas",
+			svgCanvas: svg,
+			svgWidth: 200,
+			svgHeight: 100,
+			imageType: "png",
+			canvasColor: "white",
+			backgroundImage,
+			exportWithBackgroundImage: true,
+		});
+
+		const [strokeImage] = MockImage.instances;
+		const serializedSvg = decodeSvgDataUri(strokeImage.src);
+
+		expect(MockImage.instances).toHaveLength(1);
+		expect(serializedSvg).toContain(backgroundImage);
+		expect(serializedSvg).toContain("__background");
+		expect(drawImage).toHaveBeenCalledTimes(1);
+		expect(drawImage).toHaveBeenCalledWith(strokeImage, 0, 0, 200, 100);
 	});
 
 	it("continues exporting strokes when the background image cannot be loaded", async () => {

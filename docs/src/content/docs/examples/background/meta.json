@@ -1,4 +1,4 @@
 {
 	"title": "Background",
-	"pages": ["image", "data-uri"]
+	"pages": ["image", "data-uri", "export"]
 }
