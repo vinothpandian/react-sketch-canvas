@@ -40,7 +40,7 @@ jobs:
       - name: Install, build, and upload your site
         uses: withastro/action@v3
         with:
-          path: ./apps/docs
+          path: ./docs
           package-manager: pnpm@11.1.2
 
   deploy:

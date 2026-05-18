@@ -1,5 +1,5 @@
 packages:
-  - "apps/docs"
+  - "docs"
   - "packages/react-sketch-canvas"
 allowBuilds:
   '@biomejs/biome': true

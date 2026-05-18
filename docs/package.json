@@ -16,8 +16,6 @@
 		"@astrojs/starlight": "^0.39.2",
 		"@astrojs/starlight-tailwind": "^5.0.0",
 		"@astrojs/tailwind": "^6.0.2",
-		"@codesandbox/sandpack-react": "^2.20.0",
-		"@codesandbox/sandpack-themes": "^2.0.21",
 		"@fontsource/kalam": "^5.2.8",
 		"@tabler/icons-react": "^3.44.0",
 		"@tailwindcss/postcss": "^4.3.0",

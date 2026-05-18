@@ -30,8 +30,8 @@ export default defineConfig({
 			plugins: [
 				// Generate the documentation.
 				starlightTypeDoc({
-					entryPoints: ["../../packages/react-sketch-canvas/src/index.tsx"],
-					tsconfig: "../../packages/react-sketch-canvas/tsconfig.json",
+					entryPoints: ["../packages/react-sketch-canvas/src/index.tsx"],
+					tsconfig: "../packages/react-sketch-canvas/tsconfig.json",
 					watch: false,
 				}),
 			],

@@ -1,0 +1,28 @@
+---
+import "./reset.css";
+
+interface Props {
+	source: string;
+	fileName?: string;
+	previewClassName?: string;
+}
+---
+
+<details class="reset-wrapper example-card not-content my-8 overflow-hidden">
+	<summary class="example-toolbar">
+		<span class="example-title">{Astro.props.fileName ?? "App.tsx"}</span>
+		<span class="example-actions">
+			<span class="example-tab example-tab-result">Result</span>
+			<span class="example-toggle" aria-hidden="true">
+				<span class="example-toggle-show">Show code</span>
+				<span class="example-toggle-hide">Show result</span>
+			</span>
+		</span>
+	</summary>
+	<div class="example-code-view">
+		<pre><code>{Astro.props.source}</code></pre>
+	</div>
+	<div class:list={["example-preview p-3", Astro.props.previewClassName ?? "min-h-80"]}>
+		<slot />
+	</div>
+</details>

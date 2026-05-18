@@ -5,11 +5,7 @@ import {
 	type ReactSketchCanvasRef,
 } from "react-sketch-canvas";
 import paths from "../assets/initialSketch.json";
-
-const iconButton =
-	"p-2 rounded-xl border cursor-pointer dark:border-accent-900 dark:text-accent-200";
-const defaultIconButton =
-	"bg-transparent text-accent-900 hover:bg-accent-100 dark:hover:bg-accent-800";
+import "./reset.css";
 
 export function HomePageDemo() {
 	const [eraser, setEraser] = useState(false);
@@ -42,20 +38,12 @@ export function HomePageDemo() {
 		}
 	};
 
-	const pencilSelected = !eraser
-		? "bg-accent-600 text-accent-50 hover:bg-accent-600 hover:text-accent-50"
-		: defaultIconButton;
-
-	const eraserSelected = eraser
-		? "bg-accent-600 text-accent-50 hover:bg-accent-600 hover:text-accent-50"
-		: defaultIconButton;
-
 	const onColorChange = (event: ChangeEvent<HTMLInputElement>) => {
 		setStrokeColor(event.target.value);
 	};
 
 	return (
-		<div className="reset-wrapper flex gap-4">
+		<div className="reset-wrapper home-demo">
 			<ReactSketchCanvas
 				ref={ref}
 				canvasColor="transparent"
@@ -63,44 +51,55 @@ export function HomePageDemo() {
 				strokeWidth={4}
 				strokeColor={strokeColor}
 			/>
-			<div className="flex flex-col w-10">
-				<div className="w-auto h-9 rounded-full overflow-hidden">
+			<div className="home-demo-toolbar">
+				<label className="home-demo-color" title="Ink color">
+					<span
+						className="home-demo-swatch"
+						style={{ backgroundColor: strokeColor }}
+					/>
 					<input
-						title="Color"
-						className="w-[200%] h-[200%] bg-transparent border-none cursor-pointer appearance-none transform-cpu -translate-x-1/4 -translate-y-1/4"
+						aria-label="Ink color"
+						title="Ink color"
 						type="color"
 						value={strokeColor}
 						onChange={onColorChange}
 					/>
-				</div>
-				<hr />
+				</label>
+				<fieldset className="home-demo-tools">
+					<legend>Drawing mode</legend>
+					<button
+						className={
+							!eraser ? "home-demo-button is-selected" : "home-demo-button"
+						}
+						type="button"
+						aria-pressed={!eraser}
+						title="Draw"
+						onClick={handlePencilClick}
+					>
+						<IconPencil aria-hidden="true" size={20} />
+						<span>Draw</span>
+					</button>
+					<button
+						className={
+							eraser ? "home-demo-button is-selected" : "home-demo-button"
+						}
+						type="button"
+						aria-pressed={eraser}
+						title="Erase"
+						onClick={handleEraserClick}
+					>
+						<IconEraser aria-hidden="true" size={20} />
+						<span>Erase</span>
+					</button>
+				</fieldset>
 				<button
-					title="Pencil"
-					className={`${iconButton} ${pencilSelected}`}
+					className="home-demo-button home-demo-reset"
 					type="button"
-					aria-label="pencil"
-					onClick={handlePencilClick}
-				>
-					<IconPencil />
-				</button>
-				<button
-					title="Eraser"
-					className={`${iconButton} ${eraserSelected}`}
-					type="button"
-					aria-label="eraser"
-					onClick={handleEraserClick}
-				>
-					<IconEraser />
-				</button>
-				<hr />
-				<button
 					title="Reset"
-					className={`${iconButton} ${defaultIconButton}`}
-					type="button"
-					aria-label="clear"
 					onClick={handleResetClick}
 				>
-					<IconRestore />
+					<IconRestore aria-hidden="true" size={20} />
+					<span>Reset</span>
 				</button>
 			</div>
 		</div>
