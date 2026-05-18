@@ -4,6 +4,8 @@ import { exportImageFromSvg } from "../../../src/Canvas/export/image";
 class MockImage {
 	static instances: MockImage[] = [];
 
+	static failingSources = new Set<string>();
+
 	public width = 100;
 
 	public onload: (() => void) | null = null;
@@ -37,6 +39,14 @@ class MockImage {
 	public set src(value: string) {
 		this._src = value;
 		queueMicrotask(() => {
+			if (MockImage.failingSources.has(value)) {
+				for (const listener of this.listeners.get("error") ?? []) {
+					listener();
+				}
+
+				return;
+			}
+
 			for (const listener of this.listeners.get("load") ?? []) {
 				listener();
 			}
@@ -58,6 +68,7 @@ describe("exportImageFromSvg", () => {
 
 	beforeEach(() => {
 		MockImage.instances = [];
+		MockImage.failingSources = new Set();
 		drawImage.mockReset();
 		fillRect.mockReset();
 		globalThis.Image = MockImage as unknown as typeof Image;
@@ -139,5 +150,38 @@ describe("exportImageFromSvg", () => {
 			100,
 		);
 		expect(drawImage).toHaveBeenNthCalledWith(2, strokeImage, 0, 0, 200, 100);
+	});
+
+	it("continues exporting strokes when the background image cannot be loaded", async () => {
+		const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+		const backgroundImage = "https://example.com/missing-bg.png";
+		MockImage.failingSources.add(backgroundImage);
+		const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+		svg.innerHTML = `
+			<defs><pattern id="canvas__background"><image href="${backgroundImage}" /></pattern></defs>
+			<rect id="canvas__canvas-background" fill="url(#canvas__background)"></rect>
+			<g id="canvas__stroke-group-0"></g>
+		`;
+
+		await exportImageFromSvg({
+			id: "canvas",
+			svgCanvas: svg,
+			svgWidth: 200,
+			svgHeight: 100,
+			imageType: "png",
+			canvasColor: "white",
+			backgroundImage,
+			exportWithBackgroundImage: true,
+		});
+
+		const [strokeImage] = MockImage.instances;
+
+		expect(warn).toHaveBeenCalledWith(
+			"React Sketch Canvas could not load the background image while exporting. Check that backgroundImage points to a reachable image and allows cross-origin access.",
+		);
+		expect(drawImage).toHaveBeenCalledTimes(1);
+		expect(drawImage).toHaveBeenCalledWith(strokeImage, 0, 0, 200, 100);
+
+		warn.mockRestore();
 	});
 });
