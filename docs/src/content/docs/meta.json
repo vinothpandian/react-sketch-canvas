@@ -1,5 +1,5 @@
 {
 	"title": "React Sketch Canvas",
 	"icon": "./logo.svg",
-	"pages": ["index", "guides", "examples", "api"]
+	"pages": ["guides", "examples", "api"]
 }

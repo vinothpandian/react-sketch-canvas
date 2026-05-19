@@ -19,7 +19,7 @@ export function HomePageHero() {
 					<div className="mt-7 flex flex-wrap items-center justify-center gap-3 md:justify-start">
 						<a
 							className="inline-flex h-10 items-center gap-2 rounded-md bg-fd-primary px-4 text-sm font-medium text-fd-primary-foreground transition-colors hover:bg-fd-primary/90"
-							href="/guides/installation/"
+							href="/react-sketch-canvas/guides/installation/"
 						>
 							<span>Get started</span>
 							<IconArrowRight aria-hidden="true" size={18} stroke={2.4} />

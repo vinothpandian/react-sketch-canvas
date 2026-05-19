@@ -1,4 +1,4 @@
 {
 	"title": "Drawing & Erasing",
-	"pages": ["index", "switching-modes", "color-selection", "read-only"]
+	"pages": ["switching-modes", "color-selection", "read-only"]
 }
