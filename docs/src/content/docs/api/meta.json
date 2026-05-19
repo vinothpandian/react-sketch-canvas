@@ -1,0 +1,4 @@
+{
+	"title": "API",
+	"pages": ["index", "interfaces", "type-aliases", "variables"]
+}

@@ -5,7 +5,6 @@ import {
 	type ReactSketchCanvasRef,
 } from "react-sketch-canvas";
 import paths from "../assets/initialSketch.json";
-import "./reset.css";
 
 export function HomePageDemo() {
 	const [eraser, setEraser] = useState(false);
@@ -43,7 +42,7 @@ export function HomePageDemo() {
 	};
 
 	return (
-		<div className="reset-wrapper home-demo">
+		<div>
 			<ReactSketchCanvas
 				ref={ref}
 				canvasColor="transparent"
@@ -51,12 +50,9 @@ export function HomePageDemo() {
 				strokeWidth={4}
 				strokeColor={strokeColor}
 			/>
-			<div className="home-demo-toolbar">
-				<label className="home-demo-color" title="Ink color">
-					<span
-						className="home-demo-swatch"
-						style={{ backgroundColor: strokeColor }}
-					/>
+			<div>
+				<label title="Ink color">
+					Ink color
 					<input
 						aria-label="Ink color"
 						title="Ink color"
@@ -65,12 +61,9 @@ export function HomePageDemo() {
 						onChange={onColorChange}
 					/>
 				</label>
-				<fieldset className="home-demo-tools">
+				<fieldset>
 					<legend>Drawing mode</legend>
 					<button
-						className={
-							!eraser ? "home-demo-button is-selected" : "home-demo-button"
-						}
 						type="button"
 						aria-pressed={!eraser}
 						title="Draw"
@@ -80,9 +73,6 @@ export function HomePageDemo() {
 						<span>Draw</span>
 					</button>
 					<button
-						className={
-							eraser ? "home-demo-button is-selected" : "home-demo-button"
-						}
 						type="button"
 						aria-pressed={eraser}
 						title="Erase"
@@ -92,12 +82,7 @@ export function HomePageDemo() {
 						<span>Erase</span>
 					</button>
 				</fieldset>
-				<button
-					className="home-demo-button home-demo-reset"
-					type="button"
-					title="Reset"
-					onClick={handleResetClick}
-				>
+				<button type="button" title="Reset" onClick={handleResetClick}>
 					<IconRestore aria-hidden="true" size={20} />
 					<span>Reset</span>
 				</button>

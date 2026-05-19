@@ -16,14 +16,10 @@ export default function App() {
 	const sketchingTimeInSeconds = (sketchingTime / 1_000).toLocaleString();
 
 	return (
-		<div className="d-flex flex-column gap-2 p-2">
+		<div>
 			<h1>Tools</h1>
-			<div className="d-flex gap-2 align-items-center ">
-				<button
-					type="button"
-					className="btn btn-sm btn-outline-primary"
-					onClick={handleSketchingTime}
-				>
+			<div>
+				<button type="button" onClick={handleSketchingTime}>
 					Get Sketching Time
 				</button>
 				<span>{sketchingTimeInSeconds} seconds</span>

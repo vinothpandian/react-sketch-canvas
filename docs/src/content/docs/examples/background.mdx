@@ -4,7 +4,7 @@ description: Setting up background of the canvas.
 sidebar:
   order: 5
 ---
-import ExampleBlock from "../../../components/ExampleBlock.astro";
+import ExampleBlock from "../../../components/ExampleBlock";
 import Background from "../../../examples/Background";
 import BackgroundSource from "../../../examples/Background.tsx?raw";
 import BackgroundDataURI from "../../../examples/BackgroundDataURI";
@@ -14,8 +14,8 @@ Background images are useful when the drawing is an annotation layer: mark up a 
 
 Use `backgroundImage` with `preserveBackgroundImageAspectRatio` to draw over an image while controlling how the image fits the SVG canvas. The background stays separate from the user's strokes, so you can preserve the source image and export the combined result when needed.
 
-<ExampleBlock source={BackgroundSource} previewClassName="min-h-96">
-  <Background client:load />
+<ExampleBlock source={BackgroundSource}>
+  <Background />
 </ExampleBlock>
 
 ## Data URI as Background
@@ -24,6 +24,6 @@ The same prop also accepts a data URI when the image is already available in mem
 
 The canvas API stays the same in both cases. Only the shape of the `backgroundImage` value changes.
 
-<ExampleBlock source={BackgroundDataURISource} previewClassName="min-h-96">
-  <BackgroundDataURI client:load />
+<ExampleBlock source={BackgroundDataURISource}>
+  <BackgroundDataURI />
 </ExampleBlock>

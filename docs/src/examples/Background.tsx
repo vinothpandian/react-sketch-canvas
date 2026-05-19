@@ -36,28 +36,22 @@ export default function App() {
 	};
 
 	return (
-		<div className="d-flex flex-column gap-2 p-2">
+		<div>
 			<h1>Tools</h1>
-			<div className="d-flex gap-2 flex-column">
-				<div className="mb-3">
-					<label htmlFor="backgroundImage" className="form-label">
-						Background Image
-					</label>
+			<div>
+				<div>
+					<label htmlFor="backgroundImage">Background Image</label>
 					<input
 						type="text"
-						className="form-control"
 						id="backgroundImage"
 						placeholder="URL of the image to use as a background"
 						value={backgroundImage}
 						onChange={handleBackgroundImageChange}
 					/>
 				</div>
-				<label htmlFor="preserveAspectRatio" className="form-label">
-					Preserve Aspect Ratio
-				</label>
+				<label htmlFor="preserveAspectRatio">Preserve Aspect Ratio</label>
 				<select
 					id="preserveAspectRatio"
-					className="form-select form-select-sm"
 					aria-label="Preserve Aspect Ratio options"
 					value={preserveAspectRatio}
 					onChange={handlePreserveAspectRatioChange}

@@ -29,32 +29,19 @@ export default function App() {
 	};
 
 	return (
-		<div className="d-flex flex-column gap-2 p-2">
+		<div>
 			<h1>Tools</h1>
-			<div className="d-flex gap-2 align-items-center ">
-				<button
-					type="button"
-					className="btn btn-sm btn-outline-primary"
-					disabled={!eraseMode}
-					onClick={handlePenClick}
-				>
+			<div>
+				<button type="button" disabled={!eraseMode} onClick={handlePenClick}>
 					Pen
 				</button>
-				<button
-					type="button"
-					className="btn btn-sm btn-outline-primary"
-					disabled={eraseMode}
-					onClick={handleEraserClick}
-				>
+				<button type="button" disabled={eraseMode} onClick={handleEraserClick}>
 					Eraser
 				</button>
-				<label htmlFor="strokeWidth" className="form-label">
-					Stroke width
-				</label>
+				<label htmlFor="strokeWidth">Stroke width</label>
 				<input
 					disabled={eraseMode}
 					type="range"
-					className="form-range"
 					min="1"
 					max="20"
 					step="1"
@@ -62,13 +49,10 @@ export default function App() {
 					value={strokeWidth}
 					onChange={handleStrokeWidthChange}
 				/>
-				<label htmlFor="eraserWidth" className="form-label">
-					Eraser width
-				</label>
+				<label htmlFor="eraserWidth">Eraser width</label>
 				<input
 					disabled={!eraseMode}
 					type="range"
-					className="form-range"
 					min="1"
 					max="20"
 					step="1"

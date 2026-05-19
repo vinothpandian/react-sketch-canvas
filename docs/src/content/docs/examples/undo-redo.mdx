@@ -4,7 +4,7 @@ description: Undo, Redo, Clear, and Reset the canvas.
 sidebar:
   order: 4
 ---
-import ExampleBlock from "../../../components/ExampleBlock.astro";
+import ExampleBlock from "../../../components/ExampleBlock";
 import UndoRedo from "../../../examples/UndoRedo";
 import UndoRedoSource from "../../../examples/UndoRedo.tsx?raw";
 
@@ -14,6 +14,6 @@ Use the canvas ref to wire those actions into your own toolbar. The methods are 
 
 `clearCanvas()` removes the visible paths while keeping the canvas ready for more drawing. `resetCanvas()` returns the canvas to its initial state, which is useful when you have loaded paths or a preconfigured example.
 
-<ExampleBlock source={UndoRedoSource} previewClassName="min-h-96">
-  <UndoRedo client:load />
+<ExampleBlock source={UndoRedoSource}>
+  <UndoRedo />
 </ExampleBlock>

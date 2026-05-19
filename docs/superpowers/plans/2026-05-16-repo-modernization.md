@@ -2,11 +2,11 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Modernize the repo into one library package plus one Astro docs app, with tests colocated in the library, Vitest added for fast unit coverage, Biome replacing ESLint/Prettier, Turbo removed, and npm package contents constrained to production files.
+**Goal:** Modernize the repo into one library package plus one legacy docs app, with tests colocated in the library, Vitest added for fast unit coverage, Biome replacing ESLint/Prettier, Turbo removed, and npm package contents constrained to production files.
 
 **Architecture:** Phase 1 moves all test ownership into `packages/react-sketch-canvas` and proves both Vitest and Playwright CT work from that package. Phase 2 removes the old monorepo support packages, adopts Biome defaults, rewires root/CI scripts without Turbo, and verifies the publish artifact with a dry-run package inspection.
 
-**Tech Stack:** pnpm workspaces, React 18, TypeScript, tsup, Vitest, happy-dom, Testing Library React, Playwright Component Testing, Biome, Astro/Starlight, Changesets, size-limit.
+**Tech Stack:** pnpm workspaces, React 18, TypeScript, tsup, Vitest, happy-dom, Testing Library React, Playwright Component Testing, Biome, legacy docs stack, Changesets, size-limit.
 
 ---
 
@@ -33,7 +33,7 @@ Modify:
 - `packages/react-sketch-canvas/tsconfig.json`: inline library TypeScript settings and include colocated test configs where needed.
 - `packages/react-sketch-canvas/tsup.config.ts`: ensure production builds only emit `dist` artifacts.
 - `apps/docs/package.json`: remove shared ESLint config dependency.
-- `apps/docs/astro.config.mjs`: keep API docs pointed at the library source entry.
+- `apps/docs/site config`: keep API docs pointed at the library source entry.
 - `.gitignore`: ignore package-local Playwright reports and test results.
 - `.github/workflows/test.yml`: use new lint/build/test commands and report path.
 - `.github/workflows/deploy.yml`: build without Turbo.

@@ -35,52 +35,26 @@ export default function App() {
 	};
 
 	return (
-		<div className="d-flex flex-column gap-2 p-2">
+		<div>
 			<h1>Tools</h1>
-			<div className="d-flex gap-2 align-items-center ">
-				<button
-					type="button"
-					className="btn btn-sm btn-outline-primary"
-					disabled={!eraseMode}
-					onClick={handlePenClick}
-				>
+			<div>
+				<button type="button" disabled={!eraseMode} onClick={handlePenClick}>
 					Pen
 				</button>
-				<button
-					type="button"
-					className="btn btn-sm btn-outline-primary"
-					disabled={eraseMode}
-					onClick={handleEraserClick}
-				>
+				<button type="button" disabled={eraseMode} onClick={handleEraserClick}>
 					Eraser
 				</button>
-				<div className="vr" />
-				<button
-					type="button"
-					className="btn btn-sm btn-outline-primary"
-					onClick={handleUndoClick}
-				>
+				<div />
+				<button type="button" onClick={handleUndoClick}>
 					Undo
 				</button>
-				<button
-					type="button"
-					className="btn btn-sm btn-outline-primary"
-					onClick={handleRedoClick}
-				>
+				<button type="button" onClick={handleRedoClick}>
 					Redo
 				</button>
-				<button
-					type="button"
-					className="btn btn-sm btn-outline-primary"
-					onClick={handleClearClick}
-				>
+				<button type="button" onClick={handleClearClick}>
 					Clear
 				</button>
-				<button
-					type="button"
-					className="btn btn-sm btn-outline-primary"
-					onClick={handleResetClick}
-				>
+				<button type="button" onClick={handleResetClick}>
 					Reset
 				</button>
 			</div>

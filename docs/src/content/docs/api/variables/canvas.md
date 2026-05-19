@@ -1,0 +1,33 @@
+---
+editUrl: false
+next: false
+prev: false
+title: "Canvas"
+---
+
+> `const` **Canvas**: `CanvasComponent`
+
+Defined in: [Canvas/index.tsx:35](https://github.com/vinothpandian/blob/7c5b4d644c5810dcd5234a943bda7bb63012b362/packages/src/Canvas/index.tsx#L35)
+
+Low-level SVG drawing canvas.
+
+## Remarks
+
+`Canvas` renders the SVG surface, handles pointer normalization, and exposes
+export methods through its forwarded ref. Most consumers should use
+`ReactSketchCanvas` instead, which manages drawing state and undo/redo.
+
+Use `Canvas` directly when you need full control over path state, custom
+history behavior, or integration with an external drawing state machine.
+
+## Param
+
+Rendering, pointer, and export options for the canvas.
+
+## Param
+
+Ref exposing [CanvasRef](/api/interfaces/canvasref/) export methods.
+
+## Returns
+
+The low-level canvas element.

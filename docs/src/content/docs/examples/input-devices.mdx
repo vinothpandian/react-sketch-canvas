@@ -17,7 +17,7 @@ These are the available options:
 - `mouse` - Only mouse input is allowed.
 - `touch` - Only touch input is allowed. This includes finger touch and other touch devices.
 
-import ExampleBlock from "../../../components/ExampleBlock.astro";
+import ExampleBlock from "../../../components/ExampleBlock";
 
 ## Default behavior
 
@@ -27,7 +27,7 @@ import AllInputsSource from "../../../examples/AllInputs.tsx?raw";
 The default `all` value accepts every supported pointer type. Use it when drawing should feel available everywhere, regardless of whether the user reaches for a mouse, finger, or pen.
 
 <ExampleBlock source={AllInputsSource}>
-  <AllInputs client:load />
+  <AllInputs />
 </ExampleBlock>
 
 ## Only allow pen input
@@ -38,7 +38,7 @@ import OnlyPenSource from "../../../examples/OnlyPen.tsx?raw";
 Use `pen` for stylus-first experiences where finger touches should not draw. This is the best fit for tablet annotation, handwriting, or signature flows where accidental touch marks are costly.
 
 <ExampleBlock source={OnlyPenSource}>
-  <OnlyPen client:load />
+  <OnlyPen />
 </ExampleBlock>
 
 ## Only allow mouse input
@@ -49,7 +49,7 @@ import OnlyMouseSource from "../../../examples/OnlyMouse.tsx?raw";
 Use `mouse` for desktop-only drawing areas. This can be useful in admin tools, demos, or test fixtures where touch and pen input would make the interaction harder to reason about.
 
 <ExampleBlock source={OnlyMouseSource}>
-  <OnlyMouse client:load />
+  <OnlyMouse />
 </ExampleBlock>
 
 ## Only allow touch input
@@ -60,5 +60,5 @@ import OnlyTouchSource from "../../../examples/OnlyTouch.tsx?raw";
 Use `touch` when the canvas is intended for finger input on touch screens. This keeps the interaction focused on mobile and kiosk-style experiences.
 
 <ExampleBlock source={OnlyTouchSource}>
-  <OnlyTouch client:load />
+  <OnlyTouch />
 </ExampleBlock>

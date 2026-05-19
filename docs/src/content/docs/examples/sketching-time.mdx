@@ -5,7 +5,7 @@ sidebar:
   order: 6
 ---
 
-import ExampleBlock from "../../../components/ExampleBlock.astro";
+import ExampleBlock from "../../../components/ExampleBlock";
 import SketchingTime from "../../../examples/SketchingTime";
 import SketchingTimeSource from "../../../examples/SketchingTime.tsx?raw";
 
@@ -16,5 +16,5 @@ Enable `withTimestamp` before calling `getSketchingTime()`. With timestamps atta
 This is useful for analytics, review workflows, and experiences where completion time is part of the captured data.
 
 <ExampleBlock source={SketchingTimeSource}>
-  <SketchingTime client:load />
+  <SketchingTime />
 </ExampleBlock>

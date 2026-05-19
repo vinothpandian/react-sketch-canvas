@@ -5,7 +5,7 @@ sidebar:
   order: 2
 ---
 
-import ExampleBlock from "../../../components/ExampleBlock.astro";
+import ExampleBlock from "../../../components/ExampleBlock";
 import Drawing from "../../../examples/Drawing";
 import DrawingSource from "../../../examples/Drawing.tsx?raw";
 import Colors from "../../../examples/Colors";
@@ -20,8 +20,27 @@ Most drawing tools need at least two modes: adding ink and removing it. `ReactSk
 Keep your UI state in sync with the canvas mode. That lets you show the selected tool, expose the right width control, and avoid confusing users about what the next stroke will do.
 
 <ExampleBlock source={DrawingSource}>
-  <Drawing client:load />
+  <Drawing />
 </ExampleBlock>
+
+```tsx twoslash title="Erase mode"
+import React from "react";
+import { useRef } from "react";
+import {
+  ReactSketchCanvas,
+  type ReactSketchCanvasRef,
+} from "react-sketch-canvas";
+
+export function DrawingToolbar() {
+  const canvasRef = useRef<ReactSketchCanvasRef>(null);
+
+  return (
+    <button type="button" onClick={() => canvasRef.current?.eraseMode(true)}>
+      Erase
+    </button>
+  );
+}
+```
 
 ## Color selection
 
@@ -30,7 +49,7 @@ The canvas does not prescribe a color picker or toolbar layout. Pass `strokeColo
 This pattern works well when color is part of a larger form, theme editor, or annotation workflow.
 
 <ExampleBlock source={ColorsSource}>
-  <Colors client:load />
+  <Colors />
 </ExampleBlock>
 
 ## Read-only mode
@@ -40,5 +59,5 @@ Sometimes a drawing should be visible without being editable: a submitted signat
 Read-only mode keeps the rendered paths on screen while ignoring new pointer input, so you do not need a separate viewer component.
 
 <ExampleBlock source={ReadOnlySource}>
-  <ReadOnly client:load />
+  <ReadOnly />
 </ExampleBlock>
