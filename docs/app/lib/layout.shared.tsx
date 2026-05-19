@@ -6,26 +6,9 @@ export function baseOptions(): BaseLayoutProps {
 	return {
 		nav: {
 			title: "React Sketch Canvas",
-			url: "https://vinoth.info/react-sketch-canvas/",
+			url: "/",
 			transparentMode: "top",
 		},
 		githubUrl,
-		links: [
-			{
-				text: "Docs",
-				url: "/guides/installation/",
-				active: "nested-url",
-			},
-			{
-				text: "Examples",
-				url: "/examples/drawing/",
-				active: "nested-url",
-			},
-			{
-				text: "API",
-				url: "/api/",
-				active: "nested-url",
-			},
-		],
 	};
 }
