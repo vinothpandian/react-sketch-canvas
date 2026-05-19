@@ -5,9 +5,9 @@ prev: false
 title: "Canvas"
 ---
 
-> `const` **Canvas**: `CanvasComponent`
+> `const` **Canvas**: `ForwardRefExoticComponent`\<[`CanvasProps`](/api/interfaces/canvasprops/) & `RefAttributes`\<[`CanvasRef`](/api/interfaces/canvasref/)\>\>
 
-Defined in: [Canvas/index.tsx:35](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/index.tsx#L35)
+Defined in: [Canvas/index.tsx:24](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/index.tsx#L24)
 
 Low-level SVG drawing canvas.
 

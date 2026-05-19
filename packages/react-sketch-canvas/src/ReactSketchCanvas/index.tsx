@@ -7,17 +7,6 @@ import { useSketchCanvasImperativeHandle } from "./hooks/useSketchCanvasImperati
 import type { ReactSketchCanvasProps, ReactSketchCanvasRef } from "./types";
 
 /**
- * Type of the stateful sketch canvas component.
- *
- * @remarks
- * Keeping this explicit makes the generated declarations show the composed
- * props and ref types used by the public React component.
- */
-type ReactSketchCanvasComponent = React.ForwardRefExoticComponent<
-	ReactSketchCanvasProps & React.RefAttributes<ReactSketchCanvasRef>
->;
-
-/**
  * Stateful sketch canvas component for freehand SVG drawing.
  *
  * @remarks
@@ -34,7 +23,7 @@ type ReactSketchCanvasComponent = React.ForwardRefExoticComponent<
  *
  * @public
  */
-export const ReactSketchCanvas: ReactSketchCanvasComponent = React.forwardRef<
+export const ReactSketchCanvas = React.forwardRef<
 	ReactSketchCanvasRef,
 	ReactSketchCanvasProps
 >((props, ref) => {

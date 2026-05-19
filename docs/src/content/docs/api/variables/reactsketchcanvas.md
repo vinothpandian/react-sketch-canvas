@@ -5,9 +5,9 @@ prev: false
 title: "ReactSketchCanvas"
 ---
 
-> `const` **ReactSketchCanvas**: `ReactSketchCanvasComponent`
+> `const` **ReactSketchCanvas**: `ForwardRefExoticComponent`\<[`ReactSketchCanvasProps`](/api/interfaces/reactsketchcanvasprops/) & `RefAttributes`\<[`ReactSketchCanvasRef`](/api/interfaces/reactsketchcanvasref/)\>\>
 
-Defined in: [ReactSketchCanvas/index.tsx:37](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/ReactSketchCanvas/index.tsx#L37)
+Defined in: [ReactSketchCanvas/index.tsx:26](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/ReactSketchCanvas/index.tsx#L26)
 
 Stateful sketch canvas component for freehand SVG drawing.
 
