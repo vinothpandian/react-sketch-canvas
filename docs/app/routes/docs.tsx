@@ -56,8 +56,8 @@ export default function Page({ loaderData }: Route.ComponentProps) {
 	return (
 		<DocsLayout
 			{...baseOptions()}
-			sidebar={{ footer: githubFooter() }}
 			tree={pageTree}
+			githubUrl="https://github.com/vinothpandian/react-sketch-canvas"
 		>
 			{clientLoader.useContent(path)}
 		</DocsLayout>

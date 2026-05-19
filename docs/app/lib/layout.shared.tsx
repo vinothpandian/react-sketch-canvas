@@ -4,19 +4,7 @@ export function baseOptions(): BaseLayoutProps {
 	return {
 		nav: {
 			title: "React Sketch Canvas",
-			url: "/",
+			url: "https://vinoth.info/react-sketch-canvas/",
 		},
 	};
-}
-
-export function githubFooter() {
-	return (
-		<a
-			href="https://github.com/vinothpandian/react-sketch-canvas"
-			rel="noreferrer"
-			target="_blank"
-		>
-			GitHub
-		</a>
-	);
 }
