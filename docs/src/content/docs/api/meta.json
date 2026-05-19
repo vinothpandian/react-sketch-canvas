@@ -1,4 +1,8 @@
 {
 	"title": "API",
-	"pages": ["interfaces", "type-aliases", "variables"]
+	"pages": [
+		"interfaces",
+		"type-aliases",
+		"variables"
+	]
 }

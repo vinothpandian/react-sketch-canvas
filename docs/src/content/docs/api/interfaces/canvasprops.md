@@ -5,7 +5,7 @@ prev: false
 title: "CanvasProps"
 ---
 
-Defined in: [Canvas/types.ts:31](https://github.com/vinothpandian/blob/7c5b4d644c5810dcd5234a943bda7bb63012b362/packages/src/Canvas/types.ts#L31)
+Defined in: [Canvas/types.ts:31](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L31)
 
 Props for the low-level [Canvas](/api/variables/canvas/) component.
 
@@ -21,7 +21,7 @@ the low-level SVG canvas. Application code normally uses
 
 > **allowOnlyPointerType**: [`AllowOnlyPointerType`](/api/type-aliases/allowonlypointertype/)
 
-Defined in: [Canvas/types.ts:84](https://github.com/vinothpandian/blob/7c5b4d644c5810dcd5234a943bda7bb63012b362/packages/src/Canvas/types.ts#L84)
+Defined in: [Canvas/types.ts:84](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L84)
 
 Pointer device class allowed to draw on the canvas.
 
@@ -40,7 +40,7 @@ events are ignored by the canvas.
 
 > **backgroundImage**: `string`
 
-Defined in: [Canvas/types.ts:95](https://github.com/vinothpandian/blob/7c5b4d644c5810dcd5234a943bda7bb63012b362/packages/src/Canvas/types.ts#L95)
+Defined in: [Canvas/types.ts:95](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L95)
 
 Background image shown behind all strokes.
 
@@ -60,7 +60,7 @@ cross-origin access.
 
 > **canvasColor**: `string`
 
-Defined in: [Canvas/types.ts:105](https://github.com/vinothpandian/blob/7c5b4d644c5810dcd5234a943bda7bb63012b362/packages/src/Canvas/types.ts#L105)
+Defined in: [Canvas/types.ts:105](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L105)
 
 Background color shown when no background image is configured.
 
@@ -79,7 +79,7 @@ not included.
 
 > `optional` **className?**: `string`
 
-Defined in: [Canvas/types.ts:111](https://github.com/vinothpandian/blob/7c5b4d644c5810dcd5234a943bda7bb63012b362/packages/src/Canvas/types.ts#L111)
+Defined in: [Canvas/types.ts:111](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L111)
 
 CSS class name applied to the outer canvas wrapper.
 
@@ -93,7 +93,7 @@ CSS class name applied to the outer canvas wrapper.
 
 > **exportWithBackgroundImage**: `boolean`
 
-Defined in: [Canvas/types.ts:121](https://github.com/vinothpandian/blob/7c5b4d644c5810dcd5234a943bda7bb63012b362/packages/src/Canvas/types.ts#L121)
+Defined in: [Canvas/types.ts:121](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L121)
 
 Whether exported images and SVGs include `backgroundImage`.
 
@@ -114,7 +114,7 @@ false
 
 > **height**: `string`
 
-Defined in: [Canvas/types.ts:131](https://github.com/vinothpandian/blob/7c5b4d644c5810dcd5234a943bda7bb63012b362/packages/src/Canvas/types.ts#L131)
+Defined in: [Canvas/types.ts:131](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L131)
 
 CSS height of the canvas wrapper.
 
@@ -133,7 +133,7 @@ Accepts any valid CSS height value, such as `"400px"`, `"60vh"`, or
 
 > `optional` **id?**: `string`
 
-Defined in: [Canvas/types.ts:140](https://github.com/vinothpandian/blob/7c5b4d644c5810dcd5234a943bda7bb63012b362/packages/src/Canvas/types.ts#L140)
+Defined in: [Canvas/types.ts:140](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L140)
 
 Base DOM id used for the SVG canvas and generated SVG definitions.
 
@@ -151,7 +151,7 @@ Use a unique id when rendering more than one canvas on the same page.
 
 > **isDrawing**: `boolean`
 
-Defined in: [Canvas/types.ts:45](https://github.com/vinothpandian/blob/7c5b4d644c5810dcd5234a943bda7bb63012b362/packages/src/Canvas/types.ts#L45)
+Defined in: [Canvas/types.ts:45](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L45)
 
 Whether a pointer stroke is currently active.
 
@@ -165,7 +165,7 @@ While this is `true`, pointer movement is forwarded to `onPointerMove`.
 
 > **onPointerDown**: (`point`, `isEraser?`) => `void`
 
-Defined in: [Canvas/types.ts:57](https://github.com/vinothpandian/blob/7c5b4d644c5810dcd5234a943bda7bb63012b362/packages/src/Canvas/types.ts#L57)
+Defined in: [Canvas/types.ts:57](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L57)
 
 Called when the user starts a stroke.
 
@@ -200,7 +200,7 @@ an eraser flag when a pen eraser button is detected.
 
 > **onPointerMove**: (`point`) => `void`
 
-Defined in: [Canvas/types.ts:64](https://github.com/vinothpandian/blob/7c5b4d644c5810dcd5234a943bda7bb63012b362/packages/src/Canvas/types.ts#L64)
+Defined in: [Canvas/types.ts:64](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L64)
 
 Called when the active pointer moves while drawing.
 
@@ -224,7 +224,7 @@ Nothing.
 
 > **onPointerUp**: () => `void`
 
-Defined in: [Canvas/types.ts:74](https://github.com/vinothpandian/blob/7c5b4d644c5810dcd5234a943bda7bb63012b362/packages/src/Canvas/types.ts#L74)
+Defined in: [Canvas/types.ts:74](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L74)
 
 Called when the active stroke ends.
 
@@ -245,7 +245,7 @@ even when the pointer is released outside the canvas element.
 
 > **paths**: [`CanvasPath`](/api/interfaces/canvaspath/)[]
 
-Defined in: [Canvas/types.ts:38](https://github.com/vinothpandian/blob/7c5b4d644c5810dcd5234a943bda7bb63012b362/packages/src/Canvas/types.ts#L38)
+Defined in: [Canvas/types.ts:38](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L38)
 
 Paths rendered on the SVG canvas.
 
@@ -259,7 +259,7 @@ Paths rendered on the SVG canvas.
 
 > `optional` **preserveBackgroundImageAspectRatio?**: `string`
 
-Defined in: [Canvas/types.ts:150](https://github.com/vinothpandian/blob/7c5b4d644c5810dcd5234a943bda7bb63012b362/packages/src/Canvas/types.ts#L150)
+Defined in: [Canvas/types.ts:150](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L150)
 
 SVG `preserveAspectRatio` value used for `backgroundImage`.
 
@@ -278,7 +278,7 @@ See the MDN reference for accepted values:
 
 > `optional` **readOnly?**: `boolean`
 
-Defined in: [Canvas/types.ts:196](https://github.com/vinothpandian/blob/7c5b4d644c5810dcd5234a943bda7bb63012b362/packages/src/Canvas/types.ts#L196)
+Defined in: [Canvas/types.ts:196](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L196)
 
 Whether pointer drawing is disabled.
 
@@ -298,7 +298,7 @@ false
 
 > **style**: `CSSProperties`
 
-Defined in: [Canvas/types.ts:160](https://github.com/vinothpandian/blob/7c5b4d644c5810dcd5234a943bda7bb63012b362/packages/src/Canvas/types.ts#L160)
+Defined in: [Canvas/types.ts:160](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L160)
 
 Inline styles applied to the outer canvas wrapper.
 
@@ -319,7 +319,7 @@ The package default canvas border style.
 
 > **svgStyle**: `CSSProperties`
 
-Defined in: [Canvas/types.ts:166](https://github.com/vinothpandian/blob/7c5b4d644c5810dcd5234a943bda7bb63012b362/packages/src/Canvas/types.ts#L166)
+Defined in: [Canvas/types.ts:166](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L166)
 
 Inline styles applied to the internal SVG element.
 
@@ -333,7 +333,7 @@ Inline styles applied to the internal SVG element.
 
 > **width**: `string`
 
-Defined in: [Canvas/types.ts:187](https://github.com/vinothpandian/blob/7c5b4d644c5810dcd5234a943bda7bb63012b362/packages/src/Canvas/types.ts#L187)
+Defined in: [Canvas/types.ts:187](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L187)
 
 CSS width of the canvas wrapper.
 
@@ -352,7 +352,7 @@ Accepts any valid CSS width value, such as `"600px"`, `"100%"`, or
 
 > `optional` **withViewBox?**: `boolean`
 
-Defined in: [Canvas/types.ts:177](https://github.com/vinothpandian/blob/7c5b4d644c5810dcd5234a943bda7bb63012b362/packages/src/Canvas/types.ts#L177)
+Defined in: [Canvas/types.ts:177](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L177)
 
 Whether the internal SVG should include a viewBox based on the latest
 measured canvas size.

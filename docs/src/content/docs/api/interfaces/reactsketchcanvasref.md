@@ -5,7 +5,7 @@ prev: false
 title: "ReactSketchCanvasRef"
 ---
 
-Defined in: [ReactSketchCanvas/types.ts:97](https://github.com/vinothpandian/blob/7c5b4d644c5810dcd5234a943bda7bb63012b362/packages/src/ReactSketchCanvas/types.ts#L97)
+Defined in: [ReactSketchCanvas/types.ts:97](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/ReactSketchCanvas/types.ts#L97)
 
 Imperative ref API exposed by [ReactSketchCanvas](/api/variables/reactsketchcanvas/).
 
@@ -24,7 +24,7 @@ from parent components.
 
 > **clearCanvas**: () => `void`
 
-Defined in: [ReactSketchCanvas/types.ts:119](https://github.com/vinothpandian/blob/7c5b4d644c5810dcd5234a943bda7bb63012b362/packages/src/ReactSketchCanvas/types.ts#L119)
+Defined in: [ReactSketchCanvas/types.ts:119](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/ReactSketchCanvas/types.ts#L119)
 
 Remove all paths from the canvas while preserving history.
 
@@ -46,7 +46,7 @@ history.
 
 > **eraseMode**: (`erase`) => `void`
 
-Defined in: [ReactSketchCanvas/types.ts:108](https://github.com/vinothpandian/blob/7c5b4d644c5810dcd5234a943bda7bb63012b362/packages/src/ReactSketchCanvas/types.ts#L108)
+Defined in: [ReactSketchCanvas/types.ts:108](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/ReactSketchCanvas/types.ts#L108)
 
 Switch between drawing and erasing.
 
@@ -75,7 +75,7 @@ to normal drawing mode. Existing paths are not changed.
 
 > **exportImage**: (`imageType`, `options?`) => `Promise`\<`string`\>
 
-Defined in: [Canvas/types.ts:216](https://github.com/vinothpandian/blob/7c5b4d644c5810dcd5234a943bda7bb63012b362/packages/src/Canvas/types.ts#L216)
+Defined in: [Canvas/types.ts:216](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L216)
 
 Export the current canvas as a raster image data URL.
 
@@ -114,7 +114,7 @@ depends on the `exportWithBackgroundImage` prop.
 
 > **exportPaths**: () => `Promise`\<[`CanvasPath`](/api/interfaces/canvaspath/)[]\>
 
-Defined in: [ReactSketchCanvas/types.ts:148](https://github.com/vinothpandian/blob/7c5b4d644c5810dcd5234a943bda7bb63012b362/packages/src/ReactSketchCanvas/types.ts#L148)
+Defined in: [ReactSketchCanvas/types.ts:148](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/ReactSketchCanvas/types.ts#L148)
 
 Export the current path data.
 
@@ -134,7 +134,7 @@ The returned paths can be stored and later passed to `loadPaths()`.
 
 > **exportSvg**: () => `Promise`\<`string`\>
 
-Defined in: [Canvas/types.ts:229](https://github.com/vinothpandian/blob/7c5b4d644c5810dcd5234a943bda7bb63012b362/packages/src/Canvas/types.ts#L229)
+Defined in: [Canvas/types.ts:229](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L229)
 
 Export the current canvas as SVG markup.
 
@@ -159,7 +159,7 @@ background handling has been applied.
 
 > **getSketchingTime**: () => `Promise`\<`number`\>
 
-Defined in: [ReactSketchCanvas/types.ts:169](https://github.com/vinothpandian/blob/7c5b4d644c5810dcd5234a943bda7bb63012b362/packages/src/ReactSketchCanvas/types.ts#L169)
+Defined in: [ReactSketchCanvas/types.ts:169](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/ReactSketchCanvas/types.ts#L169)
 
 Get the total active drawing time in milliseconds.
 
@@ -180,7 +180,7 @@ between strokes is not included.
 
 > **loadPaths**: (`paths`) => `void`
 
-Defined in: [ReactSketchCanvas/types.ts:159](https://github.com/vinothpandian/blob/7c5b4d644c5810dcd5234a943bda7bb63012b362/packages/src/ReactSketchCanvas/types.ts#L159)
+Defined in: [ReactSketchCanvas/types.ts:159](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/ReactSketchCanvas/types.ts#L159)
 
 Append paths to the canvas.
 
@@ -209,7 +209,7 @@ of the current path list and become part of undo/redo history.
 
 > **redo**: () => `void`
 
-Defined in: [ReactSketchCanvas/types.ts:139](https://github.com/vinothpandian/blob/7c5b4d644c5810dcd5234a943bda7bb63012b362/packages/src/ReactSketchCanvas/types.ts#L139)
+Defined in: [ReactSketchCanvas/types.ts:139](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/ReactSketchCanvas/types.ts#L139)
 
 Restore the next history entry after an undo.
 
@@ -230,7 +230,7 @@ unchanged.
 
 > **resetCanvas**: () => `void`
 
-Defined in: [ReactSketchCanvas/types.ts:179](https://github.com/vinothpandian/blob/7c5b4d644c5810dcd5234a943bda7bb63012b362/packages/src/ReactSketchCanvas/types.ts#L179)
+Defined in: [ReactSketchCanvas/types.ts:179](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/ReactSketchCanvas/types.ts#L179)
 
 Remove all paths and clear undo/redo history.
 
@@ -251,7 +251,7 @@ clearing action.
 
 > **undo**: () => `void`
 
-Defined in: [ReactSketchCanvas/types.ts:129](https://github.com/vinothpandian/blob/7c5b4d644c5810dcd5234a943bda7bb63012b362/packages/src/ReactSketchCanvas/types.ts#L129)
+Defined in: [ReactSketchCanvas/types.ts:129](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/ReactSketchCanvas/types.ts#L129)
 
 Restore the previous history entry.
 

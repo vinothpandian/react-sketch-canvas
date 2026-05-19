@@ -1,4 +1,7 @@
 {
 	"title": "Variables",
-	"pages": ["canvas", "reactsketchcanvas"]
+	"pages": [
+		"canvas",
+		"reactsketchcanvas"
+	]
 }

@@ -7,7 +7,7 @@ title: "ReactSketchCanvas"
 
 > `const` **ReactSketchCanvas**: `ReactSketchCanvasComponent`
 
-Defined in: [ReactSketchCanvas/index.tsx:37](https://github.com/vinothpandian/blob/7c5b4d644c5810dcd5234a943bda7bb63012b362/packages/src/ReactSketchCanvas/index.tsx#L37)
+Defined in: [ReactSketchCanvas/index.tsx:37](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/ReactSketchCanvas/index.tsx#L37)
 
 Stateful sketch canvas component for freehand SVG drawing.
 

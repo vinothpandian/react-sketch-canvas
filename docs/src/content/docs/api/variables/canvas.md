@@ -7,7 +7,7 @@ title: "Canvas"
 
 > `const` **Canvas**: `CanvasComponent`
 
-Defined in: [Canvas/index.tsx:35](https://github.com/vinothpandian/blob/7c5b4d644c5810dcd5234a943bda7bb63012b362/packages/src/Canvas/index.tsx#L35)
+Defined in: [Canvas/index.tsx:35](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/index.tsx#L35)
 
 Low-level SVG drawing canvas.
 

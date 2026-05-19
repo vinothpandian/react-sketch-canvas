@@ -5,7 +5,7 @@ prev: false
 title: "ExportImageOptions"
 ---
 
-Defined in: [types/canvas.ts:23](https://github.com/vinothpandian/blob/7c5b4d644c5810dcd5234a943bda7bb63012b362/packages/src/types/canvas.ts#L23)
+Defined in: [types/canvas.ts:23](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/types/canvas.ts#L23)
 
 Size options for raster image exports.
 
@@ -21,7 +21,7 @@ of the on-screen canvas size.
 
 > `readonly` `optional` **height?**: `number`
 
-Defined in: [types/canvas.ts:35](https://github.com/vinothpandian/blob/7c5b4d644c5810dcd5234a943bda7bb63012b362/packages/src/types/canvas.ts#L35)
+Defined in: [types/canvas.ts:35](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/types/canvas.ts#L35)
 
 Height of the exported image in pixels.
 
@@ -37,7 +37,7 @@ The current rendered canvas height.
 
 > `readonly` `optional` **width?**: `number`
 
-Defined in: [types/canvas.ts:29](https://github.com/vinothpandian/blob/7c5b4d644c5810dcd5234a943bda7bb63012b362/packages/src/types/canvas.ts#L29)
+Defined in: [types/canvas.ts:29](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/types/canvas.ts#L29)
 
 Width of the exported image in pixels.
 

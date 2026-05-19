@@ -6,7 +6,8 @@
 	"scripts": {
 		"dev": "react-router dev",
 		"start": "react-router dev",
-		"build": "react-router typegen && react-router build",
+		"api:docs": "node scripts/generate-api-docs.mjs",
+		"build": "pnpm api:docs && react-router typegen && react-router build",
 		"preview": "react-router-serve ./build/server/index.js"
 	},
 	"dependencies": {

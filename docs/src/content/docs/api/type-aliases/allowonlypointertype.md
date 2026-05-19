@@ -7,7 +7,7 @@ title: "AllowOnlyPointerType"
 
 > **AllowOnlyPointerType** = `"all"` \| `"pen"` \| `"mouse"` \| `"touch"`
 
-Defined in: [Canvas/types.ts:19](https://github.com/vinothpandian/blob/7c5b4d644c5810dcd5234a943bda7bb63012b362/packages/src/Canvas/types.ts#L19)
+Defined in: [Canvas/types.ts:19](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L19)
 
 Pointer device class accepted by the drawing surface.
 
