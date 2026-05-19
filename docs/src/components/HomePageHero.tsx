@@ -6,8 +6,8 @@ const githubUrl = "https://github.com/vinothpandian/react-sketch-canvas";
 export function HomePageHero() {
 	return (
 		<section className="not-prose mb-8 overflow-hidden px-2 py-10 md:py-14">
-			<div className="grid items-center gap-8 md:grid-cols-[minmax(0,1fr)_280px]">
-				<div className="max-w-2xl">
+			<div className="grid justify-items-center gap-8 md:grid-cols-[minmax(0,1fr)_280px] md:items-center md:justify-items-stretch">
+				<div className="max-w-2xl text-center md:text-left">
 					<h1 className="font-['Kalam',cursive] font-bold text-4xl leading-tight tracking-normal text-fd-foreground md:text-5xl lg:text-6xl">
 						React Sketch Canvas
 					</h1>
@@ -16,7 +16,7 @@ export function HomePageHero() {
 							Freehand vector drawing component for React using SVG as canvas
 						</span>
 					</p>
-					<div className="mt-7 flex flex-wrap items-center gap-3">
+					<div className="mt-7 flex flex-wrap items-center justify-center gap-3 md:justify-start">
 						<a
 							className="inline-flex h-10 items-center gap-2 rounded-md bg-fd-primary px-4 text-sm font-medium text-fd-primary-foreground transition-colors hover:bg-fd-primary/90"
 							href="/guides/installation/"
