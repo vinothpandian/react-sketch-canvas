@@ -43,5 +43,5 @@ function getDocPaths() {
 
 export default {
 	basename: "/react-sketch-canvas",
-	prerender: getDocPaths(),
+	prerender: [...getDocPaths(), "/llms.txt", "/llms-full.txt"],
 } satisfies Config;
