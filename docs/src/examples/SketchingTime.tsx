@@ -13,6 +13,11 @@ export default function App() {
 		setSketchingTime(time);
 	};
 
+	const handleReset = () => {
+		setSketchingTime(0);
+		canvasRef.current?.resetCanvas();
+	};
+
 	const sketchingTimeInSeconds = (sketchingTime / 1_000).toLocaleString();
 
 	return (
@@ -20,7 +25,10 @@ export default function App() {
 			<h1>Tools</h1>
 			<div>
 				<button type="button" onClick={handleSketchingTime}>
-					Get Sketching Time
+					Get sketching time
+				</button>
+				<button type="button" onClick={handleReset}>
+					Reset
 				</button>
 				<span>{sketchingTimeInSeconds} seconds</span>
 			</div>
