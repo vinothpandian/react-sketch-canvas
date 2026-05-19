@@ -21,30 +21,6 @@ Traditional `<canvas>` drawing is pixel-based. That is useful for painting apps,
 
 React Sketch Canvas records each stroke as path data. You can load those paths back into the canvas, export them as SVG, or render the same drawing at different sizes without the blurry edges that come from bitmap scaling.
 
-## Features
-
-<CardGrid>
-  <Card title="Multi input support" icon="input">
-    Accept mouse, touch, pen, Apple Pencil, Wacom, Surface Pen, and other pointer devices. You can also restrict drawing to one input type when your product needs tighter control.
-  </Card>
-  <Card title="Vector-first drawing" icon="signature">
-    Capture freehand strokes as paths, then export the result as SVG, PNG, or JPEG when you need to store or share the drawing.
-  </Card>
-  <Card title="Build your own toolbar" icon="pencil">
-    Use refs for undo, redo, erase mode, reset, export, and sketching time. The library provides the drawing surface without forcing a specific UI.
-  </Card>
-  <Card title="Works with real app flows" icon="api">
-    Load existing paths, render read-only drawings, place images behind the canvas, or collect timing data for review and analytics workflows.
-  </Card>
-</CardGrid>
-
-## What can you build?
-
-- Signature capture for forms, approvals, and consent flows.
-- Image annotation tools for screenshots, photos, documents, and maps.
-- Sketch pads for education, collaboration, and lightweight whiteboarding.
-- Review screens where a saved drawing should be visible but not editable.
-- Drawing inputs that must prefer a stylus, ignore touch, or support every pointer device.
 
 ## Explore examples
 
@@ -68,5 +44,30 @@ Start with the smallest useful setup, then move toward the parts most production
   </Card>
   <Card title="Sketching Time" icon="history" href="/examples/sketching-time/">
     Track active drawing time with timestamped strokes.
+  </Card>
+</CardGrid>
+
+## What can you build?
+
+- Signature capture for forms, approvals, and consent flows.
+- Image annotation tools for screenshots, photos, documents, and maps.
+- Sketch pads for education, collaboration, and lightweight whiteboarding.
+- Review screens where a saved drawing should be visible but not editable.
+- Drawing inputs that must prefer a stylus, ignore touch, or support every pointer device.
+
+## Features
+
+<CardGrid>
+  <Card title="Multi input support" icon="input">
+    Accept mouse, touch, pen, Apple Pencil, Wacom, Surface Pen, and other pointer devices. You can also restrict drawing to one input type when your product needs tighter control.
+  </Card>
+  <Card title="Vector-first drawing" icon="signature">
+    Capture freehand strokes as paths, then export the result as SVG, PNG, or JPEG when you need to store or share the drawing.
+  </Card>
+  <Card title="Build your own toolbar" icon="pencil">
+    Use refs for undo, redo, erase mode, reset, export, and sketching time. The library provides the drawing surface without forcing a specific UI.
+  </Card>
+  <Card title="Works with real app flows" icon="api">
+    Load existing paths, render read-only drawings, place images behind the canvas, or collect timing data for review and analytics workflows.
   </Card>
 </CardGrid>
