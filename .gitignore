@@ -16,6 +16,7 @@ playwright-report/
 test-results/
 packages/react-sketch-canvas/playwright-report/
 packages/react-sketch-canvas/test-results/
+docs/superpowers/
 
 # LLMs
 .agent/
