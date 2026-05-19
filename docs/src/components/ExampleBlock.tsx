@@ -16,7 +16,7 @@ export default function ExampleBlock({
 		<figure className="not-prose overflow-hidden">
 			<Tabs items={["Preview", "Source"]}>
 				<Tab value="Preview">
-					<div className="p-4">{children}</div>
+					<div className="example-preview p-4">{children}</div>
 				</Tab>
 				<Tab value="Source">
 					<DynamicCodeBlock

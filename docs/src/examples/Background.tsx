@@ -49,19 +49,21 @@ export default function App() {
 						onChange={handleBackgroundImageChange}
 					/>
 				</div>
-				<label htmlFor="preserveAspectRatio">Preserve Aspect Ratio</label>
-				<select
-					id="preserveAspectRatio"
-					aria-label="Preserve Aspect Ratio options"
-					value={preserveAspectRatio}
-					onChange={handlePreserveAspectRatioChange}
-				>
-					{somePreserveAspectRatio.map((value) => (
-						<option key={value} value={value}>
-							{value}
-						</option>
-					))}
-				</select>
+				<div>
+					<label htmlFor="preserveAspectRatio">Preserve Aspect Ratio</label>
+					<select
+						id="preserveAspectRatio"
+						aria-label="Preserve Aspect Ratio options"
+						value={preserveAspectRatio}
+						onChange={handlePreserveAspectRatioChange}
+					>
+						{somePreserveAspectRatio.map((value) => (
+							<option key={value} value={value}>
+								{value}
+							</option>
+						))}
+					</select>
+				</div>
 			</div>
 			<h1>Canvas</h1>
 			<ReactSketchCanvas
