@@ -1,0 +1,4 @@
+{
+	"title": "Restrict input",
+	"pages": ["index", "all-inputs", "pen", "mouse", "touch"]
+}

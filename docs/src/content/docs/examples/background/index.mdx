@@ -1,0 +1,19 @@
+---
+title: Background
+description: Draw over images and data URI backgrounds.
+sidebar:
+  order: 5
+---
+
+Background images are useful when the drawing is an annotation layer: mark up a photo, trace over a template, or collect notes on top of an existing asset.
+
+Use `backgroundImage` with `preserveBackgroundImageAspectRatio` to draw over an image while controlling how the image fits the SVG canvas. The background stays separate from the user's strokes, so you can preserve the source image and export the combined result when needed.
+
+<CardGrid>
+  <Card title="Image background" icon="background" href="/examples/background/image/">
+    Draw over a referenced image while preserving its aspect ratio.
+  </Card>
+  <Card title="Data URI background" icon="download" href="/examples/background/data-uri/">
+    Use an in-memory image value as the drawing background.
+  </Card>
+</CardGrid>

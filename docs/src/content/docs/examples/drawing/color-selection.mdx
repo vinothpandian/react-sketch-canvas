@@ -1,0 +1,16 @@
+---
+title: Color selection
+description: Use your own controls to update stroke and canvas color.
+---
+
+import ExampleBlock from "../../../../components/ExampleBlock";
+import Colors from "../../../../examples/Colors";
+import ColorsSource from "../../../../examples/Colors.tsx?raw";
+
+The canvas does not prescribe a color picker or toolbar layout. Pass `strokeColor` and `canvasColor` from your own controls, and React will update the drawing surface as those values change.
+
+This pattern works well when color is part of a larger form, theme editor, or annotation workflow.
+
+<ExampleBlock source={ColorsSource}>
+  <Colors />
+</ExampleBlock>

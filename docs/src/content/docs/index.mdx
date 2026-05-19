@@ -6,6 +6,8 @@ description: A React component for freehand vector drawing with SVG.
 
 import { HomePageDemo } from "../../components/HomePageDemo";
 
+# React Sketch Canvas
+
 React Sketch Canvas gives you the familiar feel of a drawing canvas while keeping every stroke as SVG path data. That makes it useful for signatures, annotations, teaching tools, whiteboards, and any UI where you need to save, replay, or export what someone drew.
 
 The component stays intentionally small: you render a canvas, pass the drawing props you care about, and build the surrounding toolbar in React. The canvas handles pointer input and stroke history; your app decides how drawing fits into the product.
@@ -21,16 +23,16 @@ React Sketch Canvas records each stroke as path data. You can load those paths b
 ## Features
 
 <CardGrid>
-  <Card title="Multi input support" icon="pencil">
+  <Card title="Multi input support" icon="input">
     Accept mouse, touch, pen, Apple Pencil, Wacom, Surface Pen, and other pointer devices. You can also restrict drawing to one input type when your product needs tighter control.
   </Card>
-  <Card title="Vector-first drawing" icon="add-document">
+  <Card title="Vector-first drawing" icon="signature">
     Capture freehand strokes as paths, then export the result as SVG, PNG, or JPEG when you need to store or share the drawing.
   </Card>
   <Card title="Build your own toolbar" icon="pencil">
     Use refs for undo, redo, erase mode, reset, export, and sketching time. The library provides the drawing surface without forcing a specific UI.
   </Card>
-  <Card title="Works with real app flows" icon="add-document">
+  <Card title="Works with real app flows" icon="api">
     Load existing paths, render read-only drawings, place images behind the canvas, or collect timing data for review and analytics workflows.
   </Card>
 </CardGrid>
@@ -48,22 +50,22 @@ React Sketch Canvas records each stroke as path data. You can load those paths b
 Start with the smallest useful setup, then move toward the parts most production drawing surfaces need: custom controls, input restrictions, undo history, image backgrounds, and timing.
 
 <CardGrid>
-  <Card title="Installation" icon="add-document">
+  <Card title="Installation" icon="download" href="/guides/installation/">
     Install the package and render your first canvas. <a href="/guides/installation/">Start here</a>.
   </Card>
-  <Card title="Drawing & Erasing" icon="pencil">
-    Build a toolbar for draw mode, erase mode, colors, and read-only rendering. <a href="/examples/drawing/">Open example</a>.
+  <Card title="Drawing & Erasing" icon="pencil" href="/examples/drawing/">
+    Build a toolbar for draw mode, erase mode, colors, and read-only rendering.
   </Card>
-  <Card title="Undo, Redo, Clear, and Reset" icon="add-document">
-    Wire imperative canvas actions from your own controls. <a href="/examples/undo-redo/">Open example</a>.
+  <Card title="Undo, Redo, Clear, and Reset" icon="history" href="/examples/undo-redo/">
+    Wire imperative canvas actions from your own controls.
   </Card>
-  <Card title="Restrict Input" icon="pencil">
-    Choose whether mouse, touch, pen, or every pointer type can draw. <a href="/examples/input-devices/">Open example</a>.
+  <Card title="Restrict Input" icon="input" href="/examples/input-devices/">
+    Choose whether mouse, touch, pen, or every pointer type can draw.
   </Card>
-  <Card title="Background" icon="add-document">
-    Place an image behind the drawing layer for annotation workflows. <a href="/examples/background/">Open example</a>.
+  <Card title="Background" icon="background" href="/examples/background/">
+    Place an image behind the drawing layer for annotation workflows.
   </Card>
-  <Card title="Sketching Time" icon="pencil">
-    Track active drawing time with timestamped strokes. <a href="/examples/sketching-time/">Open example</a>.
+  <Card title="Sketching Time" icon="history" href="/examples/sketching-time/">
+    Track active drawing time with timestamped strokes.
   </Card>
 </CardGrid>

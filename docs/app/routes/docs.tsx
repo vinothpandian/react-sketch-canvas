@@ -8,7 +8,7 @@ import {
 	DocsTitle,
 } from "fumadocs-ui/layouts/docs/page";
 import { getMDXComponents } from "~/components/mdx";
-import { baseOptions, githubFooter } from "~/lib/layout.shared";
+import { baseOptions } from "~/lib/layout.shared";
 import { source } from "~/lib/source";
 import type { Route } from "./+types/docs";
 
@@ -54,11 +54,7 @@ export default function Page({ loaderData }: Route.ComponentProps) {
 	const { path, pageTree } = useFumadocsLoader(loaderData);
 
 	return (
-		<DocsLayout
-			{...baseOptions()}
-			tree={pageTree}
-			githubUrl="https://github.com/vinothpandian/react-sketch-canvas"
-		>
+		<DocsLayout {...baseOptions()} tree={pageTree}>
 			{clientLoader.useContent(path)}
 		</DocsLayout>
 	);
