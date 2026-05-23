@@ -94,8 +94,10 @@ describe("exportImageFromSvg", () => {
 	const originalImage = globalThis.Image;
 	const originalGetContext = HTMLCanvasElement.prototype.getContext;
 	const originalToDataUrl = HTMLCanvasElement.prototype.toDataURL;
+	const originalDevicePixelRatio = window.devicePixelRatio;
 	const drawImage = vi.fn();
 	const fillRect = vi.fn();
+	const scale = vi.fn();
 
 	beforeEach(() => {
 		MockImage.instances = [];
@@ -103,10 +105,12 @@ describe("exportImageFromSvg", () => {
 		MockImage.dimensionsBySource = new Map();
 		drawImage.mockReset();
 		fillRect.mockReset();
+		scale.mockReset();
 		globalThis.Image = MockImage as unknown as typeof Image;
 		HTMLCanvasElement.prototype.getContext = vi.fn(() => ({
 			drawImage,
 			fillRect,
+			scale,
 			fillStyle: "",
 		})) as unknown as typeof HTMLCanvasElement.prototype.getContext;
 		HTMLCanvasElement.prototype.toDataURL = vi.fn(
@@ -118,6 +122,37 @@ describe("exportImageFromSvg", () => {
 		globalThis.Image = originalImage;
 		HTMLCanvasElement.prototype.getContext = originalGetContext;
 		HTMLCanvasElement.prototype.toDataURL = originalToDataUrl;
+		Object.defineProperty(window, "devicePixelRatio", {
+			configurable: true,
+			value: originalDevicePixelRatio,
+		});
+	});
+
+	it("uses rendered SVG dimensions for default raster export size", async () => {
+		Object.defineProperty(window, "devicePixelRatio", {
+			configurable: true,
+			value: 2,
+		});
+		const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+
+		await exportImageFromSvg({
+			id: "canvas",
+			svgCanvas: svg,
+			svgWidth: 320,
+			svgHeight: 180,
+			imageType: "png",
+			canvasColor: "white",
+			backgroundImage: "",
+			exportWithBackgroundImage: false,
+		});
+
+		const canvas = vi.mocked(HTMLCanvasElement.prototype.toDataURL).mock
+			.contexts[0] as HTMLCanvasElement;
+
+		expect(canvas.width).toBe(320);
+		expect(canvas.height).toBe(180);
+		expect(canvas.style.width).toBe("320px");
+		expect(canvas.style.height).toBe("180px");
 	});
 
 	it("removes background-image markup from the serialized SVG when exporting without the background image", async () => {
