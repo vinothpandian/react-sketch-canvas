@@ -27,13 +27,13 @@ describe("canvas SVG export helpers", () => {
 			<rect id="canvas__canvas-background" fill="url(#canvas__background)"></rect>
 		`;
 
-		prepareSvgForExport(svg, {
+		const exported = prepareSvgForExport(svg, {
 			id: "canvas",
 			canvasColor: "white",
 			exportWithBackgroundImage: true,
 		});
 
-		expect(svg.querySelector("#canvas__background")).not.toBeNull();
+		expect(exported.outerHTML).toContain("__background");
 	});
 
 	it("removes the background image pattern and restores canvas color when exporting without background image", () => {
@@ -43,15 +43,40 @@ describe("canvas SVG export helpers", () => {
 			<rect id="canvas__canvas-background" fill="url(#canvas__background)"></rect>
 		`;
 
-		prepareSvgForExport(svg, {
+		const exported = prepareSvgForExport(svg, {
 			id: "canvas",
 			canvasColor: "pink",
 			exportWithBackgroundImage: false,
 		});
 
-		expect(svg.querySelector("#canvas__background")).toBeNull();
-		expect(
-			svg.querySelector("#canvas__canvas-background")?.getAttribute("fill"),
-		).toBe("pink");
+		expect(exported.outerHTML).not.toContain('id="canvas__background"');
+		expect(exported.outerHTML).toContain('fill="pink"');
+	});
+
+	it("rewrites internal ids and references so exported SVG markup does not collide with the live canvas", () => {
+		const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+		svg.innerHTML = `
+			<defs>
+				<pattern id="canvas__background"></pattern>
+				<mask id="canvas__eraser-mask-0">
+					<use href="#canvas__mask-background" xlink:href="#canvas__mask-background"></use>
+				</mask>
+			</defs>
+			<rect id="canvas__mask-background" fill="white"></rect>
+			<g id="canvas__stroke-group-0" mask="url(#canvas__eraser-mask-0)"></g>
+		`;
+
+		const exported = prepareSvgForExport(svg, {
+			id: "canvas",
+			canvasColor: "white",
+			exportWithBackgroundImage: true,
+		});
+		const output = exported.outerHTML;
+
+		expect(output).not.toContain('id="canvas__eraser-mask-0"');
+		expect(output).not.toContain('href="#canvas__mask-background"');
+		expect(output).not.toContain('mask="url(#canvas__eraser-mask-0)"');
+		expect(output).toMatch(/mask="url\(#canvas__export-[^"]+\)"/);
+		expect(output).toMatch(/href="#canvas__export-[^"]+"/);
 	});
 });

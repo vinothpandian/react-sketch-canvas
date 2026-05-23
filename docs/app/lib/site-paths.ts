@@ -1,7 +1,11 @@
-export const docsBasePath = "/react-sketch-canvas";
+export const docsBasePath = import.meta.env.PROD ? "/react-sketch-canvas" : "";
 
 export function withDocsBasePath(path: string) {
 	if (!path.startsWith("/")) {
+		return path;
+	}
+
+	if (docsBasePath === "") {
 		return path;
 	}
 

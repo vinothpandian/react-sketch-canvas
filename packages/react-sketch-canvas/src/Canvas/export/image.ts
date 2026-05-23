@@ -1,30 +1,16 @@
+import type * as React from "react";
 import type { ExportImageOptions, ExportImageType } from "../../types";
-
-type LoadImageReturns = Promise<HTMLImageElement>;
-
-/**
- * Load an image URL or data URL for canvas export.
- *
- * @remarks
- * The image is configured for anonymous cross-origin loading so browser canvas
- * security rules allow `toDataURL` when the remote server permits it.
- */
-export const loadImage = (url: string): LoadImageReturns =>
-	new Promise((resolve, reject) => {
-		const img = new Image();
-		img.addEventListener("load", () => {
-			if (img.width > 0) {
-				resolve(img);
-				return;
-			}
-			reject(new Error("Image not found"));
-		});
-		img.addEventListener("error", (err) => reject(err));
-		img.src = url;
-		img.setAttribute("crossorigin", "anonymous");
-	});
+import {
+	drawBackgroundLayer,
+	loadBackgroundLayer,
+	resolveBackgroundLayerPlan,
+} from "./backgroundLayer";
+import { encodeSvgDataUrl } from "./encoding";
+import { loadImage } from "./imageLoader";
+import { prepareSvgForExport, removeBackgroundImageFromSvg } from "./svg";
 
 type ExportImageFromSvgParams = {
+	id: string;
 	svgCanvas: SVGElement;
 	svgWidth: number;
 	svgHeight: number;
@@ -32,10 +18,67 @@ type ExportImageFromSvgParams = {
 	canvasColor: string;
 	backgroundImage: string;
 	exportWithBackgroundImage: boolean;
+	preserveBackgroundImageAspectRatio?: React.SVGAttributes<HTMLImageElement>["preserveAspectRatio"];
 	options?: ExportImageOptions;
 };
 
 type ExportImageFromSvgReturns = Promise<string>;
+
+type PrepareStrokeSvgForRasterExportParams = Pick<
+	ExportImageFromSvgParams,
+	| "id"
+	| "svgCanvas"
+	| "canvasColor"
+	| "backgroundImage"
+	| "exportWithBackgroundImage"
+>;
+
+/**
+ * Prepare the SVG layer that will be rasterized above the background.
+ *
+ * @remarks
+ * When background image export is enabled, the background image markup is
+ * removed from the serialized SVG because the image is painted separately onto
+ * the raster canvas. This avoids duplicate or browser-specific SVG image
+ * artifacts while keeping strokes composited above the background.
+ */
+function prepareStrokeSvgForRasterExport({
+	id,
+	svgCanvas,
+	canvasColor,
+	backgroundImage,
+	exportWithBackgroundImage,
+}: PrepareStrokeSvgForRasterExportParams): SVGElement {
+	if (exportWithBackgroundImage && backgroundImage) {
+		const strokeOnlySvg = removeBackgroundImageFromSvg(svgCanvas, id);
+
+		return prepareSvgForExport(strokeOnlySvg, {
+			id,
+			canvasColor,
+			exportWithBackgroundImage: true,
+		});
+	}
+
+	return prepareSvgForExport(svgCanvas, {
+		id,
+		canvasColor,
+		exportWithBackgroundImage,
+	});
+}
+
+function createRasterCanvas(
+	exportWidth: number,
+	exportHeight: number,
+): HTMLCanvasElement {
+	const renderCanvas = document.createElement("canvas");
+
+	renderCanvas.width = exportWidth;
+	renderCanvas.height = exportHeight;
+	renderCanvas.style.width = `${exportWidth}px`;
+	renderCanvas.style.height = `${exportHeight}px`;
+
+	return renderCanvas;
+}
 
 /**
  * Render a cloned SVG canvas into a raster image data URL.
@@ -46,6 +89,7 @@ type ExportImageFromSvgReturns = Promise<string>;
  * visible above them.
  */
 export async function exportImageFromSvg({
+	id,
 	svgCanvas,
 	svgWidth,
 	svgHeight,
@@ -53,41 +97,54 @@ export async function exportImageFromSvg({
 	canvasColor,
 	backgroundImage,
 	exportWithBackgroundImage,
+	preserveBackgroundImageAspectRatio,
 	options,
 }: ExportImageFromSvgParams): ExportImageFromSvgReturns {
 	const exportWidth = options?.width ?? svgWidth;
 	const exportHeight = options?.height ?? svgHeight;
-	const canvasSketch = `data:image/svg+xml;base64,${btoa(svgCanvas.outerHTML)}`;
-	const loadImagePromises = [loadImage(canvasSketch)];
-
-	if (exportWithBackgroundImage && backgroundImage) {
-		try {
-			loadImagePromises.push(loadImage(backgroundImage));
-		} catch {
-			console.warn(
-				"React Sketch Canvas could not load the background image while exporting. Check that backgroundImage points to a reachable image and allows cross-origin access.",
-			);
-		}
-	}
-
-	const images = await Promise.all(loadImagePromises);
-	const renderCanvas = document.createElement("canvas");
-	renderCanvas.setAttribute("width", exportWidth.toString());
-	renderCanvas.setAttribute("height", exportHeight.toString());
+	const backgroundLayerPlan = resolveBackgroundLayerPlan({
+		backgroundImage,
+		exportWithBackgroundImage,
+		exportWidth,
+		exportHeight,
+		preserveAspectRatio: preserveBackgroundImageAspectRatio,
+	});
+	const preparedSvg = prepareStrokeSvgForRasterExport({
+		id,
+		svgCanvas,
+		canvasColor,
+		backgroundImage,
+		exportWithBackgroundImage,
+	});
+	const strokeImage = await loadImage(encodeSvgDataUrl(preparedSvg));
+	const renderCanvas = createRasterCanvas(exportWidth, exportHeight);
 	const context = renderCanvas.getContext("2d");
 
 	if (!context) {
 		throw Error("Canvas not rendered yet");
 	}
 
-	if (imageType === "jpeg" && !exportWithBackgroundImage) {
+	const shouldFillCanvasBackground =
+		imageType === "jpeg" || !backgroundImage || !exportWithBackgroundImage;
+
+	if (shouldFillCanvasBackground) {
 		context.fillStyle = canvasColor;
 		context.fillRect(0, 0, exportWidth, exportHeight);
 	}
 
-	for (const image of images.reverse()) {
-		context.drawImage(image, 0, 0, exportWidth, exportHeight);
+	const backgroundLayer = await loadBackgroundLayer(backgroundLayerPlan);
+
+	if (backgroundLayer && backgroundLayerPlan.kind !== "none") {
+		drawBackgroundLayer({
+			context,
+			backgroundLayer,
+			plan: backgroundLayerPlan,
+			exportWidth,
+			exportHeight,
+		});
 	}
+
+	context.drawImage(strokeImage, 0, 0, exportWidth, exportHeight);
 
 	return renderCanvas.toDataURL(`image/${imageType}`);
 }

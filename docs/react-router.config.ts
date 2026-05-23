@@ -42,6 +42,7 @@ function getDocPaths() {
 }
 
 export default {
-	basename: "/react-sketch-canvas",
+	basename:
+		process.env.NODE_ENV === "production" ? "/react-sketch-canvas" : "/",
 	prerender: [...getDocPaths(), "/llms.txt", "/llms-full.txt"],
 } satisfies Config;
