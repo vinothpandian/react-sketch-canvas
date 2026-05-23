@@ -8,7 +8,10 @@ import type { CanvasProps, CanvasRef } from "../types";
 type UseCanvasExportHandleParams = Required<Pick<CanvasProps, "id">> &
 	Pick<
 		CanvasProps,
-		"canvasColor" | "backgroundImage" | "exportWithBackgroundImage"
+		| "canvasColor"
+		| "backgroundImage"
+		| "exportWithBackgroundImage"
+		| "preserveBackgroundImageAspectRatio"
 	> & {
 		canvasRef: React.RefObject<HTMLDivElement | null>;
 	};
@@ -30,6 +33,7 @@ export function useCanvasExportHandle(
 		canvasColor,
 		backgroundImage,
 		exportWithBackgroundImage,
+		preserveBackgroundImageAspectRatio,
 	}: UseCanvasExportHandleParams,
 ): UseCanvasExportHandleReturns {
 	React.useImperativeHandle(ref, () => ({
@@ -54,6 +58,7 @@ export function useCanvasExportHandle(
 				canvasColor,
 				backgroundImage,
 				exportWithBackgroundImage,
+				preserveBackgroundImageAspectRatio,
 				options,
 			});
 		},

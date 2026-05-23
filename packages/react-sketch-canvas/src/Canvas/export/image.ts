@@ -1,3 +1,4 @@
+import type * as React from "react";
 import type { ExportImageOptions, ExportImageType } from "../../types";
 import { prepareSvgForExport, removeBackgroundImageFromSvg } from "./svg";
 
@@ -36,13 +37,15 @@ function shouldUseAnonymousCrossOrigin(url: string): boolean {
  * Decide whether a configured background image must be painted outside the SVG.
  *
  * @remarks
- * Embedded data/blob URLs can stay inside the serialized SVG layer, preserving
- * SVG image sizing and avoiding an extra duplicate raster draw. External image
- * URLs are painted separately because browsers do not reliably load external
- * resources from an SVG that is itself being rasterized as an image.
+ * Raster export composites the background as a normal canvas image layer for
+ * every URL type. Keeping data/blob URLs inside the serialized SVG would make
+ * browsers rasterize the SVG pattern themselves, which can tile the background
+ * instead of stretching it to the export dimensions. External image URLs also
+ * need this path because browsers do not reliably load external resources from
+ * an SVG that is itself being rasterized as an image.
  */
 function shouldPaintBackgroundAsRasterLayer(url: string): boolean {
-	return !(url.startsWith("data:") || url.startsWith("blob:"));
+	return url.length > 0;
 }
 
 /**
@@ -83,6 +86,7 @@ type ExportImageFromSvgParams = {
 	canvasColor: string;
 	backgroundImage: string;
 	exportWithBackgroundImage: boolean;
+	preserveBackgroundImageAspectRatio?: React.SVGAttributes<HTMLImageElement>["preserveAspectRatio"];
 	options?: ExportImageOptions;
 };
 
@@ -90,6 +94,122 @@ type ExportImageFromSvgParams = {
  * The data URL produced by a raster image export.
  */
 type ExportImageFromSvgReturns = Promise<string>;
+
+type SvgAspectRatioAlign = "Min" | "Mid" | "Max";
+
+type SvgAspectRatioMode = "meet" | "slice";
+
+type ParsedSvgAspectRatio = {
+	xAlign: SvgAspectRatioAlign;
+	yAlign: SvgAspectRatioAlign;
+	mode: SvgAspectRatioMode;
+};
+
+function parseSvgAspectRatio(
+	preserveAspectRatio: React.SVGAttributes<HTMLImageElement>["preserveAspectRatio"],
+): ParsedSvgAspectRatio | null {
+	if (!preserveAspectRatio || preserveAspectRatio === "none") {
+		return null;
+	}
+
+	const [align = "xMidYMid", mode = "meet"] = preserveAspectRatio.split(/\s+/);
+	const alignMatch = /^x(Min|Mid|Max)Y(Min|Mid|Max)$/.exec(align);
+
+	return {
+		xAlign: (alignMatch?.[1] ?? "Mid") as SvgAspectRatioAlign,
+		yAlign: (alignMatch?.[2] ?? "Mid") as SvgAspectRatioAlign,
+		mode: mode === "slice" ? "slice" : "meet",
+	};
+}
+
+function resolveAlignedOffset(
+	containerSize: number,
+	contentSize: number,
+	align: SvgAspectRatioAlign,
+): number {
+	if (align === "Min") {
+		return 0;
+	}
+
+	const remainingSize = containerSize - contentSize;
+
+	if (align === "Max") {
+		return remainingSize;
+	}
+
+	return remainingSize / 2;
+}
+
+function drawBackgroundLayer(
+	context: CanvasRenderingContext2D,
+	backgroundLayer: HTMLImageElement,
+	exportWidth: number,
+	exportHeight: number,
+	preserveAspectRatio: React.SVGAttributes<HTMLImageElement>["preserveAspectRatio"],
+): void {
+	const parsedAspectRatio = parseSvgAspectRatio(preserveAspectRatio);
+	const sourceWidth = backgroundLayer.naturalWidth || backgroundLayer.width;
+	const sourceHeight = backgroundLayer.naturalHeight || backgroundLayer.height;
+
+	if (!parsedAspectRatio || sourceWidth <= 0 || sourceHeight <= 0) {
+		context.drawImage(backgroundLayer, 0, 0, exportWidth, exportHeight);
+		return;
+	}
+
+	const widthScale = exportWidth / sourceWidth;
+	const heightScale = exportHeight / sourceHeight;
+
+	if (parsedAspectRatio.mode === "slice") {
+		const scale = Math.max(widthScale, heightScale);
+		const sourceCropWidth = exportWidth / scale;
+		const sourceCropHeight = exportHeight / scale;
+		const sourceX = resolveAlignedOffset(
+			sourceWidth,
+			sourceCropWidth,
+			parsedAspectRatio.xAlign,
+		);
+		const sourceY = resolveAlignedOffset(
+			sourceHeight,
+			sourceCropHeight,
+			parsedAspectRatio.yAlign,
+		);
+
+		context.drawImage(
+			backgroundLayer,
+			sourceX,
+			sourceY,
+			sourceCropWidth,
+			sourceCropHeight,
+			0,
+			0,
+			exportWidth,
+			exportHeight,
+		);
+		return;
+	}
+
+	const scale = Math.min(widthScale, heightScale);
+	const destinationWidth = sourceWidth * scale;
+	const destinationHeight = sourceHeight * scale;
+	const destinationX = resolveAlignedOffset(
+		exportWidth,
+		destinationWidth,
+		parsedAspectRatio.xAlign,
+	);
+	const destinationY = resolveAlignedOffset(
+		exportHeight,
+		destinationHeight,
+		parsedAspectRatio.yAlign,
+	);
+
+	context.drawImage(
+		backgroundLayer,
+		destinationX,
+		destinationY,
+		destinationWidth,
+		destinationHeight,
+	);
+}
 
 /**
  * Arguments used to prepare the stroke-only SVG layer for raster export.
@@ -238,6 +358,7 @@ export async function exportImageFromSvg({
 	canvasColor,
 	backgroundImage,
 	exportWithBackgroundImage,
+	preserveBackgroundImageAspectRatio,
 	options,
 }: ExportImageFromSvgParams): ExportImageFromSvgReturns {
 	const exportWidth = options?.width ?? svgWidth;
@@ -280,7 +401,13 @@ export async function exportImageFromSvg({
 	);
 
 	if (backgroundLayer) {
-		context.drawImage(backgroundLayer, 0, 0, exportWidth, exportHeight);
+		drawBackgroundLayer(
+			context,
+			backgroundLayer,
+			exportWidth,
+			exportHeight,
+			preserveBackgroundImageAspectRatio,
+		);
 	}
 
 	context.drawImage(strokeImage, 0, 0, exportWidth, exportHeight);

@@ -58,6 +58,7 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
 		canvasColor,
 		backgroundImage,
 		exportWithBackgroundImage,
+		preserveBackgroundImageAspectRatio,
 	});
 
 	const { handlePointerDown, handlePointerMove, handlePointerUp } =

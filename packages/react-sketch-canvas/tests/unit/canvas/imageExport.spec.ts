@@ -6,7 +6,26 @@ class MockImage {
 
 	static failingSources = new Set<string>();
 
-	public width = 100;
+	static dimensionsBySource = new Map<
+		string,
+		{ width: number; height: number }
+	>();
+
+	public get width() {
+		return MockImage.dimensionsBySource.get(this._src)?.width ?? 100;
+	}
+
+	public get height() {
+		return MockImage.dimensionsBySource.get(this._src)?.height ?? 100;
+	}
+
+	public get naturalWidth() {
+		return this.width;
+	}
+
+	public get naturalHeight() {
+		return this.height;
+	}
 
 	public onload: (() => void) | null = null;
 
@@ -71,6 +90,7 @@ describe("exportImageFromSvg", () => {
 	beforeEach(() => {
 		MockImage.instances = [];
 		MockImage.failingSources = new Set();
+		MockImage.dimensionsBySource = new Map();
 		drawImage.mockReset();
 		fillRect.mockReset();
 		globalThis.Image = MockImage as unknown as typeof Image;
@@ -155,7 +175,7 @@ describe("exportImageFromSvg", () => {
 		expect(drawImage).toHaveBeenNthCalledWith(2, strokeImage, 0, 0, 200, 100);
 	});
 
-	it("keeps data URL background images in the serialized SVG layer", async () => {
+	it("exports data URL background images as a separate raster layer", async () => {
 		const backgroundImage = "data:image/png;base64,bg";
 		const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 		svg.innerHTML = `
@@ -175,14 +195,63 @@ describe("exportImageFromSvg", () => {
 			exportWithBackgroundImage: true,
 		});
 
-		const [strokeImage] = MockImage.instances;
+		const [strokeImage, backgroundLayer] = MockImage.instances;
 		const serializedSvg = decodeSvgDataUri(strokeImage.src);
 
-		expect(MockImage.instances).toHaveLength(1);
-		expect(serializedSvg).toContain(backgroundImage);
-		expect(serializedSvg).toContain("__background");
-		expect(drawImage).toHaveBeenCalledTimes(1);
-		expect(drawImage).toHaveBeenCalledWith(strokeImage, 0, 0, 200, 100);
+		expect(MockImage.instances).toHaveLength(2);
+		expect(serializedSvg).not.toContain(backgroundImage);
+		expect(serializedSvg).not.toContain("__background");
+		expect(backgroundLayer.crossOrigin).toBeNull();
+		expect(backgroundLayer.src).toBe(backgroundImage);
+		expect(drawImage).toHaveBeenNthCalledWith(
+			1,
+			backgroundLayer,
+			0,
+			0,
+			200,
+			100,
+		);
+		expect(drawImage).toHaveBeenNthCalledWith(2, strokeImage, 0, 0, 200, 100);
+	});
+
+	it("draws raster background images with the configured SVG slice aspect ratio", async () => {
+		const backgroundImage = "https://example.com/wide-bg.png";
+		MockImage.dimensionsBySource.set(backgroundImage, {
+			width: 600,
+			height: 400,
+		});
+		const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+		svg.innerHTML = `
+			<defs><pattern id="canvas__background"><image href="${backgroundImage}" /></pattern></defs>
+			<rect id="canvas__canvas-background" fill="url(#canvas__background)"></rect>
+			<g id="canvas__stroke-group-0"></g>
+		`;
+		await exportImageFromSvg({
+			id: "canvas",
+			svgCanvas: svg,
+			svgWidth: 200,
+			svgHeight: 100,
+			imageType: "png",
+			canvasColor: "white",
+			backgroundImage,
+			exportWithBackgroundImage: true,
+			preserveBackgroundImageAspectRatio: "xMidYMid slice",
+		});
+
+		const [, backgroundLayer] = MockImage.instances;
+
+		expect(drawImage).toHaveBeenNthCalledWith(
+			1,
+			backgroundLayer,
+			0,
+			50,
+			600,
+			300,
+			0,
+			0,
+			200,
+			100,
+		);
 	});
 
 	it("continues exporting strokes when the background image cannot be loaded", async () => {
