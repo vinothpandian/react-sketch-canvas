@@ -1,0 +1,19 @@
+---
+title: Undo, Redo, Clear, and Reset
+description: Undo, Redo, Clear, and Reset the canvas.
+sidebar:
+  order: 4
+---
+import ExampleBlock from "../../../components/ExampleBlock";
+import UndoRedo from "../../../examples/UndoRedo";
+import UndoRedoSource from "../../../examples/UndoRedo.tsx?raw";
+
+Drawing interfaces need escape hatches. A user should be able to undo one shaky stroke, redo an action they changed their mind about, or clear the canvas when they want to start over.
+
+Use the canvas ref to wire those actions into your own toolbar. The methods are imperative because they act on the current drawing history, while the toolbar itself can still be ordinary React UI.
+
+`clearCanvas()` removes the visible paths while keeping the canvas ready for more drawing. `resetCanvas()` returns the canvas to its initial state, which is useful when you have loaded paths or a preconfigured example.
+
+<ExampleBlock source={UndoRedoSource}>
+  <UndoRedo />
+</ExampleBlock>

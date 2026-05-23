@@ -1,0 +1,39 @@
+import { useRef, useState } from "react";
+import {
+	ReactSketchCanvas,
+	type ReactSketchCanvasRef,
+} from "react-sketch-canvas";
+
+export default function App() {
+	const canvasRef = useRef<ReactSketchCanvasRef>(null);
+	const [sketchingTime, setSketchingTime] = useState(0);
+
+	const handleSketchingTime = async () => {
+		const time = (await canvasRef.current?.getSketchingTime()) || 0;
+		setSketchingTime(time);
+	};
+
+	const handleReset = () => {
+		setSketchingTime(0);
+		canvasRef.current?.resetCanvas();
+	};
+
+	const sketchingTimeInSeconds = (sketchingTime / 1_000).toLocaleString();
+
+	return (
+		<div>
+			<h1>Tools</h1>
+			<div>
+				<button type="button" onClick={handleSketchingTime}>
+					Get sketching time
+				</button>
+				<button type="button" onClick={handleReset}>
+					Reset
+				</button>
+				<span>{sketchingTimeInSeconds} seconds</span>
+			</div>
+			<h1>Canvas</h1>
+			<ReactSketchCanvas ref={canvasRef} withTimestamp />
+		</div>
+	);
+}

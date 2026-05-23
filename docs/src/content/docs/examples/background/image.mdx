@@ -1,0 +1,14 @@
+---
+title: Image background
+description: Draw over a referenced background image.
+---
+
+import ExampleBlock from "../../../../components/ExampleBlock";
+import Background from "../../../../examples/Background";
+import BackgroundSource from "../../../../examples/Background.tsx?raw";
+
+Use `backgroundImage` with `preserveBackgroundImageAspectRatio` to draw over an image while controlling how the image fits the SVG canvas. The background stays separate from the user's strokes, so you can preserve the source image and export the combined result when needed.
+
+<ExampleBlock source={BackgroundSource}>
+  <Background />
+</ExampleBlock>

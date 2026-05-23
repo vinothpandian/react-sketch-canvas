@@ -1,0 +1,12 @@
+{
+	"title": "Interfaces",
+	"pages": [
+		"canvaspath",
+		"canvasprops",
+		"canvasref",
+		"exportimageoptions",
+		"point",
+		"reactsketchcanvasprops",
+		"reactsketchcanvasref"
+	]
+}

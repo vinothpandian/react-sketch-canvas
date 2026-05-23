@@ -1,0 +1,59 @@
+---
+title: Installation
+description: How to install react-sketch-canvas
+sidebar:
+  order: 1
+---
+
+Install `react-sketch-canvas` in the same package where your React components live. The component renders an SVG drawing surface, so there is no extra canvas runtime or browser plugin to configure.
+
+import { Tab, Tabs } from "fumadocs-ui/components/tabs";
+
+<Tabs items={["npm", "yarn", "pnpm"]}>
+  <Tab value="npm">
+    ```sh title="Installing dependencies…"
+    npm install react-sketch-canvas
+    ```
+  </Tab>
+  <Tab value="yarn">
+    ```sh title="Installing dependencies…"
+    yarn add react-sketch-canvas
+    ```
+  </Tab>
+  <Tab value="pnpm">
+    ```sh title="Installing dependencies…"
+    pnpm add react-sketch-canvas
+    ```
+  </Tab>
+</Tabs>
+
+
+## Quick Start
+
+Start with `ReactSketchCanvas` as a regular controlled-looking React component. You choose the dimensions, colors, and stroke width through props, then layer your own UI around it when you need buttons, sliders, or export actions.
+
+The example below keeps the setup intentionally small: render the canvas, give it a visible border, and let users draw immediately.
+
+import ExampleBlock from "../../components/ExampleBlock";
+import BasicExample from "../../examples/BasicExample";
+import BasicExampleSource from "../../examples/BasicExample.tsx?raw";
+
+<ExampleBlock source={BasicExampleSource}>
+  <BasicExample />
+</ExampleBlock>
+
+```tsx twoslash title="App.tsx"
+import React from "react";
+import { ReactSketchCanvas } from "react-sketch-canvas";
+
+export function App() {
+  return (
+    <ReactSketchCanvas
+      width="100%"
+      height="150px"
+      canvasColor="transparent"
+      strokeColor="#a855f7"
+    />
+  );
+}
+```

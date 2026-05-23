@@ -1,0 +1,10 @@
+{
+	"title": "Examples",
+	"pages": [
+		"drawing",
+		"input-devices",
+		"undo-redo",
+		"background",
+		"sketching-time"
+	]
+}

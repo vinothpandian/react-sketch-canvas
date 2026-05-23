@@ -1,0 +1,16 @@
+---
+title: Data URI background
+description: Use image data already available in memory as the canvas background.
+---
+
+import ExampleBlock from "../../../../components/ExampleBlock";
+import BackgroundDataURI from "../../../../examples/BackgroundDataURI";
+import BackgroundDataURISource from "../../../../examples/BackgroundDataURI.tsx?raw";
+
+The same prop also accepts a data URI when the image is already available in memory. That is handy when users upload a file, when an API returns image data directly, or when you want to avoid managing a separate public URL.
+
+The canvas API stays the same in both cases. Only the shape of the `backgroundImage` value changes.
+
+<ExampleBlock source={BackgroundDataURISource}>
+  <BackgroundDataURI />
+</ExampleBlock>
