@@ -1,4 +1,5 @@
 import { IconArrowRight, IconBrandGithub } from "@tabler/icons-react";
+import { withDocsBasePath } from "../../app/lib/site-paths";
 import logo from "../assets/logo.svg";
 
 const githubUrl = "https://github.com/vinothpandian/react-sketch-canvas";
@@ -19,7 +20,7 @@ export function HomePageHero() {
 					<div className="mt-7 flex flex-wrap items-center justify-center gap-3 md:justify-start">
 						<a
 							className="inline-flex h-10 items-center gap-2 rounded-md bg-fd-primary px-4 text-sm font-medium text-fd-primary-foreground transition-colors hover:bg-fd-primary/90"
-							href="/react-sketch-canvas/installation/"
+							href={withDocsBasePath("/installation/")}
 						>
 							<span>Get started</span>
 							<IconArrowRight aria-hidden="true" size={18} stroke={2.4} />

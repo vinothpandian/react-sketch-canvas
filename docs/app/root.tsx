@@ -1,6 +1,7 @@
 import { RootProvider } from "fumadocs-ui/provider/react-router";
 import type { LinksFunction } from "react-router";
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
+import { withDocsBasePath } from "~/lib/site-paths";
 import stylesheet from "./styles.css?url";
 
 export const links: LinksFunction = () => [
@@ -20,7 +21,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 				<RootProvider
 					search={{
 						options: {
-							api: "/react-sketch-canvas/api/search",
+							api: withDocsBasePath("/api/search"),
 						},
 					}}
 				>

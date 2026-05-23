@@ -80,6 +80,16 @@ function decodeSvgDataUri(dataUri: string) {
 	return atob(encodedSvg);
 }
 
+function decodeUrlEncodedSvgDataUri(dataUri: string) {
+	const [metadata = "", encodedSvg = ""] = dataUri.split(",");
+
+	if (metadata.includes(";base64")) {
+		return atob(encodedSvg);
+	}
+
+	return decodeURIComponent(encodedSvg);
+}
+
 describe("exportImageFromSvg", () => {
 	const originalImage = globalThis.Image;
 	const originalGetContext = HTMLCanvasElement.prototype.getContext;
@@ -251,6 +261,44 @@ describe("exportImageFromSvg", () => {
 			0,
 			200,
 			100,
+		);
+	});
+
+	it("renders SVG data URI backgrounds through the same SVG wrapper as the live canvas", async () => {
+		const backgroundImage =
+			"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 360'%3E%3Crect width='640' height='360' fill='white'/%3E%3C/svg%3E";
+		const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+		svg.innerHTML = `
+			<defs><pattern id="canvas__background"><image href="${backgroundImage}" /></pattern></defs>
+			<rect id="canvas__canvas-background" fill="url(#canvas__background)"></rect>
+			<g id="canvas__stroke-group-0"></g>
+		`;
+		await exportImageFromSvg({
+			id: "canvas",
+			svgCanvas: svg,
+			svgWidth: 600,
+			svgHeight: 240,
+			imageType: "png",
+			canvasColor: "white",
+			backgroundImage,
+			exportWithBackgroundImage: true,
+			preserveBackgroundImageAspectRatio: "xMidYMid slice",
+		});
+
+		const [, backgroundLayer] = MockImage.instances;
+		const backgroundSvg = decodeUrlEncodedSvgDataUri(backgroundLayer.src);
+
+		expect(backgroundSvg).toContain('width="600"');
+		expect(backgroundSvg).toContain('height="240"');
+		expect(backgroundSvg).toContain(backgroundImage);
+		expect(backgroundSvg).toContain('preserveAspectRatio="xMidYMid slice"');
+		expect(drawImage).toHaveBeenNthCalledWith(
+			1,
+			backgroundLayer,
+			0,
+			0,
+			600,
+			240,
 		);
 	});
 

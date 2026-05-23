@@ -48,6 +48,131 @@ function shouldPaintBackgroundAsRasterLayer(url: string): boolean {
 	return url.length > 0;
 }
 
+function isSvgDataUri(url: string): boolean {
+	return /^data:image\/svg\+xml(?:[;,]|$)/i.test(url);
+}
+
+function decodeSvgDataUri(url: string): string | null {
+	const match = /^data:image\/svg\+xml(?<metadata>[^,]*),(?<data>.*)$/i.exec(
+		url,
+	);
+
+	if (!match?.groups) {
+		return null;
+	}
+
+	const { metadata, data } = match.groups;
+
+	try {
+		if (metadata.includes(";base64")) {
+			return decodeURIComponent(escape(atob(data)));
+		}
+
+		return decodeURIComponent(data);
+	} catch {
+		return null;
+	}
+}
+
+function normalizeSvgDataUriDimensions(url: string): string {
+	const svgText = decodeSvgDataUri(url);
+
+	if (!svgText) {
+		return url;
+	}
+
+	const document = new DOMParser().parseFromString(svgText, "image/svg+xml");
+	const svgElement = document.documentElement;
+
+	if (svgElement.nodeName.toLowerCase() !== "svg") {
+		return url;
+	}
+
+	if (svgElement.hasAttribute("width") && svgElement.hasAttribute("height")) {
+		return url;
+	}
+
+	const viewBox = svgElement.getAttribute("viewBox");
+
+	if (!viewBox) {
+		return url;
+	}
+
+	const [, , width, height] = viewBox
+		.trim()
+		.split(/[\s,]+/)
+		.map(Number);
+
+	if (!Number.isFinite(width) || !Number.isFinite(height)) {
+		return url;
+	}
+
+	if (!svgElement.hasAttribute("width")) {
+		svgElement.setAttribute("width", String(width));
+	}
+
+	if (!svgElement.hasAttribute("height")) {
+		svgElement.setAttribute("height", String(height));
+	}
+
+	const serializedSvg = new XMLSerializer().serializeToString(svgElement);
+
+	return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(serializedSvg)}`;
+}
+
+function createSvgBackgroundLayer({
+	backgroundImage,
+	exportWidth,
+	exportHeight,
+	preserveAspectRatio,
+}: {
+	backgroundImage: string;
+	exportWidth: number;
+	exportHeight: number;
+	preserveAspectRatio: React.SVGAttributes<HTMLImageElement>["preserveAspectRatio"];
+}): SVGElement {
+	const svgNamespace = "http://www.w3.org/2000/svg";
+	const svg = document.createElementNS(svgNamespace, "svg");
+	const defs = document.createElementNS(svgNamespace, "defs");
+	const pattern = document.createElementNS(svgNamespace, "pattern");
+	const image = document.createElementNS(svgNamespace, "image");
+	const rect = document.createElementNS(svgNamespace, "rect");
+
+	svg.setAttribute("xmlns", svgNamespace);
+	svg.setAttribute("width", String(exportWidth));
+	svg.setAttribute("height", String(exportHeight));
+	svg.setAttribute("viewBox", `0 0 ${exportWidth} ${exportHeight}`);
+
+	pattern.setAttribute("id", "react-sketch-canvas-export-background");
+	pattern.setAttribute("x", "0");
+	pattern.setAttribute("y", "0");
+	pattern.setAttribute("width", "100%");
+	pattern.setAttribute("height", "100%");
+	pattern.setAttribute("patternUnits", "userSpaceOnUse");
+
+	image.setAttribute("x", "0");
+	image.setAttribute("y", "0");
+	image.setAttribute("width", "100%");
+	image.setAttribute("height", "100%");
+	image.setAttribute("href", backgroundImage);
+
+	if (preserveAspectRatio) {
+		image.setAttribute("preserveAspectRatio", preserveAspectRatio);
+	}
+
+	rect.setAttribute("x", "0");
+	rect.setAttribute("y", "0");
+	rect.setAttribute("width", "100%");
+	rect.setAttribute("height", "100%");
+	rect.setAttribute("fill", "url(#react-sketch-canvas-export-background)");
+
+	pattern.append(image);
+	defs.append(pattern);
+	svg.append(defs, rect);
+
+	return svg;
+}
+
 /**
  * Load an image URL or data URL for canvas export.
  *
@@ -322,6 +447,9 @@ function createRasterCanvas(
 async function loadBackgroundLayer(
 	backgroundImage: string,
 	exportWithBackgroundImage: boolean,
+	exportWidth: number,
+	exportHeight: number,
+	preserveAspectRatio: React.SVGAttributes<HTMLImageElement>["preserveAspectRatio"],
 ): Promise<HTMLImageElement | null> {
 	if (
 		!exportWithBackgroundImage ||
@@ -332,7 +460,18 @@ async function loadBackgroundLayer(
 	}
 
 	try {
-		return await loadImage(backgroundImage);
+		if (isSvgDataUri(backgroundImage)) {
+			const backgroundSvg = createSvgBackgroundLayer({
+				backgroundImage,
+				exportWidth,
+				exportHeight,
+				preserveAspectRatio,
+			});
+
+			return await loadImage(encodeSvgDataUrl(backgroundSvg));
+		}
+
+		return await loadImage(normalizeSvgDataUriDimensions(backgroundImage));
 	} catch {
 		console.warn(
 			"React Sketch Canvas could not load the background image while exporting. Check that backgroundImage points to a reachable image and allows cross-origin access.",
@@ -388,7 +527,7 @@ export async function exportImageFromSvg({
 	}
 
 	const shouldFillCanvasBackground =
-		!backgroundImage || !exportWithBackgroundImage;
+		imageType === "jpeg" || !backgroundImage || !exportWithBackgroundImage;
 
 	if (shouldFillCanvasBackground) {
 		context.fillStyle = canvasColor;
@@ -398,16 +537,23 @@ export async function exportImageFromSvg({
 	const backgroundLayer = await loadBackgroundLayer(
 		backgroundImage,
 		exportWithBackgroundImage,
+		exportWidth,
+		exportHeight,
+		preserveBackgroundImageAspectRatio,
 	);
 
 	if (backgroundLayer) {
-		drawBackgroundLayer(
-			context,
-			backgroundLayer,
-			exportWidth,
-			exportHeight,
-			preserveBackgroundImageAspectRatio,
-		);
+		if (isSvgDataUri(backgroundImage)) {
+			context.drawImage(backgroundLayer, 0, 0, exportWidth, exportHeight);
+		} else {
+			drawBackgroundLayer(
+				context,
+				backgroundLayer,
+				exportWidth,
+				exportHeight,
+				preserveBackgroundImageAspectRatio,
+			);
+		}
 	}
 
 	context.drawImage(strokeImage, 0, 0, exportWidth, exportHeight);
