@@ -32,16 +32,49 @@ test("should update backgroundImage from props", async ({ mount }) => {
 
 	const { canvasBackgroundId, backgroundImagePatternId } =
 		getCanvasIds(canvasId);
+	const backgroundPattern = component.locator('pattern[id$="__background"]');
+	const backgroundPatternId = await backgroundPattern.getAttribute("id");
 
 	await expect(component.locator(canvasBackgroundId)).toHaveAttribute(
 		"fill",
-		`url(#${canvasId}__background)`,
+		`url(#${backgroundPatternId})`,
 	);
 
 	await expect(component.locator(backgroundImagePatternId)).toHaveAttribute(
 		"xlink:href",
 		backgroundImageUrl,
 	);
+});
+
+test("should isolate background pattern ids across canvases with the default public id", async ({
+	mount,
+}) => {
+	const backgroundImageUrl = "https://placehold.co/600x400.png";
+	const component = await mount(
+		<div>
+			<ReactSketchCanvas backgroundImage={backgroundImageUrl} />
+			<ReactSketchCanvas backgroundImage={backgroundImageUrl} />
+		</div>,
+	);
+
+	const firstCanvas = component.locator('svg[id="react-sketch-canvas"]').nth(0);
+	const secondCanvas = component
+		.locator('svg[id="react-sketch-canvas"]')
+		.nth(1);
+	const firstPattern = firstCanvas.locator('pattern[id$="__background"]');
+	const secondPattern = secondCanvas.locator('pattern[id$="__background"]');
+	const firstPatternId = await firstPattern.getAttribute("id");
+	const secondPatternId = await secondPattern.getAttribute("id");
+
+	expect(firstPatternId).toBeTruthy();
+	expect(secondPatternId).toBeTruthy();
+	expect(firstPatternId).not.toBe(secondPatternId);
+	await expect(
+		firstCanvas.locator('[id$="__canvas-background"]'),
+	).toHaveAttribute("fill", `url(#${firstPatternId})`);
+	await expect(
+		secondCanvas.locator('[id$="__canvas-background"]'),
+	).toHaveAttribute("fill", `url(#${secondPatternId})`);
 });
 
 test("should update preserveAspectRatio of the background image from props", async ({

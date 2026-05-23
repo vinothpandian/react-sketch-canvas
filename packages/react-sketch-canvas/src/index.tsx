@@ -13,6 +13,7 @@ export * from "./ReactSketchCanvas";
  * Stateful sketch canvas props and ref types for the primary public component.
  */
 export type {
+	EraserMode,
 	ReactSketchCanvasProps,
 	ReactSketchCanvasRef,
 } from "./ReactSketchCanvas/types";

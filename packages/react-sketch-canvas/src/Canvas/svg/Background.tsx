@@ -1,11 +1,12 @@
 import type * as React from "react";
 import type { CanvasProps } from "../types";
 
-type BackgroundProps = Required<Pick<CanvasProps, "id">> &
-	Pick<
-		CanvasProps,
-		"backgroundImage" | "canvasColor" | "preserveBackgroundImageAspectRatio"
-	>;
+type BackgroundProps = Pick<
+	CanvasProps,
+	"backgroundImage" | "canvasColor" | "preserveBackgroundImageAspectRatio"
+> & {
+	internalId: string;
+};
 
 /**
  * Defines the SVG pattern used to paint a configured background image.
@@ -15,18 +16,18 @@ type BackgroundProps = Required<Pick<CanvasProps, "id">> &
  * rectangle decides whether to reference this pattern or use `canvasColor`.
  */
 export function BackgroundPattern({
-	id,
+	internalId,
 	backgroundImage,
 	preserveBackgroundImageAspectRatio,
 }: Pick<
 	BackgroundProps,
-	"id" | "backgroundImage" | "preserveBackgroundImageAspectRatio"
+	"internalId" | "backgroundImage" | "preserveBackgroundImageAspectRatio"
 >): React.JSX.Element | null {
 	if (!backgroundImage) return null;
 
 	return (
 		<pattern
-			id={`${id}__background`}
+			id={`${internalId}__background`}
 			x="0"
 			y="0"
 			width="100%"
@@ -53,22 +54,22 @@ export function BackgroundPattern({
  * the background when producing SVG output.
  */
 export function BackgroundRect({
-	id,
+	internalId,
 	backgroundImage,
 	canvasColor,
 }: Pick<
 	BackgroundProps,
-	"id" | "backgroundImage" | "canvasColor"
+	"internalId" | "backgroundImage" | "canvasColor"
 >): React.JSX.Element {
 	return (
-		<g id={`${id}__canvas-background-group`}>
+		<g id={`${internalId}__canvas-background-group`}>
 			<rect
-				id={`${id}__canvas-background`}
+				id={`${internalId}__canvas-background`}
 				x="0"
 				y="0"
 				width="100%"
 				height="100%"
-				fill={backgroundImage ? `url(#${id}__background)` : canvasColor}
+				fill={backgroundImage ? `url(#${internalId}__background)` : canvasColor}
 			/>
 		</g>
 	);

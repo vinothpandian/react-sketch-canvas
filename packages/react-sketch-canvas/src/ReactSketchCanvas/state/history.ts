@@ -1,6 +1,11 @@
 import type { CanvasPath } from "../../types";
 import type { Operation } from "./operations";
 
+export type CompletedStroke = {
+	path: CanvasPath;
+	isEraser: boolean;
+};
+
 /**
  * Internal state model for `ReactSketchCanvas`.
  *
@@ -16,6 +21,8 @@ export type SketchState = {
 	historyPos: number;
 	historySynced: boolean;
 	currentPaths: CanvasPath[];
+	activeStroke: CanvasPath | null;
+	lastCompletedStroke: CompletedStroke | null;
 	operationQueue: Operation[];
 	isProcessingQueue: boolean;
 };
@@ -31,6 +38,8 @@ export function createInitialSketchState(): SketchState {
 		historyPos: 0,
 		historySynced: false,
 		currentPaths: [],
+		activeStroke: null,
+		lastCompletedStroke: null,
 		operationQueue: [],
 		isProcessingQueue: false,
 	};

@@ -130,10 +130,13 @@ export interface CanvasProps {
 	 */
 	height: string;
 	/**
-	 * Base DOM id used for the SVG canvas and generated SVG definitions.
+	 * DOM id applied to the rendered SVG canvas.
 	 *
 	 * @remarks
-	 * Use a unique id when rendering more than one canvas on the same page.
+	 * Internal SVG definitions such as masks and background patterns are isolated
+	 * per canvas instance, so multiple canvases can use the default id without
+	 * sharing those internal references. Provide a unique id when application code
+	 * needs to select or label a specific canvas element.
 	 *
 	 * @defaultValue `"react-sketch-canvas"`
 	 */

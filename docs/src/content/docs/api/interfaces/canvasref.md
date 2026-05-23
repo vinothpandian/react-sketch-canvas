@@ -5,7 +5,7 @@ prev: false
 title: "CanvasRef"
 ---
 
-Defined in: [Canvas/types.ts:204](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L204)
+Defined in: [Canvas/types.ts:207](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L207)
 
 Imperative ref API exposed by the low-level [Canvas](/api/variables/canvas/) component.
 
@@ -19,7 +19,7 @@ Imperative ref API exposed by the low-level [Canvas](/api/variables/canvas/) com
 
 > **exportImage**: (`imageType`, `options?`) => `Promise`\<`string`\>
 
-Defined in: [Canvas/types.ts:216](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L216)
+Defined in: [Canvas/types.ts:219](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L219)
 
 Export the current canvas as a raster image data URL.
 
@@ -54,7 +54,7 @@ depends on the `exportWithBackgroundImage` prop.
 
 > **exportSvg**: () => `Promise`\<`string`\>
 
-Defined in: [Canvas/types.ts:229](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L229)
+Defined in: [Canvas/types.ts:232](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L232)
 
 Export the current canvas as SVG markup.
 

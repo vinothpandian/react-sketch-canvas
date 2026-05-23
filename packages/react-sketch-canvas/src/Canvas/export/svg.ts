@@ -14,6 +14,13 @@ type PrepareSvgForExportReturns = SVGElement;
 
 let svgExportNonce = 0;
 
+function queryInternalElement(
+	svgCanvas: SVGElement,
+	suffix: string,
+): Element | null {
+	return svgCanvas.querySelector(`[id$="__${suffix}"]`);
+}
+
 /**
  * Rewrite exported SVG ids so the serialized markup can coexist with the live canvas.
  *
@@ -86,9 +93,10 @@ export function removeBackgroundImageFromSvg(
 	svgCanvas: SVGElement,
 	id: string,
 ): SVGElement {
-	svgCanvas.querySelector(`#${id}__background`)?.remove();
-	svgCanvas.querySelector(`#${id}__canvas-background-group`)?.remove();
-	svgCanvas.querySelector(`#${id}__canvas-background`)?.remove();
+	void id;
+	queryInternalElement(svgCanvas, "background")?.remove();
+	queryInternalElement(svgCanvas, "canvas-background-group")?.remove();
+	queryInternalElement(svgCanvas, "canvas-background")?.remove();
 
 	return svgCanvas;
 }
@@ -106,10 +114,11 @@ export function prepareSvgForExport(
 	{ id, canvasColor, exportWithBackgroundImage }: PrepareSvgForExportArgs,
 ): PrepareSvgForExportReturns {
 	if (!exportWithBackgroundImage) {
-		svgCanvas.querySelector(`#${id}__background`)?.remove();
-		svgCanvas
-			.querySelector(`#${id}__canvas-background`)
-			?.setAttribute("fill", canvasColor);
+		queryInternalElement(svgCanvas, "background")?.remove();
+		queryInternalElement(svgCanvas, "canvas-background")?.setAttribute(
+			"fill",
+			canvasColor,
+		);
 	}
 
 	namespaceSvgInternalIds(svgCanvas, id);

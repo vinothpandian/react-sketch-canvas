@@ -5,7 +5,7 @@ prev: false
 title: "ReactSketchCanvasProps"
 ---
 
-Defined in: [ReactSketchCanvas/types.ts:15](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/ReactSketchCanvas/types.ts#L15)
+Defined in: [ReactSketchCanvas/types.ts:27](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/ReactSketchCanvas/types.ts#L27)
 
 Props for the stateful [ReactSketchCanvas](/api/variables/reactsketchcanvas/) component.
 
@@ -110,11 +110,31 @@ CSS class name applied to the outer canvas wrapper.
 
 ***
 
+### eraserMode?
+
+> `optional` **eraserMode?**: [`EraserMode`](/api/type-aliases/erasermode/)
+
+Defined in: [ReactSketchCanvas/types.ts:54](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/ReactSketchCanvas/types.ts#L54)
+
+Eraser behavior used when `eraseMode(true)` is active or a pen eraser
+button is detected.
+
+#### Remarks
+
+Use `"mask"` to preserve eraser gestures as SVG mask paths. Use `"stroke"`
+when erasing should delete whole drawing strokes touched by the eraser.
+
+#### Default Value
+
+`"mask"`
+
+***
+
 ### eraserWidth?
 
 > `optional` **eraserWidth?**: `number`
 
-Defined in: [ReactSketchCanvas/types.ts:31](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/ReactSketchCanvas/types.ts#L31)
+Defined in: [ReactSketchCanvas/types.ts:43](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/ReactSketchCanvas/types.ts#L43)
 
 Width of eraser strokes in pixels.
 
@@ -181,13 +201,16 @@ Accepts any valid CSS height value, such as `"400px"`, `"60vh"`, or
 
 > `optional` **id?**: `string`
 
-Defined in: [Canvas/types.ts:140](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L140)
+Defined in: [Canvas/types.ts:143](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L143)
 
-Base DOM id used for the SVG canvas and generated SVG definitions.
+DOM id applied to the rendered SVG canvas.
 
 #### Remarks
 
-Use a unique id when rendering more than one canvas on the same page.
+Internal SVG definitions such as masks and background patterns are isolated
+per canvas instance, so multiple canvases can use the default id without
+sharing those internal references. Provide a unique id when application code
+needs to select or label a specific canvas element.
 
 #### Default Value
 
@@ -203,7 +226,7 @@ Use a unique id when rendering more than one canvas on the same page.
 
 > `optional` **onChange?**: (`updatedPaths`) => `void`
 
-Defined in: [ReactSketchCanvas/types.ts:42](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/ReactSketchCanvas/types.ts#L42)
+Defined in: [ReactSketchCanvas/types.ts:65](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/ReactSketchCanvas/types.ts#L65)
 
 Called whenever the rendered path list changes.
 
@@ -232,7 +255,7 @@ invoked after strokes, undo, redo, clear, reset, and `loadPaths` updates.
 
 > `optional` **onStroke?**: (`path`, `isEraser`) => `void`
 
-Defined in: [ReactSketchCanvas/types.ts:55](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/ReactSketchCanvas/types.ts#L55)
+Defined in: [ReactSketchCanvas/types.ts:78](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/ReactSketchCanvas/types.ts#L78)
 
 Called when the user completes a stroke.
 
@@ -268,7 +291,7 @@ state.
 
 > `optional` **preserveBackgroundImageAspectRatio?**: `string`
 
-Defined in: [Canvas/types.ts:150](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L150)
+Defined in: [Canvas/types.ts:153](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L153)
 
 SVG `preserveAspectRatio` value used for `backgroundImage`.
 
@@ -291,7 +314,7 @@ See the MDN reference for accepted values:
 
 > `optional` **readOnly?**: `boolean`
 
-Defined in: [Canvas/types.ts:196](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L196)
+Defined in: [Canvas/types.ts:199](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L199)
 
 Whether pointer drawing is disabled.
 
@@ -315,7 +338,7 @@ false
 
 > `optional` **strokeColor?**: `string`
 
-Defined in: [ReactSketchCanvas/types.ts:65](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/ReactSketchCanvas/types.ts#L65)
+Defined in: [ReactSketchCanvas/types.ts:88](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/ReactSketchCanvas/types.ts#L88)
 
 Color used for drawing strokes.
 
@@ -336,7 +359,7 @@ RGB values, and CSS variables.
 
 > `optional` **strokeWidth?**: `number`
 
-Defined in: [ReactSketchCanvas/types.ts:74](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/ReactSketchCanvas/types.ts#L74)
+Defined in: [ReactSketchCanvas/types.ts:97](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/ReactSketchCanvas/types.ts#L97)
 
 Width of drawing strokes in pixels.
 
@@ -354,7 +377,7 @@ Eraser strokes use `eraserWidth` instead.
 
 > `optional` **style?**: `CSSProperties`
 
-Defined in: [Canvas/types.ts:160](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L160)
+Defined in: [Canvas/types.ts:163](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L163)
 
 Inline styles applied to the outer canvas wrapper.
 
@@ -379,7 +402,7 @@ The package default canvas border style.
 
 > `optional` **svgStyle?**: `CSSProperties`
 
-Defined in: [Canvas/types.ts:166](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L166)
+Defined in: [Canvas/types.ts:169](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L169)
 
 Inline styles applied to the internal SVG element.
 
@@ -397,7 +420,7 @@ Inline styles applied to the internal SVG element.
 
 > `optional` **width?**: `string`
 
-Defined in: [Canvas/types.ts:187](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L187)
+Defined in: [Canvas/types.ts:190](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L190)
 
 CSS width of the canvas wrapper.
 
@@ -420,7 +443,7 @@ Accepts any valid CSS width value, such as `"600px"`, `"100%"`, or
 
 > `optional` **withTimestamp?**: `boolean`
 
-Defined in: [ReactSketchCanvas/types.ts:85](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/ReactSketchCanvas/types.ts#L85)
+Defined in: [ReactSketchCanvas/types.ts:108](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/ReactSketchCanvas/types.ts#L108)
 
 Whether strokes should include start and end timestamps.
 
@@ -442,7 +465,7 @@ false
 
 > `optional` **withViewBox?**: `boolean`
 
-Defined in: [Canvas/types.ts:177](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L177)
+Defined in: [Canvas/types.ts:180](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L180)
 
 Whether the internal SVG should include a viewBox based on the latest
 measured canvas size.

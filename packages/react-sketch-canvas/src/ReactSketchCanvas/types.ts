@@ -2,6 +2,18 @@ import type { CanvasProps, CanvasRef } from "../Canvas/types";
 import type { CanvasPath } from "../types";
 
 /**
+ * Eraser behavior used for pointer erasing.
+ *
+ * @remarks
+ * `"mask"` stores eraser gestures as mask paths, preserving the historical
+ * export and undo/redo behavior. `"stroke"` removes whole drawing strokes
+ * touched by the eraser gesture instead of storing the gesture path.
+ *
+ * @public
+ */
+export type EraserMode = "mask" | "stroke";
+
+/**
  * Props for the stateful {@link ReactSketchCanvas} component.
  *
  * @remarks
@@ -29,6 +41,17 @@ export interface ReactSketchCanvasProps
 	 * @defaultValue `8`
 	 */
 	eraserWidth?: number;
+	/**
+	 * Eraser behavior used when `eraseMode(true)` is active or a pen eraser
+	 * button is detected.
+	 *
+	 * @remarks
+	 * Use `"mask"` to preserve eraser gestures as SVG mask paths. Use `"stroke"`
+	 * when erasing should delete whole drawing strokes touched by the eraser.
+	 *
+	 * @defaultValue `"mask"`
+	 */
+	eraserMode?: EraserMode;
 	/**
 	 * Called whenever the rendered path list changes.
 	 *

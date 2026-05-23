@@ -107,19 +107,25 @@ test("supports eraser mode with undo and redo controls", async ({ page }) => {
 	await drawLine(canvas, { length: 30, originX: 20, originY: 20 });
 
 	await expect(page.locator("#path-count")).toHaveText("2");
-	await expect(canvas.locator("#rsc__eraser-stroke-group path")).toHaveCount(1);
+	await expect(
+		canvas.locator('[id$="__eraser-stroke-group"] path'),
+	).toHaveCount(1);
 
 	await page.locator("#undo-button").click();
 	await expect(page.locator("#path-count")).toHaveText("1");
-	await expect(canvas.locator("#rsc__eraser-stroke-group path")).toHaveCount(0);
+	await expect(
+		canvas.locator('[id$="__eraser-stroke-group"] path'),
+	).toHaveCount(0);
 
 	await page.locator("#redo-button").click();
 	await expect(page.locator("#path-count")).toHaveText("2");
-	await expect(canvas.locator("#rsc__eraser-stroke-group path")).toHaveCount(1);
+	await expect(
+		canvas.locator('[id$="__eraser-stroke-group"] path'),
+	).toHaveCount(1);
 
 	await page.locator("#export-svg-button").click();
 	await expect(page.locator("#exported-svg")).toContainText(
-		/rsc__export-\d+__eraser-0/,
+		/rsc__export-\d+.*__eraser-0/,
 	);
 	await expect(page.locator("#exported-svg")).not.toContainText("undefined");
 });
@@ -134,7 +140,9 @@ test("renders erased pixels as canvas background in Firefox-compatible SVG masks
 	await page.locator("#eraser-button").click();
 	await drawLine(canvas, { length: 30, originX: 20, originY: 20 });
 
-	await expect(canvas.locator("#rsc__eraser-stroke-group path")).toHaveCount(1);
+	await expect(
+		canvas.locator('[id$="__eraser-stroke-group"] path'),
+	).toHaveCount(1);
 
 	const erasedPixel = await getSvgPixel(page, "#rsc", 30, 30);
 

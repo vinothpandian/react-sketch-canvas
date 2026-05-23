@@ -51,6 +51,11 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
 		width: number;
 		height: number;
 	} | null>(null);
+	const reactId = React.useId();
+	const internalId = React.useMemo(
+		() => `${id}__${reactId.replaceAll(":", "")}`,
+		[id, reactId],
+	);
 
 	useCanvasExportHandle(ref, {
 		canvasRef,
@@ -94,6 +99,7 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
 		>
 			<CanvasSvg
 				id={id}
+				internalId={internalId}
 				paths={paths}
 				canvasColor={canvasColor}
 				backgroundImage={backgroundImage}

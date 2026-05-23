@@ -39,6 +39,7 @@ export const ReactSketchCanvas = React.forwardRef<
 		preserveBackgroundImageAspectRatio = "none",
 		strokeWidth = 4,
 		eraserWidth = 8,
+		eraserMode = "mask",
 		allowOnlyPointerType = "all",
 		style = {
 			border: "0.0625rem solid lightgray",
@@ -66,6 +67,7 @@ export const ReactSketchCanvas = React.forwardRef<
 		strokeColor,
 		strokeWidth,
 		eraserWidth,
+		eraserMode,
 		withTimestamp,
 		onChange,
 		onStroke,
