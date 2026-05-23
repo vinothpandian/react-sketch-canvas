@@ -79,15 +79,13 @@ function isSvgDataUri(url: string): boolean {
 }
 
 function decodeSvgDataUri(url: string): string | null {
-	const match = /^data:image\/svg\+xml(?<metadata>[^,]*),(?<data>.*)$/i.exec(
-		url,
-	);
+	const match = /^data:image\/svg\+xml([^,]*),(.*)$/i.exec(url);
 
-	if (!match?.groups) {
+	if (!match) {
 		return null;
 	}
 
-	const { metadata, data } = match.groups;
+	const [, metadata = "", data = ""] = match;
 
 	try {
 		if (metadata.includes(";base64")) {
