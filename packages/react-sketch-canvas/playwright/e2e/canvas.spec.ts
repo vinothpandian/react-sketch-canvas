@@ -118,7 +118,9 @@ test("supports eraser mode with undo and redo controls", async ({ page }) => {
 	await expect(canvas.locator("#rsc__eraser-stroke-group path")).toHaveCount(1);
 
 	await page.locator("#export-svg-button").click();
-	await expect(page.locator("#exported-svg")).toContainText("rsc__eraser-0");
+	await expect(page.locator("#exported-svg")).toContainText(
+		/rsc__export-\d+__eraser-0/,
+	);
 	await expect(page.locator("#exported-svg")).not.toContainText("undefined");
 });
 
