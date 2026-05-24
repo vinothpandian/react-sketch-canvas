@@ -43,12 +43,15 @@ function Harness({
 				width: 300,
 				height: 200,
 			}) as DOMRect;
+		canvasRef.current.setPointerCapture =
+			canvasRef.current.setPointerCapture ?? vi.fn();
 	}, []);
 
 	return (
 		<div
 			data-testid="canvas"
 			ref={canvasRef}
+			onPointerCancel={handlers.handlePointerCancel}
 			onPointerDown={handlers.handlePointerDown}
 			onPointerMove={handlers.handlePointerMove}
 			onPointerUp={handlers.handlePointerUp}
@@ -95,13 +98,32 @@ describe("useCanvasPointerHandlers", () => {
 			<Harness allowOnlyPointerType="pen" onPointerDown={onPointerDown} />,
 		);
 
-		fireEvent.pointerDown(getByTestId("canvas"), {
+		const event = createEvent.pointerDown(getByTestId("canvas"), {
 			pointerType: "mouse",
 			button: 0,
 			buttons: 1,
 		});
+		fireEvent(getByTestId("canvas"), event);
 
 		expect(onPointerDown).not.toHaveBeenCalled();
+	});
+
+	it("captures accepted pointer input", () => {
+		const { getByTestId } = render(<Harness />);
+		const canvas = getByTestId("canvas");
+		const setPointerCapture = vi.fn();
+		Object.assign(canvas, { setPointerCapture });
+
+		const event = createEvent.pointerDown(canvas, {
+			pointerId: 11,
+			pointerType: "pen",
+			button: 0,
+			buttons: 1,
+		});
+		Object.defineProperty(event, "isTrusted", { value: true });
+		fireEvent(canvas, event);
+
+		expect(setPointerCapture).toHaveBeenCalledWith(11);
 	});
 
 	it("normalizes pointer move while drawing", () => {
@@ -109,8 +131,15 @@ describe("useCanvasPointerHandlers", () => {
 		const { getByTestId } = render(
 			<Harness isDrawing onPointerMove={onPointerMove} />,
 		);
+		fireEvent.pointerDown(getByTestId("canvas"), {
+			pointerId: 4,
+			pointerType: "mouse",
+			button: 0,
+			buttons: 1,
+		});
 
 		const event = createEvent.pointerMove(getByTestId("canvas"), {
+			pointerId: 4,
 			pointerType: "mouse",
 		});
 		Object.defineProperties(event, {
@@ -123,11 +152,133 @@ describe("useCanvasPointerHandlers", () => {
 		expect(onPointerMove).toHaveBeenCalledWith({ x: 32, y: 44 });
 	});
 
-	it("wires document pointerup", () => {
-		const onPointerUp = vi.fn();
-		render(<Harness onPointerUp={onPointerUp} />);
+	it("ignores moves from pointers that are not active", () => {
+		const onPointerMove = vi.fn();
+		const { getByTestId } = render(
+			<Harness isDrawing onPointerMove={onPointerMove} />,
+		);
+		const canvas = getByTestId("canvas");
 
-		fireEvent.pointerUp(document, { pointerType: "mouse", button: 0 });
+		fireEvent.pointerDown(canvas, {
+			pointerId: 1,
+			pointerType: "touch",
+			button: 0,
+			buttons: 1,
+		});
+		fireEvent.pointerDown(canvas, {
+			pointerId: 2,
+			pointerType: "touch",
+			button: 0,
+			buttons: 1,
+		});
+		fireEvent.pointerMove(canvas, {
+			pointerId: 2,
+			pointerType: "touch",
+			pageX: 50,
+			pageY: 80,
+		});
+
+		expect(onPointerMove).not.toHaveBeenCalled();
+	});
+
+	it("finishes the active pointer on canvas pointerup", () => {
+		const onPointerUp = vi.fn();
+		const { getByTestId } = render(<Harness onPointerUp={onPointerUp} />);
+		const canvas = getByTestId("canvas");
+
+		fireEvent.pointerDown(canvas, {
+			pointerId: 1,
+			pointerType: "mouse",
+			button: 0,
+			buttons: 1,
+		});
+
+		fireEvent.pointerUp(canvas, {
+			pointerId: 1,
+			pointerType: "mouse",
+			button: 0,
+		});
+
+		expect(onPointerUp).toHaveBeenCalledOnce();
+	});
+
+	it("finishes the active pointer on canvas pointercancel", () => {
+		const onPointerUp = vi.fn();
+		const { getByTestId } = render(<Harness onPointerUp={onPointerUp} />);
+		const canvas = getByTestId("canvas");
+
+		fireEvent.pointerDown(canvas, {
+			pointerId: 12,
+			pointerType: "pen",
+			button: 0,
+			buttons: 1,
+		});
+		fireEvent.pointerCancel(canvas, {
+			pointerId: 12,
+			pointerType: "pen",
+		});
+
+		expect(onPointerUp).toHaveBeenCalledOnce();
+	});
+
+	it("leaves ignored touch input available for parent scroll in pen-only mode", () => {
+		const onPointerDown = vi.fn();
+		const { getByTestId } = render(
+			<Harness allowOnlyPointerType="pen" onPointerDown={onPointerDown} />,
+		);
+		const event = createEvent.pointerDown(getByTestId("canvas"), {
+			pointerId: 2,
+			pointerType: "touch",
+			button: 0,
+			buttons: 1,
+		});
+
+		fireEvent(getByTestId("canvas"), event);
+
+		expect(onPointerDown).not.toHaveBeenCalled();
+	});
+
+	it("finishes the accepted pointer when the allowed pointer type changes before pointerup", () => {
+		const onPointerUp = vi.fn();
+		const { getByTestId, rerender } = render(
+			<Harness allowOnlyPointerType="all" onPointerUp={onPointerUp} />,
+		);
+		const canvas = getByTestId("canvas");
+
+		fireEvent.pointerDown(canvas, {
+			pointerId: 9,
+			pointerType: "mouse",
+			button: 0,
+			buttons: 1,
+		});
+
+		rerender(<Harness allowOnlyPointerType="pen" onPointerUp={onPointerUp} />);
+
+		fireEvent.pointerUp(canvas, {
+			pointerId: 9,
+			pointerType: "mouse",
+			button: 0,
+		});
+
+		expect(onPointerUp).toHaveBeenCalledOnce();
+	});
+
+	it("finishes the accepted mouse pointer even when pointerup reports no changed button", () => {
+		const onPointerUp = vi.fn();
+		const { getByTestId } = render(<Harness onPointerUp={onPointerUp} />);
+		const canvas = getByTestId("canvas");
+
+		fireEvent.pointerDown(canvas, {
+			pointerId: 10,
+			pointerType: "mouse",
+			button: 0,
+			buttons: 1,
+		});
+		fireEvent.pointerUp(canvas, {
+			pointerId: 10,
+			pointerType: "mouse",
+			button: -1,
+		});
 
 		expect(onPointerUp).toHaveBeenCalledOnce();
 	});

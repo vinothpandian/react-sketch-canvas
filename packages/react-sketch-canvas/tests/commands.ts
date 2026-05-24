@@ -64,8 +64,10 @@ export async function drawSquare(
 
 	const x = boundingBox.x + originX;
 	const y = boundingBox.y + originY;
+	const pointerId = 1;
 
 	await canvas.dispatchEvent("pointerdown", {
+		pointerId,
 		pointerType,
 		button: eventButton,
 		buttons: eventButtons,
@@ -76,6 +78,7 @@ export async function drawSquare(
 	});
 
 	await canvas.dispatchEvent("pointermove", {
+		pointerId,
 		pointerType,
 		button: eventButton,
 		buttons: eventButtons,
@@ -85,6 +88,7 @@ export async function drawSquare(
 		pageY: y + side,
 	});
 	await canvas.dispatchEvent("pointermove", {
+		pointerId,
 		pointerType,
 		button: eventButton,
 		buttons: eventButtons,
@@ -94,6 +98,7 @@ export async function drawSquare(
 		pageY: y + side,
 	});
 	await canvas.dispatchEvent("pointermove", {
+		pointerId,
 		pointerType,
 		button: eventButton,
 		buttons: eventButtons,
@@ -103,6 +108,7 @@ export async function drawSquare(
 		pageY: y,
 	});
 	await canvas.dispatchEvent("pointermove", {
+		pointerId,
 		pointerType,
 		button: eventButton,
 		buttons: eventButtons,
@@ -112,6 +118,7 @@ export async function drawSquare(
 		pageY: y,
 	});
 	await canvas.dispatchEvent("pointerup", {
+		pointerId,
 		pointerType,
 		button: eventButton,
 		buttons: eventButtons,
@@ -180,8 +187,10 @@ export async function drawLine(
 
 	const x = boundingBox.x + originX;
 	const y = boundingBox.y + originY;
+	const pointerId = 1;
 
 	await canvas.dispatchEvent("pointerdown", {
+		pointerId,
 		pointerType,
 		button: eventButton,
 		buttons: eventButtons,
@@ -192,6 +201,7 @@ export async function drawLine(
 	});
 
 	await canvas.dispatchEvent("pointermove", {
+		pointerId,
 		pointerType,
 		button: eventButton,
 		buttons: eventButtons,
@@ -202,6 +212,7 @@ export async function drawLine(
 	});
 
 	await canvas.dispatchEvent("pointerup", {
+		pointerId,
 		pointerType,
 		button: eventButton,
 		buttons: eventButtons,
@@ -239,8 +250,10 @@ export async function drawEraserLine(
 
 	const x = boundingBox.x + originX;
 	const y = boundingBox.y + originY;
+	const pointerId = 1;
 
 	await canvas.dispatchEvent("pointerdown", {
+		pointerId,
 		pointerType,
 		button: eventButton,
 		buttons: 32, // Windows surface pen eraser button
@@ -251,6 +264,7 @@ export async function drawEraserLine(
 	});
 
 	await canvas.dispatchEvent("pointermove", {
+		pointerId,
 		pointerType,
 		button: eventButton,
 		buttons: 32, // Windows surface pen eraser button
@@ -261,6 +275,7 @@ export async function drawEraserLine(
 	});
 
 	await canvas.dispatchEvent("pointerup", {
+		pointerId,
 		pointerType,
 		button: eventButton,
 		buttons: 32, // Windows surface pen eraser button
@@ -298,8 +313,10 @@ export async function drawPoint(
 
 	const x = boundingBox.x + originX;
 	const y = boundingBox.y + originY;
+	const pointerId = 1;
 
 	await canvas.dispatchEvent("pointerdown", {
+		pointerId,
 		pointerType,
 		button: eventButton,
 		buttons: eventButtons,
@@ -310,6 +327,7 @@ export async function drawPoint(
 	});
 
 	await canvas.dispatchEvent("pointerup", {
+		pointerId,
 		pointerType,
 		button: eventButton,
 		buttons: eventButtons,

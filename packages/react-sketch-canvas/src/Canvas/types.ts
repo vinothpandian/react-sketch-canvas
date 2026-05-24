@@ -155,8 +155,10 @@ export interface CanvasProps {
 	 * Inline styles applied to the outer canvas wrapper.
 	 *
 	 * @remarks
-	 * The component always sets `touchAction: "none"` to keep touch and pen
-	 * drawing from scrolling the page.
+	 * The component sets `userSelect: "none"` to avoid browser selection
+	 * highlights while drawing. It sets `touchAction: "none"` for touch drawing,
+	 * and `touchAction: "pan-x pan-y pinch-zoom"` in pen-only mode so touch can
+	 * still scroll parent containers.
 	 *
 	 * @defaultValue The package default canvas border style.
 	 */

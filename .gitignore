@@ -24,6 +24,7 @@ docs/superpowers/
 .claude/
 .gemini/
 .codex/
+.antigravitycli/
 CLAUDE.md
 GEMINI.md
 CODEX.md
