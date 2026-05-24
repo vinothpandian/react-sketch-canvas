@@ -59,6 +59,11 @@ export function appendPointToLastStroke(
 		return paths;
 	}
 
+	const previousPoint = currentStroke.paths.slice(-1)[0];
+	if (previousPoint?.x === point.x && previousPoint.y === point.y) {
+		return paths;
+	}
+
 	const updatedStroke = {
 		...currentStroke,
 		paths: [...currentStroke.paths, point],

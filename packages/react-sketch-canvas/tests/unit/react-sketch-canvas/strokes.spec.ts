@@ -65,6 +65,22 @@ describe("stroke state helpers", () => {
 		]);
 	});
 
+	it("ignores a consecutive duplicate point when appending to the last stroke", () => {
+		const paths = [
+			createStroke({
+				point: { x: 1, y: 2 },
+				drawMode: true,
+				strokeColor: "red",
+				strokeWidth: 4,
+				eraserWidth: 8,
+				withTimestamp: false,
+				now: 100,
+			}),
+		];
+
+		expect(appendPointToLastStroke(paths, { x: 1, y: 2 })).toBe(paths);
+	});
+
 	it("keeps an empty path list unchanged when appending a point", () => {
 		const paths = [] as ReturnType<typeof createStroke>[];
 

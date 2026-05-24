@@ -1,4 +1,4 @@
-import type * as React from "react";
+import * as React from "react";
 import type { CanvasPath, Point } from "../types";
 import { bezierCommand } from "./geometry";
 
@@ -24,13 +24,25 @@ export type SvgPathProps = Pick<
  * A one-point path is rendered as a circle so taps and clicks produce visible
  * dots. Multi-point paths are rendered as a smoothed cubic Bezier path.
  */
-export function SvgPath({
+function SvgPathComponent({
 	paths,
 	id,
 	strokeWidth,
 	strokeColor,
 	command = bezierCommand,
 }: SvgPathProps): React.JSX.Element {
+	const d = React.useMemo(
+		() =>
+			paths.reduce(
+				(acc, point, i, a) =>
+					i === 0
+						? `M ${point.x},${point.y}`
+						: `${acc} ${command(point, i, a)}`,
+				"",
+			),
+		[command, paths],
+	);
+
 	if (paths.length === 1) {
 		const { x, y } = paths[0];
 		const radius = strokeWidth / 2;
@@ -48,12 +60,6 @@ export function SvgPath({
 		);
 	}
 
-	const d = paths.reduce(
-		(acc, point, i, a) =>
-			i === 0 ? `M ${point.x},${point.y}` : `${acc} ${command(point, i, a)}`,
-		"",
-	);
-
 	return (
 		<path
 			key={id}
@@ -66,3 +72,6 @@ export function SvgPath({
 		/>
 	);
 }
+
+export const SvgPath = React.memo(SvgPathComponent);
+SvgPath.displayName = "SvgPath";

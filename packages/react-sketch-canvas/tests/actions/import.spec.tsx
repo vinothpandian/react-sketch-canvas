@@ -15,6 +15,9 @@ test.describe("loadPaths", () => {
 		const component = await mount(
 			<WithLoadPathsButton
 				id={canvasId}
+				width="500px"
+				height="500px"
+				withViewBox
 				loadPathsButtonId={loadPathsButtonId}
 				paths={penStrokes}
 			/>,
@@ -32,6 +35,7 @@ test.describe("loadPaths", () => {
 		await expect(
 			component.locator(firstStrokeGroupId).locator("path"),
 		).toHaveCount(1);
+		await expect(canvas).toHaveAttribute("viewBox", "0 0 500 500");
 	});
 
 	test("should load path with pen and eraser", async ({ mount }) => {

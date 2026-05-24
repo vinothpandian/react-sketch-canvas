@@ -281,7 +281,7 @@ See the MDN reference for accepted values:
 
 > `optional` **readOnly?**: `boolean`
 
-Defined in: [Canvas/types.ts:199](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L199)
+Defined in: [Canvas/types.ts:201](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L201)
 
 Whether pointer drawing is disabled.
 
@@ -301,14 +301,16 @@ false
 
 > **style**: `CSSProperties`
 
-Defined in: [Canvas/types.ts:163](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L163)
+Defined in: [Canvas/types.ts:165](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L165)
 
 Inline styles applied to the outer canvas wrapper.
 
 #### Remarks
 
-The component always sets `touchAction: "none"` to keep touch and pen
-drawing from scrolling the page.
+The component sets `userSelect: "none"` to avoid browser selection
+highlights while drawing. It sets `touchAction: "none"` for touch drawing,
+and `touchAction: "pan-x pan-y pinch-zoom"` in pen-only mode so touch can
+still scroll parent containers.
 
 #### Default Value
 
@@ -322,7 +324,7 @@ The package default canvas border style.
 
 > **svgStyle**: `CSSProperties`
 
-Defined in: [Canvas/types.ts:169](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L169)
+Defined in: [Canvas/types.ts:171](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L171)
 
 Inline styles applied to the internal SVG element.
 
@@ -336,7 +338,7 @@ Inline styles applied to the internal SVG element.
 
 > **width**: `string`
 
-Defined in: [Canvas/types.ts:190](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L190)
+Defined in: [Canvas/types.ts:192](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L192)
 
 CSS width of the canvas wrapper.
 
@@ -355,7 +357,7 @@ Accepts any valid CSS width value, such as `"600px"`, `"100%"`, or
 
 > `optional` **withViewBox?**: `boolean`
 
-Defined in: [Canvas/types.ts:180](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L180)
+Defined in: [Canvas/types.ts:182](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L182)
 
 Whether the internal SVG should include a viewBox based on the latest
 measured canvas size.

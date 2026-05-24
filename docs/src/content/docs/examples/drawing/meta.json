@@ -1,4 +1,10 @@
 {
 	"title": "Drawing & Erasing",
-	"pages": ["switching-modes", "color-selection", "theme-colors", "read-only"]
+	"pages": [
+		"switching-modes",
+		"color-selection",
+		"theme-colors",
+		"read-only",
+		"performance"
+	]
 }

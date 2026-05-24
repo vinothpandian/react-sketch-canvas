@@ -6,11 +6,76 @@ import {
 	type ReactSketchCanvasRef,
 } from "../../src";
 
+const STRESS_STROKE_COUNT = 1000;
+const STRESS_POINTS_PER_STROKE = 1000;
+const ERASER_STRESS_PAIR_COUNT = 100;
+
+function createStressPaths(): CanvasPath[] {
+	return Array.from({ length: STRESS_STROKE_COUNT }, (_, strokeIndex) => ({
+		drawMode: true,
+		strokeColor: "red",
+		strokeWidth: 1,
+		paths: Array.from(
+			{ length: STRESS_POINTS_PER_STROKE },
+			(_, pointIndex) => ({
+				x: 10 + (pointIndex % 400),
+				y: 10 + (strokeIndex % 280) + Math.floor(pointIndex / 400),
+			}),
+		),
+	}));
+}
+
+function createEraserStressPaths(): CanvasPath[] {
+	return Array.from({ length: ERASER_STRESS_PAIR_COUNT }, (_, index) => {
+		const y = 12 + index * 2;
+
+		return [
+			{
+				drawMode: true,
+				strokeColor: "red",
+				strokeWidth: 4,
+				paths: [
+					{ x: 10, y },
+					{ x: 400, y },
+				],
+			},
+			{
+				drawMode: false,
+				strokeColor: "#000000",
+				strokeWidth: 8,
+				paths: [
+					{ x: 10 + (index % 30), y: y - 4 },
+					{ x: 10 + (index % 30), y: y + 4 },
+				],
+			},
+		] satisfies CanvasPath[];
+	}).flat();
+}
+
+function createViewBoxPaths(): CanvasPath[] {
+	return [
+		{
+			drawMode: true,
+			strokeColor: "red",
+			strokeWidth: 4,
+			paths: [
+				{ x: 20, y: 20 },
+				{ x: 360, y: 260 },
+			],
+		},
+	];
+}
+
 function App() {
 	const canvasRef = useRef<ReactSketchCanvasRef>(null);
+	const [canvasSize, setCanvasSize] = useState({ width: 420, height: 320 });
 	const [paths, setPaths] = useState<CanvasPath[]>([]);
 	const [exportedImage, setExportedImage] = useState("");
 	const [exportedSvg, setExportedSvg] = useState("");
+	const stressPointCount = paths.reduce(
+		(total, path) => total + path.paths.length,
+		0,
+	);
 
 	const handleExportImage = async () => {
 		const dataUri = await canvasRef.current?.exportImage("png");
@@ -27,8 +92,9 @@ function App() {
 			<ReactSketchCanvas
 				ref={canvasRef}
 				id="rsc"
-				width="420px"
-				height="320px"
+				width={`${canvasSize.width}px`}
+				height={`${canvasSize.height}px`}
+				withViewBox
 				onChange={(updatedPaths) => setPaths([...updatedPaths])}
 			/>
 			<nav aria-label="Canvas controls">
@@ -84,8 +150,39 @@ function App() {
 				<button type="button" id="export-svg-button" onClick={handleExportSvg}>
 					Export SVG
 				</button>
+				<button
+					type="button"
+					id="load-stress-paths-button"
+					onClick={() => canvasRef.current?.loadPaths(createStressPaths())}
+				>
+					Load Stress Paths
+				</button>
+				<button
+					type="button"
+					id="load-eraser-stress-paths-button"
+					onClick={() =>
+						canvasRef.current?.loadPaths(createEraserStressPaths())
+					}
+				>
+					Load Eraser Stress Paths
+				</button>
+				<button
+					type="button"
+					id="load-viewbox-paths-button"
+					onClick={() => canvasRef.current?.loadPaths(createViewBoxPaths())}
+				>
+					Load ViewBox Paths
+				</button>
+				<button
+					type="button"
+					id="resize-canvas-button"
+					onClick={() => setCanvasSize({ width: 560, height: 360 })}
+				>
+					Resize Canvas
+				</button>
 			</nav>
 			<output id="path-count">{paths.length}</output>
+			<output id="stress-point-count">{stressPointCount}</output>
 			<output id="exported-image">{exportedImage}</output>
 			<output id="exported-svg">{exportedSvg}</output>
 		</main>

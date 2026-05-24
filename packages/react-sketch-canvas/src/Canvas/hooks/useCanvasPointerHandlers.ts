@@ -20,11 +20,6 @@ type ScrollLike = {
 	scrollY: number;
 };
 
-type CanvasSizeRef = React.MutableRefObject<{
-	width: number;
-	height: number;
-} | null>;
-
 type UseCanvasPointerHandlersParams = Pick<
 	CanvasProps,
 	| "isDrawing"
@@ -34,7 +29,6 @@ type UseCanvasPointerHandlersParams = Pick<
 	| "onPointerUp"
 > & {
 	canvasRef: React.RefObject<HTMLDivElement | null>;
-	canvasSizeRef: CanvasSizeRef;
 };
 
 type UseCanvasPointerHandlersReturns = {
@@ -88,12 +82,10 @@ export const getCanvasPoint = (
  *
  * @remarks
  * The hook keeps DOM coordinate normalization, input filtering, and document
- * level `pointerup` handling out of the `Canvas` component. It also records the
- * latest canvas size so viewBox export can mirror the rendered dimensions.
+ * level `pointerup` handling out of the `Canvas` component.
  */
 export function useCanvasPointerHandlers({
 	canvasRef,
-	canvasSizeRef,
 	isDrawing,
 	allowOnlyPointerType,
 	onPointerDown,
@@ -101,13 +93,12 @@ export function useCanvasPointerHandlers({
 	onPointerUp,
 }: UseCanvasPointerHandlersParams): UseCanvasPointerHandlersReturns {
 	const activePointerIdRef = React.useRef<number | null>(null);
+	const pendingMovePointsRef = React.useRef<Point[]>([]);
+	const animationFrameRef = React.useRef<number | null>(null);
 
 	const getCoordinates = useCallback(
 		(pointerEvent: React.PointerEvent<HTMLDivElement>): Point => {
 			const boundingArea = canvasRef.current?.getBoundingClientRect();
-			canvasSizeRef.current = boundingArea
-				? { width: boundingArea.width, height: boundingArea.height }
-				: null;
 
 			if (!boundingArea) {
 				return { x: 0, y: 0 };
@@ -118,7 +109,7 @@ export function useCanvasPointerHandlers({
 				scrollY: window.scrollY ?? 0,
 			});
 		},
-		[canvasRef, canvasSizeRef],
+		[canvasRef],
 	);
 
 	const isActivePointer = useCallback(
@@ -127,14 +118,47 @@ export function useCanvasPointerHandlers({
 		[],
 	);
 
+	const preventNativeTouchScroll = useCallback(
+		(event: React.PointerEvent<HTMLDivElement>): void => {
+			if (event.pointerType !== "touch" || !event.cancelable) return;
+
+			event.preventDefault();
+		},
+		[],
+	);
+
+	const flushPendingMovePoints = useCallback((): void => {
+		if (animationFrameRef.current !== null) {
+			window.cancelAnimationFrame(animationFrameRef.current);
+			animationFrameRef.current = null;
+		}
+
+		const points = pendingMovePointsRef.current;
+		pendingMovePointsRef.current = [];
+
+		for (const point of points) {
+			onPointerMove(point);
+		}
+	}, [onPointerMove]);
+
+	const schedulePendingMoveFlush = useCallback((): void => {
+		if (animationFrameRef.current !== null) return;
+
+		animationFrameRef.current = window.requestAnimationFrame(() => {
+			animationFrameRef.current = null;
+			flushPendingMovePoints();
+		});
+	}, [flushPendingMovePoints]);
+
 	const finishActivePointer = useCallback(
 		(event: React.PointerEvent<HTMLDivElement> | PointerEvent): void => {
 			if (!isActivePointer(event)) return;
 
+			flushPendingMovePoints();
 			activePointerIdRef.current = null;
 			onPointerUp();
 		},
-		[isActivePointer, onPointerUp],
+		[flushPendingMovePoints, isActivePointer, onPointerUp],
 	);
 
 	const handlePointerDown = useCallback(
@@ -144,17 +168,25 @@ export function useCanvasPointerHandlers({
 				return;
 			if (!shouldHandlePointerButton(event.pointerType, event.button)) return;
 
+			preventNativeTouchScroll(event);
+
 			if (event.isTrusted) {
 				event.currentTarget.setPointerCapture(event.pointerId);
 			}
 
+			pendingMovePointsRef.current = [];
 			activePointerIdRef.current = event.pointerId;
 			onPointerDown(
 				getCoordinates(event),
 				isPenEraser(event.pointerType, event.buttons),
 			);
 		},
-		[allowOnlyPointerType, getCoordinates, onPointerDown],
+		[
+			allowOnlyPointerType,
+			getCoordinates,
+			onPointerDown,
+			preventNativeTouchScroll,
+		],
 	);
 
 	const handlePointerMove = useCallback(
@@ -162,9 +194,29 @@ export function useCanvasPointerHandlers({
 			if (!isDrawing) return;
 			if (!isActivePointer(event)) return;
 
-			onPointerMove(getCoordinates(event));
+			preventNativeTouchScroll(event);
+			pendingMovePointsRef.current = [
+				...pendingMovePointsRef.current,
+				getCoordinates(event),
+			];
+			schedulePendingMoveFlush();
 		},
-		[getCoordinates, isActivePointer, isDrawing, onPointerMove],
+		[
+			getCoordinates,
+			isActivePointer,
+			isDrawing,
+			preventNativeTouchScroll,
+			schedulePendingMoveFlush,
+		],
+	);
+
+	React.useEffect(
+		() => () => {
+			if (animationFrameRef.current !== null) {
+				window.cancelAnimationFrame(animationFrameRef.current);
+			}
+		},
+		[],
 	);
 
 	return {
