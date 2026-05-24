@@ -5,6 +5,7 @@ import { defineConfig } from "vite";
 import * as MdxConfig from "./source.config";
 
 export default defineConfig({
+	base: process.env.NODE_ENV === "production" ? "/react-sketch-canvas/" : "/",
 	plugins: [mdx(MdxConfig), tailwindcss(), reactRouter()],
 	resolve: {
 		tsconfigPaths: true,

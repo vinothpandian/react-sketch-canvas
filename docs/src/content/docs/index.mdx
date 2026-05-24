@@ -71,3 +71,20 @@ Start with the smallest useful setup, then move toward the parts most production
     Load existing paths, render read-only drawings, place images behind the canvas, or collect timing data for review and analytics workflows.
   </Card>
 </CardGrid>
+
+## Using AI assistants
+
+If you are pairing with Claude, Cursor, Copilot, Codex, or any other LLM-powered editor, point it at the machine-readable docs so it pulls the right APIs the first time.
+
+- [`/llms.txt`](/llms.txt) — site map of every docs page.
+- [`/llms-full.txt`](/llms-full.txt) — the full documentation bundled into a single file.
+
+See the [AI assistants guide](/agentic-tools) for tool-specific setup.
+
+---
+
+## Disclaimer on Agentic Engineering
+
+Version 8 was built with the help of AI coding assistants — most of the implementation was done by Claude Code (Opus 4.7) and Codex (GPT-5.5). I reviewed and tested everything that landed, but want to be upfront that the bulk of the code was authored by the models rather than typed by hand.
+
+If you are curious about the workflow, Simon Willison has a great write-up on the patterns I followed: [Agentic Engineering Patterns](https://simonwillison.net/guides/agentic-engineering-patterns/).
