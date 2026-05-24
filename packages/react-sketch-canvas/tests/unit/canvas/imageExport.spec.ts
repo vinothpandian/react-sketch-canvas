@@ -128,7 +128,7 @@ describe("exportImageFromSvg", () => {
 		});
 	});
 
-	it("uses rendered SVG dimensions for default raster export size", async () => {
+	it("scales raster export by devicePixelRatio while preserving CSS size", async () => {
 		Object.defineProperty(window, "devicePixelRatio", {
 			configurable: true,
 			value: 2,
@@ -149,10 +149,40 @@ describe("exportImageFromSvg", () => {
 		const canvas = vi.mocked(HTMLCanvasElement.prototype.toDataURL).mock
 			.contexts[0] as HTMLCanvasElement;
 
-		expect(canvas.width).toBe(320);
-		expect(canvas.height).toBe(180);
+		expect(canvas.width).toBe(640);
+		expect(canvas.height).toBe(360);
 		expect(canvas.style.width).toBe("320px");
 		expect(canvas.style.height).toBe("180px");
+		expect(scale).toHaveBeenCalledWith(2, 2);
+	});
+
+	it("uses the requested pixel dimensions when options are provided and skips DPR scaling", async () => {
+		Object.defineProperty(window, "devicePixelRatio", {
+			configurable: true,
+			value: 3,
+		});
+		const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+
+		await exportImageFromSvg({
+			id: "canvas",
+			svgCanvas: svg,
+			svgWidth: 320,
+			svgHeight: 180,
+			imageType: "png",
+			canvasColor: "white",
+			backgroundImage: "",
+			exportWithBackgroundImage: false,
+			options: { width: 800, height: 600 },
+		});
+
+		const canvas = vi.mocked(HTMLCanvasElement.prototype.toDataURL).mock
+			.contexts[0] as HTMLCanvasElement;
+
+		expect(canvas.width).toBe(800);
+		expect(canvas.height).toBe(600);
+		expect(canvas.style.width).toBe("800px");
+		expect(canvas.style.height).toBe("600px");
+		expect(scale).not.toHaveBeenCalled();
 	});
 
 	it("removes background-image markup from the serialized SVG when exporting without the background image", async () => {

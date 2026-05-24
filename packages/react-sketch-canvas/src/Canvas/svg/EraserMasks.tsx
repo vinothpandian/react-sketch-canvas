@@ -1,5 +1,6 @@
 import type * as React from "react";
 import { SvgPath } from "../../Paths";
+import { ERASER_MASK_STROKE_COLOR } from "../../ReactSketchCanvas/constants";
 import type { CanvasPath } from "../../types";
 
 type EraserMasksProps = {
@@ -35,7 +36,7 @@ export function HiddenEraserStrokes({
 					key={`${internalId}__eraser-${i}`}
 					id={`${internalId}__eraser-${i}`}
 					paths={eraserPath.paths}
-					strokeColor="#000"
+					strokeColor={ERASER_MASK_STROKE_COLOR}
 					strokeWidth={eraserPath.strokeWidth}
 				/>
 			))}

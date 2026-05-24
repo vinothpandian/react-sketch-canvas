@@ -1,4 +1,5 @@
 import type { CanvasPath, Point } from "../../types";
+import { ERASER_MASK_STROKE_COLOR } from "../constants";
 
 type CreateStrokeParams = {
 	point: Point;
@@ -30,7 +31,7 @@ export function createStroke({
 }: CreateStrokeParams): CreateStrokeReturns {
 	const stroke: CanvasPath = {
 		drawMode,
-		strokeColor: drawMode ? strokeColor : "#000000",
+		strokeColor: drawMode ? strokeColor : ERASER_MASK_STROKE_COLOR,
 		strokeWidth: drawMode ? strokeWidth : eraserWidth,
 		paths: [point],
 	};

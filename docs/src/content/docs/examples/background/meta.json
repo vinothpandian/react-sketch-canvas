@@ -1,4 +1,4 @@
 {
 	"title": "Background",
-	"pages": ["image", "data-uri", "export"]
+	"pages": ["image", "data-uri", "export", "raster-export-quality"]
 }
