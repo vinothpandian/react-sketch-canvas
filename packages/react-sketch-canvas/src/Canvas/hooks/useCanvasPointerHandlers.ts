@@ -139,10 +139,19 @@ export function useCanvasPointerHandlers({
 
 	const handlePointerDown = useCallback(
 		(event: React.PointerEvent<HTMLDivElement>): void => {
-			if (activePointerIdRef.current !== null) return;
 			if (!isAllowedPointerType(allowOnlyPointerType, event.pointerType))
 				return;
 			if (!shouldHandlePointerButton(event.pointerType, event.button)) return;
+
+			if (activePointerIdRef.current !== null) {
+				// A second pointer arrived mid-stroke (e.g. user moved from a single
+				// finger to a two-finger gesture). End the active stroke so the
+				// browser is free to interpret the gesture as a pan/zoom and so a
+				// stale stroke does not record movement from the wrong pointer.
+				activePointerIdRef.current = null;
+				onPointerUp();
+				return;
+			}
 
 			preventNativeTouchScroll(event);
 
@@ -160,6 +169,7 @@ export function useCanvasPointerHandlers({
 			allowOnlyPointerType,
 			getCoordinates,
 			onPointerDown,
+			onPointerUp,
 			preventNativeTouchScroll,
 		],
 	);

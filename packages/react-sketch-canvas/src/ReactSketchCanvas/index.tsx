@@ -51,6 +51,7 @@ export const ReactSketchCanvas = React.forwardRef<
 		withTimestamp = false,
 		withViewBox = false,
 		readOnly = false,
+		touchAction,
 	} = props;
 
 	const svgCanvas = React.useRef<CanvasRef>(null);
@@ -109,6 +110,7 @@ export const ReactSketchCanvas = React.forwardRef<
 			onPointerUp={handlePointerUp}
 			withViewBox={withViewBox}
 			readOnly={readOnly}
+			touchAction={touchAction}
 		/>
 	);
 });

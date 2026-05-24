@@ -357,4 +357,65 @@ describe("useCanvasPointerHandlers", () => {
 
 		expect(onPointerUp).toHaveBeenCalledOnce();
 	});
+
+	it("aborts the active stroke when a second pointer arrives mid-gesture", () => {
+		const onPointerDown = vi.fn();
+		const onPointerUp = vi.fn();
+		const { getByTestId } = render(
+			<Harness onPointerDown={onPointerDown} onPointerUp={onPointerUp} />,
+		);
+		const canvas = getByTestId("canvas");
+
+		fireEvent.pointerDown(canvas, {
+			pointerId: 1,
+			pointerType: "touch",
+			button: 0,
+			buttons: 1,
+		});
+		fireEvent.pointerDown(canvas, {
+			pointerId: 2,
+			pointerType: "touch",
+			button: 0,
+			buttons: 1,
+		});
+
+		expect(onPointerDown).toHaveBeenCalledOnce();
+		expect(onPointerUp).toHaveBeenCalledOnce();
+	});
+
+	it("ignores subsequent move events from either pointer after a multi-touch abort", () => {
+		const onPointerMove = vi.fn();
+		const { getByTestId, rerender } = render(<Harness isDrawing={true} />);
+		const canvas = getByTestId("canvas");
+
+		fireEvent.pointerDown(canvas, {
+			pointerId: 1,
+			pointerType: "touch",
+			button: 0,
+			buttons: 1,
+		});
+		fireEvent.pointerDown(canvas, {
+			pointerId: 2,
+			pointerType: "touch",
+			button: 0,
+			buttons: 1,
+		});
+
+		rerender(<Harness isDrawing={true} onPointerMove={onPointerMove} />);
+
+		fireEvent.pointerMove(canvas, {
+			pointerId: 1,
+			pointerType: "touch",
+			pageX: 50,
+			pageY: 50,
+		});
+		fireEvent.pointerMove(canvas, {
+			pointerId: 2,
+			pointerType: "touch",
+			pageX: 60,
+			pageY: 60,
+		});
+
+		expect(onPointerMove).not.toHaveBeenCalled();
+	});
 });

@@ -69,15 +69,42 @@ function prepareStrokeSvgForRasterExport({
 function createRasterCanvas(
 	exportWidth: number,
 	exportHeight: number,
+	pixelRatio: number,
 ): HTMLCanvasElement {
 	const renderCanvas = document.createElement("canvas");
 
-	renderCanvas.width = exportWidth;
-	renderCanvas.height = exportHeight;
+	renderCanvas.width = Math.round(exportWidth * pixelRatio);
+	renderCanvas.height = Math.round(exportHeight * pixelRatio);
 	renderCanvas.style.width = `${exportWidth}px`;
 	renderCanvas.style.height = `${exportHeight}px`;
 
 	return renderCanvas;
+}
+
+/**
+ * Resolve the pixel-density multiplier to use for raster export.
+ *
+ * @remarks
+ * When the caller does not request an explicit export size, the rasterizer
+ * scales by `devicePixelRatio` so the output matches the sharpness of the
+ * on-screen canvas on high-DPI displays. When `options.width` / `options.height`
+ * are supplied, the caller is in charge of the output resolution and we keep a
+ * 1:1 mapping so the produced image is exactly that many pixels.
+ */
+function resolveExportPixelRatio(
+	options: ExportImageOptions | undefined,
+): number {
+	if (options?.width !== undefined || options?.height !== undefined) {
+		return 1;
+	}
+
+	if (typeof window === "undefined") {
+		return 1;
+	}
+
+	const ratio = window.devicePixelRatio;
+
+	return Number.isFinite(ratio) && ratio > 0 ? ratio : 1;
 }
 
 /**
@@ -117,11 +144,20 @@ export async function exportImageFromSvg({
 		exportWithBackgroundImage,
 	});
 	const strokeImage = await loadImage(encodeSvgDataUrl(preparedSvg));
-	const renderCanvas = createRasterCanvas(exportWidth, exportHeight);
+	const pixelRatio = resolveExportPixelRatio(options);
+	const renderCanvas = createRasterCanvas(
+		exportWidth,
+		exportHeight,
+		pixelRatio,
+	);
 	const context = renderCanvas.getContext("2d");
 
 	if (!context) {
 		throw Error("Canvas not rendered yet");
+	}
+
+	if (pixelRatio !== 1) {
+		context.scale(pixelRatio, pixelRatio);
 	}
 
 	const shouldFillCanvasBackground =

@@ -44,6 +44,7 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
 		svgStyle = {},
 		withViewBox = false,
 		readOnly = false,
+		touchAction: touchActionProp,
 	} = props;
 
 	const canvasRef = React.useRef<HTMLDivElement>(null);
@@ -106,7 +107,9 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
 		});
 	const acceptsTouchDrawing =
 		allowOnlyPointerType === "all" || allowOnlyPointerType === "touch";
-	const touchAction = acceptsTouchDrawing ? "none" : "pan-x pan-y pinch-zoom";
+	const touchAction =
+		touchActionProp ??
+		(acceptsTouchDrawing ? "none" : "pan-x pan-y pinch-zoom");
 
 	const viewBox =
 		withViewBox && canvasSize !== null
