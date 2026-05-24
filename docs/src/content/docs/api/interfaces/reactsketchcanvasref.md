@@ -75,7 +75,7 @@ to normal drawing mode. Existing paths are not changed.
 
 > **exportImage**: (`imageType`, `options?`) => `Promise`\<`string`\>
 
-Defined in: [Canvas/types.ts:219](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L219)
+Defined in: [Canvas/types.ts:221](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L221)
 
 Export the current canvas as a raster image data URL.
 
@@ -134,7 +134,7 @@ The returned paths can be stored and later passed to `loadPaths()`.
 
 > **exportSvg**: () => `Promise`\<`string`\>
 
-Defined in: [Canvas/types.ts:232](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L232)
+Defined in: [Canvas/types.ts:234](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L234)
 
 Export the current canvas as SVG markup.
 

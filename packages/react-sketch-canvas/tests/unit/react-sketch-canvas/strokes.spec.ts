@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
-	appendPointToLastStroke,
+	appendPointsToLastStroke,
 	createStroke,
 	finishStroke,
 } from "../../../src/ReactSketchCanvas/state/strokes";
@@ -59,16 +59,84 @@ describe("stroke state helpers", () => {
 			}),
 		];
 
-		expect(appendPointToLastStroke(paths, { x: 3, y: 4 })[0].paths).toEqual([
+		expect(appendPointsToLastStroke(paths, [{ x: 3, y: 4 }])[0].paths).toEqual([
 			{ x: 1, y: 2 },
 			{ x: 3, y: 4 },
+		]);
+	});
+
+	it("appends multiple points to the last stroke in one update", () => {
+		const paths = [
+			createStroke({
+				point: { x: 1, y: 2 },
+				drawMode: true,
+				strokeColor: "red",
+				strokeWidth: 4,
+				eraserWidth: 8,
+				withTimestamp: false,
+				now: 100,
+			}),
+		];
+
+		expect(
+			appendPointsToLastStroke(paths, [
+				{ x: 3, y: 4 },
+				{ x: 5, y: 6 },
+			])[0].paths,
+		).toEqual([
+			{ x: 1, y: 2 },
+			{ x: 3, y: 4 },
+			{ x: 5, y: 6 },
+		]);
+	});
+
+	it("ignores a consecutive duplicate point when appending to the last stroke", () => {
+		const paths = [
+			createStroke({
+				point: { x: 1, y: 2 },
+				drawMode: true,
+				strokeColor: "red",
+				strokeWidth: 4,
+				eraserWidth: 8,
+				withTimestamp: false,
+				now: 100,
+			}),
+		];
+
+		expect(appendPointsToLastStroke(paths, [{ x: 1, y: 2 }])).toBe(paths);
+	});
+
+	it("ignores consecutive duplicate points while appending a batch", () => {
+		const paths = [
+			createStroke({
+				point: { x: 1, y: 2 },
+				drawMode: true,
+				strokeColor: "red",
+				strokeWidth: 4,
+				eraserWidth: 8,
+				withTimestamp: false,
+				now: 100,
+			}),
+		];
+
+		expect(
+			appendPointsToLastStroke(paths, [
+				{ x: 1, y: 2 },
+				{ x: 3, y: 4 },
+				{ x: 3, y: 4 },
+				{ x: 5, y: 6 },
+			])[0].paths,
+		).toEqual([
+			{ x: 1, y: 2 },
+			{ x: 3, y: 4 },
+			{ x: 5, y: 6 },
 		]);
 	});
 
 	it("keeps an empty path list unchanged when appending a point", () => {
 		const paths = [] as ReturnType<typeof createStroke>[];
 
-		expect(appendPointToLastStroke(paths, { x: 3, y: 4 })).toBe(paths);
+		expect(appendPointsToLastStroke(paths, [{ x: 3, y: 4 }])).toBe(paths);
 	});
 
 	it("finishes timestamped last stroke", () => {

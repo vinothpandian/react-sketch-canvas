@@ -221,6 +221,40 @@ const strokeSegments = (stroke: CanvasPath): Segment[] =>
 				.map((point, index) => [stroke.paths[index] as Point, point])
 		: stroke.paths.map((point) => [point, point]);
 
+type BoundingBox = {
+	minX: number;
+	maxX: number;
+	minY: number;
+	maxY: number;
+};
+
+function getBoundingBox(stroke: CanvasPath, padding: number): BoundingBox {
+	let minX = Number.POSITIVE_INFINITY;
+	let maxX = Number.NEGATIVE_INFINITY;
+	let minY = Number.POSITIVE_INFINITY;
+	let maxY = Number.NEGATIVE_INFINITY;
+
+	for (const point of stroke.paths) {
+		if (point.x < minX) minX = point.x;
+		if (point.x > maxX) maxX = point.x;
+		if (point.y < minY) minY = point.y;
+		if (point.y > maxY) maxY = point.y;
+	}
+
+	return {
+		minX: minX - padding,
+		maxX: maxX + padding,
+		minY: minY - padding,
+		maxY: maxY + padding,
+	};
+}
+
+function doBoundingBoxesOverlap(a: BoundingBox, b: BoundingBox): boolean {
+	return (
+		a.minX <= b.maxX && a.maxX >= b.minX && a.minY <= b.maxY && a.maxY >= b.minY
+	);
+}
+
 /**
  * Check whether a stroke-mode eraser gesture intersects a drawing stroke.
  *
@@ -238,6 +272,13 @@ export function doesEraserStrokeHitStroke({
 	}
 
 	const threshold = eraser.strokeWidth / 2 + stroke.strokeWidth / 2;
+
+	const eraserBox = getBoundingBox(eraser, eraser.strokeWidth / 2);
+	const strokeBox = getBoundingBox(stroke, stroke.strokeWidth / 2);
+	if (!doBoundingBoxesOverlap(eraserBox, strokeBox)) {
+		return false;
+	}
+
 	const eraserSegments = strokeSegments(eraser);
 	const targetSegments = strokeSegments(stroke);
 

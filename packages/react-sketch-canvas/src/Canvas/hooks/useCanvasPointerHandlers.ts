@@ -20,11 +20,6 @@ type ScrollLike = {
 	scrollY: number;
 };
 
-type CanvasSizeRef = React.MutableRefObject<{
-	width: number;
-	height: number;
-} | null>;
-
 type UseCanvasPointerHandlersParams = Pick<
 	CanvasProps,
 	| "isDrawing"
@@ -34,7 +29,6 @@ type UseCanvasPointerHandlersParams = Pick<
 	| "onPointerUp"
 > & {
 	canvasRef: React.RefObject<HTMLDivElement | null>;
-	canvasSizeRef: CanvasSizeRef;
 };
 
 type UseCanvasPointerHandlersReturns = {
@@ -88,12 +82,10 @@ export const getCanvasPoint = (
  *
  * @remarks
  * The hook keeps DOM coordinate normalization, input filtering, and document
- * level `pointerup` handling out of the `Canvas` component. It also records the
- * latest canvas size so viewBox export can mirror the rendered dimensions.
+ * level `pointerup` handling out of the `Canvas` component.
  */
 export function useCanvasPointerHandlers({
 	canvasRef,
-	canvasSizeRef,
 	isDrawing,
 	allowOnlyPointerType,
 	onPointerDown,
@@ -105,9 +97,6 @@ export function useCanvasPointerHandlers({
 	const getCoordinates = useCallback(
 		(pointerEvent: React.PointerEvent<HTMLDivElement>): Point => {
 			const boundingArea = canvasRef.current?.getBoundingClientRect();
-			canvasSizeRef.current = boundingArea
-				? { width: boundingArea.width, height: boundingArea.height }
-				: null;
 
 			if (!boundingArea) {
 				return { x: 0, y: 0 };
@@ -118,12 +107,21 @@ export function useCanvasPointerHandlers({
 				scrollY: window.scrollY ?? 0,
 			});
 		},
-		[canvasRef, canvasSizeRef],
+		[canvasRef],
 	);
 
 	const isActivePointer = useCallback(
 		(event: React.PointerEvent<HTMLDivElement> | PointerEvent): boolean =>
 			activePointerIdRef.current === event.pointerId,
+		[],
+	);
+
+	const preventNativeTouchScroll = useCallback(
+		(event: React.PointerEvent<HTMLDivElement>): void => {
+			if (event.pointerType !== "touch" || !event.cancelable) return;
+
+			event.preventDefault();
+		},
 		[],
 	);
 
@@ -144,6 +142,8 @@ export function useCanvasPointerHandlers({
 				return;
 			if (!shouldHandlePointerButton(event.pointerType, event.button)) return;
 
+			preventNativeTouchScroll(event);
+
 			if (event.isTrusted) {
 				event.currentTarget.setPointerCapture(event.pointerId);
 			}
@@ -154,7 +154,12 @@ export function useCanvasPointerHandlers({
 				isPenEraser(event.pointerType, event.buttons),
 			);
 		},
-		[allowOnlyPointerType, getCoordinates, onPointerDown],
+		[
+			allowOnlyPointerType,
+			getCoordinates,
+			onPointerDown,
+			preventNativeTouchScroll,
+		],
 	);
 
 	const handlePointerMove = useCallback(
@@ -162,9 +167,16 @@ export function useCanvasPointerHandlers({
 			if (!isDrawing) return;
 			if (!isActivePointer(event)) return;
 
+			preventNativeTouchScroll(event);
 			onPointerMove(getCoordinates(event));
 		},
-		[getCoordinates, isActivePointer, isDrawing, onPointerMove],
+		[
+			getCoordinates,
+			isActivePointer,
+			isDrawing,
+			onPointerMove,
+			preventNativeTouchScroll,
+		],
 	);
 
 	return {

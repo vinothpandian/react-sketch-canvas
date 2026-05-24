@@ -47,7 +47,7 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
 	} = props;
 
 	const canvasRef = React.useRef<HTMLDivElement>(null);
-	const canvasSizeRef = React.useRef<{
+	const [canvasSize, setCanvasSize] = React.useState<{
 		width: number;
 		height: number;
 	} | null>(null);
@@ -56,6 +56,35 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
 		() => `${id}__${reactId.replaceAll(":", "")}`,
 		[id, reactId],
 	);
+
+	React.useLayoutEffect(() => {
+		if (!withViewBox || canvasRef.current === null) return;
+
+		const canvas = canvasRef.current;
+		const updateCanvasSize = (): void => {
+			const bounds = canvas.getBoundingClientRect();
+			const width = canvas.clientWidth || bounds.width;
+			const height = canvas.clientHeight || bounds.height;
+			const nextSize = { width, height };
+
+			setCanvasSize((current) =>
+				current?.width === width && current.height === height
+					? current
+					: nextSize,
+			);
+		};
+
+		updateCanvasSize();
+
+		if (typeof ResizeObserver === "undefined") return;
+
+		const resizeObserver = new ResizeObserver(updateCanvasSize);
+		resizeObserver.observe(canvas);
+
+		return () => {
+			resizeObserver.disconnect();
+		};
+	}, [withViewBox]);
 
 	useCanvasExportHandle(ref, {
 		canvasRef,
@@ -73,7 +102,6 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
 		handlePointerCancel,
 	} = useCanvasPointerHandlers({
 		canvasRef,
-		canvasSizeRef,
 		isDrawing,
 		allowOnlyPointerType,
 		onPointerDown,
@@ -85,8 +113,8 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
 	const touchAction = acceptsTouchDrawing ? "none" : "pan-x pan-y pinch-zoom";
 
 	const viewBox =
-		withViewBox && canvasSizeRef.current !== null
-			? `0 0 ${canvasSizeRef.current.width} ${canvasSizeRef.current.height}`
+		withViewBox && canvasSize !== null
+			? `0 0 ${canvasSize.width} ${canvasSize.height}`
 			: undefined;
 
 	return (

@@ -3,7 +3,6 @@ import * as React from "react";
 import { describe, expect, it, vi } from "vitest";
 import type { CanvasRef } from "../../../src/Canvas/types";
 import { useSketchCanvasImperativeHandle } from "../../../src/ReactSketchCanvas/hooks/useSketchCanvasImperativeHandle";
-import type { Operation } from "../../../src/ReactSketchCanvas/state/operations";
 import type { ReactSketchCanvasRef } from "../../../src/ReactSketchCanvas/types";
 import type { CanvasPath } from "../../../src/types";
 
@@ -25,14 +24,20 @@ function Harness({
 	forwardedRef,
 	withTimestamp = true,
 	canvasRefOverride,
-	enqueueOperation = vi.fn(),
+	undo = vi.fn(),
+	redo = vi.fn(),
+	clearCanvas = vi.fn(),
+	loadPaths = vi.fn(),
 	resetCanvas = vi.fn(),
 	setEraseMode = vi.fn(),
 }: {
 	forwardedRef: React.RefObject<ReactSketchCanvasRef | null>;
 	withTimestamp?: boolean;
 	canvasRefOverride?: CanvasRef | null;
-	enqueueOperation?: (operation: Operation) => void;
+	undo?: () => void;
+	redo?: () => void;
+	clearCanvas?: () => void;
+	loadPaths?: (paths: CanvasPath[]) => void;
 	resetCanvas?: () => void;
 	setEraseMode?: (erase: boolean) => void;
 }) {
@@ -44,7 +49,10 @@ function Harness({
 		currentPaths: [path],
 		withTimestamp,
 		setEraseMode,
-		enqueueOperation,
+		undo,
+		redo,
+		clearCanvas,
+		loadPaths,
 		resetCanvas,
 	});
 	return null;
@@ -86,13 +94,19 @@ describe("useSketchCanvasImperativeHandle", () => {
 
 	it("maps imperative state methods to controller operations", () => {
 		const ref = React.createRef<ReactSketchCanvasRef>();
-		const enqueueOperation = vi.fn();
+		const undo = vi.fn();
+		const redo = vi.fn();
+		const clearCanvas = vi.fn();
+		const loadPaths = vi.fn();
 		const resetCanvas = vi.fn();
 		const setEraseMode = vi.fn();
 		render(
 			<Harness
 				forwardedRef={ref}
-				enqueueOperation={enqueueOperation}
+				undo={undo}
+				redo={redo}
+				clearCanvas={clearCanvas}
+				loadPaths={loadPaths}
 				resetCanvas={resetCanvas}
 				setEraseMode={setEraseMode}
 			/>,
@@ -106,13 +120,10 @@ describe("useSketchCanvasImperativeHandle", () => {
 		ref.current?.resetCanvas();
 
 		expect(setEraseMode).toHaveBeenCalledWith(true);
-		expect(enqueueOperation).toHaveBeenNthCalledWith(1, { type: "clear" });
-		expect(enqueueOperation).toHaveBeenNthCalledWith(2, { type: "undo" });
-		expect(enqueueOperation).toHaveBeenNthCalledWith(3, { type: "redo" });
-		expect(enqueueOperation).toHaveBeenNthCalledWith(4, {
-			type: "loadPaths",
-			payload: [path],
-		});
+		expect(clearCanvas).toHaveBeenCalledOnce();
+		expect(undo).toHaveBeenCalledOnce();
+		expect(redo).toHaveBeenCalledOnce();
+		expect(loadPaths).toHaveBeenCalledWith([path]);
 		expect(resetCanvas).toHaveBeenCalledOnce();
 	});
 });

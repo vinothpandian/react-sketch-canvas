@@ -1,5 +1,5 @@
 import { render } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { SvgPath } from "../../../src/Paths/SvgPath";
 
 describe("SvgPath", () => {
@@ -47,5 +47,41 @@ describe("SvgPath", () => {
 		expect(path?.getAttribute("stroke")).toBe("red");
 		expect(path?.getAttribute("stroke-width")).toBe("6");
 		expect(path?.getAttribute("fill")).toBe("none");
+	});
+
+	it("does not rebuild an unchanged stroke path on rerender", () => {
+		const command = vi.fn((point) => `L ${point.x},${point.y}`);
+		const paths = [
+			{ x: 0, y: 0 },
+			{ x: 10, y: 0 },
+			{ x: 20, y: 0 },
+		];
+		const { rerender } = render(
+			<svg aria-hidden="true">
+				<SvgPath
+					id="memoized-path"
+					paths={paths}
+					strokeColor="red"
+					strokeWidth={6}
+					command={command}
+				/>
+			</svg>,
+		);
+
+		expect(command).toHaveBeenCalledTimes(2);
+
+		rerender(
+			<svg aria-hidden="true">
+				<SvgPath
+					id="memoized-path"
+					paths={paths}
+					strokeColor="red"
+					strokeWidth={6}
+					command={command}
+				/>
+			</svg>,
+		);
+
+		expect(command).toHaveBeenCalledTimes(2);
 	});
 });
