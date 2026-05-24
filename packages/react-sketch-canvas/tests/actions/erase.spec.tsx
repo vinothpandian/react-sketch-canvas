@@ -56,32 +56,6 @@ test.describe("eraser", () => {
 		);
 	});
 
-	test("should use explicit mask paint values with Dark Reader guard markup", async ({
-		mount,
-	}) => {
-		const canvasId = "rsc";
-		const eraserButtonId = "eraser-button";
-
-		const component = await mount(
-			<WithEraserButton id={canvasId} eraserButtonId={eraserButtonId} />,
-		);
-
-		const canvas = component.locator(`#${canvasId}`);
-
-		await drawLine(canvas, { length: 50, originX: 0, originY: 10 });
-		await component.locator(`#${eraserButtonId}`).click();
-		await drawLine(canvas, { length: 10, originX: 0, originY: 10 });
-
-		const mask = canvas.locator('mask[id$="__eraser-mask-0"]');
-		const maskBackground = canvas.locator('[id$="__mask-background"]');
-		const eraserStroke = canvas.locator('[id$="__eraser-0"]');
-
-		await expect(mask).toHaveClass(/darkreader-ignore/);
-		await expect(mask).toHaveAttribute("style", /color-scheme:\s*light/i);
-		await expect(maskBackground).toHaveAttribute("fill", "#fff");
-		await expect(eraserStroke).toHaveAttribute("stroke", "#000");
-	});
-
 	test("should trigger erase mode and add a mask for erasing previous strokes", async ({
 		mount,
 	}) => {

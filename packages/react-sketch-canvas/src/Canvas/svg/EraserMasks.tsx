@@ -27,7 +27,7 @@ export function HiddenEraserStrokes({
 				y="0"
 				width="100%"
 				height="100%"
-				fill="#fff"
+				fill="white"
 			/>
 			{eraserPaths.map((eraserPath, i) => (
 				<SvgPath
@@ -62,10 +62,7 @@ export function EraserMaskDefs({
 					id={`${internalId}__eraser-mask-${i}`}
 					// biome-ignore lint/suspicious/noArrayIndexKey: mask order is tied to ordered eraser strokes.
 					key={`${internalId}__eraser-mask-${i}`}
-					className="react-sketch-canvas__eraser-mask darkreader-ignore"
-					data-darkreader-ignore=""
 					maskUnits="userSpaceOnUse"
-					style={{ colorScheme: "light" }}
 				>
 					<use
 						href={`#${internalId}__mask-background`}
