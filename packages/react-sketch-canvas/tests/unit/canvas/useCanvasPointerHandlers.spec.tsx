@@ -94,7 +94,6 @@ describe("useCanvasPointerHandlers", () => {
 
 	it("does not move an active pointer when drawing is false", () => {
 		const onPointerMove = vi.fn();
-		const requestAnimationFrame = vi.spyOn(window, "requestAnimationFrame");
 		const { getByTestId } = render(<Harness onPointerMove={onPointerMove} />);
 		const canvas = getByTestId("canvas");
 
@@ -111,9 +110,7 @@ describe("useCanvasPointerHandlers", () => {
 			pageY: 70,
 		});
 
-		expect(requestAnimationFrame).not.toHaveBeenCalled();
 		expect(onPointerMove).not.toHaveBeenCalled();
-		requestAnimationFrame.mockRestore();
 	});
 
 	it("ignores pointer down events from disallowed pointer types", () => {
@@ -152,13 +149,6 @@ describe("useCanvasPointerHandlers", () => {
 
 	it("normalizes pointer move while drawing", () => {
 		const onPointerMove = vi.fn();
-		const animationFrames: FrameRequestCallback[] = [];
-		const requestAnimationFrame = vi
-			.spyOn(window, "requestAnimationFrame")
-			.mockImplementation((callback) => {
-				animationFrames.push(callback);
-				return animationFrames.length;
-			});
 		const { getByTestId } = render(
 			<Harness isDrawing onPointerMove={onPointerMove} />,
 		);
@@ -180,23 +170,11 @@ describe("useCanvasPointerHandlers", () => {
 
 		fireEvent(getByTestId("canvas"), event);
 
-		expect(onPointerMove).not.toHaveBeenCalled();
-
-		animationFrames[0]?.(performance.now());
-
 		expect(onPointerMove).toHaveBeenCalledWith({ x: 32, y: 44 });
-		requestAnimationFrame.mockRestore();
 	});
 
-	it("batches accepted pointer moves into the next animation frame without dropping points", () => {
+	it("forwards accepted pointer moves immediately without dropping points", () => {
 		const onPointerMove = vi.fn();
-		const animationFrames: FrameRequestCallback[] = [];
-		const requestAnimationFrame = vi
-			.spyOn(window, "requestAnimationFrame")
-			.mockImplementation((callback) => {
-				animationFrames.push(callback);
-				return animationFrames.length;
-			});
 		const { getByTestId } = render(
 			<Harness isDrawing onPointerMove={onPointerMove} />,
 		);
@@ -228,15 +206,9 @@ describe("useCanvasPointerHandlers", () => {
 		fireEvent(canvas, firstMove);
 		fireEvent(canvas, secondMove);
 
-		expect(animationFrames).toHaveLength(1);
-		expect(onPointerMove).not.toHaveBeenCalled();
-
-		animationFrames[0]?.(performance.now());
-
 		expect(onPointerMove).toHaveBeenCalledTimes(2);
 		expect(onPointerMove).toHaveBeenNthCalledWith(1, { x: 32, y: 44 });
 		expect(onPointerMove).toHaveBeenNthCalledWith(2, { x: 34, y: 48 });
-		requestAnimationFrame.mockRestore();
 	});
 
 	it("prevents native page scrolling for accepted touch drawing", () => {

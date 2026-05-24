@@ -13,7 +13,7 @@ import {
 	undoState,
 } from "../state/history";
 import {
-	appendPointToLastStroke,
+	appendPointsToLastStroke,
 	createStroke,
 	finishStroke,
 } from "../state/strokes";
@@ -51,9 +51,10 @@ type UseSketchCanvasControllerReturns = {
  * Owns state transitions for `ReactSketchCanvas`.
  *
  * @remarks
- * This hook is the stateful controller for drawing, erasing, undo/redo queue
- * processing, timestamp capture, and change callbacks. Rendering and ref
- * methods stay in separate hooks so this logic can be unit tested directly.
+ * This hook is the stateful controller for drawing, erasing, undo/redo,
+ * batched pointer movement, timestamp capture, and change callbacks. Rendering
+ * and ref methods stay in separate hooks so this logic can be unit tested
+ * directly.
  */
 export function useSketchCanvasController({
 	strokeColor,
@@ -72,6 +73,8 @@ export function useSketchCanvasController({
 	const isDrawing = state.isDrawing;
 	const onChangeRef = React.useRef(onChange);
 	const onStrokeRef = React.useRef(onStroke);
+	const pendingMovePointsRef = React.useRef<Point[]>([]);
+	const animationFrameRef = React.useRef<number | null>(null);
 
 	React.useEffect(() => {
 		onChangeRef.current = onChange;
@@ -121,8 +124,78 @@ export function useSketchCanvasController({
 		setState(resetCanvasState());
 	}, []);
 
+	const appendPendingMovePoints = useCallback((points: Point[]): void => {
+		if (points.length === 0) return;
+
+		setState((current) => {
+			if (!current.isDrawing) return current;
+
+			if (current.activeStroke !== null) {
+				const updatedStroke = appendPointsToLastStroke(
+					[current.activeStroke],
+					points,
+				)[0];
+
+				if (!updatedStroke || updatedStroke === current.activeStroke) {
+					return current;
+				}
+
+				return {
+					...current,
+					activeStroke: updatedStroke,
+				};
+			}
+
+			const updatedPaths = appendPointsToLastStroke(
+				current.currentPaths,
+				points,
+			);
+
+			if (updatedPaths === current.currentPaths) {
+				return current;
+			}
+
+			return {
+				...current,
+				currentPaths: updatedPaths,
+			};
+		});
+	}, []);
+
+	const flushPendingMovePoints = useCallback((): void => {
+		if (animationFrameRef.current !== null) {
+			window.cancelAnimationFrame(animationFrameRef.current);
+			animationFrameRef.current = null;
+		}
+
+		const points = pendingMovePointsRef.current;
+		pendingMovePointsRef.current = [];
+		appendPendingMovePoints(points);
+	}, [appendPendingMovePoints]);
+
+	const schedulePendingMoveFlush = useCallback((): void => {
+		if (animationFrameRef.current !== null) return;
+
+		animationFrameRef.current = window.requestAnimationFrame(() => {
+			animationFrameRef.current = null;
+			const points = pendingMovePointsRef.current;
+			pendingMovePointsRef.current = [];
+			appendPendingMovePoints(points);
+		});
+	}, [appendPendingMovePoints]);
+
+	React.useEffect(
+		() => () => {
+			if (animationFrameRef.current !== null) {
+				window.cancelAnimationFrame(animationFrameRef.current);
+			}
+		},
+		[],
+	);
+
 	const handlePointerDown = useCallback(
 		(point: Point, isEraser = false): void => {
+			pendingMovePointsRef.current = [];
 			setState((current) => {
 				const synced = addLastStrokeToHistory(current);
 				const isDraw = !isEraser && synced.drawMode;
@@ -152,28 +225,16 @@ export function useSketchCanvasController({
 		[eraserMode, eraserWidth, strokeColor, strokeWidth, withTimestamp],
 	);
 
-	const handlePointerMove = useCallback((point: Point): void => {
-		setState((current) => {
-			if (!current.isDrawing) return current;
-
-			if (current.activeStroke !== null) {
-				return {
-					...current,
-					activeStroke: appendPointToLastStroke(
-						[current.activeStroke],
-						point,
-					)[0] as CanvasPath,
-				};
-			}
-
-			return {
-				...current,
-				currentPaths: appendPointToLastStroke(current.currentPaths, point),
-			};
-		});
-	}, []);
+	const handlePointerMove = useCallback(
+		(point: Point): void => {
+			pendingMovePointsRef.current.push(point);
+			schedulePendingMoveFlush();
+		},
+		[schedulePendingMoveFlush],
+	);
 
 	const handlePointerUp = useCallback((): void => {
+		flushPendingMovePoints();
 		setState((current) => {
 			if (!current.isDrawing) return current;
 
@@ -227,7 +288,7 @@ export function useSketchCanvasController({
 							},
 			};
 		});
-	}, [withTimestamp]);
+	}, [flushPendingMovePoints, withTimestamp]);
 
 	return {
 		currentPaths,

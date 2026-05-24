@@ -93,8 +93,6 @@ export function useCanvasPointerHandlers({
 	onPointerUp,
 }: UseCanvasPointerHandlersParams): UseCanvasPointerHandlersReturns {
 	const activePointerIdRef = React.useRef<number | null>(null);
-	const pendingMovePointsRef = React.useRef<Point[]>([]);
-	const animationFrameRef = React.useRef<number | null>(null);
 
 	const getCoordinates = useCallback(
 		(pointerEvent: React.PointerEvent<HTMLDivElement>): Point => {
@@ -127,38 +125,14 @@ export function useCanvasPointerHandlers({
 		[],
 	);
 
-	const flushPendingMovePoints = useCallback((): void => {
-		if (animationFrameRef.current !== null) {
-			window.cancelAnimationFrame(animationFrameRef.current);
-			animationFrameRef.current = null;
-		}
-
-		const points = pendingMovePointsRef.current;
-		pendingMovePointsRef.current = [];
-
-		for (const point of points) {
-			onPointerMove(point);
-		}
-	}, [onPointerMove]);
-
-	const schedulePendingMoveFlush = useCallback((): void => {
-		if (animationFrameRef.current !== null) return;
-
-		animationFrameRef.current = window.requestAnimationFrame(() => {
-			animationFrameRef.current = null;
-			flushPendingMovePoints();
-		});
-	}, [flushPendingMovePoints]);
-
 	const finishActivePointer = useCallback(
 		(event: React.PointerEvent<HTMLDivElement> | PointerEvent): void => {
 			if (!isActivePointer(event)) return;
 
-			flushPendingMovePoints();
 			activePointerIdRef.current = null;
 			onPointerUp();
 		},
-		[flushPendingMovePoints, isActivePointer, onPointerUp],
+		[isActivePointer, onPointerUp],
 	);
 
 	const handlePointerDown = useCallback(
@@ -174,7 +148,6 @@ export function useCanvasPointerHandlers({
 				event.currentTarget.setPointerCapture(event.pointerId);
 			}
 
-			pendingMovePointsRef.current = [];
 			activePointerIdRef.current = event.pointerId;
 			onPointerDown(
 				getCoordinates(event),
@@ -195,28 +168,15 @@ export function useCanvasPointerHandlers({
 			if (!isActivePointer(event)) return;
 
 			preventNativeTouchScroll(event);
-			pendingMovePointsRef.current = [
-				...pendingMovePointsRef.current,
-				getCoordinates(event),
-			];
-			schedulePendingMoveFlush();
+			onPointerMove(getCoordinates(event));
 		},
 		[
 			getCoordinates,
 			isActivePointer,
 			isDrawing,
+			onPointerMove,
 			preventNativeTouchScroll,
-			schedulePendingMoveFlush,
 		],
-	);
-
-	React.useEffect(
-		() => () => {
-			if (animationFrameRef.current !== null) {
-				window.cancelAnimationFrame(animationFrameRef.current);
-			}
-		},
-		[],
 	);
 
 	return {

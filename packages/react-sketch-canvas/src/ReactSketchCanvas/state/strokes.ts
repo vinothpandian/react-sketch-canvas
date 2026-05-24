@@ -53,20 +53,41 @@ export function appendPointToLastStroke(
 	paths: CanvasPath[],
 	point: Point,
 ): CanvasPath[] {
+	return appendPointsToLastStroke(paths, [point]);
+}
+
+/**
+ * Add points to the most recent stroke with one path array update.
+ */
+export function appendPointsToLastStroke(
+	paths: CanvasPath[],
+	points: Point[],
+): CanvasPath[] {
 	const currentStroke = paths.slice(-1)[0];
 
-	if (!currentStroke) {
+	if (!currentStroke || points.length === 0) {
 		return paths;
 	}
 
-	const previousPoint = currentStroke.paths.slice(-1)[0];
-	if (previousPoint?.x === point.x && previousPoint.y === point.y) {
+	const nextPoints: Point[] = [];
+	let previousPoint = currentStroke.paths.slice(-1)[0];
+
+	for (const point of points) {
+		if (previousPoint?.x === point.x && previousPoint.y === point.y) {
+			continue;
+		}
+
+		nextPoints.push(point);
+		previousPoint = point;
+	}
+
+	if (nextPoints.length === 0) {
 		return paths;
 	}
 
 	const updatedStroke = {
 		...currentStroke,
-		paths: [...currentStroke.paths, point],
+		paths: [...currentStroke.paths, ...nextPoints],
 	};
 
 	return [...paths.slice(0, -1), updatedStroke];

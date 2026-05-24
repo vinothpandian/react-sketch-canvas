@@ -1,10 +1,5 @@
 import { expect, test } from "playwright/test";
 
-test.skip(
-	({ browserName }) => browserName !== "chromium",
-	"Run the million-point stress test once in the default e2e suite.",
-);
-
 test("renders 1000 loaded strokes with 1000 points each", async ({ page }) => {
 	test.setTimeout(120_000);
 

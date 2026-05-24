@@ -6,6 +6,18 @@ import type { CanvasPath, Point } from "../../../src/types";
 
 type ControllerSnapshot = ReturnType<typeof useSketchCanvasController>;
 
+function collectAnimationFrames() {
+	const animationFrames: FrameRequestCallback[] = [];
+	const requestAnimationFrame = vi
+		.spyOn(window, "requestAnimationFrame")
+		.mockImplementation((callback) => {
+			animationFrames.push(callback);
+			return animationFrames.length;
+		});
+
+	return { animationFrames, requestAnimationFrame };
+}
+
 function Harness({
 	onReady,
 	onChange = vi.fn(),
@@ -36,6 +48,7 @@ function Harness({
 
 describe("useSketchCanvasController", () => {
 	it("creates and extends a stroke from pointer events", () => {
+		const { animationFrames, requestAnimationFrame } = collectAnimationFrames();
 		let controller: ControllerSnapshot | undefined;
 		const onReady = vi.fn((next: ControllerSnapshot) => {
 			controller = next;
@@ -50,6 +63,12 @@ describe("useSketchCanvasController", () => {
 			controller?.handlePointerMove({ x: 3, y: 4 } satisfies Point);
 		});
 
+		expect(controller?.currentPaths[0]?.paths).toEqual([{ x: 1, y: 2 }]);
+
+		act(() => {
+			animationFrames[0]?.(performance.now());
+		});
+
 		expect(controller?.currentPaths).toEqual([
 			{
 				drawMode: true,
@@ -61,6 +80,86 @@ describe("useSketchCanvasController", () => {
 				],
 			},
 		]);
+		expect(requestAnimationFrame).toHaveBeenCalledOnce();
+		requestAnimationFrame.mockRestore();
+	});
+
+	it("batches multiple pointer moves into one frame-level state update", () => {
+		const { animationFrames, requestAnimationFrame } = collectAnimationFrames();
+		let controller: ControllerSnapshot | undefined;
+
+		render(
+			<Harness
+				onReady={(next) => {
+					controller = next;
+				}}
+			/>,
+		);
+
+		act(() => {
+			controller?.handlePointerDown({ x: 1, y: 2 });
+		});
+		act(() => {
+			controller?.handlePointerMove({ x: 3, y: 4 });
+			controller?.handlePointerMove({ x: 5, y: 6 });
+		});
+
+		expect(controller?.currentPaths[0]?.paths).toEqual([{ x: 1, y: 2 }]);
+		expect(requestAnimationFrame).toHaveBeenCalledOnce();
+
+		act(() => {
+			animationFrames[0]?.(performance.now());
+		});
+
+		expect(controller?.currentPaths[0]?.paths).toEqual([
+			{ x: 1, y: 2 },
+			{ x: 3, y: 4 },
+			{ x: 5, y: 6 },
+		]);
+		requestAnimationFrame.mockRestore();
+	});
+
+	it("flushes queued pointer moves before finishing a stroke", async () => {
+		const { requestAnimationFrame } = collectAnimationFrames();
+		let controller: ControllerSnapshot | undefined;
+		const onStroke = vi.fn();
+
+		render(
+			<Harness
+				onStroke={onStroke}
+				onReady={(next) => {
+					controller = next;
+				}}
+			/>,
+		);
+
+		act(() => {
+			controller?.handlePointerDown({ x: 1, y: 2 });
+			controller?.handlePointerMove({ x: 3, y: 4 });
+			controller?.handlePointerMove({ x: 5, y: 6 });
+			controller?.handlePointerUp();
+		});
+		await act(async () => {
+			await Promise.resolve();
+		});
+
+		expect(controller?.currentPaths[0]?.paths).toEqual([
+			{ x: 1, y: 2 },
+			{ x: 3, y: 4 },
+			{ x: 5, y: 6 },
+		]);
+		expect(onStroke).toHaveBeenLastCalledWith(
+			expect.objectContaining({
+				paths: [
+					{ x: 1, y: 2 },
+					{ x: 3, y: 4 },
+					{ x: 5, y: 6 },
+				],
+			}),
+			false,
+		);
+		expect(requestAnimationFrame).toHaveBeenCalledOnce();
+		requestAnimationFrame.mockRestore();
 	});
 
 	it("uses eraser stroke settings for eraser input", () => {
