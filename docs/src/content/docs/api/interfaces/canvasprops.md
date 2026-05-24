@@ -334,6 +334,29 @@ Inline styles applied to the internal SVG element.
 
 ***
 
+### touchAction?
+
+> `optional` **touchAction?**: `TouchAction`
+
+Defined in: [Canvas/types.ts:215](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L215)
+
+CSS `touch-action` applied to the canvas wrapper.
+
+#### Remarks
+
+The default is `"none"` when the canvas accepts touch drawing, so single
+finger gestures draw rather than scroll. Override this when you need the
+surrounding page to remain scrollable; for example, set `"pan-y"` to let
+users scroll vertically while still drawing with one finger. The browser
+will start a native pan only when the gesture matches the configured
+axis, so single-finger drawing continues to work.
+
+#### Default Value
+
+`"none"` for touch-drawing modes; `"pan-x pan-y pinch-zoom"` for pen / mouse only modes.
+
+***
+
 ### width
 
 > **width**: `string`

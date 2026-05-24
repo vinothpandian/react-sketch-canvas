@@ -1,0 +1,27 @@
+---
+title: Raster export quality
+description: Control raster export resolution with width, height, and pixel ratio.
+---
+
+import ExampleBlock from "../../../../components/ExampleBlock";
+import RasterExportQuality from "../../../../examples/RasterExportQuality";
+import RasterExportQualitySource from "../../../../examples/RasterExportQuality.tsx?raw";
+
+`exportImage()` accepts an optional `{ width, height }` second argument. When you omit it, the library scales the raster output by `window.devicePixelRatio` so the result stays sharp on high-DPI screens. When you pass explicit dimensions, the returned image is exactly that many pixels - which is what you want when generating fixed-size assets (thumbnails, social cards, print previews).
+
+A common pattern for "crisp, fixed logical size" output is to multiply your logical CSS dimensions by a target pixel ratio yourself before passing them in:
+
+```tsx
+const logicalWidth = 640;
+const logicalHeight = 360;
+const pixelRatio = 2;
+
+const dataUrl = await canvasRef.current?.exportImage("png", {
+  width: logicalWidth * pixelRatio,
+  height: logicalHeight * pixelRatio,
+});
+```
+
+<ExampleBlock source={RasterExportQualitySource}>
+  <RasterExportQuality />
+</ExampleBlock>
