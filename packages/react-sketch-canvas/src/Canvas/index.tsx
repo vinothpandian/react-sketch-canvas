@@ -95,19 +95,15 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
 		preserveBackgroundImageAspectRatio,
 	});
 
-	const {
-		handlePointerDown,
-		handlePointerMove,
-		handlePointerUp,
-		handlePointerCancel,
-	} = useCanvasPointerHandlers({
-		canvasRef,
-		isDrawing,
-		allowOnlyPointerType,
-		onPointerDown,
-		onPointerMove,
-		onPointerUp,
-	});
+	const { handlePointerDown, handlePointerMove, finishActivePointer } =
+		useCanvasPointerHandlers({
+			canvasRef,
+			isDrawing,
+			allowOnlyPointerType,
+			onPointerDown,
+			onPointerMove,
+			onPointerUp,
+		});
 	const acceptsTouchDrawing =
 		allowOnlyPointerType === "all" || allowOnlyPointerType === "touch";
 	const touchAction = acceptsTouchDrawing ? "none" : "pan-x pan-y pinch-zoom";
@@ -133,8 +129,8 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
 			}}
 			onPointerDown={readOnly ? undefined : handlePointerDown}
 			onPointerMove={readOnly ? undefined : handlePointerMove}
-			onPointerUp={readOnly ? undefined : handlePointerUp}
-			onPointerCancel={readOnly ? undefined : handlePointerCancel}
+			onPointerUp={readOnly ? undefined : finishActivePointer}
+			onPointerCancel={readOnly ? undefined : finishActivePointer}
 		>
 			<CanvasSvg
 				id={id}

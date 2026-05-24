@@ -50,7 +50,7 @@ function prepareStrokeSvgForRasterExport({
 	exportWithBackgroundImage,
 }: PrepareStrokeSvgForRasterExportParams): SVGElement {
 	if (exportWithBackgroundImage && backgroundImage) {
-		const strokeOnlySvg = removeBackgroundImageFromSvg(svgCanvas, id);
+		const strokeOnlySvg = removeBackgroundImageFromSvg(svgCanvas);
 
 		return prepareSvgForExport(strokeOnlySvg, {
 			id,

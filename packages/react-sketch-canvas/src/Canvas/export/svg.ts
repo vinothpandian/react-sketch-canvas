@@ -91,9 +91,7 @@ function namespaceSvgInternalIds(svgCanvas: SVGElement, id: string): void {
  */
 export function removeBackgroundImageFromSvg(
 	svgCanvas: SVGElement,
-	id: string,
 ): SVGElement {
-	void id;
 	queryInternalElement(svgCanvas, "background")?.remove();
 	queryInternalElement(svgCanvas, "canvas-background-group")?.remove();
 	queryInternalElement(svgCanvas, "canvas-background")?.remove();

@@ -47,10 +47,10 @@ function Harness({
 		<div
 			data-testid="canvas"
 			ref={canvasRef}
-			onPointerCancel={handlers.handlePointerCancel}
+			onPointerCancel={handlers.finishActivePointer}
 			onPointerDown={handlers.handlePointerDown}
 			onPointerMove={handlers.handlePointerMove}
-			onPointerUp={handlers.handlePointerUp}
+			onPointerUp={handlers.finishActivePointer}
 		/>
 	);
 }

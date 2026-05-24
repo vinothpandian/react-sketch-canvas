@@ -34,10 +34,12 @@ type UseCanvasPointerHandlersParams = Pick<
 type UseCanvasPointerHandlersReturns = {
 	handlePointerDown: (event: React.PointerEvent<HTMLDivElement>) => void;
 	handlePointerMove: (event: React.PointerEvent<HTMLDivElement>) => void;
-	handlePointerUp: (
-		event: React.PointerEvent<HTMLDivElement> | PointerEvent,
-	) => void;
-	handlePointerCancel: (
+	/**
+	 * Bound to both `onPointerUp` and `onPointerCancel`: in either case the
+	 * active stroke ends, since the pointer is no longer guaranteed to deliver
+	 * further move events.
+	 */
+	finishActivePointer: (
 		event: React.PointerEvent<HTMLDivElement> | PointerEvent,
 	) => void;
 };
@@ -182,7 +184,6 @@ export function useCanvasPointerHandlers({
 	return {
 		handlePointerDown,
 		handlePointerMove,
-		handlePointerUp: finishActivePointer,
-		handlePointerCancel: finishActivePointer,
+		finishActivePointer,
 	};
 }

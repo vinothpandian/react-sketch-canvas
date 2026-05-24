@@ -78,6 +78,17 @@ function isSvgDataUri(url: string): boolean {
 	return /^data:image\/svg\+xml(?:[;,]|$)/i.test(url);
 }
 
+function decodeBase64Utf8(data: string): string {
+	const binary = atob(data);
+	const bytes = new Uint8Array(binary.length);
+
+	for (let i = 0; i < binary.length; i += 1) {
+		bytes[i] = binary.charCodeAt(i);
+	}
+
+	return new TextDecoder("utf-8").decode(bytes);
+}
+
 function decodeSvgDataUri(url: string): string | null {
 	const match = /^data:image\/svg\+xml([^,]*),(.*)$/i.exec(url);
 
@@ -89,7 +100,7 @@ function decodeSvgDataUri(url: string): string | null {
 
 	try {
 		if (metadata.includes(";base64")) {
-			return decodeURIComponent(escape(atob(data)));
+			return decodeBase64Utf8(data);
 		}
 
 		return decodeURIComponent(data);

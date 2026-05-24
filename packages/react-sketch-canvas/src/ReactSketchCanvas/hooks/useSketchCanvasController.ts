@@ -35,7 +35,6 @@ type UseSketchCanvasControllerParams = Required<
 type UseSketchCanvasControllerReturns = {
 	currentPaths: CanvasPath[];
 	isDrawing: boolean;
-	drawMode: boolean;
 	setEraseMode: (erase: boolean) => void;
 	undo: () => void;
 	redo: () => void;
@@ -294,7 +293,6 @@ export function useSketchCanvasController({
 	return {
 		currentPaths,
 		isDrawing,
-		drawMode: state.drawMode,
 		setEraseMode,
 		undo,
 		redo,
