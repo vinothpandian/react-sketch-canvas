@@ -196,12 +196,18 @@ export function useSketchCanvasController({
 						!path.drawMode ||
 						!doesEraserStrokeHitStroke({ eraser: eraserStroke, stroke: path }),
 				);
+				const didEraseStroke =
+					updatedPaths.length < current.currentPaths.length;
 
 				return {
 					...current,
 					isDrawing: false,
 					activeStroke: null,
-					currentPaths: updatedPaths,
+					currentPaths: didEraseStroke ? updatedPaths : current.currentPaths,
+					historyPos: didEraseStroke
+						? current.historyPos
+						: current.historyPos - 1,
+					historySynced: didEraseStroke ? current.historySynced : true,
 					lastCompletedStroke: {
 						path: eraserStroke,
 						isEraser: true,

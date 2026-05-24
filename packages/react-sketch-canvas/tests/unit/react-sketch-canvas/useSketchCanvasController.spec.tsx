@@ -243,4 +243,39 @@ describe("useSketchCanvasController", () => {
 		});
 		expect(controller?.currentPaths).toHaveLength(0);
 	});
+
+	it("does not add an undo step when a stroke eraser misses every draw stroke", async () => {
+		let controller: ControllerSnapshot | undefined;
+
+		render(
+			<Harness
+				eraserMode="stroke"
+				onReady={(next) => {
+					controller = next;
+				}}
+			/>,
+		);
+
+		act(() => {
+			controller?.handlePointerDown({ x: 0, y: 0 });
+			controller?.handlePointerMove({ x: 20, y: 0 });
+			controller?.handlePointerUp();
+		});
+		act(() => {
+			controller?.setEraseMode(true);
+		});
+		act(() => {
+			controller?.handlePointerDown({ x: 100, y: 100 });
+			controller?.handlePointerMove({ x: 120, y: 100 });
+			controller?.handlePointerUp();
+		});
+
+		expect(controller?.currentPaths).toHaveLength(1);
+
+		await act(async () => {
+			controller?.enqueueOperation({ type: "undo" });
+			await Promise.resolve();
+		});
+		expect(controller?.currentPaths).toHaveLength(0);
+	});
 });
