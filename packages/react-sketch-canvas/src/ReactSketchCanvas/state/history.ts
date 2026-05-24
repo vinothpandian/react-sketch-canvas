@@ -1,5 +1,4 @@
 import type { CanvasPath } from "../../types";
-import type { Operation } from "./operations";
 
 export type CompletedStroke = {
 	path: CanvasPath;
@@ -11,8 +10,7 @@ export type CompletedStroke = {
  *
  * @remarks
  * `currentPaths` is the rendered drawing. `history` stores snapshots for
- * undo/redo. `operationQueue` serializes imperative ref operations so multiple
- * calls in the same render cycle are applied in order.
+ * undo/redo.
  */
 export type SketchState = {
 	drawMode: boolean;
@@ -23,8 +21,6 @@ export type SketchState = {
 	currentPaths: CanvasPath[];
 	activeStroke: CanvasPath | null;
 	lastCompletedStroke: CompletedStroke | null;
-	operationQueue: Operation[];
-	isProcessingQueue: boolean;
 };
 
 /**
@@ -40,8 +36,6 @@ export function createInitialSketchState(): SketchState {
 		currentPaths: [],
 		activeStroke: null,
 		lastCompletedStroke: null,
-		operationQueue: [],
-		isProcessingQueue: false,
 	};
 }
 

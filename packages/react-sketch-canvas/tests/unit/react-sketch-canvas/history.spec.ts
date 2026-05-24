@@ -108,10 +108,9 @@ describe("history state", () => {
 		expect(loaded.historyPos).toBe(2);
 	});
 
-	it("reset clears paths, history, and operation queue state", () => {
+	it("reset clears paths and history state", () => {
 		expect(resetCanvasState().history).toEqual([]);
 		expect(resetCanvasState().historyPos).toBe(0);
 		expect(resetCanvasState().currentPaths).toEqual([]);
-		expect(resetCanvasState().operationQueue).toEqual([]);
 	});
 });

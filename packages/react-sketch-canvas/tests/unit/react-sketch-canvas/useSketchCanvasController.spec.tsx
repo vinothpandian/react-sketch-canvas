@@ -231,15 +231,13 @@ describe("useSketchCanvasController", () => {
 
 		expect(controller?.currentPaths).toHaveLength(0);
 
-		await act(async () => {
-			controller?.enqueueOperation({ type: "undo" });
-			await Promise.resolve();
+		act(() => {
+			controller?.undo();
 		});
 		expect(controller?.currentPaths).toHaveLength(1);
 
-		await act(async () => {
-			controller?.enqueueOperation({ type: "redo" });
-			await Promise.resolve();
+		act(() => {
+			controller?.redo();
 		});
 		expect(controller?.currentPaths).toHaveLength(0);
 	});
@@ -272,9 +270,8 @@ describe("useSketchCanvasController", () => {
 
 		expect(controller?.currentPaths).toHaveLength(1);
 
-		await act(async () => {
-			controller?.enqueueOperation({ type: "undo" });
-			await Promise.resolve();
+		act(() => {
+			controller?.undo();
 		});
 		expect(controller?.currentPaths).toHaveLength(0);
 	});

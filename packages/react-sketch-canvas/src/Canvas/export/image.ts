@@ -124,13 +124,8 @@ export async function exportImageFromSvg({
 		throw Error("Canvas not rendered yet");
 	}
 
-	const shouldFillCanvasBackground =
-		imageType === "jpeg" || !backgroundImage || !exportWithBackgroundImage;
-
-	if (shouldFillCanvasBackground) {
-		context.fillStyle = canvasColor;
-		context.fillRect(0, 0, exportWidth, exportHeight);
-	}
+	context.fillStyle = canvasColor;
+	context.fillRect(0, 0, exportWidth, exportHeight);
 
 	const backgroundLayer = await loadBackgroundLayer(backgroundLayerPlan);
 

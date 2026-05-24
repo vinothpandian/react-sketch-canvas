@@ -57,7 +57,10 @@ export const ReactSketchCanvas = React.forwardRef<
 	const {
 		currentPaths,
 		isDrawing,
-		enqueueOperation,
+		undo,
+		redo,
+		clearCanvas,
+		loadPaths,
 		resetCanvas,
 		setEraseMode,
 		handlePointerDown,
@@ -78,7 +81,10 @@ export const ReactSketchCanvas = React.forwardRef<
 		currentPaths,
 		withTimestamp,
 		setEraseMode,
-		enqueueOperation,
+		undo,
+		redo,
+		clearCanvas,
+		loadPaths,
 		resetCanvas,
 	});
 

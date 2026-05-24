@@ -5,7 +5,6 @@ import type {
 	ExportImageOptions,
 	ExportImageType,
 } from "../../types";
-import type { Operation } from "../state/operations";
 import { getSketchingTime } from "../state/sketchingTime";
 import type { ReactSketchCanvasRef } from "../types";
 
@@ -14,7 +13,10 @@ type UseSketchCanvasImperativeHandleParams = {
 	currentPaths: CanvasPath[];
 	withTimestamp: boolean;
 	setEraseMode: (erase: boolean) => void;
-	enqueueOperation: (operation: Operation) => void;
+	undo: () => void;
+	redo: () => void;
+	clearCanvas: () => void;
+	loadPaths: (paths: CanvasPath[]) => void;
 	resetCanvas: () => void;
 };
 
@@ -34,7 +36,10 @@ export function useSketchCanvasImperativeHandle(
 		currentPaths,
 		withTimestamp,
 		setEraseMode,
-		enqueueOperation,
+		undo,
+		redo,
+		clearCanvas,
+		loadPaths,
 		resetCanvas,
 	}: UseSketchCanvasImperativeHandleParams,
 ): UseSketchCanvasImperativeHandleReturns {
@@ -43,13 +48,13 @@ export function useSketchCanvasImperativeHandle(
 		() => ({
 			eraseMode: setEraseMode,
 			clearCanvas: (): void => {
-				enqueueOperation({ type: "clear" });
+				clearCanvas();
 			},
 			undo: (): void => {
-				enqueueOperation({ type: "undo" });
+				undo();
 			},
 			redo: (): void => {
-				enqueueOperation({ type: "redo" });
+				redo();
 			},
 			exportImage: (
 				imageType: ExportImageType,
@@ -74,7 +79,7 @@ export function useSketchCanvasImperativeHandle(
 			},
 			exportPaths: async (): Promise<CanvasPath[]> => currentPaths,
 			loadPaths: (paths: CanvasPath[]): void => {
-				enqueueOperation({ type: "loadPaths", payload: paths });
+				loadPaths(paths);
 			},
 			getSketchingTime: async (): Promise<number> => {
 				if (!withTimestamp) {
@@ -88,7 +93,10 @@ export function useSketchCanvasImperativeHandle(
 		[
 			canvasRef,
 			currentPaths,
-			enqueueOperation,
+			undo,
+			redo,
+			clearCanvas,
+			loadPaths,
 			resetCanvas,
 			setEraseMode,
 			withTimestamp,

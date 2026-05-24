@@ -4,15 +4,14 @@ import { doesEraserStrokeHitStroke } from "../../Paths/geometry";
 import type { CanvasPath, Point } from "../../types";
 import {
 	addLastStrokeToHistory,
+	clearCanvasState,
 	createInitialSketchState,
+	loadPathsState,
+	redoState,
 	resetCanvasState,
 	type SketchState,
+	undoState,
 } from "../state/history";
-import {
-	applyOperation,
-	enqueueOperation as enqueueOperationInState,
-	type Operation,
-} from "../state/operations";
 import {
 	appendPointToLastStroke,
 	createStroke,
@@ -38,7 +37,10 @@ type UseSketchCanvasControllerReturns = {
 	isDrawing: boolean;
 	drawMode: boolean;
 	setEraseMode: (erase: boolean) => void;
-	enqueueOperation: (operation: Operation) => void;
+	undo: () => void;
+	redo: () => void;
+	clearCanvas: () => void;
+	loadPaths: (paths: CanvasPath[]) => void;
 	resetCanvas: () => void;
 	handlePointerDown: (point: Point, isEraser?: boolean) => void;
 	handlePointerMove: (point: Point) => void;
@@ -95,30 +97,20 @@ export function useSketchCanvasController({
 		onChangeRef.current(currentPaths);
 	}, [currentPaths]);
 
-	React.useEffect(() => {
-		if (state.isProcessingQueue || state.operationQueue.length === 0) return;
+	const undo = useCallback((): void => {
+		setState((current) => undoState(current));
+	}, []);
 
-		setState((current) => {
-			if (current.isProcessingQueue || current.operationQueue.length === 0) {
-				return current;
-			}
+	const redo = useCallback((): void => {
+		setState((current) => redoState(current));
+	}, []);
 
-			const [operation, ...remainingQueue] = current.operationQueue;
-			const processed = applyOperation(
-				{ ...current, isProcessingQueue: true },
-				operation,
-			);
+	const clearCanvas = useCallback((): void => {
+		setState((current) => clearCanvasState(current));
+	}, []);
 
-			return {
-				...processed,
-				operationQueue: remainingQueue,
-				isProcessingQueue: false,
-			};
-		});
-	}, [state.isProcessingQueue, state.operationQueue]);
-
-	const enqueueOperation = useCallback((operation: Operation) => {
-		setState((current) => enqueueOperationInState(current, operation));
+	const loadPaths = useCallback((paths: CanvasPath[]): void => {
+		setState((current) => loadPathsState(current, paths));
 	}, []);
 
 	const setEraseMode = useCallback((erase: boolean): void => {
@@ -242,7 +234,10 @@ export function useSketchCanvasController({
 		isDrawing,
 		drawMode: state.drawMode,
 		setEraseMode,
-		enqueueOperation,
+		undo,
+		redo,
+		clearCanvas,
+		loadPaths,
 		resetCanvas,
 		handlePointerDown,
 		handlePointerMove,
