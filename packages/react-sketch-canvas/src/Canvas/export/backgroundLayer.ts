@@ -322,11 +322,11 @@ function drawDirectImageLayer({
 export async function loadBackgroundLayer(
 	plan: BackgroundLayerPlan,
 ): LoadBackgroundLayerReturns {
-	try {
-		if (plan.kind === "none") {
-			return null;
-		}
+	if (plan.kind === "none") {
+		return null;
+	}
 
+	try {
 		if (plan.kind === "svg-wrapper") {
 			const backgroundSvg = createSvgBackgroundLayer(plan);
 
@@ -334,11 +334,11 @@ export async function loadBackgroundLayer(
 		}
 
 		return await loadImage(normalizeSvgDataUriDimensions(plan.backgroundImage));
-	} catch {
-		console.warn(
-			"React Sketch Canvas could not load the background image while exporting. Check that backgroundImage points to a reachable image and allows cross-origin access.",
+	} catch (cause) {
+		throw new Error(
+			"Cannot export: the background image failed to load. Check that backgroundImage points to a reachable image and allows cross-origin access.",
+			{ cause },
 		);
-		return null;
 	}
 }
 

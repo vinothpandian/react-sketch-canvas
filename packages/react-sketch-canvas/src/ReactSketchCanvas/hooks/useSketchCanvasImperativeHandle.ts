@@ -63,7 +63,9 @@ export function useSketchCanvasImperativeHandle(
 				const exportImage = canvasRef.current?.exportImage;
 
 				if (!exportImage) {
-					throw Error("Export function called before canvas loaded");
+					throw new Error(
+						"Cannot export: the canvas is not ready yet. Wait until the component has mounted before calling exportImage().",
+					);
 				}
 
 				return exportImage(imageType, options);
@@ -72,7 +74,9 @@ export function useSketchCanvasImperativeHandle(
 				const exportSvg = canvasRef.current?.exportSvg;
 
 				if (!exportSvg) {
-					throw Error("Export function called before canvas loaded");
+					throw new Error(
+						"Cannot export: the canvas is not ready yet. Wait until the component has mounted before calling exportSvg().",
+					);
 				}
 
 				return exportSvg();

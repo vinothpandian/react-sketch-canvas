@@ -85,10 +85,10 @@ describe("useSketchCanvasImperativeHandle", () => {
 		render(<Harness forwardedRef={ref} canvasRefOverride={null} />);
 
 		expect(() => ref.current?.exportImage("png")).toThrow(
-			"Export function called before canvas loaded",
+			"Cannot export: the canvas is not ready yet. Wait until the component has mounted before calling exportImage().",
 		);
 		await expect(ref.current?.exportSvg()).rejects.toThrow(
-			"Export function called before canvas loaded",
+			"Cannot export: the canvas is not ready yet. Wait until the component has mounted before calling exportSvg().",
 		);
 	});
 

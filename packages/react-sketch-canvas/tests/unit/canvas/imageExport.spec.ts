@@ -367,8 +367,7 @@ describe("exportImageFromSvg", () => {
 		);
 	});
 
-	it("continues exporting strokes when the background image cannot be loaded", async () => {
-		const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+	it("throws when the background image cannot be loaded", async () => {
 		const backgroundImage = "https://example.com/missing-bg.png";
 		MockImage.failingSources.add(backgroundImage);
 		const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -378,25 +377,19 @@ describe("exportImageFromSvg", () => {
 			<g id="canvas__stroke-group-0"></g>
 		`;
 
-		await exportImageFromSvg({
-			id: "canvas",
-			svgCanvas: svg,
-			svgWidth: 200,
-			svgHeight: 100,
-			imageType: "png",
-			canvasColor: "white",
-			backgroundImage,
-			exportWithBackgroundImage: true,
-		});
-
-		const [strokeImage] = MockImage.instances;
-
-		expect(warn).toHaveBeenCalledWith(
-			"React Sketch Canvas could not load the background image while exporting. Check that backgroundImage points to a reachable image and allows cross-origin access.",
+		await expect(
+			exportImageFromSvg({
+				id: "canvas",
+				svgCanvas: svg,
+				svgWidth: 200,
+				svgHeight: 100,
+				imageType: "png",
+				canvasColor: "white",
+				backgroundImage,
+				exportWithBackgroundImage: true,
+			}),
+		).rejects.toThrow(
+			"Cannot export: the background image failed to load. Check that backgroundImage points to a reachable image and allows cross-origin access.",
 		);
-		expect(drawImage).toHaveBeenCalledTimes(1);
-		expect(drawImage).toHaveBeenCalledWith(strokeImage, 0, 0, 200, 100);
-
-		warn.mockRestore();
 	});
 });

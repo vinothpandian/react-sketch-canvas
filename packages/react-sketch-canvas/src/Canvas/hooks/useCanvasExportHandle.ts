@@ -44,7 +44,9 @@ export function useCanvasExportHandle(
 			const canvas = canvasRef.current;
 
 			if (!canvas) {
-				throw Error("Canvas not rendered yet");
+				throw new Error(
+					"Cannot export: the canvas is not ready yet. Wait until the component has mounted before calling exportImage().",
+				);
 			}
 
 			const { svgCanvas, width, height } = getCanvasWithViewBox(canvas);
@@ -66,7 +68,9 @@ export function useCanvasExportHandle(
 			const canvas = canvasRef.current;
 
 			if (!canvas) {
-				throw new Error("Canvas not loaded");
+				throw new Error(
+					"Cannot export: the canvas is not ready yet. Wait until the component has mounted before calling exportSvg().",
+				);
 			}
 
 			const { svgCanvas } = getCanvasWithViewBox(canvas);
