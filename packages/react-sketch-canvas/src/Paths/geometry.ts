@@ -93,6 +93,13 @@ export const bezierCommand = (point: Point, i: number, a: Point[]): string => {
 const distanceBetweenPoints = (pointA: Point, pointB: Point): number =>
 	line(pointA, pointB).length;
 
+/**
+ * Measure the shortest distance from a point to a finite line segment.
+ *
+ * @remarks
+ * The projected point is clamped to the segment endpoints, so this works for
+ * both normal segments and degenerate single-point segments.
+ */
 const distanceFromPointToSegment = (
 	point: Point,
 	[start, end]: Segment,
@@ -116,16 +123,34 @@ const distanceFromPointToSegment = (
 	return distanceBetweenPoints(point, closestPoint);
 };
 
+/**
+ * Return the signed orientation of three points.
+ *
+ * @remarks
+ * Segment intersection uses the sign to determine whether two points sit on
+ * opposite sides of another segment. A zero value means the points are
+ * collinear.
+ */
 const orientation = (pointA: Point, pointB: Point, pointC: Point): number =>
 	(pointB.y - pointA.y) * (pointC.x - pointB.x) -
 	(pointB.x - pointA.x) * (pointC.y - pointB.y);
 
+/**
+ * Check whether a collinear point lies within a segment's bounding box.
+ */
 const isPointOnSegment = (point: Point, [start, end]: Segment): boolean =>
 	point.x <= Math.max(start.x, end.x) &&
 	point.x >= Math.min(start.x, end.x) &&
 	point.y <= Math.max(start.y, end.y) &&
 	point.y >= Math.min(start.y, end.y);
 
+/**
+ * Determine whether two finite segments touch or cross.
+ *
+ * @remarks
+ * This handles both the normal crossing case and collinear endpoint overlap,
+ * which matters for eraser strokes that travel directly along a drawing stroke.
+ */
 const doSegmentsIntersect = (
 	[firstStart, firstEnd]: Segment,
 	[secondStart, secondEnd]: Segment,
@@ -156,6 +181,13 @@ const doSegmentsIntersect = (
 	);
 };
 
+/**
+ * Measure the shortest distance between two finite segments.
+ *
+ * @remarks
+ * Intersecting segments have zero distance. Otherwise, the minimum must occur
+ * between one segment endpoint and the opposite segment.
+ */
 const distanceBetweenSegments = (
 	firstSegment: Segment,
 	secondSegment: Segment,
@@ -175,6 +207,13 @@ const distanceBetweenSegments = (
 	);
 };
 
+/**
+ * Convert a stroke's point list into finite segments for hit testing.
+ *
+ * @remarks
+ * Single-point strokes are represented as degenerate segments so dots can be
+ * erased with the same distance logic as multi-point strokes.
+ */
 const strokeSegments = (stroke: CanvasPath): Segment[] =>
 	stroke.paths.length > 1
 		? stroke.paths
