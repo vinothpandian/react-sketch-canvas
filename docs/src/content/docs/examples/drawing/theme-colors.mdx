@@ -1,0 +1,16 @@
+---
+title: Dark and light mode
+description: Use custom CSS to adapt canvas colors to the user's color scheme.
+---
+
+import ExampleBlock from "../../../../components/ExampleBlock";
+import ThemeColors from "../../../../examples/ThemeColors";
+import ThemeColorsSource from "../../../../examples/ThemeColors.tsx?raw";
+
+`ReactSketchCanvas` does not switch colors automatically when the user's system theme changes. Keep theme state in your own app, or use CSS variables that respond to `prefers-color-scheme`.
+
+Pass those variables to `canvasColor` and `strokeColor` so the canvas uses the same theme tokens as the surrounding UI. This example toggles a `data-theme` attribute, and the CSS also shows how to fall back to the user's system color scheme.
+
+<ExampleBlock source={ThemeColorsSource}>
+  <ThemeColors />
+</ExampleBlock>
