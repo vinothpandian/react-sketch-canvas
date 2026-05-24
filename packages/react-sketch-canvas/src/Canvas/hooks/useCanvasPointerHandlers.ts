@@ -43,6 +43,9 @@ type UseCanvasPointerHandlersReturns = {
 	handlePointerUp: (
 		event: React.PointerEvent<HTMLDivElement> | PointerEvent,
 	) => void;
+	handlePointerCancel: (
+		event: React.PointerEvent<HTMLDivElement> | PointerEvent,
+	) => void;
 };
 
 /**
@@ -97,6 +100,8 @@ export function useCanvasPointerHandlers({
 	onPointerMove,
 	onPointerUp,
 }: UseCanvasPointerHandlersParams): UseCanvasPointerHandlersReturns {
+	const activePointerIdRef = React.useRef<number | null>(null);
+
 	const getCoordinates = useCallback(
 		(pointerEvent: React.PointerEvent<HTMLDivElement>): Point => {
 			const boundingArea = canvasRef.current?.getBoundingClientRect();
@@ -116,12 +121,34 @@ export function useCanvasPointerHandlers({
 		[canvasRef, canvasSizeRef],
 	);
 
+	const isActivePointer = useCallback(
+		(event: React.PointerEvent<HTMLDivElement> | PointerEvent): boolean =>
+			activePointerIdRef.current === event.pointerId,
+		[],
+	);
+
+	const finishActivePointer = useCallback(
+		(event: React.PointerEvent<HTMLDivElement> | PointerEvent): void => {
+			if (!isActivePointer(event)) return;
+
+			activePointerIdRef.current = null;
+			onPointerUp();
+		},
+		[isActivePointer, onPointerUp],
+	);
+
 	const handlePointerDown = useCallback(
 		(event: React.PointerEvent<HTMLDivElement>): void => {
+			if (activePointerIdRef.current !== null) return;
 			if (!isAllowedPointerType(allowOnlyPointerType, event.pointerType))
 				return;
 			if (!shouldHandlePointerButton(event.pointerType, event.button)) return;
 
+			if (event.isTrusted) {
+				event.currentTarget.setPointerCapture(event.pointerId);
+			}
+
+			activePointerIdRef.current = event.pointerId;
 			onPointerDown(
 				getCoordinates(event),
 				isPenEraser(event.pointerType, event.buttons),
@@ -133,35 +160,17 @@ export function useCanvasPointerHandlers({
 	const handlePointerMove = useCallback(
 		(event: React.PointerEvent<HTMLDivElement>): void => {
 			if (!isDrawing) return;
-			if (!isAllowedPointerType(allowOnlyPointerType, event.pointerType))
-				return;
+			if (!isActivePointer(event)) return;
 
 			onPointerMove(getCoordinates(event));
 		},
-		[allowOnlyPointerType, getCoordinates, isDrawing, onPointerMove],
+		[getCoordinates, isActivePointer, isDrawing, onPointerMove],
 	);
-
-	const handlePointerUp = useCallback(
-		(event: React.PointerEvent<HTMLDivElement> | PointerEvent): void => {
-			if (!shouldHandlePointerButton(event.pointerType, event.button)) return;
-			if (!isAllowedPointerType(allowOnlyPointerType, event.pointerType))
-				return;
-
-			onPointerUp();
-		},
-		[allowOnlyPointerType, onPointerUp],
-	);
-
-	React.useEffect(() => {
-		document.addEventListener("pointerup", handlePointerUp);
-		return () => {
-			document.removeEventListener("pointerup", handlePointerUp);
-		};
-	}, [handlePointerUp]);
 
 	return {
 		handlePointerDown,
 		handlePointerMove,
-		handlePointerUp,
+		handlePointerUp: finishActivePointer,
+		handlePointerCancel: finishActivePointer,
 	};
 }

@@ -3,7 +3,7 @@ import { type CanvasPath, ReactSketchCanvas } from "../../src";
 
 test.use({ viewport: { width: 500, height: 500 } });
 
-test("document pointerup completes an in-progress stroke when the pointer leaves the canvas", async ({
+test("captured canvas pointerup completes an in-progress stroke after leaving the canvas", async ({
 	mount,
 }) => {
 	let paths: CanvasPath[] = [];
@@ -25,6 +25,7 @@ test("document pointerup completes an in-progress stroke when the pointer leaves
 	}
 
 	await canvas.dispatchEvent("pointerdown", {
+		pointerId: 1,
 		pointerType: "pen",
 		button: 0,
 		buttons: 1,
@@ -34,6 +35,7 @@ test("document pointerup completes an in-progress stroke when the pointer leaves
 		pageY: box.y + 10,
 	});
 	await canvas.dispatchEvent("pointermove", {
+		pointerId: 1,
 		pointerType: "pen",
 		button: 0,
 		buttons: 1,
@@ -42,14 +44,11 @@ test("document pointerup completes an in-progress stroke when the pointer leaves
 		pageX: box.x + 40,
 		pageY: box.y + 40,
 	});
-	await component.evaluate(() => {
-		document.dispatchEvent(
-			new PointerEvent("pointerup", {
-				pointerType: "pen",
-				button: 0,
-				buttons: 0,
-			}),
-		);
+	await canvas.dispatchEvent("pointerup", {
+		pointerId: 1,
+		pointerType: "pen",
+		button: 0,
+		buttons: 0,
 	});
 
 	await expect.poll(() => paths.at(0)?.endTimestamp ?? 0).toBeGreaterThan(0);
