@@ -1,5 +1,19 @@
 import { describe, expect, it } from "vitest";
-import { bezierCommand, line } from "../../../src/Paths/geometry";
+import {
+	bezierCommand,
+	doesEraserStrokeHitStroke,
+	line,
+} from "../../../src/Paths/geometry";
+import type { CanvasPath } from "../../../src/types";
+
+function path(paths: CanvasPath["paths"], strokeWidth = 4): CanvasPath {
+	return {
+		paths,
+		strokeWidth,
+		strokeColor: "red",
+		drawMode: true,
+	};
+}
 
 describe("Paths geometry", () => {
 	it("measures the length and angle between two points", () => {
@@ -19,5 +33,72 @@ describe("Paths geometry", () => {
 		expect(command.startsWith("C ")).toBe(true);
 		expect(command.endsWith(" 10, 0")).toBe(true);
 		expect(command).toMatch(/^C [^ ]+ [^ ]+ 10, 0$/);
+	});
+
+	it("detects crossing eraser and drawing segments", () => {
+		const eraser = path(
+			[
+				{ x: 5, y: -10 },
+				{ x: 5, y: 10 },
+			],
+			8,
+		);
+		const stroke = path([
+			{ x: 0, y: 0 },
+			{ x: 10, y: 0 },
+		]);
+
+		expect(doesEraserStrokeHitStroke({ eraser, stroke })).toBe(true);
+	});
+
+	it("does not hit a drawing segment outside the eraser radius", () => {
+		const eraser = path(
+			[
+				{ x: 0, y: 0 },
+				{ x: 10, y: 0 },
+			],
+			8,
+		);
+		const stroke = path(
+			[
+				{ x: 0, y: 9 },
+				{ x: 10, y: 9 },
+			],
+			4,
+		);
+
+		expect(doesEraserStrokeHitStroke({ eraser, stroke })).toBe(false);
+	});
+
+	it("detects single-point drawing strokes inside the swept eraser stroke", () => {
+		const eraser = path(
+			[
+				{ x: 0, y: 0 },
+				{ x: 10, y: 0 },
+			],
+			8,
+		);
+		const stroke = path([{ x: 5, y: 5 }], 4);
+
+		expect(doesEraserStrokeHitStroke({ eraser, stroke })).toBe(true);
+	});
+
+	it("includes half of the target stroke width in the hit threshold", () => {
+		const eraser = path(
+			[
+				{ x: 0, y: 0 },
+				{ x: 10, y: 0 },
+			],
+			8,
+		);
+		const stroke = path(
+			[
+				{ x: 0, y: 6 },
+				{ x: 10, y: 6 },
+			],
+			4,
+		);
+
+		expect(doesEraserStrokeHitStroke({ eraser, stroke })).toBe(true);
 	});
 });

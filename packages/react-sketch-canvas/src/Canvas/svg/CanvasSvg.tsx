@@ -14,6 +14,7 @@ type CanvasSvgProps = Required<Pick<CanvasProps, "id">> &
 		| "preserveBackgroundImageAspectRatio"
 		| "svgStyle"
 	> & {
+		internalId: string;
 		viewBox?: string;
 	};
 
@@ -27,6 +28,7 @@ type CanvasSvgProps = Required<Pick<CanvasProps, "id">> &
  */
 export function CanvasSvg({
 	id,
+	internalId,
 	paths,
 	canvasColor,
 	backgroundImage,
@@ -53,22 +55,29 @@ export function CanvasSvg({
 			viewBox={viewBox}
 		>
 			<defs>
-				<HiddenEraserStrokes id={id} eraserPaths={eraserPaths} />
+				<HiddenEraserStrokes
+					internalId={internalId}
+					eraserPaths={eraserPaths}
+				/>
 				<BackgroundPattern
-					id={id}
+					internalId={internalId}
 					backgroundImage={backgroundImage}
 					preserveBackgroundImageAspectRatio={
 						preserveBackgroundImageAspectRatio
 					}
 				/>
-				<EraserMaskDefs id={id} eraserPaths={eraserPaths} />
+				<EraserMaskDefs internalId={internalId} eraserPaths={eraserPaths} />
 			</defs>
 			<BackgroundRect
-				id={id}
+				internalId={internalId}
 				backgroundImage={backgroundImage}
 				canvasColor={canvasColor}
 			/>
-			<StrokeGroups id={id} pathGroups={pathGroups} eraserPaths={eraserPaths} />
+			<StrokeGroups
+				internalId={internalId}
+				pathGroups={pathGroups}
+				eraserPaths={eraserPaths}
+			/>
 		</svg>
 	);
 }

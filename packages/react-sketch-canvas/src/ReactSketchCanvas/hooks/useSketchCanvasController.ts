@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useCallback } from "react";
+import { doesEraserStrokeHitStroke } from "../../Paths/geometry";
 import type { CanvasPath, Point } from "../../types";
 import {
 	addLastStrokeToHistory,
@@ -25,6 +26,7 @@ type UseSketchCanvasControllerParams = Required<
 		| "strokeColor"
 		| "strokeWidth"
 		| "eraserWidth"
+		| "eraserMode"
 		| "withTimestamp"
 		| "onChange"
 		| "onStroke"
@@ -55,6 +57,7 @@ export function useSketchCanvasController({
 	strokeColor,
 	strokeWidth,
 	eraserWidth,
+	eraserMode,
 	withTimestamp,
 	onChange,
 	onStroke,
@@ -65,24 +68,32 @@ export function useSketchCanvasController({
 
 	const currentPaths = state.currentPaths;
 	const isDrawing = state.isDrawing;
-
-	// Keep the legacy stroke callback timing: the completed stroke is reported
-	// on the render after drawing transitions from active to inactive.
-	// biome-ignore lint/correctness/useExhaustiveDependencies: preserve legacy stroke-lift timing tied only to drawing state changes.
-	const liftStrokeUp = React.useCallback((): void => {
-		const lastStroke = currentPaths.slice(-1)?.[0] ?? null;
-		if (lastStroke === null) return;
-
-		onStroke(lastStroke, !lastStroke.drawMode);
-	}, [isDrawing]);
+	const onChangeRef = React.useRef(onChange);
+	const onStrokeRef = React.useRef(onStroke);
 
 	React.useEffect(() => {
-		liftStrokeUp();
-	}, [liftStrokeUp]);
+		onChangeRef.current = onChange;
+	}, [onChange]);
 
 	React.useEffect(() => {
-		onChange(currentPaths);
-	}, [currentPaths, onChange]);
+		onStrokeRef.current = onStroke;
+	}, [onStroke]);
+
+	React.useEffect(() => {
+		if (isDrawing || state.lastCompletedStroke === null) return;
+
+		const completedStroke = state.lastCompletedStroke;
+		onStrokeRef.current(completedStroke.path, completedStroke.isEraser);
+		setState((current) =>
+			current.lastCompletedStroke === completedStroke
+				? { ...current, lastCompletedStroke: null }
+				: current,
+		);
+	}, [isDrawing, state.lastCompletedStroke]);
+
+	React.useEffect(() => {
+		onChangeRef.current(currentPaths);
+	}, [currentPaths]);
 
 	React.useEffect(() => {
 		if (state.isProcessingQueue || state.operationQueue.length === 0) return;
@@ -132,22 +143,36 @@ export function useSketchCanvasController({
 					withTimestamp,
 					now: Date.now(),
 				});
+				const isStrokeEraser = !isDraw && eraserMode === "stroke";
 
 				return {
 					...synced,
 					isDrawing: true,
 					historyPos: synced.historyPos + 1,
 					historySynced: false,
-					currentPaths: [...synced.currentPaths, stroke],
+					activeStroke: isStrokeEraser ? stroke : null,
+					currentPaths: isStrokeEraser
+						? synced.currentPaths
+						: [...synced.currentPaths, stroke],
 				};
 			});
 		},
-		[eraserWidth, strokeColor, strokeWidth, withTimestamp],
+		[eraserMode, eraserWidth, strokeColor, strokeWidth, withTimestamp],
 	);
 
 	const handlePointerMove = useCallback((point: Point): void => {
 		setState((current) => {
 			if (!current.isDrawing) return current;
+
+			if (current.activeStroke !== null) {
+				return {
+					...current,
+					activeStroke: appendPointToLastStroke(
+						[current.activeStroke],
+						point,
+					)[0] as CanvasPath,
+				};
+			}
 
 			return {
 				...current,
@@ -160,14 +185,54 @@ export function useSketchCanvasController({
 		setState((current) => {
 			if (!current.isDrawing) return current;
 
+			if (current.activeStroke !== null) {
+				const [eraserStroke] = finishStroke(
+					[current.activeStroke],
+					withTimestamp,
+					Date.now(),
+				);
+				const updatedPaths = current.currentPaths.filter(
+					(path) =>
+						!path.drawMode ||
+						!doesEraserStrokeHitStroke({ eraser: eraserStroke, stroke: path }),
+				);
+				const didEraseStroke =
+					updatedPaths.length < current.currentPaths.length;
+
+				return {
+					...current,
+					isDrawing: false,
+					activeStroke: null,
+					currentPaths: didEraseStroke ? updatedPaths : current.currentPaths,
+					historyPos: didEraseStroke
+						? current.historyPos
+						: current.historyPos - 1,
+					historySynced: didEraseStroke ? current.historySynced : true,
+					lastCompletedStroke: {
+						path: eraserStroke,
+						isEraser: true,
+					},
+				};
+			}
+
+			const currentPaths = finishStroke(
+				current.currentPaths,
+				withTimestamp,
+				Date.now(),
+			);
+			const lastStroke = currentPaths.slice(-1)?.[0] ?? null;
+
 			return {
 				...current,
 				isDrawing: false,
-				currentPaths: finishStroke(
-					current.currentPaths,
-					withTimestamp,
-					Date.now(),
-				),
+				currentPaths,
+				lastCompletedStroke:
+					lastStroke === null
+						? null
+						: {
+								path: lastStroke,
+								isEraser: !lastStroke.drawMode,
+							},
 			};
 		});
 	}, [withTimestamp]);

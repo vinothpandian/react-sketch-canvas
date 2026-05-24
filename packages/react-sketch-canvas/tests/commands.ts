@@ -2,18 +2,19 @@ import type { Locator } from "playwright/test";
 import type { DrawLineArgs, DrawPointArgs, DrawSquareArgs } from "./types";
 
 export function getCanvasIds(id: string) {
-	const canvasBackgroundId = `#${id}__canvas-background`;
-	const backgroundImagePatternId = `pattern#${id}__background image`;
-	const firstStrokeGroupId = `#${id}__stroke-group-0`;
-	const secondStrokeGroupId = `#${id}__stroke-group-1`;
-	const eraserStrokeGroupId = `#${id}__eraser-stroke-group`;
+	void id;
+	const canvasBackgroundId = '[id$="__canvas-background"]';
+	const backgroundImagePatternId = 'pattern[id$="__background"] image';
+	const firstStrokeGroupId = '[id$="__stroke-group-0"]';
+	const secondStrokeGroupId = '[id$="__stroke-group-1"]';
+	const eraserStrokeGroupId = '[id$="__eraser-stroke-group"]';
 
-	const firstStrokePathId = `#${id}__stroke-group-0__paths__0`;
-	const firstEraserStrokeId = `#${id}__eraser-0`;
-	const firstEraserMaskId = `${id}__eraser-mask-0`;
-	const firstEraserMask = `mask#${firstEraserMaskId}`;
-	const secondEraserMaskId = `${id}__eraser-mask-1`;
-	const secondEraserMask = `mask#${secondEraserMaskId}`;
+	const firstStrokePathId = '[id$="__stroke-group-0__paths__0"]';
+	const firstEraserStrokeId = '[id$="__eraser-0"]';
+	const firstEraserMaskId = "__eraser-mask-0";
+	const firstEraserMask = 'mask[id$="__eraser-mask-0"]';
+	const secondEraserMaskId = "__eraser-mask-1";
+	const secondEraserMask = 'mask[id$="__eraser-mask-1"]';
 
 	return {
 		canvasBackgroundId,

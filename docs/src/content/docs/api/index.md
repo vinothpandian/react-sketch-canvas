@@ -18,6 +18,7 @@ title: "react-sketch-canvas"
 ## Type Aliases
 
 - [AllowOnlyPointerType](/api/type-aliases/allowonlypointertype/)
+- [EraserMode](/api/type-aliases/erasermode/)
 - [ExportImageType](/api/type-aliases/exportimagetype/)
 
 ## Variables

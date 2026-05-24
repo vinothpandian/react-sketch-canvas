@@ -53,6 +53,24 @@ describe("canvas SVG export helpers", () => {
 		expect(exported.outerHTML).toContain('fill="pink"');
 	});
 
+	it("removes internally isolated background ids when exporting without background image", () => {
+		const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+		svg.innerHTML = `
+			<defs><pattern id="canvas__r0__background"></pattern></defs>
+			<rect id="canvas__r0__canvas-background" fill="url(#canvas__r0__background)"></rect>
+		`;
+
+		const exported = prepareSvgForExport(svg, {
+			id: "canvas",
+			canvasColor: "pink",
+			exportWithBackgroundImage: false,
+		});
+
+		expect(exported.outerHTML).not.toContain('id="canvas__r0__background"');
+		expect(exported.outerHTML).not.toContain("url(#canvas__r0__background)");
+		expect(exported.outerHTML).toContain('fill="pink"');
+	});
+
 	it("rewrites internal ids and references so exported SVG markup does not collide with the live canvas", () => {
 		const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 		svg.innerHTML = `

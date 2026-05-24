@@ -1,9 +1,9 @@
 import type * as React from "react";
 import Paths from "../../Paths";
 import type { CanvasPath } from "../../types";
-import type { CanvasProps } from "../types";
 
-type StrokeGroupsProps = Required<Pick<CanvasProps, "id">> & {
+type StrokeGroupsProps = {
+	internalId: string;
 	pathGroups: CanvasPath[][];
 	eraserPaths: CanvasPath[];
 };
@@ -17,7 +17,7 @@ type StrokeGroupsProps = Required<Pick<CanvasProps, "id">> & {
  * erasing without mutating existing path data.
  */
 export function StrokeGroups({
-	id,
+	internalId,
 	pathGroups,
 	eraserPaths,
 }: StrokeGroupsProps): React.JSX.Element {
@@ -26,11 +26,16 @@ export function StrokeGroups({
 			{pathGroups.map((pathGroup, i) => (
 				<g
 					// biome-ignore lint/suspicious/noArrayIndexKey: stroke groups are ordered drawing segments with no domain id.
-					key={`${id}__stroke-group-${i}`}
-					id={`${id}__stroke-group-${i}`}
-					{...(eraserPaths[i] ? { mask: `url(#${id}__eraser-mask-${i})` } : {})}
+					key={`${internalId}__stroke-group-${i}`}
+					id={`${internalId}__stroke-group-${i}`}
+					{...(eraserPaths[i]
+						? { mask: `url(#${internalId}__eraser-mask-${i})` }
+						: {})}
 				>
-					<Paths id={`${id}__stroke-group-${i}__paths`} paths={pathGroup} />
+					<Paths
+						id={`${internalId}__stroke-group-${i}__paths`}
+						paths={pathGroup}
+					/>
 				</g>
 			))}
 		</>
