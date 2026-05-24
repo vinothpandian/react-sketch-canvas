@@ -123,6 +123,39 @@
 	accent-color: var(--color-fd-primary);
 }
 
+.example-preview :where(fieldset) {
+	display: inline-flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.5rem 0.875rem;
+	margin: 0;
+	border: 0;
+	padding: 0;
+}
+
+.example-preview :where(fieldset > legend) {
+	flex-basis: 100%;
+	margin-bottom: 0.5rem;
+	padding: 0;
+	font-size: 0.875rem;
+	font-weight: 500;
+	line-height: 1.25rem;
+	color: var(--color-fd-muted-foreground);
+}
+
+.example-preview :where(fieldset > label) {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.375rem;
+}
+
+.example-preview :where(input[type="radio"]) {
+	width: 1rem;
+	height: 1rem;
+	margin: 0;
+	accent-color: var(--color-fd-primary);
+}
+
 .example-preview :where(span) {
 	font-size: 0.875rem;
 	color: var(--color-fd-muted-foreground);
