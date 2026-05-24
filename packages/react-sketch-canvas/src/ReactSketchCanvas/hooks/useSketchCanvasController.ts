@@ -136,7 +136,7 @@ export function useSketchCanvasController({
 					points,
 				)[0];
 
-				if (!updatedStroke || updatedStroke === current.activeStroke) {
+				if (updatedStroke === current.activeStroke) {
 					return current;
 				}
 
@@ -177,12 +177,9 @@ export function useSketchCanvasController({
 		if (animationFrameRef.current !== null) return;
 
 		animationFrameRef.current = window.requestAnimationFrame(() => {
-			animationFrameRef.current = null;
-			const points = pendingMovePointsRef.current;
-			pendingMovePointsRef.current = [];
-			appendPendingMovePoints(points);
+			flushPendingMovePoints();
 		});
-	}, [appendPendingMovePoints]);
+	}, [flushPendingMovePoints]);
 
 	React.useEffect(
 		() => () => {
@@ -195,6 +192,10 @@ export function useSketchCanvasController({
 
 	const handlePointerDown = useCallback(
 		(point: Point, isEraser = false): void => {
+			if (animationFrameRef.current !== null) {
+				window.cancelAnimationFrame(animationFrameRef.current);
+				animationFrameRef.current = null;
+			}
 			pendingMovePointsRef.current = [];
 			setState((current) => {
 				const synced = addLastStrokeToHistory(current);

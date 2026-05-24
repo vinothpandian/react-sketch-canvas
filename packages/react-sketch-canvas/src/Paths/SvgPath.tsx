@@ -31,18 +31,6 @@ function SvgPathComponent({
 	strokeColor,
 	command = bezierCommand,
 }: SvgPathProps): React.JSX.Element {
-	const d = React.useMemo(
-		() =>
-			paths.reduce(
-				(acc, point, i, a) =>
-					i === 0
-						? `M ${point.x},${point.y}`
-						: `${acc} ${command(point, i, a)}`,
-				"",
-			),
-		[command, paths],
-	);
-
 	if (paths.length === 1) {
 		const { x, y } = paths[0];
 		const radius = strokeWidth / 2;
@@ -59,6 +47,12 @@ function SvgPathComponent({
 			/>
 		);
 	}
+
+	const d = paths.reduce(
+		(acc, point, i, a) =>
+			i === 0 ? `M ${point.x},${point.y}` : `${acc} ${command(point, i, a)}`,
+		"",
+	);
 
 	return (
 		<path

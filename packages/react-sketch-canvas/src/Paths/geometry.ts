@@ -273,7 +273,6 @@ export function doesEraserStrokeHitStroke({
 
 	const threshold = eraser.strokeWidth / 2 + stroke.strokeWidth / 2;
 
-	// Fast O(N + M) bounding box pre-filter
 	const eraserBox = getBoundingBox(eraser, eraser.strokeWidth / 2);
 	const strokeBox = getBoundingBox(stroke, stroke.strokeWidth / 2);
 	if (!doBoundingBoxesOverlap(eraserBox, strokeBox)) {

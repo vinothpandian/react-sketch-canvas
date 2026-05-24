@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
 	appendPointsToLastStroke,
-	appendPointToLastStroke,
 	createStroke,
 	finishStroke,
 } from "../../../src/ReactSketchCanvas/state/strokes";
@@ -60,7 +59,7 @@ describe("stroke state helpers", () => {
 			}),
 		];
 
-		expect(appendPointToLastStroke(paths, { x: 3, y: 4 })[0].paths).toEqual([
+		expect(appendPointsToLastStroke(paths, [{ x: 3, y: 4 }])[0].paths).toEqual([
 			{ x: 1, y: 2 },
 			{ x: 3, y: 4 },
 		]);
@@ -104,7 +103,7 @@ describe("stroke state helpers", () => {
 			}),
 		];
 
-		expect(appendPointToLastStroke(paths, { x: 1, y: 2 })).toBe(paths);
+		expect(appendPointsToLastStroke(paths, [{ x: 1, y: 2 }])).toBe(paths);
 	});
 
 	it("ignores consecutive duplicate points while appending a batch", () => {
@@ -137,7 +136,7 @@ describe("stroke state helpers", () => {
 	it("keeps an empty path list unchanged when appending a point", () => {
 		const paths = [] as ReturnType<typeof createStroke>[];
 
-		expect(appendPointToLastStroke(paths, { x: 3, y: 4 })).toBe(paths);
+		expect(appendPointsToLastStroke(paths, [{ x: 3, y: 4 }])).toBe(paths);
 	});
 
 	it("finishes timestamped last stroke", () => {
