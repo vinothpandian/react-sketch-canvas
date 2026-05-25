@@ -1,0 +1,35 @@
+---
+title: Read-only mode
+description: Display a saved drawing without accepting new input.
+---
+
+import ExampleBlock from "../../../components/ExampleBlock";
+import ReadOnly from "../../../examples/ReadOnly";
+import ReadOnlySource from "../../../examples/ReadOnly.tsx?raw";
+
+Sometimes a drawing should be visible but not editable: a submitted signature, a saved sketch, an annotation in review. Pass `readOnly` to display the canvas without accepting pointer input.
+
+## Using `readOnly`
+
+Set the prop to `true`. The canvas keeps rendering the current paths but ignores all pointer events. You don't need a separate viewer component.
+
+<ExampleBlock source={ReadOnlySource}>
+  <ReadOnly />
+</ExampleBlock>
+
+```tsx twoslash title="ReadOnlyView.tsx"
+import React from "react";
+import { ReactSketchCanvas, type CanvasPath } from "react-sketch-canvas";
+
+export function ReadOnlyView({ paths }: { paths: CanvasPath[] }) {
+  return <ReactSketchCanvas readOnly />;
+}
+```
+
+## Pairing with loaded paths
+
+`readOnly` is most useful with saved drawings loaded via `loadPaths()`. See [Exporting & saving](/guides/exporting/#save-and-load) for the full round-trip.
+
+<Callout type="info">
+  Toggling `readOnly` does not clear the canvas. The drawing remains visible whether or not new input is accepted.
+</Callout>
