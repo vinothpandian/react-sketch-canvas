@@ -36,7 +36,7 @@ const clientLoader = browserCollections.docs.createClientLoader({
 
 export default function Page({ loaderData }: Route.ComponentProps) {
 	return (
-		<HomeLayout {...baseOptions()} className="min-h-dvh">
+		<HomeLayout {...baseOptions()} className="docs-home min-h-dvh">
 			{clientLoader.useContent(loaderData.path)}
 		</HomeLayout>
 	);
