@@ -4,6 +4,7 @@ import {
 	IconDeviceDesktop,
 	IconDownload,
 	IconEraser,
+	IconGauge,
 	IconHistory,
 	IconPencil,
 	IconPhoto,
@@ -11,6 +12,7 @@ import {
 	IconPointer,
 	IconRotate,
 	IconSignature,
+	IconSunMoon,
 } from "@tabler/icons-react";
 import * as Twoslash from "fumadocs-twoslash/ui";
 import { Cards, Card as FumadocsCard } from "fumadocs-ui/components/card";
@@ -26,12 +28,14 @@ const icons = {
 	desktop: IconDeviceDesktop,
 	download: IconDownload,
 	erase: IconEraser,
+	gauge: IconGauge,
 	history: IconHistory,
 	input: IconPointer,
 	pencil: IconPencil,
 	play: IconPlayerPlay,
 	reset: IconRotate,
 	signature: IconSignature,
+	"sun-moon": IconSunMoon,
 };
 
 type CardProps = ComponentProps<typeof FumadocsCard> & {
