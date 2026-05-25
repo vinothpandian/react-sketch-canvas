@@ -1,0 +1,36 @@
+---
+title: Colors & theming
+description: Control stroke and canvas color, including dark mode support.
+---
+
+import ExampleBlock from "../../../components/ExampleBlock";
+import Colors from "../../../examples/Colors";
+import ColorsSource from "../../../examples/Colors.tsx?raw";
+import ThemeColors from "../../../examples/ThemeColors";
+import ThemeColorsSource from "../../../examples/ThemeColors.tsx?raw";
+
+The canvas takes color values as plain props. There is no built-in color picker. Pass `strokeColor` and `canvasColor` from your own state and the canvas re-renders when they change.
+
+## Stroke and canvas color
+
+Use `strokeColor` for the pen color and `canvasColor` for the background fill. Either accepts any CSS color string, including `transparent`.
+
+<ExampleBlock source={ColorsSource}>
+  <Colors />
+</ExampleBlock>
+
+This pattern works well when color is part of a larger form, theme editor, or annotation workflow.
+
+## Dark and light mode
+
+The canvas does not switch colors automatically when the user's system theme changes. Pass values that reflect your app's theme state, or use CSS variables that respond to `prefers-color-scheme`.
+
+<ExampleBlock source={ThemeColorsSource}>
+  <ThemeColors />
+</ExampleBlock>
+
+The example toggles a `data-theme` attribute. The CSS also falls back to the user's system color scheme when no theme is set explicitly.
+
+<Callout type="info">
+  CSS variables passed to `strokeColor` and `canvasColor` are read once when the canvas renders. If your theme changes at runtime, the canvas re-reads them on the next render — make sure the parent component re-renders when the theme toggles.
+</Callout>
