@@ -7,8 +7,13 @@ import {
 	DocsPage,
 	DocsTitle,
 } from "fumadocs-ui/layouts/docs/page";
+import {
+	MarkdownCopyButton,
+	ViewOptionsPopover,
+} from "~/components/ai/page-actions";
 import { getMDXComponents } from "~/components/mdx";
-import { baseOptions } from "~/lib/layout.shared";
+import { baseOptions, githubUrl } from "~/lib/layout.shared";
+import { withDocsBasePath } from "~/lib/site-paths";
 import { source } from "~/lib/source";
 import type { Route } from "./+types/docs";
 
@@ -23,6 +28,8 @@ export async function loader({ params }: Route.LoaderArgs) {
 	return {
 		path: page.path,
 		url: page.url,
+		markdownUrl: `${withDocsBasePath(page.url)}.mdx`,
+		githubUrl: `${githubUrl}/blob/main/docs/src/content/docs/${page.path}`,
 		pageTree: await source.serializePageTree(source.getPageTree()),
 	};
 }
@@ -30,7 +37,7 @@ export async function loader({ params }: Route.LoaderArgs) {
 const clientLoader = browserCollections.docs.createClientLoader({
 	component(
 		{ toc, frontmatter, default: MDXContent },
-		props?: { className?: string },
+		props: { className?: string; markdownUrl: string; githubUrl: string },
 	) {
 		return (
 			<DocsPage toc={toc} {...props}>
@@ -42,6 +49,13 @@ const clientLoader = browserCollections.docs.createClientLoader({
 				{frontmatter.description ? (
 					<DocsDescription>{frontmatter.description}</DocsDescription>
 				) : null}
+				<div className="flex flex-row gap-2 items-center border-b pt-2 pb-6">
+					<MarkdownCopyButton markdownUrl={props.markdownUrl} />
+					<ViewOptionsPopover
+						markdownUrl={props.markdownUrl}
+						githubUrl={props.githubUrl}
+					/>
+				</div>
 				<DocsBody>
 					<MDXContent components={getMDXComponents()} />
 				</DocsBody>
@@ -51,11 +65,12 @@ const clientLoader = browserCollections.docs.createClientLoader({
 });
 
 export default function Page({ loaderData }: Route.ComponentProps) {
-	const { path, pageTree } = useFumadocsLoader(loaderData);
+	const { path, pageTree, markdownUrl, githubUrl } =
+		useFumadocsLoader(loaderData);
 
 	return (
 		<DocsLayout {...baseOptions()} tree={pageTree}>
-			{clientLoader.useContent(path)}
+			{clientLoader.useContent(path, { markdownUrl, githubUrl })}
 		</DocsLayout>
 	);
 }
