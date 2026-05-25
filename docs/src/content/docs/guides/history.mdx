@@ -1,0 +1,61 @@
+---
+title: History
+description: Wire undo, redo, clear, and reset into your own toolbar.
+---
+
+import ExampleBlock from "../../../components/ExampleBlock";
+import UndoRedo from "../../../examples/UndoRedo";
+import UndoRedoSource from "../../../examples/UndoRedo.tsx?raw";
+
+Drawing interfaces need escape hatches. Users should be able to undo a shaky stroke, redo an action they changed their mind about, and clear or reset the canvas when they want to start over.
+
+The canvas exposes these as ref methods. Your toolbar stays as ordinary React UI; the methods act on the canvas's internal history.
+
+## Undo and redo
+
+`undo()` removes the most recent stroke. `redo()` puts it back. Both are safe to call when there's nothing to undo or redo — they are no-ops.
+
+<ExampleBlock source={UndoRedoSource}>
+  <UndoRedo />
+</ExampleBlock>
+
+## Clear vs reset
+
+These two methods look similar but differ in one important way.
+
+- `clearCanvas()` removes the visible paths while keeping the canvas ready for more drawing. Undo can still bring strokes back.
+- `resetCanvas()` returns the canvas to its initial state. Use it when you have loaded paths or a preconfigured example and want a true blank slate.
+
+<Callout type="warn">
+  `resetCanvas()` is destructive. The history is cleared, so undo will not bring strokes back after a reset. Prompt the user if losing the drawing would be unexpected.
+</Callout>
+
+```tsx twoslash title="HistoryToolbar.tsx"
+import React, { useRef } from "react";
+import {
+  ReactSketchCanvas,
+  type ReactSketchCanvasRef,
+} from "react-sketch-canvas";
+
+export function HistoryToolbar() {
+  const canvasRef = useRef<ReactSketchCanvasRef>(null);
+
+  return (
+    <>
+      <ReactSketchCanvas ref={canvasRef} />
+      <button type="button" onClick={() => canvasRef.current?.undo()}>
+        Undo
+      </button>
+      <button type="button" onClick={() => canvasRef.current?.redo()}>
+        Redo
+      </button>
+      <button type="button" onClick={() => canvasRef.current?.clearCanvas()}>
+        Clear
+      </button>
+      <button type="button" onClick={() => canvasRef.current?.resetCanvas()}>
+        Reset
+      </button>
+    </>
+  );
+}
+```
