@@ -6,18 +6,20 @@ import type { AllowOnlyPointerType, CanvasProps } from "../types";
 const ERASER_BUTTON_MASK = 32;
 
 type PointerLike = {
-	pageX: number;
-	pageY: number;
+	clientX: number;
+	clientY: number;
 };
 
 type BoundsLike = {
 	left: number;
 	top: number;
+	width: number;
+	height: number;
 };
 
-type ScrollLike = {
-	scrollX: number;
-	scrollY: number;
+type ElementSizeLike = {
+	offsetWidth: number;
+	offsetHeight: number;
 };
 
 type UseCanvasPointerHandlersParams = Pick<
@@ -65,19 +67,41 @@ export const shouldHandlePointerButton = (
  * Detect the barrel/eraser button used by pointer events from pen devices.
  */
 export const isPenEraser = (pointerType: string, buttons: number): boolean =>
-	pointerType === "pen" && Math.floor(buttons / ERASER_BUTTON_MASK) % 2 === 1;
+	pointerType === "pen" && (buttons & ERASER_BUTTON_MASK) !== 0;
 
 /**
- * Convert a page-level pointer coordinate into a canvas-relative point.
+ * Convert a viewport-relative pointer coordinate into a canvas-relative point.
+ *
+ * @remarks
+ * Both `clientX/clientY` and `getBoundingClientRect()` are viewport-relative,
+ * so this single subtraction stays correct regardless of window or ancestor
+ * scroll positions without us having to read `scrollX`/`scrollY` separately.
+ *
+ * `getBoundingClientRect()` reports post-transform screen pixels while the SVG
+ * path coordinate system is in pre-transform CSS pixels. When an ancestor
+ * applies `transform: scale()` the two diverge, so the visual delta is divided
+ * by the rect-to-layout-size ratio to map the pointer back into the canvas's
+ * own coordinate space.
  */
 export const getCanvasPoint = (
 	pointerEvent: PointerLike,
 	boundingArea: BoundsLike,
-	scroll: ScrollLike,
-): Point => ({
-	x: pointerEvent.pageX - boundingArea.left - scroll.scrollX,
-	y: pointerEvent.pageY - boundingArea.top - scroll.scrollY,
-});
+	elementSize: ElementSizeLike,
+): Point => {
+	const scaleX =
+		boundingArea.width > 0 && elementSize.offsetWidth > 0
+			? elementSize.offsetWidth / boundingArea.width
+			: 1;
+	const scaleY =
+		boundingArea.height > 0 && elementSize.offsetHeight > 0
+			? elementSize.offsetHeight / boundingArea.height
+			: 1;
+
+	return {
+		x: (pointerEvent.clientX - boundingArea.left) * scaleX,
+		y: (pointerEvent.clientY - boundingArea.top) * scaleY,
+	};
+};
 
 /**
  * Build stable pointer handlers for the low-level canvas.
@@ -98,16 +122,14 @@ export function useCanvasPointerHandlers({
 
 	const getCoordinates = useCallback(
 		(pointerEvent: React.PointerEvent<HTMLDivElement>): Point => {
-			const boundingArea = canvasRef.current?.getBoundingClientRect();
+			const canvas = canvasRef.current;
+			const boundingArea = canvas?.getBoundingClientRect();
 
-			if (!boundingArea) {
+			if (!canvas || !boundingArea) {
 				return { x: 0, y: 0 };
 			}
 
-			return getCanvasPoint(pointerEvent, boundingArea, {
-				scrollX: window.scrollX ?? 0,
-				scrollY: window.scrollY ?? 0,
-			});
+			return getCanvasPoint(pointerEvent, boundingArea, canvas);
 		},
 		[canvasRef],
 	);

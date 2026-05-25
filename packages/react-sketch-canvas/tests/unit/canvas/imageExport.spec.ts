@@ -367,7 +367,7 @@ describe("exportImageFromSvg", () => {
 		);
 	});
 
-	it("throws when the background image cannot be loaded", async () => {
+	it("mentions CORS and reachability when a cross-origin background image fails to load", async () => {
 		const backgroundImage = "https://example.com/missing-bg.png";
 		MockImage.failingSources.add(backgroundImage);
 		const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -388,8 +388,72 @@ describe("exportImageFromSvg", () => {
 				backgroundImage,
 				exportWithBackgroundImage: true,
 			}),
-		).rejects.toThrow(
-			"Cannot export: the background image failed to load. Check that backgroundImage points to a reachable image and allows cross-origin access.",
+		).rejects.toThrowError(/cross-origin|CORS|Access-Control-Allow-Origin/i);
+	});
+
+	it("does not blame CORS when a data URI background fails to decode", async () => {
+		const backgroundImage = "data:image/png;base64,not-real";
+		MockImage.failingSources.add(backgroundImage);
+		const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+		svg.innerHTML = `
+			<defs><pattern id="canvas__background"><image href="${backgroundImage}" /></pattern></defs>
+			<rect id="canvas__canvas-background" fill="url(#canvas__background)"></rect>
+			<g id="canvas__stroke-group-0"></g>
+		`;
+
+		let caught: Error | null = null;
+		try {
+			await exportImageFromSvg({
+				id: "canvas",
+				svgCanvas: svg,
+				svgWidth: 200,
+				svgHeight: 100,
+				imageType: "png",
+				canvasColor: "white",
+				backgroundImage,
+				exportWithBackgroundImage: true,
+			});
+		} catch (error) {
+			caught = error as Error;
+		}
+
+		expect(caught).not.toBeNull();
+		expect(caught?.message).toMatch(/data URI|data url/i);
+		expect(caught?.message).not.toMatch(
+			/cross-origin|CORS|Access-Control-Allow-Origin/i,
+		);
+	});
+
+	it("does not blame CORS when a same-origin background image fails to load", async () => {
+		const backgroundImage = `${window.location.origin}/missing-bg.png`;
+		MockImage.failingSources.add(backgroundImage);
+		const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+		svg.innerHTML = `
+			<defs><pattern id="canvas__background"><image href="${backgroundImage}" /></pattern></defs>
+			<rect id="canvas__canvas-background" fill="url(#canvas__background)"></rect>
+			<g id="canvas__stroke-group-0"></g>
+		`;
+
+		let caught: Error | null = null;
+		try {
+			await exportImageFromSvg({
+				id: "canvas",
+				svgCanvas: svg,
+				svgWidth: 200,
+				svgHeight: 100,
+				imageType: "png",
+				canvasColor: "white",
+				backgroundImage,
+				exportWithBackgroundImage: true,
+			});
+		} catch (error) {
+			caught = error as Error;
+		}
+
+		expect(caught).not.toBeNull();
+		expect(caught?.message).toMatch(/reachable|not found|failed to load/i);
+		expect(caught?.message).not.toMatch(
+			/cross-origin|CORS|Access-Control-Allow-Origin/i,
 		);
 	});
 });

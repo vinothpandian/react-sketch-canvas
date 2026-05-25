@@ -40,7 +40,7 @@ events are ignored by the canvas.
 
 > **backgroundImage**: `string`
 
-Defined in: [Canvas/types.ts:95](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L95)
+Defined in: [Canvas/types.ts:100](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L100)
 
 Background image shown behind all strokes.
 
@@ -49,6 +49,11 @@ Background image shown behind all strokes.
 Accepts any SVG `<image>` `href` value, including a URL or data URI. When
 exporting with the background image enabled, remote images must allow
 cross-origin access.
+
+The value is treated as trusted: it is loaded directly into an SVG
+`<image>` element and, for SVG data URIs, parsed with `DOMParser` to read
+its viewBox. Do not pass attacker-controlled strings here without
+validating them first.
 
 #### Default Value
 
@@ -60,14 +65,17 @@ cross-origin access.
 
 > **canvasColor**: `string`
 
-Defined in: [Canvas/types.ts:105](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L105)
+Defined in: [Canvas/types.ts:113](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L113)
 
 Background color shown when no background image is configured.
 
 #### Remarks
 
-This color is also used behind JPEG exports when the background image is
-not included.
+`canvasColor` is also painted underneath every JPEG export, even when a
+background image is included, because JPEG cannot represent transparent
+pixels. With `preserveBackgroundImageAspectRatio="meet"` (or any value
+that letterboxes the image), the letterbox regions of a JPEG export will
+be filled with `canvasColor`.
 
 #### Default Value
 
@@ -79,7 +87,7 @@ not included.
 
 > `optional` **className?**: `string`
 
-Defined in: [Canvas/types.ts:111](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L111)
+Defined in: [Canvas/types.ts:119](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L119)
 
 CSS class name applied to the outer canvas wrapper.
 
@@ -93,7 +101,7 @@ CSS class name applied to the outer canvas wrapper.
 
 > **exportWithBackgroundImage**: `boolean`
 
-Defined in: [Canvas/types.ts:121](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L121)
+Defined in: [Canvas/types.ts:129](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L129)
 
 Whether exported images and SVGs include `backgroundImage`.
 
@@ -114,7 +122,7 @@ false
 
 > **height**: `string`
 
-Defined in: [Canvas/types.ts:131](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L131)
+Defined in: [Canvas/types.ts:139](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L139)
 
 CSS height of the canvas wrapper.
 
@@ -133,7 +141,7 @@ Accepts any valid CSS height value, such as `"400px"`, `"60vh"`, or
 
 > `optional` **id?**: `string`
 
-Defined in: [Canvas/types.ts:143](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L143)
+Defined in: [Canvas/types.ts:151](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L151)
 
 DOM id applied to the rendered SVG canvas.
 
@@ -262,7 +270,7 @@ Paths rendered on the SVG canvas.
 
 > `optional` **preserveBackgroundImageAspectRatio?**: `string`
 
-Defined in: [Canvas/types.ts:153](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L153)
+Defined in: [Canvas/types.ts:161](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L161)
 
 SVG `preserveAspectRatio` value used for `backgroundImage`.
 
@@ -281,7 +289,7 @@ See the MDN reference for accepted values:
 
 > `optional` **readOnly?**: `boolean`
 
-Defined in: [Canvas/types.ts:201](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L201)
+Defined in: [Canvas/types.ts:209](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L209)
 
 Whether pointer drawing is disabled.
 
@@ -301,7 +309,7 @@ false
 
 > **style**: `CSSProperties`
 
-Defined in: [Canvas/types.ts:165](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L165)
+Defined in: [Canvas/types.ts:173](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L173)
 
 Inline styles applied to the outer canvas wrapper.
 
@@ -324,7 +332,7 @@ The package default canvas border style.
 
 > **svgStyle**: `CSSProperties`
 
-Defined in: [Canvas/types.ts:171](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L171)
+Defined in: [Canvas/types.ts:179](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L179)
 
 Inline styles applied to the internal SVG element.
 
@@ -338,7 +346,7 @@ Inline styles applied to the internal SVG element.
 
 > `optional` **touchAction?**: `TouchAction`
 
-Defined in: [Canvas/types.ts:215](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L215)
+Defined in: [Canvas/types.ts:223](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L223)
 
 CSS `touch-action` applied to the canvas wrapper.
 
@@ -361,7 +369,7 @@ axis, so single-finger drawing continues to work.
 
 > **width**: `string`
 
-Defined in: [Canvas/types.ts:192](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L192)
+Defined in: [Canvas/types.ts:200](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L200)
 
 CSS width of the canvas wrapper.
 
@@ -380,7 +388,7 @@ Accepts any valid CSS width value, such as `"600px"`, `"100%"`, or
 
 > `optional` **withViewBox?**: `boolean`
 
-Defined in: [Canvas/types.ts:182](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L182)
+Defined in: [Canvas/types.ts:190](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L190)
 
 Whether the internal SVG should include a viewBox based on the latest
 measured canvas size.

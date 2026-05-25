@@ -70,8 +70,8 @@ describe("useCanvasPointerHandlers", () => {
 			buttons: 1,
 		});
 		Object.defineProperties(event, {
-			pageX: { value: 40 },
-			pageY: { value: 70 },
+			clientX: { value: 40 },
+			clientY: { value: 70 },
 		});
 
 		fireEvent(getByTestId("canvas"), event);
@@ -164,8 +164,8 @@ describe("useCanvasPointerHandlers", () => {
 			pointerType: "mouse",
 		});
 		Object.defineProperties(event, {
-			pageX: { value: 42 },
-			pageY: { value: 64 },
+			clientX: { value: 42 },
+			clientY: { value: 64 },
 		});
 
 		fireEvent(getByTestId("canvas"), event);
@@ -191,16 +191,16 @@ describe("useCanvasPointerHandlers", () => {
 			pointerType: "touch",
 		});
 		Object.defineProperties(firstMove, {
-			pageX: { value: 42 },
-			pageY: { value: 64 },
+			clientX: { value: 42 },
+			clientY: { value: 64 },
 		});
 		const secondMove = createEvent.pointerMove(canvas, {
 			pointerId: 4,
 			pointerType: "touch",
 		});
 		Object.defineProperties(secondMove, {
-			pageX: { value: 44 },
-			pageY: { value: 68 },
+			clientX: { value: 44 },
+			clientY: { value: 68 },
 		});
 
 		fireEvent(canvas, firstMove);

@@ -5,6 +5,7 @@
 		"input-devices",
 		"undo-redo",
 		"background",
-		"sketching-time"
+		"sketching-time",
+		"layout"
 	]
 }

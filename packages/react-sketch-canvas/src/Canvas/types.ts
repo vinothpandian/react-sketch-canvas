@@ -90,6 +90,11 @@ export interface CanvasProps {
 	 * exporting with the background image enabled, remote images must allow
 	 * cross-origin access.
 	 *
+	 * The value is treated as trusted: it is loaded directly into an SVG
+	 * `<image>` element and, for SVG data URIs, parsed with `DOMParser` to read
+	 * its viewBox. Do not pass attacker-controlled strings here without
+	 * validating them first.
+	 *
 	 * @defaultValue `""`
 	 */
 	backgroundImage: string;
@@ -97,8 +102,11 @@ export interface CanvasProps {
 	 * Background color shown when no background image is configured.
 	 *
 	 * @remarks
-	 * This color is also used behind JPEG exports when the background image is
-	 * not included.
+	 * `canvasColor` is also painted underneath every JPEG export, even when a
+	 * background image is included, because JPEG cannot represent transparent
+	 * pixels. With `preserveBackgroundImageAspectRatio="meet"` (or any value
+	 * that letterboxes the image), the letterbox regions of a JPEG export will
+	 * be filled with `canvasColor`.
 	 *
 	 * @defaultValue `"white"`
 	 */
