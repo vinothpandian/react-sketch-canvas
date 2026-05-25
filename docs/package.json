@@ -4,11 +4,11 @@
 	"private": true,
 	"version": "0.0.1",
 	"scripts": {
-		"dev": "pnpm markdown:pages && react-router dev",
-		"start": "pnpm markdown:pages && react-router dev",
+		"dev": "react-router dev",
+		"start": "react-router dev",
 		"api:docs": "node scripts/generate-api-docs.mjs",
 		"markdown:pages": "node scripts/generate-markdown-pages.mjs",
-		"build": "pnpm api:docs && pnpm markdown:pages && react-router typegen && react-router build",
+		"build": "pnpm api:docs && react-router typegen && react-router build",
 		"preview": "react-router-serve ./build/server/index.js"
 	},
 	"dependencies": {

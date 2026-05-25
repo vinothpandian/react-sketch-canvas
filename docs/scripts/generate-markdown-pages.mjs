@@ -1,10 +1,6 @@
 import { mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import { dirname, join, relative, sep } from "node:path";
-
-const docsRoot = process.cwd();
-const contentRoot = join(docsRoot, "src/content/docs");
-const publicRoot = join(docsRoot, "public");
-const publicBaseRoots = [publicRoot, join(publicRoot, "react-sketch-canvas")];
+import { fileURLToPath } from "node:url";
 
 async function walk(dir) {
 	const files = [];
@@ -29,7 +25,7 @@ async function walk(dir) {
 	return files;
 }
 
-function toPublicMarkdownPath(sourcePath) {
+function toPublicMarkdownPath(sourcePath, contentRoot) {
 	const parsed = relative(contentRoot, sourcePath)
 		.split(sep)
 		.join("/")
@@ -50,9 +46,9 @@ function stripPageOnlySyntax(markdown) {
 		.trimStart();
 }
 
-async function writeMarkdownCopy(sourcePath) {
+async function writeMarkdownCopy(sourcePath, contentRoot, publicBaseRoots) {
 	const markdown = stripPageOnlySyntax(await readFile(sourcePath, "utf8"));
-	const publicPath = toPublicMarkdownPath(sourcePath);
+	const publicPath = toPublicMarkdownPath(sourcePath, contentRoot);
 
 	for (const baseRoot of publicBaseRoots) {
 		const target = join(baseRoot, publicPath);
@@ -61,18 +57,28 @@ async function writeMarkdownCopy(sourcePath) {
 	}
 }
 
-await Promise.all([
-	rm(join(publicRoot, "agentic-tools.mdx"), { force: true }),
-	rm(join(publicRoot, "api"), { force: true, recursive: true }),
-	rm(join(publicRoot, "api.mdx"), { force: true }),
-	rm(join(publicRoot, "guides"), { force: true, recursive: true }),
-	rm(join(publicRoot, "index.mdx"), { force: true }),
-]);
-await rm(join(publicRoot, "react-sketch-canvas"), {
-	force: true,
-	recursive: true,
-});
+export async function generateMarkdownPages(docsRoot = process.cwd()) {
+	const contentRoot = join(docsRoot, "src/content/docs");
+	const publicRoot = join(docsRoot, "public");
+	const publicBaseRoots = [publicRoot, join(publicRoot, "react-sketch-canvas")];
 
-for (const sourcePath of await walk(contentRoot)) {
-	await writeMarkdownCopy(sourcePath);
+	await Promise.all([
+		rm(join(publicRoot, "agentic-tools.mdx"), { force: true }),
+		rm(join(publicRoot, "api"), { force: true, recursive: true }),
+		rm(join(publicRoot, "api.mdx"), { force: true }),
+		rm(join(publicRoot, "guides"), { force: true, recursive: true }),
+		rm(join(publicRoot, "index.mdx"), { force: true }),
+	]);
+	await rm(join(publicRoot, "react-sketch-canvas"), {
+		force: true,
+		recursive: true,
+	});
+
+	for (const sourcePath of await walk(contentRoot)) {
+		await writeMarkdownCopy(sourcePath, contentRoot, publicBaseRoots);
+	}
+}
+
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+	await generateMarkdownPages();
 }
