@@ -1,4 +1,16 @@
 {
 	"title": "Guides",
-	"pages": ["installation"]
+	"pages": [
+		"installation",
+		"drawing-and-erasing",
+		"colors-and-theming",
+		"read-only",
+		"history",
+		"pointer-input",
+		"backgrounds",
+		"exporting",
+		"layout",
+		"sketching-time",
+		"performance"
+	]
 }

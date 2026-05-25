@@ -1,5 +1,5 @@
 {
 	"title": "React Sketch Canvas",
 	"icon": "./logo.svg",
-	"pages": ["installation", "examples", "api", "agentic-tools"]
+	"pages": ["guides", "api", "agentic-tools"]
 }

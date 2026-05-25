@@ -1,0 +1,129 @@
+---
+title: Exporting & saving
+description: Export drawings as PNG, JPEG, or SVG, or save them as paths to load later.
+---
+
+import ExampleBlock from "../../../components/ExampleBlock";
+import BackgroundExport from "../../../examples/BackgroundExport";
+import BackgroundExportSource from "../../../examples/BackgroundExport.tsx?raw";
+import RasterExportQuality from "../../../examples/RasterExportQuality";
+import RasterExportQualitySource from "../../../examples/RasterExportQuality.tsx?raw";
+
+The canvas can produce three kinds of output: a raster image (PNG or JPEG), an SVG string, and the underlying path data. Pick the one that matches what you need to store, share, or restore.
+
+## Raster export (PNG, JPEG)
+
+Call `exportImage("png")` or `exportImage("jpeg")`. The method returns a `Promise<string>` that resolves to a data URL.
+
+```tsx twoslash title="Export to PNG"
+import React, { useRef } from "react";
+import {
+  ReactSketchCanvas,
+  type ReactSketchCanvasRef,
+} from "react-sketch-canvas";
+
+export function ExportButton() {
+  const canvasRef = useRef<ReactSketchCanvasRef>(null);
+
+  return (
+    <>
+      <ReactSketchCanvas ref={canvasRef} />
+      <button
+        type="button"
+        onClick={async () => {
+          const dataUrl = await canvasRef.current?.exportImage("png");
+          if (dataUrl) window.open(dataUrl);
+        }}
+      >
+        Export PNG
+      </button>
+    </>
+  );
+}
+```
+
+## SVG export
+
+`exportSvg()` returns a `Promise<string>` with the SVG markup. Use this when you want a vector output you can embed elsewhere, or process server-side.
+
+```tsx
+const svg = await canvasRef.current?.exportSvg();
+```
+
+## Save and load
+
+To persist a drawing and restore it later, work with the path data directly. `exportPaths()` returns the array of `CanvasPath` objects the canvas is rendering. `loadPaths()` accepts that same shape.
+
+```tsx twoslash title="Round-trip save and load"
+import React, { useRef } from "react";
+import {
+  ReactSketchCanvas,
+  type CanvasPath,
+  type ReactSketchCanvasRef,
+} from "react-sketch-canvas";
+
+export function SaveLoad() {
+  const canvasRef = useRef<ReactSketchCanvasRef>(null);
+
+  const save = async () => {
+    const paths = (await canvasRef.current?.exportPaths()) ?? [];
+    localStorage.setItem("sketch", JSON.stringify(paths));
+  };
+
+  const load = () => {
+    const raw = localStorage.getItem("sketch");
+    if (!raw) return;
+    const paths = JSON.parse(raw) as CanvasPath[];
+    canvasRef.current?.loadPaths(paths);
+  };
+
+  return (
+    <>
+      <ReactSketchCanvas ref={canvasRef} />
+      <button type="button" onClick={save}>Save</button>
+      <button type="button" onClick={load}>Load</button>
+    </>
+  );
+}
+```
+
+<Callout type="info">
+  `loadPaths()` appends to the existing strokes. Call `resetCanvas()` first if you want to replace the current drawing instead of adding to it.
+</Callout>
+
+## Exporting with a background
+
+Set `exportWithBackgroundImage` on the canvas to include the configured `backgroundImage` in raster exports. Use this when consumers need a PNG or JPEG that shows both the drawing and the background.
+
+<ExampleBlock source={BackgroundExportSource}>
+  <BackgroundExport />
+</ExampleBlock>
+
+<Callout type="error">
+  Raster export with a remote background can fail at runtime. The export rejects with a distinct error for each failure mode: cross-origin (CORS), data URI decode, and same-origin "not reachable". Catch the rejection and show an appropriate fallback to the user.
+</Callout>
+
+<Callout type="info">
+  JPEG exports always paint `canvasColor` as the base because JPEG has no transparent pixels. When `preserveBackgroundImageAspectRatio` letterboxes the background, the letterbox regions in a JPEG export will be `canvasColor`. PNG exports keep those regions transparent unless the background fully covers the canvas.
+</Callout>
+
+## Raster quality and pixel ratio
+
+`exportImage()` accepts an optional `{ width, height }` second argument. With no second argument, the output is scaled by `window.devicePixelRatio` so it stays sharp on high-DPI screens. With explicit dimensions, the result is exactly that many pixels — which is what you want for fixed-size assets like thumbnails, social cards, or print previews.
+
+<ExampleBlock source={RasterExportQualitySource}>
+  <RasterExportQuality />
+</ExampleBlock>
+
+A common pattern for "crisp, fixed logical size" output is to multiply your logical CSS dimensions by a target pixel ratio:
+
+```tsx
+const logicalWidth = 640;
+const logicalHeight = 360;
+const pixelRatio = 2;
+
+const dataUrl = await canvasRef.current?.exportImage("png", {
+  width: logicalWidth * pixelRatio,
+  height: logicalHeight * pixelRatio,
+});
+```

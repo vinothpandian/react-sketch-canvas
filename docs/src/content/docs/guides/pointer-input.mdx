@@ -1,0 +1,62 @@
+---
+title: Restricting pointer input
+description: Limit drawing to a specific pointer device.
+---
+
+import ExampleBlock from "../../../components/ExampleBlock";
+import AllInputs from "../../../examples/AllInputs";
+import AllInputsSource from "../../../examples/AllInputs.tsx?raw";
+import OnlyPen from "../../../examples/OnlyPen";
+import OnlyPenSource from "../../../examples/OnlyPen.tsx?raw";
+import OnlyMouse from "../../../examples/OnlyMouse";
+import OnlyMouseSource from "../../../examples/OnlyMouse.tsx?raw";
+import OnlyTouch from "../../../examples/OnlyTouch";
+import OnlyTouchSource from "../../../examples/OnlyTouch.tsx?raw";
+
+By default, `ReactSketchCanvas` accepts every pointer type the browser reports. That is the right default for most cases. Production interfaces often need tighter control — for example, a stylus-first note app may want to ignore finger touches so users can rest their hand on a tablet.
+
+Use the `allowOnlyPointerType` prop to restrict input.
+
+## Options
+
+- `all` (default) — every pointer device draws.
+- `pen` — only pen input, including stylus, Apple Pencil, Wacom, Surface Pen.
+- `mouse` — only mouse input.
+- `touch` — only finger touch.
+
+## Try each mode
+
+<Tabs items={["All inputs", "Pen", "Mouse", "Touch"]}>
+  <Tab value="All inputs">
+    The default. Every supported pointer type draws.
+
+    <ExampleBlock source={AllInputsSource}>
+      <AllInputs />
+    </ExampleBlock>
+  </Tab>
+  <Tab value="Pen">
+    Best for stylus-first experiences: tablet annotation, handwriting, signature flows where accidental touch marks are costly.
+
+    <ExampleBlock source={OnlyPenSource}>
+      <OnlyPen />
+    </ExampleBlock>
+  </Tab>
+  <Tab value="Mouse">
+    Useful for desktop-only drawing areas: admin tools, demos, or test fixtures where touch and pen input would muddy the interaction.
+
+    <ExampleBlock source={OnlyMouseSource}>
+      <OnlyMouse />
+    </ExampleBlock>
+  </Tab>
+  <Tab value="Touch">
+    Focused on mobile and kiosk-style experiences where finger input is the only expected input.
+
+    <ExampleBlock source={OnlyTouchSource}>
+      <OnlyTouch />
+    </ExampleBlock>
+  </Tab>
+</Tabs>
+
+<Callout type="info">
+  The browser decides which pointer type each event belongs to. Some devices report pen events that look like mouse events, and vice versa. Test on real hardware before shipping a restricted canvas to production.
+</Callout>
