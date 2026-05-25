@@ -22,28 +22,28 @@ Traditional `<canvas>` drawing is pixel-based. That is useful for painting apps,
 React Sketch Canvas records each stroke as path data. You can load those paths back into the canvas, export them as SVG, or render the same drawing at different sizes without the blurry edges that come from bitmap scaling.
 
 
-## Explore examples
+## Explore the guides
 
-Start with the smallest useful setup, then move toward the parts most production drawing surfaces need: custom controls, input restrictions, undo history, image backgrounds, and timing.
+Start with the smallest useful setup, then add the parts most production drawing surfaces need: a toolbar, undo history, input restrictions, image backgrounds, and export.
 
 <CardGrid>
   <Card title="Installation" icon="download" href="/guides/installation/">
     Install the package and render your first canvas.
   </Card>
-  <Card title="Drawing & Erasing" icon="pencil" href="/examples/drawing/">
-    Build a toolbar for draw mode, erase mode, colors, and read-only rendering.
+  <Card title="Drawing & erasing" icon="pencil" href="/guides/drawing-and-erasing/">
+    Switch modes from your own toolbar and choose how the eraser behaves.
   </Card>
-  <Card title="Undo, Redo, Clear, and Reset" icon="history" href="/examples/undo-redo/">
-    Wire imperative canvas actions from your own controls.
+  <Card title="History" icon="history" href="/guides/history/">
+    Wire undo, redo, clear, and reset into your own controls.
   </Card>
-  <Card title="Restrict Input" icon="input" href="/examples/input-devices/">
-    Choose whether mouse, touch, pen, or every pointer type can draw.
+  <Card title="Restricting pointer input" icon="input" href="/guides/pointer-input/">
+    Limit drawing to mouse, touch, pen, or accept every pointer type.
   </Card>
-  <Card title="Background" icon="background" href="/examples/background/">
-    Place an image behind the drawing layer for annotation workflows.
+  <Card title="Backgrounds" icon="background" href="/guides/backgrounds/">
+    Draw on top of a URL or data URI image.
   </Card>
-  <Card title="Sketching Time" icon="history" href="/examples/sketching-time/">
-    Track active drawing time with timestamped strokes.
+  <Card title="Exporting & saving" icon="download" href="/guides/exporting/">
+    Produce PNG, JPEG, or SVG output, or save and reload path data.
   </Card>
 </CardGrid>
 
