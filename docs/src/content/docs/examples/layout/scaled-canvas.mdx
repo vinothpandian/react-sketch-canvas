@@ -1,0 +1,16 @@
+---
+title: Scaled parent
+description: CSS-transformed ancestors do not break canvas pointer tracking.
+---
+
+import ExampleBlock from "../../../../components/ExampleBlock";
+import ScaledCanvas from "../../../../examples/ScaledCanvas";
+import ScaledCanvasSource from "../../../../examples/ScaledCanvas.tsx?raw";
+
+When an ancestor uses `transform: scale()`, the canvas renders at the scaled size but its on-screen position still comes from `getBoundingClientRect()`, which reports the post-transform rectangle. Pointer events arrive with `clientX/clientY` in the same post-transform space, so the subtraction continues to produce the right canvas point — the visible stroke stays under the pointer at any zoom level.
+
+Drag the slider to scale the canvas wrapper between 0.5× and 1.5×, then draw at each size. The stroke always follows the pointer one-to-one in screen pixels.
+
+<ExampleBlock source={ScaledCanvasSource}>
+  <ScaledCanvas />
+</ExampleBlock>

@@ -6,18 +6,13 @@ import type { AllowOnlyPointerType, CanvasProps } from "../types";
 const ERASER_BUTTON_MASK = 32;
 
 type PointerLike = {
-	pageX: number;
-	pageY: number;
+	clientX: number;
+	clientY: number;
 };
 
 type BoundsLike = {
 	left: number;
 	top: number;
-};
-
-type ScrollLike = {
-	scrollX: number;
-	scrollY: number;
 };
 
 type UseCanvasPointerHandlersParams = Pick<
@@ -65,18 +60,22 @@ export const shouldHandlePointerButton = (
  * Detect the barrel/eraser button used by pointer events from pen devices.
  */
 export const isPenEraser = (pointerType: string, buttons: number): boolean =>
-	pointerType === "pen" && Math.floor(buttons / ERASER_BUTTON_MASK) % 2 === 1;
+	pointerType === "pen" && (buttons & ERASER_BUTTON_MASK) !== 0;
 
 /**
- * Convert a page-level pointer coordinate into a canvas-relative point.
+ * Convert a viewport-relative pointer coordinate into a canvas-relative point.
+ *
+ * @remarks
+ * Both `clientX/clientY` and `getBoundingClientRect()` are viewport-relative,
+ * so this single subtraction stays correct regardless of window or ancestor
+ * scroll positions without us having to read `scrollX`/`scrollY` separately.
  */
 export const getCanvasPoint = (
 	pointerEvent: PointerLike,
 	boundingArea: BoundsLike,
-	scroll: ScrollLike,
 ): Point => ({
-	x: pointerEvent.pageX - boundingArea.left - scroll.scrollX,
-	y: pointerEvent.pageY - boundingArea.top - scroll.scrollY,
+	x: pointerEvent.clientX - boundingArea.left,
+	y: pointerEvent.clientY - boundingArea.top,
 });
 
 /**
@@ -104,10 +103,7 @@ export function useCanvasPointerHandlers({
 				return { x: 0, y: 0 };
 			}
 
-			return getCanvasPoint(pointerEvent, boundingArea, {
-				scrollX: window.scrollX ?? 0,
-				scrollY: window.scrollY ?? 0,
-			});
+			return getCanvasPoint(pointerEvent, boundingArea);
 		},
 		[canvasRef],
 	);

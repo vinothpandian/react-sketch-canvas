@@ -30,13 +30,23 @@ describe("canvas pointer helpers", () => {
 		expect(isPenEraser("mouse", 32)).toBe(false);
 	});
 
-	it("converts page coordinates into canvas-relative coordinates", () => {
+	it("converts viewport-relative pointer coordinates into canvas-relative coordinates", () => {
 		const point = getCanvasPoint(
-			{ pageX: 150, pageY: 220 },
+			{ clientX: 150, clientY: 220 },
 			{ left: 100, top: 200 },
-			{ scrollX: 10, scrollY: 20 },
 		);
 
-		expect(point).toEqual({ x: 40, y: 0 });
+		expect(point).toEqual({ x: 50, y: 20 });
+	});
+
+	it("does not depend on the document scroll position", () => {
+		// getBoundingClientRect() is viewport-relative and so is clientX/clientY,
+		// so window scroll cancels out without us needing to read scrollX/scrollY.
+		const scrolled = getCanvasPoint(
+			{ clientX: 60, clientY: 80 },
+			{ left: 10, top: 20 },
+		);
+
+		expect(scrolled).toEqual({ x: 50, y: 60 });
 	});
 });

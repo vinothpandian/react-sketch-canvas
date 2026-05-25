@@ -1,0 +1,22 @@
+---
+title: Layout
+description: Drop the canvas into scrolling containers and transformed parents without coordinate drift.
+sidebar:
+  order: 6
+---
+
+`ReactSketchCanvas` reads pointer events in viewport-relative coordinates and subtracts the canvas's own `getBoundingClientRect()`. Both values move together when the page, an ancestor element, or a CSS transform changes position, so strokes always land where the pointer is — no matter how the canvas is laid out.
+
+These examples exercise the three common layout edge cases that used to trip up coordinate math.
+
+<CardGrid>
+  <Card title="Scrollable parent" icon="rows" href="/examples/layout/scrollable-parent/">
+    Canvas inside an `overflow-y: auto` container. Strokes follow the pointer while the parent scrolls.
+  </Card>
+  <Card title="Nested scroll containers" icon="layout-grid" href="/examples/layout/nested-scroll/">
+    Two levels of scrolling ancestors. Both vertical and horizontal scroll keep the canvas aligned.
+  </Card>
+  <Card title="Scaled parent" icon="resize" href="/examples/layout/scaled-canvas/">
+    Canvas inside a `transform: scale()` wrapper. The visual stroke tracks the pointer at any zoom.
+  </Card>
+</CardGrid>

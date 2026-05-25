@@ -9,7 +9,11 @@ import BackgroundExportSource from "../../../../examples/BackgroundExport.tsx?ra
 
 Raster exports can include the configured `backgroundImage` when `exportWithBackgroundImage` is enabled. Use this when consumers need a PNG or JPEG that combines the drawing strokes with the same background image shown in the canvas.
 
-If the browser cannot load a remote background image during export, the drawing can still export without that background layer.
+If the browser cannot load a remote background image during export, the export rejects with an error that distinguishes the failure mode: cross-origin (CORS) failures, data URI decode failures, and same-origin "not reachable" failures each surface a different message so consumers can present an appropriate fallback.
+
+JPEG exports always paint `canvasColor` as the base of the image, even when a background image is included, because JPEG has no transparent pixels. When `preserveBackgroundImageAspectRatio` letterboxes the background, the letterbox regions of a JPEG export will appear in `canvasColor`. PNG exports keep those regions transparent unless the background image fully covers the canvas.
+
+**Security note** — `backgroundImage` is treated as trusted. The library loads the value directly into an SVG `<image>` element, and for SVG data URIs it is parsed with `DOMParser` to read the embedded `viewBox`. Do not pass attacker-controlled strings here without validating them first.
 
 <ExampleBlock source={BackgroundExportSource}>
   <BackgroundExport />
