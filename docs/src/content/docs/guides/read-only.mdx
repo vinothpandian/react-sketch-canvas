@@ -19,9 +19,9 @@ Set the prop to `true`. The canvas keeps rendering the current paths but ignores
 
 ```tsx twoslash title="ReadOnlyView.tsx"
 import React from "react";
-import { ReactSketchCanvas, type CanvasPath } from "react-sketch-canvas";
+import { ReactSketchCanvas } from "react-sketch-canvas";
 
-export function ReadOnlyView({ paths }: { paths: CanvasPath[] }) {
+export function ReadOnlyView() {
   return <ReactSketchCanvas readOnly />;
 }
 ```

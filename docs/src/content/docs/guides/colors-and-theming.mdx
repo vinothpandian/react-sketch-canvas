@@ -32,5 +32,5 @@ The canvas does not switch colors automatically when the user's system theme cha
 The example toggles a `data-theme` attribute. The CSS also falls back to the user's system color scheme when no theme is set explicitly.
 
 <Callout type="info">
-  CSS variables passed to `strokeColor` and `canvasColor` are read once when the canvas renders. If your theme changes at runtime, the canvas re-reads them on the next render — make sure the parent component re-renders when the theme toggles.
+  CSS variables in `strokeColor` and `canvasColor` resolve on each render. If your theme changes at runtime, make sure the parent component re-renders when it toggles.
 </Callout>

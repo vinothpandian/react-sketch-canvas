@@ -9,11 +9,9 @@ import DrawingSource from "../../../examples/Drawing.tsx?raw";
 
 Most drawing tools need at least two modes: adding ink and removing it. `ReactSketchCanvas` exposes that switch through its ref, so your toolbar can stay in React while the canvas handles pointer input.
 
-Keep your UI state in sync with the canvas mode. That lets you show the selected tool and the right width control.
-
 ## Switching modes
 
-Call `eraseMode(true)` on the canvas ref to start erasing, and `eraseMode(false)` to return to drawing. Keep the active mode in component state so your toolbar can render the correct button as selected.
+Call `eraseMode(true)` on the canvas ref to start erasing, and `eraseMode(false)` to return to drawing. Keep the active mode in component state so your toolbar can render the correct button as selected and show the right width control.
 
 <ExampleBlock source={DrawingSource}>
   <Drawing />

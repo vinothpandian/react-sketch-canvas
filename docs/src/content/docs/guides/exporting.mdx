@@ -99,7 +99,7 @@ Set `exportWithBackgroundImage` on the canvas to include the configured `backgro
   <BackgroundExport />
 </ExampleBlock>
 
-<Callout type="warn">
+<Callout type="error">
   Raster export with a remote background can fail at runtime. The export rejects with a distinct error for each failure mode: cross-origin (CORS), data URI decode, and same-origin "not reachable". Catch the rejection and show an appropriate fallback to the user.
 </Callout>
 

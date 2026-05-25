@@ -11,9 +11,9 @@ import NestedScrollSource from "../../../examples/NestedScroll.tsx?raw";
 import ScaledCanvas from "../../../examples/ScaledCanvas";
 import ScaledCanvasSource from "../../../examples/ScaledCanvas.tsx?raw";
 
-`ReactSketchCanvas` reads pointer events in viewport-relative coordinates and subtracts the canvas's own `getBoundingClientRect()`. Both values move together when the page, an ancestor element, or a CSS transform changes position. Strokes land where the pointer is, no matter how the canvas is laid out.
+`ReactSketchCanvas` reads pointer events in viewport-relative coordinates and subtracts the canvas's own `getBoundingClientRect()`. Both values update together when the page scrolls. They also update when an ancestor element scrolls or a CSS transform moves the canvas. Strokes land where the pointer is, no matter how the canvas is laid out.
 
-These three demos exercise the layout edge cases that used to trip up coordinate math.
+These three demos cover the layout patterns most likely to cause coordinate drift in other canvas libraries.
 
 ## Scrollable parent
 
