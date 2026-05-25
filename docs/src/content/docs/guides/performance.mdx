@@ -1,0 +1,25 @@
+---
+title: Performance
+description: How react-sketch-canvas scales, and how to keep your app fast.
+---
+
+import ExampleBlock from "../../../components/ExampleBlock";
+import Performance from "../../../examples/Performance";
+import PerformanceSource from "../../../examples/Performance.tsx?raw";
+
+The canvas is built to stay usable with dense SVG drawings. The internal renderer batches points within a stroke, and SVG path data is cheap for the browser to update.
+
+## Stress test
+
+The demo below adds up to 1,000 strokes at a time, with up to 1,000 random points per stroke. Add pen strokes for heavy path rendering, then add eraser masks to exercise the masking pipeline. The counter shows the total strokes and points held by the canvas.
+
+<ExampleBlock source={PerformanceSource}>
+  <Performance />
+</ExampleBlock>
+
+## Tips
+
+- **Avoid re-rendering the canvas on every stroke.** Keep your toolbar state outside the same component subtree if possible, or memoize the toolbar so a new stroke does not re-render the buttons.
+- **Batch `loadPaths()` calls.** Passing all paths in a single call is much cheaper than appending one stroke at a time.
+- **Drop timestamps when you don't need them.** `withTimestamp` records two `Date.now()` calls per stroke and slightly increases the size of saved data.
+- **Cap the number of points per stroke if your input source is high-frequency.** The default pointer event rate is fine; synthetic input streams may need throttling.
