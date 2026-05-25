@@ -1,0 +1,53 @@
+---
+title: Sketching time
+description: Measure how long a user actively spent drawing.
+---
+
+import ExampleBlock from "../../../components/ExampleBlock";
+import SketchingTime from "../../../examples/SketchingTime";
+import SketchingTimeSource from "../../../examples/SketchingTime.tsx?raw";
+
+Some products need more than the final drawing. You may also need to know how long the user spent actively sketching, signing, or annotating. The canvas can record per-stroke timestamps and report total active time on demand.
+
+## Enabling timestamps
+
+Pass `withTimestamp` to the canvas. Every stroke is recorded with start and end times. Call `getSketchingTime()` on the ref to read the total active time in milliseconds — idle moments between strokes are not counted.
+
+<ExampleBlock source={SketchingTimeSource}>
+  <SketchingTime />
+</ExampleBlock>
+
+```tsx twoslash title="Read total sketching time"
+import React, { useRef, useState } from "react";
+import {
+  ReactSketchCanvas,
+  type ReactSketchCanvasRef,
+} from "react-sketch-canvas";
+
+export function TimedCanvas() {
+  const canvasRef = useRef<ReactSketchCanvasRef>(null);
+  const [ms, setMs] = useState(0);
+
+  return (
+    <>
+      <ReactSketchCanvas ref={canvasRef} withTimestamp />
+      <button
+        type="button"
+        onClick={async () => {
+          const total = (await canvasRef.current?.getSketchingTime()) ?? 0;
+          setMs(total);
+        }}
+      >
+        Read sketching time
+      </button>
+      <p>{ms} ms</p>
+    </>
+  );
+}
+```
+
+<Callout type="warn">
+  `withTimestamp` must be set before strokes are drawn. Enabling it later does not retroactively add timestamps to existing strokes, and `getSketchingTime()` will return 0 for any stroke that does not have them.
+</Callout>
+
+This is useful for analytics, review workflows, and experiences where completion time is part of the captured data.
