@@ -293,8 +293,8 @@ export default function App() {
 					<div className="flex gap-2 p-2.5 rounded bg-fd-muted border border-fd-border/50 text-[11px] text-fd-muted-foreground mt-2 leading-relaxed">
 						<Info className="w-3.5 h-3.5 text-fd-primary flex-shrink-0 mt-0.5" />
 						<div>
-							Projected Dimensions:{" "}
-							<strong className="text-fd-foreground font-mono">
+							<span>Projected Dimensions:</span>
+							<strong className="text-fd-foreground font-mono block">
 								{projectedPixelWidth} x {projectedPixelHeight} px
 							</strong>
 						</div>
