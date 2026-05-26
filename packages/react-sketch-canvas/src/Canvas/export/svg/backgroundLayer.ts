@@ -1,4 +1,4 @@
-import type { BackgroundLayerPlan } from "./backgroundPlan";
+import type { BackgroundLayerPlan } from "../background/plan";
 
 /**
  * Create an SVG wrapper that lets SVG background data URIs render consistently.

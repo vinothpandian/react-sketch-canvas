@@ -1,13 +1,10 @@
-import { backgroundLoadErrorMessage } from "./backgroundErrors";
-import {
-	type BackgroundLayerPlan,
-	resolveBackgroundLayerPlan,
-} from "./backgroundPlan";
+import { encodeSvgDataUrl } from "../core/encoding";
+import { loadImage } from "../core/imageLoader";
+import { createSvgBackgroundLayer } from "../svg/backgroundLayer";
+import { normalizeSvgDataUriDimensions } from "../svg/dataUri";
 import { drawDirectImageLayer } from "./directImageLayer";
-import { encodeSvgDataUrl } from "./encoding";
-import { loadImage } from "./imageLoader";
-import { createSvgBackgroundLayer } from "./svgBackgroundLayer";
-import { normalizeSvgDataUriDimensions } from "./svgDataUri";
+import { backgroundLoadErrorMessage } from "./errors";
+import { type BackgroundLayerPlan, resolveBackgroundLayerPlan } from "./plan";
 
 export type { BackgroundLayerPlan };
 export { resolveBackgroundLayerPlan };

@@ -1,5 +1,5 @@
 import { parseSvgAspectRatio, resolveAlignedOffset } from "./aspectRatio";
-import type { PreserveAspectRatio } from "./backgroundPlan";
+import type { PreserveAspectRatio } from "./plan";
 
 /**
  * Inputs required to paint a non-wrapped background image.

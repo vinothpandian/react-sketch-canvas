@@ -1,4 +1,4 @@
-import type { PreserveAspectRatio } from "./backgroundPlan";
+import type { PreserveAspectRatio } from "./plan";
 
 type SvgAspectRatioAlign = "Min" | "Mid" | "Max";
 

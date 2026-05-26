@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { getCanvasWithViewBox } from "../../../src/Canvas/export/dom";
-import { prepareSvgForExport } from "../../../src/Canvas/export/svg";
+import { getCanvasWithViewBox } from "../../../src/Canvas/export/core/dom";
+import { prepareSvgForExport } from "../../../src/Canvas/export/svg/svg";
 
 describe("canvas SVG export helpers", () => {
 	it("clones the svg and applies explicit width, height, and viewBox", () => {

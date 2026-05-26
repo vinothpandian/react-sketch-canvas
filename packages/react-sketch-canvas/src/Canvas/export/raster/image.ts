@@ -1,13 +1,13 @@
 import type * as React from "react";
-import type { ExportImageOptions, ExportImageType } from "../../types";
+import type { ExportImageOptions, ExportImageType } from "../../../types";
 import {
 	drawBackgroundLayer,
 	loadBackgroundLayer,
 	resolveBackgroundLayerPlan,
-} from "./backgroundLayer";
-import { encodeSvgDataUrl } from "./encoding";
-import { loadImage } from "./imageLoader";
-import { prepareSvgForExport, removeBackgroundImageFromSvg } from "./svg";
+} from "../background/layer";
+import { encodeSvgDataUrl } from "../core/encoding";
+import { loadImage } from "../core/imageLoader";
+import { prepareSvgForExport, removeBackgroundImageFromSvg } from "../svg/svg";
 
 type ExportImageFromSvgParams = {
 	id: string;

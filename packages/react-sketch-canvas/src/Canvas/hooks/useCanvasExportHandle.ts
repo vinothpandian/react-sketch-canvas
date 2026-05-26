@@ -1,8 +1,8 @@
 import * as React from "react";
 import type { ExportImageOptions, ExportImageType } from "../../types";
-import { getCanvasWithViewBox } from "../export/dom";
-import { exportImageFromSvg } from "../export/image";
-import { prepareSvgForExport } from "../export/svg";
+import { getCanvasWithViewBox } from "../export/core/dom";
+import { exportImageFromSvg } from "../export/raster/image";
+import { prepareSvgForExport } from "../export/svg/svg";
 import type { CanvasProps, CanvasRef } from "../types";
 
 type UseCanvasExportHandleParams = Required<Pick<CanvasProps, "id">> &

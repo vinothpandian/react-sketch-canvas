@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { exportImageFromSvg } from "../../../src/Canvas/export/image";
+import { exportImageFromSvg } from "../../../src/Canvas/export/raster/image";
 
 class MockImage {
 	static instances: MockImage[] = [];
