@@ -23,14 +23,14 @@ This pattern works well when color is part of a larger form, theme editor, or an
 
 ## Dark and light mode
 
-The canvas does not switch colors automatically when the user's system theme changes. Pass values that reflect your app's theme state, or use CSS variables that respond to `prefers-color-scheme`.
+The canvas does not switch colors automatically when your app changes theme. Pass values that reflect your app's theme state, or define CSS variables near the canvas and update those variables from your app's theme selector.
 
 <ExampleBlock source={ThemeColorsSource}>
   <ThemeColors />
 </ExampleBlock>
 
-The example toggles a `data-theme` attribute. The CSS also falls back to the user's system color scheme when no theme is set explicitly.
+The example keeps the controls styled by the documentation site, then scopes canvas-only variables on `.canvas-wrapper`. The `.dark .canvas-wrapper` selector updates only the values passed to `canvasColor` and `strokeColor`.
 
 <Callout type="info">
-  CSS variables in `strokeColor` and `canvasColor` resolve on each render. If your theme changes at runtime, make sure the parent component re-renders when it toggles.
+  CSS variables in `strokeColor` and `canvasColor` resolve when the canvas renders. If your theme changes without re-rendering the React component, trigger a parent re-render so the canvas reads the updated variable values.
 </Callout>
