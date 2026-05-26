@@ -7,8 +7,8 @@ import {
 	redoState,
 	resetCanvasState,
 	undoState,
-} from "../../../src/ReactSketchCanvas/state/history";
-import type { CanvasPath } from "../../../src/types";
+} from "../../../../src/ReactSketchCanvas/state/history";
+import type { CanvasPath } from "../../../../src/types";
 
 const path = (strokeColor: string): CanvasPath => ({
 	drawMode: true,

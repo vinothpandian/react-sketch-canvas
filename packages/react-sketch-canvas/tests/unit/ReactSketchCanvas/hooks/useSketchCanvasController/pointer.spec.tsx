@@ -1,6 +1,6 @@
 import { act, render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import type { Point } from "../../../../src/types";
+import type { Point } from "../../../../../src/types";
 import {
 	type ControllerSnapshot,
 	collectAnimationFrames,

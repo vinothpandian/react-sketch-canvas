@@ -11,9 +11,9 @@ import DirectCanvasSource from "../../../examples/DirectCanvas.tsx?raw";
 
 Use `Canvas` directly when you need to control those pieces yourself. That is useful for collaborative editors, synced external state, custom history stacks, or tools where the app decides how each pointer event becomes a `CanvasPath`.
 
-## Controlled drawing state
+## Controlled path inspection
 
-`Canvas` renders the `paths` you pass in and reports normalized pointer points back through callbacks. Your app decides when to add a path, append points, erase, undo, or persist state.
+`Canvas` can render paths owned by your app and report normalized pointer points without creating a new stroke. That makes it useful for review tools, annotation inspectors, multiplayer cursors, or any surface where pointer input selects existing data instead of drawing.
 
 <ExampleBlock source={DirectCanvasSource}>
   <DirectCanvas />

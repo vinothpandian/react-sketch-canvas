@@ -1,6 +1,6 @@
 import { render } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { ReactSketchCanvas } from "../../src";
+import { ReactSketchCanvas } from "../../../src";
 
 describe("ReactSketchCanvas", () => {
 	it("renders an svg canvas with the provided id", () => {

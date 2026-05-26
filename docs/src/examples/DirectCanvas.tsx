@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import {
 	Canvas,
 	type CanvasPath,
@@ -6,59 +6,83 @@ import {
 	type Point,
 } from "react-sketch-canvas";
 
-type Tool = "pen" | "eraser";
+const basePaths: CanvasPath[] = [
+	{
+		drawMode: true,
+		strokeColor: "#2563eb",
+		strokeWidth: 6,
+		paths: [
+			{ x: 60, y: 80 },
+			{ x: 150, y: 48 },
+			{ x: 250, y: 120 },
+			{ x: 350, y: 64 },
+		],
+	},
+	{
+		drawMode: true,
+		strokeColor: "#16a34a",
+		strokeWidth: 6,
+		paths: [
+			{ x: 70, y: 220 },
+			{ x: 150, y: 150 },
+			{ x: 260, y: 210 },
+			{ x: 360, y: 132 },
+		],
+	},
+	{
+		drawMode: false,
+		strokeColor: "#000000",
+		strokeWidth: 26,
+		paths: [
+			{ x: 105, y: 114 },
+			{ x: 180, y: 124 },
+			{ x: 255, y: 138 },
+		],
+	},
+];
 
-function createPath(point: Point, tool: Tool, isPenEraser = false): CanvasPath {
-	const isDrawingStroke = tool === "pen" && !isPenEraser;
+function distanceToPoint(point: Point, target: Point): number {
+	return Math.hypot(point.x - target.x, point.y - target.y);
+}
 
-	return {
-		drawMode: isDrawingStroke,
-		strokeColor: isDrawingStroke ? "#2563eb" : "#000000",
-		strokeWidth: isDrawingStroke ? 5 : 18,
-		paths: [point],
-	};
+function nearestPathIndex(point: Point): number {
+	const distances = basePaths.map((path) =>
+		Math.min(
+			...path.paths.map((pathPoint) => distanceToPoint(point, pathPoint)),
+		),
+	);
+	const closestDistance = Math.min(...distances);
+
+	return closestDistance <= 48 ? distances.indexOf(closestDistance) : -1;
+}
+
+function highlightedPaths(selectedPathIndex: number): CanvasPath[] {
+	return basePaths.map((path, index) => {
+		if (index !== selectedPathIndex) return path;
+
+		return {
+			...path,
+			strokeColor: path.drawMode ? "#f59e0b" : "#000000",
+			strokeWidth: path.strokeWidth + 6,
+		};
+	});
 }
 
 export default function App() {
 	const canvasRef = useRef<CanvasRef>(null);
-	const [paths, setPaths] = useState<CanvasPath[]>([]);
-	const [isDrawing, setIsDrawing] = useState(false);
-	const [tool, setTool] = useState<Tool>("pen");
+	const [selectedPathIndex, setSelectedPathIndex] = useState(0);
+	const [selectedPoint, setSelectedPoint] = useState<Point | null>(null);
 	const [exportedSvg, setExportedSvg] = useState("");
+	const paths = useMemo(
+		() => highlightedPaths(selectedPathIndex),
+		[selectedPathIndex],
+	);
 
-	const handlePointerDown = (point: Point, isEraser?: boolean) => {
-		setIsDrawing(true);
-		setPaths((currentPaths) => [
-			...currentPaths,
-			createPath(point, tool, isEraser),
-		]);
-		setExportedSvg("");
-	};
+	const handlePointerDown = (point: Point) => {
+		const nextSelection = nearestPathIndex(point);
 
-	const handlePointerMove = (point: Point) => {
-		if (!isDrawing) return;
-
-		setPaths((currentPaths) => {
-			const activePath = currentPaths[currentPaths.length - 1];
-
-			if (!activePath) return currentPaths;
-
-			return [
-				...currentPaths.slice(0, -1),
-				{
-					...activePath,
-					paths: [...activePath.paths, point],
-				},
-			];
-		});
-	};
-
-	const handlePointerUp = () => {
-		setIsDrawing(false);
-	};
-
-	const handleUndo = () => {
-		setPaths((currentPaths) => currentPaths.slice(0, -1));
+		setSelectedPathIndex(nextSelection);
+		setSelectedPoint(point);
 		setExportedSvg("");
 	};
 
@@ -69,45 +93,29 @@ export default function App() {
 
 	return (
 		<div className="not-prose grid gap-3">
-			<div className="flex flex-wrap gap-2">
-				<button
-					type="button"
-					onClick={() => setTool("pen")}
-					className="inline-flex h-10 items-center rounded-md border px-4 font-medium text-sm data-[active=true]:bg-fd-primary data-[active=true]:text-fd-primary-foreground"
-					data-active={tool === "pen"}
-				>
-					Pen
-				</button>
-				<button
-					type="button"
-					onClick={() => setTool("eraser")}
-					className="inline-flex h-10 items-center rounded-md border px-4 font-medium text-sm data-[active=true]:bg-fd-primary data-[active=true]:text-fd-primary-foreground"
-					data-active={tool === "eraser"}
-				>
-					Eraser
-				</button>
-				<button
-					type="button"
-					onClick={handleUndo}
-					className="inline-flex h-10 items-center rounded-md border bg-fd-background px-4 font-medium text-sm"
-				>
-					Undo local state
-				</button>
+			<div className="flex flex-wrap items-center gap-2">
 				<button
 					type="button"
 					onClick={handleExportSvg}
 					className="inline-flex h-10 items-center rounded-md border bg-fd-background px-4 font-medium text-sm"
 				>
-					Export SVG
+					Export highlighted SVG
 				</button>
+				<p className="text-fd-muted-foreground text-sm">
+					Selected path:{" "}
+					{selectedPathIndex === -1 ? "none" : selectedPathIndex + 1}
+					{selectedPoint
+						? ` at ${Math.round(selectedPoint.x)}, ${Math.round(selectedPoint.y)}`
+						: ""}
+				</p>
 			</div>
 			<Canvas
 				ref={canvasRef}
 				paths={paths}
-				isDrawing={isDrawing}
+				isDrawing={false}
 				onPointerDown={handlePointerDown}
-				onPointerMove={handlePointerMove}
-				onPointerUp={handlePointerUp}
+				onPointerMove={() => undefined}
+				onPointerUp={() => undefined}
 				allowOnlyPointerType="all"
 				backgroundImage=""
 				canvasColor="white"
@@ -118,9 +126,6 @@ export default function App() {
 				svgStyle={{ touchAction: "none" }}
 				withViewBox
 			/>
-			<p className="text-fd-muted-foreground text-sm">
-				{paths.length} controlled paths
-			</p>
 			{exportedSvg ? (
 				<pre className="overflow-auto rounded-md border bg-fd-muted p-3 text-xs">
 					{exportedSvg}

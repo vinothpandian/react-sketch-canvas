@@ -4,7 +4,7 @@ import {
 	isAllowedPointerType,
 	isPenEraser,
 	shouldHandlePointerButton,
-} from "../../../src/Canvas/hooks/useCanvasPointerHandlers";
+} from "../../../../src/Canvas/hooks/useCanvasPointerHandlers";
 
 describe("canvas pointer helpers", () => {
 	it("allows all pointer types when configured as all", () => {

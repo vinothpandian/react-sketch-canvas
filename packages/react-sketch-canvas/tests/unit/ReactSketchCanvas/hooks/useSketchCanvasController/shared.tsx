@@ -1,7 +1,7 @@
 import * as React from "react";
 import { vi } from "vitest";
-import { useSketchCanvasController } from "../../../../src/ReactSketchCanvas/hooks/useSketchCanvasController";
-import type { CanvasPath } from "../../../../src/types";
+import { useSketchCanvasController } from "../../../../../src/ReactSketchCanvas/hooks/useSketchCanvasController";
+import type { CanvasPath } from "../../../../../src/types";
 
 export type ControllerSnapshot = ReturnType<typeof useSketchCanvasController>;
 

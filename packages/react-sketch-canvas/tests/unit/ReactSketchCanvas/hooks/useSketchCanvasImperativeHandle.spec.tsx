@@ -1,10 +1,10 @@
 import { render } from "@testing-library/react";
 import * as React from "react";
 import { describe, expect, it, vi } from "vitest";
-import type { CanvasRef } from "../../../src/Canvas/types";
-import { useSketchCanvasImperativeHandle } from "../../../src/ReactSketchCanvas/hooks/useSketchCanvasImperativeHandle";
-import type { ReactSketchCanvasRef } from "../../../src/ReactSketchCanvas/types";
-import type { CanvasPath } from "../../../src/types";
+import type { CanvasRef } from "../../../../src/Canvas/types";
+import { useSketchCanvasImperativeHandle } from "../../../../src/ReactSketchCanvas/hooks/useSketchCanvasImperativeHandle";
+import type { ReactSketchCanvasRef } from "../../../../src/ReactSketchCanvas/types";
+import type { CanvasPath } from "../../../../src/types";
 
 const path: CanvasPath = {
 	drawMode: true,

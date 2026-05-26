@@ -1,9 +1,9 @@
 import { createEvent, fireEvent, render } from "@testing-library/react";
 import * as React from "react";
 import { describe, expect, it, vi } from "vitest";
-import { useCanvasPointerHandlers } from "../../../src/Canvas/hooks/useCanvasPointerHandlers";
-import type { AllowOnlyPointerType } from "../../../src/Canvas/types";
-import type { Point } from "../../../src/types";
+import { useCanvasPointerHandlers } from "../../../../src/Canvas/hooks/useCanvasPointerHandlers";
+import type { AllowOnlyPointerType } from "../../../../src/Canvas/types";
+import type { Point } from "../../../../src/types";
 
 type HarnessProps = {
 	isDrawing?: boolean;

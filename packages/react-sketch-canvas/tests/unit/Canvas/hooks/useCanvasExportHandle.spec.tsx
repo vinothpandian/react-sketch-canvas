@@ -1,8 +1,8 @@
 import { render } from "@testing-library/react";
 import * as React from "react";
 import { describe, expect, it } from "vitest";
-import { useCanvasExportHandle } from "../../../src/Canvas/hooks/useCanvasExportHandle";
-import type { CanvasRef } from "../../../src/Canvas/types";
+import { useCanvasExportHandle } from "../../../../src/Canvas/hooks/useCanvasExportHandle";
+import type { CanvasRef } from "../../../../src/Canvas/types";
 
 function Harness({
 	canvasRef,

@@ -3,7 +3,7 @@ import {
 	appendPointsToLastStroke,
 	createStroke,
 	finishStroke,
-} from "../../../src/ReactSketchCanvas/state/strokes";
+} from "../../../../src/ReactSketchCanvas/state/strokes";
 
 describe("stroke state helpers", () => {
 	it("creates a draw stroke", () => {

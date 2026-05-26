@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getSketchingTime } from "../../../src/ReactSketchCanvas/state/sketchingTime";
+import { getSketchingTime } from "../../../../src/ReactSketchCanvas/state/sketchingTime";
 
 describe("getSketchingTime", () => {
 	it("sums timestamp durations and treats missing timestamps as zero", () => {

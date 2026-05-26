@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 import {
 	getEraserPaths,
 	getPathGroups,
-} from "../../../src/Canvas/svg/grouping";
-import type { CanvasPath } from "../../../src/types";
+} from "../../../../src/Canvas/svg/grouping";
+import type { CanvasPath } from "../../../../src/types";
 
 const draw = (id: number): CanvasPath => ({
 	drawMode: true,
