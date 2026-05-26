@@ -78,6 +78,7 @@ function highlightedPaths(selectedPathIndex: number): CanvasPath[] {
 
 export default function App() {
 	const canvasRef = useRef<CanvasRef>(null);
+	const exportCanvasRef = useRef<CanvasRef>(null);
 	const [selectedPathIndex, setSelectedPathIndex] = useState(0);
 	const [selectedPoint, setSelectedPoint] = useState<Point | null>(null);
 	const [exportedSvg, setExportedSvg] = useState("");
@@ -94,6 +95,22 @@ export default function App() {
 		() => highlightedPaths(selectedPathIndex),
 		[selectedPathIndex],
 	);
+	const selectedExportPaths = useMemo((): CanvasPath[] => {
+		if (selectedPathIndex === -1) return [];
+
+		const selectedPath = basePaths[selectedPathIndex];
+		if (!selectedPath) return [];
+
+		return [
+			{
+				...selectedPath,
+				drawMode: true,
+				strokeColor: selectedPath.drawMode
+					? selectedPath.strokeColor
+					: "#111827",
+			},
+		];
+	}, [selectedPathIndex]);
 
 	useEffect(() => {
 		if (!exportedSvg) {
@@ -118,7 +135,7 @@ export default function App() {
 	};
 
 	const handleExportSvg = async () => {
-		const svg = await canvasRef.current?.exportSvg();
+		const svg = await exportCanvasRef.current?.exportSvg();
 		setExportedSvg(svg ?? "");
 	};
 
@@ -130,7 +147,7 @@ export default function App() {
 	};
 
 	return (
-		<div className="not-prose flex flex-col gap-4 w-full">
+		<div className="not-prose flex w-full min-w-0 flex-col gap-4">
 			{/* CAD Style Inspector Header */}
 			<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-lg border border-fd-border bg-fd-card shadow-sm text-fd-foreground">
 				{/* Vector Export Command */}
@@ -194,11 +211,32 @@ export default function App() {
 					svgStyle={{ touchAction: "none" }}
 					withViewBox
 				/>
+				<div
+					className="pointer-events-none invisible absolute left-[-9999px] top-0 h-[260px] w-[400px] overflow-hidden"
+					aria-hidden
+				>
+					<Canvas
+						ref={exportCanvasRef}
+						paths={selectedExportPaths}
+						isDrawing={false}
+						onPointerDown={() => undefined}
+						onPointerMove={() => undefined}
+						onPointerUp={() => undefined}
+						allowOnlyPointerType="all"
+						backgroundImage=""
+						canvasColor="transparent"
+						exportWithBackgroundImage={false}
+						width="400px"
+						height="260px"
+						svgStyle={{}}
+						withViewBox
+					/>
+				</div>
 			</div>
 
 			{/* Conditionally Rendered Output Panel */}
 			{exportedSvg && (
-				<div className="relative flex flex-col gap-3 p-4 rounded-lg border border-fd-border bg-fd-card shadow-sm text-fd-foreground">
+				<div className="relative flex min-w-0 flex-col gap-3 rounded-lg border border-fd-border bg-fd-card p-4 text-fd-foreground shadow-sm">
 					{/* Toast Notification */}
 					{copied && (
 						<div className="absolute top-4 right-4 flex items-center gap-1.5 rounded-md bg-emerald-500/10 dark:bg-emerald-500/20 px-2.5 py-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 dark:border-emerald-500/35 shadow-sm animate-in fade-in slide-in-from-top-1 duration-200">
@@ -211,7 +249,7 @@ export default function App() {
 						Exported CAD SVG Code
 					</span>
 
-					<div className="flex flex-col gap-3">
+					<div className="flex min-w-0 flex-col gap-3">
 						<div className="flex flex-wrap gap-2">
 							<button
 								type="button"
@@ -233,7 +271,7 @@ export default function App() {
 								</a>
 							)}
 						</div>
-						<pre className="max-h-52 overflow-auto rounded-md border border-fd-border bg-fd-muted p-3 font-mono text-[10px] text-fd-foreground leading-relaxed">
+						<pre className="max-h-52 min-w-0 overflow-auto whitespace-pre-wrap break-all rounded-md border border-fd-border bg-fd-muted p-3 font-mono text-[10px] leading-relaxed text-fd-foreground">
 							{exportedSvg}
 						</pre>
 					</div>
