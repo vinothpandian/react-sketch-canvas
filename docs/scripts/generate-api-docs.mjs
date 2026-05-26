@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
 const scriptsRoot = dirname(fileURLToPath(import.meta.url));
 const docsRoot = dirname(scriptsRoot);
 const outputRoot = join(docsRoot, "src/content/docs/api");
-const typedocOutput = mkdtempSync(join(tmpdir(), "react-sketch-canvas-api-"));
+let typedocOutput = "";
 
 const apiSections = [
 	{
@@ -187,7 +187,9 @@ async function writeMetaFiles(dir = outputRoot) {
 	}
 }
 
-async function main() {
+export async function generateApiDocs() {
+	typedocOutput = mkdtempSync(join(tmpdir(), "react-sketch-canvas-api-"));
+
 	try {
 		await generateMarkdown();
 		buildSymbolUrls();
@@ -219,4 +221,6 @@ async function main() {
 	}
 }
 
-await main();
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+	await generateApiDocs();
+}

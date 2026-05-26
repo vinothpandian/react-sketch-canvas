@@ -3,6 +3,7 @@
 	"pages": [
 		"installation",
 		"drawing-and-erasing",
+		"canvas",
 		"colors-and-theming",
 		"read-only",
 		"history",

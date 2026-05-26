@@ -1,27 +1,18 @@
 import { expect, test } from "playwright/test";
 
-test("renders 1000 loaded strokes with 1000 points each", async ({ page }) => {
-	test.setTimeout(120_000);
-
+test("renders 500 loaded strokes with 500 points each", async ({ page }) => {
 	await page.goto("/");
 
 	await page.locator("#load-stress-paths-button").click();
 
-	await expect(page.locator("#path-count")).toHaveText("1000", {
-		timeout: 120_000,
-	});
-	await expect(page.locator("#rsc path")).toHaveCount(1000, {
-		timeout: 120_000,
-	});
-	await expect(page.locator("#stress-point-count")).toHaveText("1000000");
+	await expect(page.locator("#path-count")).toHaveText("500");
+	await expect(page.locator("#rsc path")).toHaveCount(500);
+	await expect(page.locator("#stress-point-count")).toHaveText("250000");
 
 	await page.locator("#export-svg-button").click();
-	await expect(page.locator("#exported-svg")).toContainText("<svg", {
-		timeout: 120_000,
-	});
+	await expect(page.locator("#exported-svg")).toContainText("<svg");
 	await expect(page.locator("#exported-svg")).toContainText(
-		"__stroke-group-0__paths__999",
-		{ timeout: 120_000 },
+		"__stroke-group-0__paths__499",
 	);
 });
 

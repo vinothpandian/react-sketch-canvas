@@ -72,7 +72,8 @@ export default function App() {
 	const [exportWidth, setExportWidth] = useState<number>(CANVAS_WIDTH);
 	const [exportHeight, setExportHeight] = useState<number>(CANVAS_HEIGHT);
 	const [pixelRatio, setPixelRatio] = useState<number>(2);
-	const [useExplicitSize, setUseExplicitSize] = useState<boolean>(true);
+	const [exportAtExplicitSize, setExportAtExplicitSize] =
+		useState<boolean>(true);
 	const [exportResult, setExportResult] = useState<ExportResult | null>(null);
 	const [deviceDpr, setDeviceDpr] = useState<number>(1);
 
@@ -107,20 +108,20 @@ export default function App() {
 	const handleUseExplicitSizeChange = (
 		event: ChangeEvent<HTMLInputElement>,
 	) => {
-		setUseExplicitSize(event.target.checked);
+		setExportAtExplicitSize(event.target.checked);
 		setExportResult(null);
 	};
 
 	const handleExportClick = async () => {
 		if (!canvasRef.current) return;
 
-		const logicalWidth = useExplicitSize ? exportWidth : CANVAS_WIDTH;
-		const logicalHeight = useExplicitSize ? exportHeight : CANVAS_HEIGHT;
-		const effectiveRatio = useExplicitSize ? pixelRatio : deviceDpr;
+		const logicalWidth = exportAtExplicitSize ? exportWidth : CANVAS_WIDTH;
+		const logicalHeight = exportAtExplicitSize ? exportHeight : CANVAS_HEIGHT;
+		const effectiveRatio = exportAtExplicitSize ? pixelRatio : deviceDpr;
 		const pixelWidth = Math.round(logicalWidth * effectiveRatio);
 		const pixelHeight = Math.round(logicalHeight * effectiveRatio);
 
-		const image = useExplicitSize
+		const image = exportAtExplicitSize
 			? await canvasRef.current.exportImage(exportFormat, {
 					width: pixelWidth,
 					height: pixelHeight,
@@ -142,10 +143,10 @@ export default function App() {
 		setExportResult(null);
 	};
 
-	const projectedPixelWidth = useExplicitSize
+	const projectedPixelWidth = exportAtExplicitSize
 		? Math.round(exportWidth * pixelRatio)
 		: Math.round(CANVAS_WIDTH * deviceDpr);
-	const projectedPixelHeight = useExplicitSize
+	const projectedPixelHeight = exportAtExplicitSize
 		? Math.round(exportHeight * pixelRatio)
 		: Math.round(CANVAS_HEIGHT * deviceDpr);
 
@@ -180,7 +181,7 @@ export default function App() {
 							max={4096}
 							step={20}
 							value={exportWidth}
-							disabled={!useExplicitSize}
+							disabled={!exportAtExplicitSize}
 							onChange={handleExportWidthChange}
 						/>
 					</div>
@@ -196,7 +197,7 @@ export default function App() {
 							max={4096}
 							step={20}
 							value={exportHeight}
-							disabled={!useExplicitSize}
+							disabled={!exportAtExplicitSize}
 							onChange={handleExportHeightChange}
 						/>
 					</div>
@@ -208,7 +209,7 @@ export default function App() {
 							id="rasterExportPixelRatio"
 							className="form-select form-select-sm"
 							value={pixelRatio}
-							disabled={!useExplicitSize}
+							disabled={!exportAtExplicitSize}
 							onChange={handlePixelRatioChange}
 						>
 							<option value={1}>1x (standard)</option>
@@ -223,7 +224,7 @@ export default function App() {
 						id="rasterExportUseExplicitSize"
 						className="form-check-input"
 						type="checkbox"
-						checked={useExplicitSize}
+						checked={exportAtExplicitSize}
 						onChange={handleUseExplicitSizeChange}
 					/>
 					<label
@@ -256,8 +257,8 @@ export default function App() {
 					<strong>
 						{projectedPixelWidth} x {projectedPixelHeight} px
 					</strong>{" "}
-					(logical {useExplicitSize ? exportWidth : CANVAS_WIDTH} x{" "}
-					{useExplicitSize ? exportHeight : CANVAS_HEIGHT} CSS px).
+					(logical {exportAtExplicitSize ? exportWidth : CANVAS_WIDTH} x{" "}
+					{exportAtExplicitSize ? exportHeight : CANVAS_HEIGHT} CSS px).
 				</p>
 			</section>
 

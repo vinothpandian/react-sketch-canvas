@@ -19,22 +19,25 @@ export const getEraserPaths = (paths: CanvasPath[]): CanvasPath[] =>
  * sync with eraser indexes.
  */
 export const getPathGroups = (paths: CanvasPath[]): CanvasPath[][] => {
-	let currentGroup = 0;
+	const pathGroups: CanvasPath[][] = [[]];
+	let currentGroup = pathGroups[0];
 
-	return paths.reduce<CanvasPath[][]>(
-		(arrayGroup, path) => {
-			if (!path.drawMode) {
-				currentGroup += 1;
-				return arrayGroup;
-			}
+	for (const path of paths) {
+		if (!path.drawMode) {
+			currentGroup = [];
+			pathGroups.push(currentGroup);
+			continue;
+		}
 
-			if (arrayGroup[currentGroup] === undefined) {
-				arrayGroup[currentGroup] = [];
-			}
+		currentGroup.push(path);
+	}
 
-			arrayGroup[currentGroup].push(path);
-			return arrayGroup;
-		},
-		[[]],
-	);
+	while (
+		pathGroups.length > 1 &&
+		pathGroups[pathGroups.length - 1].length === 0
+	) {
+		pathGroups.pop();
+	}
+
+	return pathGroups;
 };

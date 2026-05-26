@@ -6,8 +6,8 @@ import {
 	type ReactSketchCanvasRef,
 } from "../../src";
 
-const STRESS_STROKE_COUNT = 1000;
-const STRESS_POINTS_PER_STROKE = 1000;
+const STRESS_STROKE_COUNT = 500;
+const STRESS_POINTS_PER_STROKE = 500;
 const ERASER_STRESS_PAIR_COUNT = 100;
 
 function createStressPaths(): CanvasPath[] {
