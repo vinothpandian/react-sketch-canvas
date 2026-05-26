@@ -41,87 +41,37 @@ export default function App() {
 		<section className="rsc-theme-example" data-theme={theme}>
 			<style>
 				{`
-					.rsc-theme-example {
+					.rsc-theme-example,
+					.rsc-theme-example[data-theme="light"] {
 						--rsc-theme-border: #cbd5e1;
 						--rsc-theme-canvas: #ffffff;
 						--rsc-theme-stroke: #2563eb;
+						color-scheme: light;
 					}
 
 					.rsc-theme-example[data-theme="dark"] {
 						--rsc-theme-border: #334155;
 						--rsc-theme-canvas: #020617;
 						--rsc-theme-stroke: #38bdf8;
-					}
-
-					.rsc-theme-example__surface {
-						border: 1px solid var(--rsc-theme-border);
-						padding: 1rem;
-					}
-
-					.rsc-theme-example__tools {
-						border: 1px solid #d4d4d8;
-						background: #fafafa;
-						display: grid;
-						gap: 1rem;
-						grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
-						margin-block-end: 1rem;
-						padding: 1rem;
-					}
-
-					.rsc-theme-example__tool-group {
-						border: 0;
-						display: grid;
-						gap: 0.5rem;
-						margin: 0;
-						min-inline-size: 0;
-						padding: 0;
-					}
-
-					.rsc-theme-example__tool-group legend,
-					.rsc-theme-example__range-control span {
-						color: #52525b;
-						font-size: 0.875rem;
-						font-weight: 600;
-						padding: 0;
-					}
-
-					.rsc-theme-example__button-row,
-					.rsc-theme-example__radio-row {
-						display: flex;
-						flex-wrap: wrap;
-						gap: 0.5rem;
-					}
-
-					.rsc-theme-example__radio-row label {
-						display: flex;
-						align-items: center;
-						gap: 0.25rem;
-					}
-
-					.rsc-theme-example__range-control {
-						display: grid;
-						gap: 0.375rem;
-					}
-
-					.rsc-theme-example__range-control input {
-						width: 100%;
+						color-scheme: dark;
 					}
 
 					@media (prefers-color-scheme: dark) {
-						.rsc-theme-example {
+						.rsc-theme-example:not([data-theme]) {
 							--rsc-theme-border: #334155;
 							--rsc-theme-canvas: #020617;
 							--rsc-theme-stroke: #38bdf8;
+							color-scheme: dark;
 						}
 					}
 				`}
 			</style>
 
 			<h1>Tools</h1>
-			<div className="rsc-theme-example__tools">
-				<fieldset className="rsc-theme-example__tool-group">
+			<div>
+				<fieldset>
 					<legend>Canvas theme</legend>
-					<div className="rsc-theme-example__button-row">
+					<div>
 						<button
 							type="button"
 							disabled={theme === "light"}
@@ -139,9 +89,9 @@ export default function App() {
 					</div>
 				</fieldset>
 
-				<fieldset className="rsc-theme-example__tool-group">
+				<fieldset>
 					<legend>Mode</legend>
-					<div className="rsc-theme-example__button-row">
+					<div>
 						<button
 							type="button"
 							disabled={!eraseMode}
@@ -159,11 +109,8 @@ export default function App() {
 					</div>
 				</fieldset>
 
-				<div className="rsc-theme-example__tool-group">
-					<label
-						className="rsc-theme-example__range-control"
-						htmlFor="strokeWidth"
-					>
+				<div>
+					<label htmlFor="strokeWidth">
 						<span>Stroke width</span>
 						<input
 							disabled={eraseMode}
@@ -176,10 +123,7 @@ export default function App() {
 							onChange={handleStrokeWidthChange}
 						/>
 					</label>
-					<label
-						className="rsc-theme-example__range-control"
-						htmlFor="eraserWidth"
-					>
+					<label htmlFor="eraserWidth">
 						<span>Eraser width</span>
 						<input
 							disabled={!eraseMode}
@@ -194,9 +138,9 @@ export default function App() {
 					</label>
 				</div>
 
-				<fieldset className="rsc-theme-example__tool-group">
+				<fieldset>
 					<legend>Eraser mode</legend>
-					<div className="rsc-theme-example__radio-row">
+					<div>
 						<label>
 							<input
 								type="radio"
