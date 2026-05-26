@@ -1,3 +1,4 @@
+import { Eraser, Pencil, Settings2 } from "lucide-react";
 import { type ChangeEvent, useRef, useState } from "react";
 import {
 	type EraserMode,
@@ -30,73 +31,140 @@ export default function App() {
 		setEraserWidth(+event.target.value);
 	};
 
-	const handleEraserModeChange = (event: ChangeEvent<HTMLInputElement>) => {
-		setEraserMode(event.target.value as EraserMode);
+	const handleEraserModeChange = (mode: EraserMode) => {
+		setEraserMode(mode);
 	};
 
 	return (
-		<div>
-			<h1>Tools</h1>
-			<div>
-				<button type="button" disabled={!eraseMode} onClick={handlePenClick}>
-					Pen
-				</button>
-				<button type="button" disabled={eraseMode} onClick={handleEraserClick}>
-					Eraser
-				</button>
-				<label htmlFor="strokeWidth">Stroke width</label>
-				<input
-					disabled={eraseMode}
-					type="range"
-					min="1"
-					max="20"
-					step="1"
-					id="strokeWidth"
-					value={strokeWidth}
-					onChange={handleStrokeWidthChange}
-				/>
-				<label htmlFor="eraserWidth">Eraser width</label>
-				<input
-					disabled={!eraseMode}
-					type="range"
-					min="1"
-					max="20"
-					step="1"
-					id="eraserWidth"
-					value={eraserWidth}
-					onChange={handleEraserWidthChange}
-				/>
-				<fieldset>
-					<legend>Eraser mode</legend>
-					<label>
+		<div className="not-prose flex flex-col gap-4 w-full">
+			{/* Drafting Table Tool Panel */}
+			<div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 rounded-lg border border-fd-border bg-fd-card shadow-sm text-fd-foreground">
+				{/* Tool Selectors */}
+				<div className="flex flex-col gap-2 min-w-[12rem]">
+					<span className="text-xs font-semibold uppercase tracking-wider text-fd-muted-foreground">
+						Active Tool
+					</span>
+					<div className="inline-flex rounded-md p-1 bg-fd-muted border border-fd-border w-fit">
+						<button
+							type="button"
+							onClick={handlePenClick}
+							className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-200 ${
+								!eraseMode
+									? "bg-fd-primary text-fd-primary-foreground shadow-sm"
+									: "text-fd-muted-foreground hover:text-fd-foreground hover:bg-fd-accent/50"
+							}`}
+						>
+							<Pencil className="w-3.5 h-3.5" />
+							Pen
+						</button>
+						<button
+							type="button"
+							onClick={handleEraserClick}
+							className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-200 ${
+								eraseMode
+									? "bg-fd-primary text-fd-primary-foreground shadow-sm"
+									: "text-fd-muted-foreground hover:text-fd-foreground hover:bg-fd-accent/50"
+							}`}
+						>
+							<Eraser className="w-3.5 h-3.5" />
+							Eraser
+						</button>
+					</div>
+				</div>
+
+				{/* Stroke & Eraser Width Sliders */}
+				<div className="flex flex-1 flex-col sm:flex-row gap-4">
+					{/* Stroke Width Slider */}
+					<div
+						className={`flex flex-col flex-1 gap-2 transition-opacity duration-200 ${eraseMode ? "opacity-40" : "opacity-100"}`}
+					>
+						<div className="flex justify-between items-center text-xs font-semibold uppercase tracking-wider text-fd-muted-foreground">
+							<span htmlFor="strokeWidth">Stroke Width</span>
+							<span className="font-mono text-fd-foreground bg-fd-muted border border-fd-border px-1.5 py-0.5 rounded text-[10px]">
+								{strokeWidth}px
+							</span>
+						</div>
 						<input
-							type="radio"
-							name="eraserMode"
-							value="mask"
-							checked={eraserMode === "mask"}
-							onChange={handleEraserModeChange}
+							disabled={eraseMode}
+							type="range"
+							min="1"
+							max="20"
+							step="1"
+							id="strokeWidth"
+							value={strokeWidth}
+							onChange={handleStrokeWidthChange}
+							className="w-full accent-fd-primary cursor-pointer disabled:cursor-not-allowed"
 						/>
-						Mask
-					</label>
-					<label>
+					</div>
+
+					{/* Eraser Width Slider */}
+					<div
+						className={`flex flex-col flex-1 gap-2 transition-opacity duration-200 ${!eraseMode ? "opacity-40" : "opacity-100"}`}
+					>
+						<div className="flex justify-between items-center text-xs font-semibold uppercase tracking-wider text-fd-muted-foreground">
+							<span htmlFor="eraserWidth">Eraser Width</span>
+							<span className="font-mono text-fd-foreground bg-fd-muted border border-fd-border px-1.5 py-0.5 rounded text-[10px]">
+								{eraserWidth}px
+							</span>
+						</div>
 						<input
-							type="radio"
-							name="eraserMode"
-							value="stroke"
-							checked={eraserMode === "stroke"}
-							onChange={handleEraserModeChange}
+							disabled={!eraseMode}
+							type="range"
+							min="1"
+							max="20"
+							step="1"
+							id="eraserWidth"
+							value={eraserWidth}
+							onChange={handleEraserWidthChange}
+							className="w-full accent-fd-primary cursor-pointer disabled:cursor-not-allowed"
 						/>
-						Stroke
-					</label>
-				</fieldset>
+					</div>
+				</div>
+
+				{/* Eraser Mode Toggles */}
+				<div className="flex flex-col gap-2 min-w-[12rem]">
+					<span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-fd-muted-foreground">
+						<Settings2 className="w-3.5 h-3.5" />
+						Eraser Mode
+					</span>
+					<div className="inline-flex rounded-md p-1 bg-fd-muted border border-fd-border w-fit">
+						<button
+							type="button"
+							onClick={() => handleEraserModeChange("mask")}
+							className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-200 ${
+								eraserMode === "mask"
+									? "bg-fd-card text-fd-foreground border border-fd-border/30 shadow-sm"
+									: "text-fd-muted-foreground hover:text-fd-foreground"
+							}`}
+						>
+							Mask
+						</button>
+						<button
+							type="button"
+							onClick={() => handleEraserModeChange("stroke")}
+							className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-200 ${
+								eraserMode === "stroke"
+									? "bg-fd-card text-fd-foreground border border-fd-border/30 shadow-sm"
+									: "text-fd-muted-foreground hover:text-fd-foreground"
+							}`}
+						>
+							Stroke
+						</button>
+					</div>
+				</div>
 			</div>
-			<h1>Canvas</h1>
-			<ReactSketchCanvas
-				ref={canvasRef}
-				eraserMode={eraserMode}
-				strokeWidth={strokeWidth}
-				eraserWidth={eraserWidth}
-			/>
+
+			{/* Canvas Workspace */}
+			<div className="relative overflow-hidden rounded-lg border border-fd-border bg-fd-card aspect-video min-h-[240px] shadow-sm">
+				<ReactSketchCanvas
+					ref={canvasRef}
+					eraserMode={eraserMode}
+					strokeWidth={strokeWidth}
+					eraserWidth={eraserWidth}
+					strokeColor="var(--color-fd-primary)"
+					canvasColor="transparent"
+				/>
+			</div>
 		</div>
 	);
 }

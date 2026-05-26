@@ -1,3 +1,11 @@
+import {
+	Copy,
+	Download,
+	ExternalLink,
+	Image,
+	Settings,
+	Trash2,
+} from "lucide-react";
 import { type ChangeEvent, useEffect, useRef, useState } from "react";
 import {
 	type CanvasPath,
@@ -131,149 +139,193 @@ export default function App() {
 		exportFormat !== "svg";
 
 	return (
-		<div className="d-flex flex-column gap-3 p-2">
-			<section>
-				<h1>Export options</h1>
-				<div className="row g-2">
-					<div className="col-md-4">
-						<label htmlFor="backgroundSource" className="form-label">
-							Background source
+		<div className="not-prose flex flex-col gap-5 w-full">
+			{/* Grid Configuration and Canvas */}
+			<div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+				{/* Configurations Panel */}
+				<div className="lg:col-span-1 flex flex-col gap-4 p-4 rounded-lg border border-fd-border bg-fd-card shadow-sm text-fd-foreground h-fit">
+					<span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-fd-muted-foreground border-b border-fd-border/50 pb-2">
+						<Settings className="w-3.5 h-3.5 text-fd-primary" />
+						Export Configurator
+					</span>
+
+					{/* Background Source */}
+					<div className="flex flex-col gap-1.5">
+						<label
+							htmlFor="backgroundSource"
+							className="text-xs font-medium text-fd-muted-foreground"
+						>
+							Background Layer
 						</label>
 						<select
 							id="backgroundSource"
-							className="form-select form-select-sm"
 							value={backgroundSource}
 							onChange={handleBackgroundSourceChange}
+							className="h-9 rounded-md border border-fd-border bg-fd-muted px-2.5 text-xs font-medium focus:ring-2 focus:ring-fd-ring outline-none"
 						>
 							<option value="remote">Remote image URL</option>
 							<option value="dataUri">Data URI</option>
 							<option value="inaccessible">Inaccessible URL</option>
 						</select>
 					</div>
-					<div className="col-md-4">
-						<label htmlFor="exportFormat" className="form-label">
-							Export format
+
+					{/* Export Format */}
+					<div className="flex flex-col gap-1.5">
+						<label
+							htmlFor="exportFormat"
+							className="text-xs font-medium text-fd-muted-foreground"
+						>
+							File Format
 						</label>
 						<select
 							id="exportFormat"
-							className="form-select form-select-sm"
 							value={exportFormat}
 							onChange={handleExportFormatChange}
+							className="h-9 rounded-md border border-fd-border bg-fd-muted px-2.5 text-xs font-medium focus:ring-2 focus:ring-fd-ring outline-none"
 						>
-							<option value="png">PNG</option>
-							<option value="jpeg">JPEG</option>
-							<option value="svg">SVG</option>
+							<option value="png">PNG (Raster)</option>
+							<option value="jpeg">JPEG (Raster)</option>
+							<option value="svg">SVG (Vector)</option>
 						</select>
 					</div>
-					<div className="col-md-4 d-flex flex-column justify-content-end gap-2">
-						<div className="form-check">
+
+					{/* Toggles */}
+					<div className="flex flex-col gap-2.5 mt-1 border-t border-fd-border/30 pt-3">
+						<label className="flex items-center gap-2 cursor-pointer group text-xs text-fd-foreground">
 							<input
 								id="exportWithBackgroundImage"
-								className="form-check-input"
 								type="checkbox"
 								checked={exportWithBackgroundImage}
 								onChange={handleExportWithBackgroundChange}
+								className="w-3.5 h-3.5 accent-fd-primary rounded cursor-pointer"
 							/>
-							<label
-								htmlFor="exportWithBackgroundImage"
-								className="form-check-label"
-							>
+							<span className="group-hover:text-fd-primary transition-colors">
 								Include background image
-							</label>
-						</div>
-						<div className="form-check">
+							</span>
+						</label>
+
+						<label
+							className={`flex items-center gap-2 cursor-pointer group text-xs text-fd-foreground transition-opacity ${
+								exportFormat === "svg"
+									? "opacity-30 pointer-events-none"
+									: "opacity-100"
+							}`}
+						>
 							<input
 								id="exportAtFixedSize"
-								className="form-check-input"
 								type="checkbox"
 								checked={exportAtFixedSize}
 								disabled={exportFormat === "svg"}
 								onChange={handleFixedSizeChange}
+								className="w-3.5 h-3.5 accent-fd-primary rounded cursor-pointer"
 							/>
-							<label htmlFor="exportAtFixedSize" className="form-check-label">
+							<span className="group-hover:text-fd-primary transition-colors">
 								Export raster as 320 x 180
-							</label>
-						</div>
+							</span>
+						</label>
+					</div>
+
+					{/* Action Triggers */}
+					<div className="flex gap-2 mt-2 pt-3 border-t border-fd-border/30">
+						<button
+							type="button"
+							onClick={handleExportClick}
+							className="flex-1 inline-flex h-9 items-center justify-center gap-1.5 rounded-md bg-fd-primary px-3 text-xs font-semibold text-fd-primary-foreground shadow transition-colors hover:bg-fd-primary/90"
+						>
+							<Download className="w-3.5 h-3.5" />
+							Export
+						</button>
+						<button
+							type="button"
+							onClick={handleClearOutputClick}
+							className="inline-flex h-9 items-center justify-center p-2 rounded-md border border-fd-border bg-fd-card text-fd-muted-foreground hover:text-fd-foreground hover:bg-fd-accent shadow-sm transition-colors"
+							title="Clear Output"
+						>
+							<Trash2 className="w-3.5 h-3.5" />
+						</button>
+					</div>
+
+					{showFallbackNote && (
+						<p className="p-2 rounded bg-amber-500/10 border border-amber-500/20 text-[10px] text-amber-600 dark:text-amber-500 mt-2 font-medium leading-relaxed">
+							Note: If background fails to load during export, the drawing will
+							still render without the background layer.
+						</p>
+					)}
+				</div>
+
+				{/* Canvas Workspace */}
+				<div className="lg:col-span-2 flex flex-col gap-2">
+					<span className="text-xs font-semibold uppercase tracking-wider text-fd-muted-foreground">
+						Interactive Canvas
+					</span>
+					<div className="relative overflow-hidden rounded-lg border border-fd-border bg-fd-card h-[280px] shadow-sm">
+						<ReactSketchCanvas
+							ref={canvasRef}
+							backgroundImage={backgroundImage}
+							canvasColor="#f8fafc"
+							exportWithBackgroundImage={exportWithBackgroundImage}
+							preserveBackgroundImageAspectRatio="xMidYMid slice"
+							strokeWidth={5}
+							strokeColor="#111827"
+						/>
 					</div>
 				</div>
-				<div className="d-flex gap-2 mt-3">
-					<button
-						type="button"
-						className="btn btn-sm btn-primary"
-						onClick={handleExportClick}
-					>
-						Export
-					</button>
-					<button
-						type="button"
-						className="btn btn-sm btn-outline-secondary"
-						onClick={handleClearOutputClick}
-					>
-						Clear output
-					</button>
-				</div>
-				{showFallbackNote ? (
-					<p className="alert alert-warning py-2 mt-3 mb-0">
-						If the browser cannot load the background image for export, the
-						drawing can still export without that background layer.
-					</p>
-				) : null}
-			</section>
+			</div>
 
-			<section>
-				<h1>Canvas</h1>
-				<ReactSketchCanvas
-					ref={canvasRef}
-					height="240px"
-					backgroundImage={backgroundImage}
-					canvasColor="#f8fafc"
-					exportWithBackgroundImage={exportWithBackgroundImage}
-					preserveBackgroundImageAspectRatio="xMidYMid slice"
-					strokeWidth={5}
-					strokeColor="#111827"
-				/>
-			</section>
+			{/* Conditionally Rendered Output Panel */}
+			{exportResult && (
+				<div className="flex flex-col gap-3 p-4 rounded-lg border border-fd-border bg-fd-card shadow-sm text-fd-foreground">
+					<span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-fd-muted-foreground border-b border-fd-border/50 pb-2">
+						<Image className="w-3.5 h-3.5 text-fd-primary" />
+						Export Output ({exportResult.format.toUpperCase()})
+					</span>
 
-			{exportResult ? (
-				<section>
-					<h1>Export output</h1>
 					{exportResult.format === "svg" ? (
-						<div className="d-flex flex-column gap-2">
-							<div className="d-flex flex-wrap gap-2">
+						<div className="flex flex-col gap-3">
+							<div className="flex flex-wrap gap-2">
 								<button
 									type="button"
-									className="btn btn-sm btn-outline-secondary"
 									onClick={handleCopySvgClick}
+									className="inline-flex h-8 items-center gap-1.5 rounded-md border border-fd-border bg-fd-card px-3 text-xs font-medium hover:bg-fd-accent transition-colors shadow-sm"
 								>
-									Copy SVG
+									<Copy className="w-3 h-3" />
+									Copy SVG Code
 								</button>
-								{svgViewerUrl ? (
+								{svgViewerUrl && (
 									<a
-										className="btn btn-sm btn-outline-secondary"
 										href={svgViewerUrl}
 										target="_blank"
 										rel="noreferrer"
+										className="inline-flex h-8 items-center gap-1.5 rounded-md border border-fd-border bg-fd-card px-3 text-xs font-medium hover:bg-fd-accent transition-colors shadow-sm"
 									>
-										View SVG
+										<ExternalLink className="w-3 h-3" />
+										Open in New Tab
 									</a>
-								) : null}
+								)}
 							</div>
 							<textarea
-								className="form-control font-monospace"
 								readOnly
-								rows={8}
+								rows={6}
 								value={exportResult.value}
+								className="w-full rounded-md border border-fd-border bg-fd-muted p-3 font-mono text-xs text-fd-foreground focus:outline-none"
 							/>
 						</div>
 					) : (
-						<img
-							className="img-fluid border rounded"
-							src={exportResult.value}
-							alt={`${exportResult.format.toUpperCase()} export preview`}
-						/>
+						<div className="flex flex-col gap-2 max-w-lg">
+							<div className="overflow-hidden rounded border border-fd-border shadow-inner bg-fd-muted">
+								<img
+									src={exportResult.value}
+									alt={`${exportResult.format.toUpperCase()} export preview`}
+									className="w-full h-auto object-contain max-h-[220px]"
+								/>
+							</div>
+							<span className="text-[10px] text-fd-muted-foreground text-center">
+								Right click image to download or copy raster output
+							</span>
+						</div>
 					)}
-				</section>
-			) : null}
+				</div>
+			)}
 		</div>
 	);
 }

@@ -1,3 +1,10 @@
+import {
+	Copy,
+	Download,
+	ExternalLink,
+	Layers,
+	MousePointerClick,
+} from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
 	Canvas,
@@ -113,66 +120,108 @@ export default function App() {
 	};
 
 	return (
-		<div className="not-prose grid gap-3">
-			<div className="flex flex-wrap items-center gap-2">
-				<button
-					type="button"
-					onClick={handleExportSvg}
-					className="inline-flex h-10 items-center rounded-md border bg-fd-background px-4 font-medium text-sm"
-				>
-					Export highlighted SVG
-				</button>
-				<p className="text-fd-muted-foreground text-sm">
-					Selected path:{" "}
-					{selectedPathIndex === -1 ? "none" : selectedPathIndex + 1}
-					{selectedPoint
-						? ` at ${Math.round(selectedPoint.x)}, ${Math.round(selectedPoint.y)}`
-						: ""}
-				</p>
-			</div>
-			<Canvas
-				ref={canvasRef}
-				paths={paths}
-				isDrawing={false}
-				onPointerDown={handlePointerDown}
-				onPointerMove={() => undefined}
-				onPointerUp={() => undefined}
-				allowOnlyPointerType="all"
-				backgroundImage=""
-				canvasColor="white"
-				exportWithBackgroundImage={false}
-				width="100%"
-				height="320px"
-				style={{ border: "1px solid var(--color-fd-border)", borderRadius: 8 }}
-				svgStyle={{ touchAction: "none" }}
-				withViewBox
-			/>
-			{exportedSvg ? (
-				<section className="grid gap-2">
-					<div className="flex flex-wrap items-center gap-2">
-						<button
-							type="button"
-							onClick={handleCopySvg}
-							className="inline-flex h-9 items-center rounded-md border bg-fd-background px-3 font-medium text-sm"
-						>
-							Copy SVG
-						</button>
-						{svgViewerUrl ? (
-							<a
-								href={svgViewerUrl}
-								target="_blank"
-								rel="noreferrer"
-								className="inline-flex h-9 items-center rounded-md border bg-fd-background px-3 font-medium text-sm"
-							>
-								View SVG
-							</a>
-						) : null}
+		<div className="not-prose flex flex-col gap-4 w-full">
+			{/* CAD Style Inspector Header */}
+			<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-lg border border-fd-border bg-fd-card shadow-sm text-fd-foreground">
+				{/* Vector Export Command */}
+				<div className="flex items-center gap-2">
+					<button
+						type="button"
+						onClick={handleExportSvg}
+						className="inline-flex h-9 items-center gap-1.5 rounded-md bg-fd-primary px-3.5 text-xs font-semibold text-fd-primary-foreground shadow transition-colors hover:bg-fd-primary/90"
+					>
+						<Download className="w-3.5 h-3.5" />
+						Export Highlighted SVG
+					</button>
+				</div>
+
+				{/* Selection Pill */}
+				<div className="flex items-center gap-2.5 p-2 px-3.5 rounded-md bg-fd-muted border border-fd-border shadow-inner text-xs min-w-[15rem] justify-between">
+					<div className="flex flex-col">
+						<span className="text-[10px] font-semibold uppercase tracking-wider text-fd-muted-foreground flex items-center gap-1">
+							<MousePointerClick className="w-3 h-3 text-fd-primary" />
+							CAD Selection
+						</span>
+						<span className="font-semibold text-fd-foreground mt-0.5">
+							{selectedPathIndex === -1 ? (
+								<span className="text-fd-muted-foreground italic">
+									No path selected
+								</span>
+							) : (
+								<span>Vector Path #{selectedPathIndex + 1}</span>
+							)}
+						</span>
 					</div>
-					<pre className="max-h-80 overflow-auto rounded-md border bg-fd-muted p-3 text-xs">
-						{exportedSvg}
-					</pre>
-				</section>
-			) : null}
+
+					{selectedPoint && (
+						<div className="flex flex-col items-end border-l border-fd-border/50 pl-3">
+							<span className="text-[8px] font-semibold uppercase tracking-wider text-fd-muted-foreground">
+								Coordinates
+							</span>
+							<span className="font-mono text-[10px] font-semibold text-fd-foreground mt-0.5">
+								{Math.round(selectedPoint.x)}X, {Math.round(selectedPoint.y)}Y
+							</span>
+						</div>
+					)}
+				</div>
+			</div>
+
+			{/* Custom Low-Level Canvas Viewport */}
+			<div className="relative overflow-hidden rounded-lg border border-fd-border aspect-video min-h-[260px] shadow-sm bg-slate-50 dark:bg-slate-950/20">
+				<Canvas
+					ref={canvasRef}
+					paths={paths}
+					isDrawing={false}
+					onPointerDown={handlePointerDown}
+					onPointerMove={() => undefined}
+					onPointerUp={() => undefined}
+					allowOnlyPointerType="all"
+					backgroundImage=""
+					canvasColor="transparent"
+					exportWithBackgroundImage={false}
+					width="100%"
+					height="100%"
+					svgStyle={{ touchAction: "none" }}
+					withViewBox
+				/>
+			</div>
+
+			{/* Conditionally Rendered Output Panel */}
+			{exportedSvg && (
+				<div className="flex flex-col gap-3 p-4 rounded-lg border border-fd-border bg-fd-card shadow-sm text-fd-foreground">
+					<span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-fd-muted-foreground border-b border-fd-border/50 pb-2">
+						<Layers className="w-3.5 h-3.5 text-fd-primary" />
+						Exported CAD SVG Code
+					</span>
+
+					<div className="flex flex-col gap-3">
+						<div className="flex flex-wrap gap-2">
+							<button
+								type="button"
+								onClick={handleCopySvg}
+								className="inline-flex h-8 items-center gap-1.5 rounded-md border border-fd-border bg-fd-card px-3 text-xs font-medium hover:bg-fd-accent transition-colors shadow-sm"
+							>
+								<Copy className="w-3 h-3" />
+								Copy SVG
+							</button>
+							{svgViewerUrl && (
+								<a
+									href={svgViewerUrl}
+									target="_blank"
+									rel="noreferrer"
+									className="inline-flex h-8 items-center gap-1.5 rounded-md border border-fd-border bg-fd-card px-3 text-xs font-medium hover:bg-fd-accent transition-colors shadow-sm"
+								>
+									<ExternalLink className="w-3 h-3" />
+									View In Window
+								</a>
+							)}
+						</div>
+						<pre className="max-h-52 overflow-auto rounded-md border border-fd-border bg-fd-muted p-3 font-mono text-[10px] text-fd-foreground leading-relaxed">
+							{exportedSvg}
+						</pre>
+					</div>
+				</div>
+			)}
 		</div>
 	);
 }

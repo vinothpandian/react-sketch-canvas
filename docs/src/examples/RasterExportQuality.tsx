@@ -1,3 +1,10 @@
+import {
+	Download,
+	Image as ImageIcon,
+	Info,
+	Settings,
+	Trash2,
+} from "lucide-react";
 import { type ChangeEvent, useEffect, useRef, useState } from "react";
 import {
 	type CanvasPath,
@@ -151,147 +158,226 @@ export default function App() {
 		: Math.round(CANVAS_HEIGHT * deviceDpr);
 
 	return (
-		<div className="d-flex flex-column gap-3 p-2">
-			<section>
-				<h1>Export options</h1>
-				<div className="row g-2">
-					<div className="col-md-3">
-						<label htmlFor="rasterExportFormat" className="form-label">
+		<div className="not-prose flex flex-col gap-5 w-full">
+			{/* Grid Layout Config & Canvas */}
+			<div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+				{/* Configurations Panel */}
+				<div className="lg:col-span-1 flex flex-col gap-4 p-4 rounded-lg border border-fd-border bg-fd-card shadow-sm text-fd-foreground h-fit">
+					<span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-fd-muted-foreground border-b border-fd-border/50 pb-2">
+						<Settings className="w-3.5 h-3.5 text-fd-primary" />
+						Quality Configurator
+					</span>
+
+					{/* Export Format */}
+					<div className="flex flex-col gap-1.5">
+						<label
+							htmlFor="rasterExportFormat"
+							className="text-xs font-medium text-fd-muted-foreground"
+						>
 							Format
 						</label>
 						<select
 							id="rasterExportFormat"
-							className="form-select form-select-sm"
 							value={exportFormat}
 							onChange={handleExportFormatChange}
+							className="h-9 rounded-md border border-fd-border bg-fd-muted px-2.5 text-xs font-medium focus:ring-2 focus:ring-fd-ring outline-none"
 						>
 							<option value="png">PNG</option>
 							<option value="jpeg">JPEG</option>
 						</select>
 					</div>
-					<div className="col-md-3">
-						<label htmlFor="rasterExportWidth" className="form-label">
-							Width (CSS px)
-						</label>
-						<input
-							id="rasterExportWidth"
-							className="form-control form-control-sm"
-							type="number"
-							min={1}
-							max={4096}
-							step={20}
-							value={exportWidth}
-							disabled={!exportAtExplicitSize}
-							onChange={handleExportWidthChange}
-						/>
+
+					{/* Dimensions inputs */}
+					<div className="grid grid-cols-2 gap-3">
+						<div className="flex flex-col gap-1.5">
+							<label
+								htmlFor="rasterExportWidth"
+								className="text-xs font-medium text-fd-muted-foreground"
+							>
+								Width (CSS px)
+							</label>
+							<input
+								id="rasterExportWidth"
+								type="number"
+								min={1}
+								max={4096}
+								step={20}
+								value={exportWidth}
+								disabled={!exportAtExplicitSize}
+								onChange={handleExportWidthChange}
+								className="h-9 rounded-md border border-fd-border bg-fd-muted px-3 text-xs font-mono focus:ring-2 focus:ring-fd-ring outline-none disabled:opacity-40 disabled:cursor-not-allowed"
+							/>
+						</div>
+						<div className="flex flex-col gap-1.5">
+							<label
+								htmlFor="rasterExportHeight"
+								className="text-xs font-medium text-fd-muted-foreground"
+							>
+								Height (CSS px)
+							</label>
+							<input
+								id="rasterExportHeight"
+								type="number"
+								min={1}
+								max={4096}
+								step={20}
+								value={exportHeight}
+								disabled={!exportAtExplicitSize}
+								onChange={handleExportHeightChange}
+								className="h-9 rounded-md border border-fd-border bg-fd-muted px-3 text-xs font-mono focus:ring-2 focus:ring-fd-ring outline-none disabled:opacity-40 disabled:cursor-not-allowed"
+							/>
+						</div>
 					</div>
-					<div className="col-md-3">
-						<label htmlFor="rasterExportHeight" className="form-label">
-							Height (CSS px)
-						</label>
-						<input
-							id="rasterExportHeight"
-							className="form-control form-control-sm"
-							type="number"
-							min={1}
-							max={4096}
-							step={20}
-							value={exportHeight}
-							disabled={!exportAtExplicitSize}
-							onChange={handleExportHeightChange}
-						/>
-					</div>
-					<div className="col-md-3">
-						<label htmlFor="rasterExportPixelRatio" className="form-label">
-							Pixel ratio
+
+					{/* Pixel ratio dropdown */}
+					<div className="flex flex-col gap-1.5">
+						<label
+							htmlFor="rasterExportPixelRatio"
+							className="text-xs font-medium text-fd-muted-foreground"
+						>
+							Pixel Ratio
 						</label>
 						<select
 							id="rasterExportPixelRatio"
-							className="form-select form-select-sm"
 							value={pixelRatio}
 							disabled={!exportAtExplicitSize}
 							onChange={handlePixelRatioChange}
+							className="h-9 rounded-md border border-fd-border bg-fd-muted px-2.5 text-xs font-medium focus:ring-2 focus:ring-fd-ring outline-none disabled:opacity-40 disabled:cursor-not-allowed"
 						>
-							<option value={1}>1x (standard)</option>
-							<option value={2}>2x (retina)</option>
-							<option value={3}>3x (super retina)</option>
-							<option value={4}>4x (print)</option>
+							<option value={1}>1x (Standard)</option>
+							<option value={2}>2x (Retina)</option>
+							<option value={3}>3x (Super Retina)</option>
+							<option value={4}>4x (Print Quality)</option>
 						</select>
 					</div>
-				</div>
-				<div className="form-check mt-3">
-					<input
-						id="rasterExportUseExplicitSize"
-						className="form-check-input"
-						type="checkbox"
-						checked={exportAtExplicitSize}
-						onChange={handleUseExplicitSizeChange}
-					/>
-					<label
-						htmlFor="rasterExportUseExplicitSize"
-						className="form-check-label"
-					>
-						Pass explicit <code>width</code> / <code>height</code> options (when
-						unchecked, the library auto-scales by{" "}
-						<code>window.devicePixelRatio</code> = {deviceDpr.toFixed(2)})
-					</label>
-				</div>
-				<div className="d-flex gap-2 mt-3">
-					<button
-						type="button"
-						className="btn btn-sm btn-primary"
-						onClick={handleExportClick}
-					>
-						Export
-					</button>
-					<button
-						type="button"
-						className="btn btn-sm btn-outline-secondary"
-						onClick={handleClearOutputClick}
-					>
-						Clear output
-					</button>
-				</div>
-				<p className="text-body-secondary small mt-3 mb-0">
-					Projected output:{" "}
-					<strong>
-						{projectedPixelWidth} x {projectedPixelHeight} px
-					</strong>{" "}
-					(logical {exportAtExplicitSize ? exportWidth : CANVAS_WIDTH} x{" "}
-					{exportAtExplicitSize ? exportHeight : CANVAS_HEIGHT} CSS px).
-				</p>
-			</section>
 
-			<section>
-				<h1>Canvas</h1>
-				<ReactSketchCanvas
-					ref={canvasRef}
-					width={`${CANVAS_WIDTH}px`}
-					height={`${CANVAS_HEIGHT}px`}
-					canvasColor="#f8fafc"
-					strokeColor="#0f172a"
-					strokeWidth={6}
-				/>
-			</section>
+					{/* Toggle switch explicit options */}
+					<div className="flex flex-col gap-2 border-t border-fd-border/30 pt-3">
+						<label className="flex items-start gap-2.5 cursor-pointer group text-xs text-fd-foreground leading-normal">
+							<input
+								id="rasterExportUseExplicitSize"
+								type="checkbox"
+								checked={exportAtExplicitSize}
+								onChange={handleUseExplicitSizeChange}
+								className="w-3.5 h-3.5 accent-fd-primary rounded cursor-pointer mt-0.5"
+							/>
+							<span className="group-hover:text-fd-primary transition-colors">
+								Pass explicit <code>width</code> / <code>height</code>{" "}
+								properties (otherwise defaults to scaled device dpr ={" "}
+								{deviceDpr.toFixed(2)})
+							</span>
+						</label>
+					</div>
 
-			{exportResult ? (
-				<section>
-					<h1>Export output</h1>
-					<p className="text-body-secondary small mb-2">
-						{exportResult.format.toUpperCase()} -{" "}
-						<strong>
-							{exportResult.pixelWidth} x {exportResult.pixelHeight} px
-						</strong>{" "}
-						(logical {exportResult.logicalWidth} x {exportResult.logicalHeight}{" "}
-						CSS px), {formatBytes(exportResult.byteLength)} encoded.
-					</p>
-					<img
-						className="img-fluid border rounded"
-						src={exportResult.value}
-						alt={`${exportResult.format.toUpperCase()} export preview`}
-					/>
-				</section>
-			) : null}
+					{/* Action Buttons */}
+					<div className="flex gap-2 mt-2 pt-3 border-t border-fd-border/30">
+						<button
+							type="button"
+							onClick={handleExportClick}
+							className="flex-1 inline-flex h-9 items-center justify-center gap-1.5 rounded-md bg-fd-primary px-3 text-xs font-semibold text-fd-primary-foreground shadow transition-colors hover:bg-fd-primary/90"
+						>
+							<Download className="w-3.5 h-3.5" />
+							Export Raster
+						</button>
+						<button
+							type="button"
+							onClick={handleClearOutputClick}
+							className="inline-flex h-9 items-center justify-center p-2 rounded-md border border-fd-border bg-fd-card text-fd-muted-foreground hover:text-fd-foreground hover:bg-fd-accent shadow-sm transition-colors"
+							title="Clear Output"
+						>
+							<Trash2 className="w-3.5 h-3.5" />
+						</button>
+					</div>
+
+					{/* Projected Stats Info Card */}
+					<div className="flex gap-2 p-2.5 rounded bg-fd-muted border border-fd-border/50 text-[11px] text-fd-muted-foreground mt-2 leading-relaxed">
+						<Info className="w-3.5 h-3.5 text-fd-primary flex-shrink-0 mt-0.5" />
+						<div>
+							Projected Dimensions:{" "}
+							<strong className="text-fd-foreground font-mono">
+								{projectedPixelWidth} x {projectedPixelHeight} px
+							</strong>
+						</div>
+					</div>
+				</div>
+
+				{/* Canvas Workspace */}
+				<div className="lg:col-span-2 flex flex-col gap-2">
+					<span className="text-xs font-semibold uppercase tracking-wider text-fd-muted-foreground">
+						Interactive Canvas ({CANVAS_WIDTH} x {CANVAS_HEIGHT})
+					</span>
+					<div className="relative overflow-hidden rounded-lg border border-fd-border bg-fd-card shadow-sm h-[280px]">
+						<div className="absolute inset-0 flex items-center justify-center bg-[#f8fafc]">
+							<ReactSketchCanvas
+								ref={canvasRef}
+								width="100%"
+								height="100%"
+								canvasColor="#f8fafc"
+								strokeColor="#0f172a"
+								strokeWidth={6}
+							/>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			{/* Conditionally Rendered Output Panel */}
+			{exportResult && (
+				<div className="flex flex-col gap-3 p-4 rounded-lg border border-fd-border bg-fd-card shadow-sm text-fd-foreground">
+					<span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-fd-muted-foreground border-b border-fd-border/50 pb-2">
+						<ImageIcon className="w-3.5 h-3.5 text-fd-primary" />
+						Raster Studio Output Preview
+					</span>
+
+					<div className="flex flex-col md:flex-row md:items-start gap-4">
+						{/* Stats Card */}
+						<div className="flex flex-col gap-2 p-3 bg-fd-muted rounded-md border border-fd-border min-w-[14rem] text-xs">
+							<div className="flex flex-col border-b border-fd-border/50 pb-1.5">
+								<span className="text-[10px] text-fd-muted-foreground uppercase font-bold">
+									Format
+								</span>
+								<span className="font-bold font-mono uppercase text-sm mt-0.5">
+									{exportResult.format}
+								</span>
+							</div>
+							<div className="flex flex-col border-b border-fd-border/50 pb-1.5">
+								<span className="text-[10px] text-fd-muted-foreground uppercase font-bold">
+									Export size
+								</span>
+								<span className="font-mono font-bold mt-0.5">
+									{exportResult.pixelWidth} x {exportResult.pixelHeight} px
+								</span>
+								<span className="text-[10px] text-fd-muted-foreground mt-0.5">
+									Logical: {exportResult.logicalWidth} x{" "}
+									{exportResult.logicalHeight} CSS px
+								</span>
+							</div>
+							<div className="flex flex-col">
+								<span className="text-[10px] text-fd-muted-foreground uppercase font-bold">
+									File size
+								</span>
+								<span className="font-mono font-bold mt-0.5">
+									{formatBytes(exportResult.byteLength)}
+								</span>
+							</div>
+						</div>
+
+						{/* Image */}
+						<div className="flex-1 flex flex-col gap-1.5 max-w-xl">
+							<div className="overflow-hidden rounded border border-fd-border bg-fd-muted shadow-inner">
+								<img
+									src={exportResult.value}
+									alt={`${exportResult.format.toUpperCase()} export preview`}
+									className="w-full h-auto object-contain max-h-[260px]"
+								/>
+							</div>
+							<span className="text-[10px] text-fd-muted-foreground text-center">
+								Right-click thumbnail to copy or save high-fidelity raster image
+							</span>
+						</div>
+					</div>
+				</div>
+			)}
 		</div>
 	);
 }
