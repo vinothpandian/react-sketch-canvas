@@ -15,7 +15,6 @@ const PRESETS: ColorPreset[] = [
 	{ name: "Classic Ink", canvas: "#ffffff", stroke: "#0f172a" },
 	{ name: "Pine Forest", canvas: "#f4f8f6", stroke: "#106358" },
 	{ name: "Blueprint", canvas: "#0b1c33", stroke: "#60a5fa" },
-	{ name: "Chalkboard", canvas: "#1e293b", stroke: "#f8fafc" },
 	{ name: "Terminal", canvas: "#090d16", stroke: "#10b981" },
 ];
 

@@ -22,6 +22,7 @@ import {
   type ReactSketchCanvasRef,
 } from "react-sketch-canvas";
 
+// ---cut---
 export function ExportButton() {
   const canvasRef = useRef<ReactSketchCanvasRef>(null);
 
@@ -31,7 +32,7 @@ export function ExportButton() {
       <button
         type="button"
         onClick={async () => {
-          const dataUrl = await canvasRef.current?.exportImage("png");
+          const dataUrl = await canvasRef.current?.exportImage("png"); // [!code highlight]
           if (dataUrl) window.open(dataUrl);
         }}
       >
@@ -46,7 +47,10 @@ export function ExportButton() {
 
 `exportSvg()` returns a `Promise<string>` with the SVG markup. Use this when you want a vector output you can embed elsewhere, or process server-side.
 
-```tsx
+```tsx twoslash
+import { type ReactSketchCanvasRef } from "react-sketch-canvas";
+declare const canvasRef: React.RefObject<ReactSketchCanvasRef | null>;
+// ---cut---
 const svg = await canvasRef.current?.exportSvg();
 ```
 
@@ -62,11 +66,12 @@ import {
   type ReactSketchCanvasRef,
 } from "react-sketch-canvas";
 
+// ---cut---
 export function SaveLoad() {
   const canvasRef = useRef<ReactSketchCanvasRef>(null);
 
   const save = async () => {
-    const paths = (await canvasRef.current?.exportPaths()) ?? [];
+    const paths = (await canvasRef.current?.exportPaths()) ?? []; // [!code highlight]
     localStorage.setItem("sketch", JSON.stringify(paths));
   };
 
@@ -74,7 +79,7 @@ export function SaveLoad() {
     const raw = localStorage.getItem("sketch");
     if (!raw) return;
     const paths = JSON.parse(raw) as CanvasPath[];
-    canvasRef.current?.loadPaths(paths);
+    canvasRef.current?.loadPaths(paths); // [!code highlight]
   };
 
   return (
@@ -117,7 +122,10 @@ Set `exportWithBackgroundImage` on the canvas to include the configured `backgro
 
 A common pattern for "crisp, fixed logical size" output is to multiply your logical CSS dimensions by a target pixel ratio:
 
-```tsx
+```tsx twoslash
+import { type ReactSketchCanvasRef } from "react-sketch-canvas";
+declare const canvasRef: React.RefObject<ReactSketchCanvasRef | null>;
+// ---cut---
 const logicalWidth = 640;
 const logicalHeight = 360;
 const pixelRatio = 2;

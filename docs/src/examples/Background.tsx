@@ -30,10 +30,6 @@ const PRESETS = [
 		name: "Crumpled Paper",
 		url: "https://images.pexels.com/photos/1103970/pexels-photo-1103970.jpeg",
 	},
-	{
-		name: "Starry Sky",
-		url: "https://images.pexels.com/photos/956999/pexels-photo-956999.jpeg",
-	},
 ];
 
 export default function App() {

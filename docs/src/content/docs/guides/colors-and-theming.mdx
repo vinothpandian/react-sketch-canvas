@@ -13,13 +13,43 @@ The canvas takes color values as plain props. There is no built-in color picker.
 
 ## Stroke and canvas color
 
-Use `strokeColor` for the pen color and `canvasColor` for the background fill. Either accepts any CSS color string, including `transparent`.
+Use `strokeColor` for the pen color and `canvasColor` for the background fill. Both props accept any standard CSS color format, including:
+- **Hexadecimal**: `#a855f7` or `#000`
+- **Named colors**: `red`, `transparent`, or `currentColor`
+- **Functional notations**: `rgb(168 85 247)`, `rgba(0, 0, 0, 0.5)`, or `hsl(270 91% 65%)`
+- **CSS Variables**: `var(--stroke-color)`
+
+```tsx twoslash title="Configuring colors"
+import React from "react";
+import { ReactSketchCanvas } from "react-sketch-canvas";
+
+// ---cut---
+export function StyledCanvas() {
+  return (
+    <ReactSketchCanvas
+      strokeColor="#a855f7" // Hex code [!code highlight]
+      canvasColor="rgba(255, 255, 255, 0.9)" // Functional notation [!code highlight]
+    />
+  );
+}
+```
 
 <ExampleBlock source={ColorsSource}>
   <Colors />
 </ExampleBlock>
 
 This pattern works well when color is part of a larger form, theme editor, or annotation workflow.
+
+### Individual strokes vs. bulk recoloring
+
+`strokeColor` is captured **at the moment each stroke is drawn**, meaning individual strokes can be colored differently. If you change `strokeColor` in your state between strokes, the user can draw a multi-colored sketch:
+
+- **Per-stroke colors**: Changing `strokeColor` only affects *new* strokes. Past strokes remain in the color they were originally drawn with.
+- **Bulk recoloring**: If you want to recolor *all* existing and future strokes simultaneously (for example, when switching between dark and light mode), pass a **CSS Variable** (e.g., `strokeColor="var(--stroke-color)"`) or `currentColor`. When the CSS variable or color changes in your stylesheet, all strokes using that variable will immediately update to the new color.
+
+<Callout type="info">
+  To use bulk recoloring with CSS variables, make sure the variables are defined on a parent container of the canvas and updated when your application theme shifts.
+</Callout>
 
 ## Dark and light mode
 

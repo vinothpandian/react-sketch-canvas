@@ -24,6 +24,7 @@ import {
   type ReactSketchCanvasRef,
 } from "react-sketch-canvas";
 
+// ---cut---
 export function DrawingToolbar() {
   const canvasRef = useRef<ReactSketchCanvasRef>(null);
   const [mode, setMode] = useState<"draw" | "erase">("draw");
@@ -34,7 +35,7 @@ export function DrawingToolbar() {
       <button
         type="button"
         onClick={() => {
-          canvasRef.current?.eraseMode(false);
+          canvasRef.current?.eraseMode(false); // [!code highlight]
           setMode("draw");
         }}
         aria-pressed={mode === "draw"}
@@ -44,7 +45,7 @@ export function DrawingToolbar() {
       <button
         type="button"
         onClick={() => {
-          canvasRef.current?.eraseMode(true);
+          canvasRef.current?.eraseMode(true); // [!code highlight]
           setMode("erase");
         }}
         aria-pressed={mode === "erase"}
@@ -67,19 +68,21 @@ The `eraserMode` prop controls how eraser gestures are stored.
   `mask` is the default for backward compatibility. Pick `stroke` only when you want erased strokes to be removed from the path list — for example, when the result will be re-serialized and edited later.
 </Callout>
 
-```tsx twoslash title="Choose eraser behavior"
+```tsx twoslash {1} title="Choose eraser behavior"
 import React, { useState } from "react";
 import {
   ReactSketchCanvas,
   type EraserMode,
 } from "react-sketch-canvas";
 
+// ---cut---
 export function CanvasWithEraserModeChoice() {
   const [eraserMode, setEraserMode] = useState<EraserMode>("mask");
 
   return (
     <>
       <ReactSketchCanvas eraserMode={eraserMode} />
+      //                 ^?
       <select
         aria-label="Eraser mode"
         value={eraserMode}

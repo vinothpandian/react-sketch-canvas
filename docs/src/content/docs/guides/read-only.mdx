@@ -21,8 +21,9 @@ Set the prop to `true`. The canvas keeps rendering the current paths but ignores
 import React from "react";
 import { ReactSketchCanvas } from "react-sketch-canvas";
 
+// ---cut---
 export function ReadOnlyView() {
-  return <ReactSketchCanvas readOnly />;
+  return <ReactSketchCanvas readOnly />; // [!code highlight]
 }
 ```
 

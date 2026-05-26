@@ -24,17 +24,18 @@ import {
   type ReactSketchCanvasRef,
 } from "react-sketch-canvas";
 
+// ---cut---
 export function TimedCanvas() {
   const canvasRef = useRef<ReactSketchCanvasRef>(null);
   const [ms, setMs] = useState(0);
 
   return (
     <>
-      <ReactSketchCanvas ref={canvasRef} withTimestamp />
+      <ReactSketchCanvas ref={canvasRef} withTimestamp /> // [!code highlight]
       <button
         type="button"
         onClick={async () => {
-          const total = (await canvasRef.current?.getSketchingTime()) ?? 0;
+          const total = (await canvasRef.current?.getSketchingTime()) ?? 0; // [!code highlight]
           setMs(total);
         }}
       >

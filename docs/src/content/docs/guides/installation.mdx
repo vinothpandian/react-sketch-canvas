@@ -36,7 +36,7 @@ import BasicExampleSource from "../../../examples/BasicExample.tsx?raw";
   <Step>
     ### Import the component
 
-    ```tsx
+    ```tsx twoslash
     import { ReactSketchCanvas } from "react-sketch-canvas";
     ```
   </Step>
@@ -49,13 +49,14 @@ import BasicExampleSource from "../../../examples/BasicExample.tsx?raw";
     import React from "react";
     import { ReactSketchCanvas } from "react-sketch-canvas";
 
+    // ---cut---
     export function App() {
       return (
         <ReactSketchCanvas
-          width="100%"
-          height="150px"
-          canvasColor="transparent"
-          strokeColor="#a855f7"
+          width="100%" // [!code highlight]
+          height="150px" // [!code highlight]
+          canvasColor="transparent" // [!code highlight]
+          strokeColor="#a855f7" // [!code highlight]
         />
       );
     }

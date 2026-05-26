@@ -40,16 +40,17 @@ type EditorAction =
 declare const editorState: EditorState;
 declare const dispatch: (action: EditorAction) => void;
 
+// ---cut---
 export function StateMachineCanvas() {
   return (
     <Canvas
-      paths={editorState.paths}
-      isDrawing={editorState.activeTool !== null}
-      onPointerDown={(point, isEraser) =>
-        dispatch({ type: "stroke.started", point, isEraser: isEraser ?? false })
-      }
-      onPointerMove={(point) => dispatch({ type: "stroke.moved", point })}
-      onPointerUp={() => dispatch({ type: "stroke.finished" })}
+      paths={editorState.paths} // [!code highlight]
+      isDrawing={editorState.activeTool !== null} // [!code highlight]
+      onPointerDown={(point, isEraser) => // [!code highlight]
+        dispatch({ type: "stroke.started", point, isEraser: isEraser ?? false }) // [!code highlight]
+      } // [!code highlight]
+      onPointerMove={(point) => dispatch({ type: "stroke.moved", point })} // [!code highlight]
+      onPointerUp={() => dispatch({ type: "stroke.finished" })} // [!code highlight]
       allowOnlyPointerType="all"
       backgroundImage=""
       canvasColor="white"
@@ -73,6 +74,7 @@ import { Canvas, type CanvasPath, type CanvasRef } from "react-sketch-canvas";
 
 declare const approvedPaths: CanvasPath[];
 
+// ---cut---
 export function ExportPreview() {
   const previewRef = useRef<CanvasRef>(null);
 
@@ -90,7 +92,7 @@ export function ExportPreview() {
       exportWithBackgroundImage={false}
       width="100%"
       height="320px"
-      readOnly
+      readOnly // [!code highlight]
       style={{ border: "1px solid #d4d4d8" }}
       svgStyle={{}}
     />

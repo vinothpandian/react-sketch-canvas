@@ -39,22 +39,23 @@ import {
   type ReactSketchCanvasRef,
 } from "react-sketch-canvas";
 
+// ---cut---
 export function HistoryToolbar() {
   const canvasRef = useRef<ReactSketchCanvasRef>(null);
 
   return (
     <>
       <ReactSketchCanvas ref={canvasRef} />
-      <button type="button" onClick={() => canvasRef.current?.undo()}>
+      <button type="button" onClick={() => canvasRef.current?.undo()}> // [!code highlight]
         Undo
       </button>
-      <button type="button" onClick={() => canvasRef.current?.redo()}>
+      <button type="button" onClick={() => canvasRef.current?.redo()}> // [!code highlight]
         Redo
       </button>
-      <button type="button" onClick={() => canvasRef.current?.clearCanvas()}>
+      <button type="button" onClick={() => canvasRef.current?.clearCanvas()}> // [!code highlight]
         Clear
       </button>
-      <button type="button" onClick={() => canvasRef.current?.resetCanvas()}>
+      <button type="button" onClick={() => canvasRef.current?.resetCanvas()}> // [!code highlight]
         Reset
       </button>
     </>
