@@ -65,7 +65,7 @@ The `eraserMode` prop controls how eraser gestures are stored.
 - `eraserMode="stroke"` deletes any drawing stroke the eraser touches. There is no eraser path in the saved state.
 
 <Callout type="info">
-  `mask` is the default for backward compatibility. Pick `stroke` only when you want erased strokes to be removed from the path list — for example, when the result will be re-serialized and edited later.
+  `mask` is the default for backward compatibility. Pick `stroke` only when you want erased strokes to be removed from the path list; for example, when the result will be re-serialized and edited later.
 </Callout>
 
 ```tsx twoslash {1} title="Choose eraser behavior"
@@ -102,5 +102,5 @@ export function CanvasWithEraserModeChoice() {
 
 ## See also
 
-- [Colors & theming](/guides/colors-and-theming/) — change stroke and canvas colors.
-- [History](/guides/history/) — undo, redo, clear, and reset.
+- [Colors & theming](/guides/colors-and-theming/): change stroke and canvas colors.
+- [History](/guides/history/): undo, redo, clear, and reset.

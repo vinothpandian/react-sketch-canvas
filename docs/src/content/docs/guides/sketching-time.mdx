@@ -11,7 +11,7 @@ Some products need more than the final drawing. You may also need to know how lo
 
 ## Enabling timestamps
 
-Pass `withTimestamp` to the canvas. Every stroke is recorded with start and end times. Call `getSketchingTime()` on the ref to read the total active time in milliseconds — idle moments between strokes are not counted.
+Pass `withTimestamp` to the canvas. Every stroke is recorded with start and end times. Call `getSketchingTime()` on the ref to read the total active time in milliseconds; idle moments between strokes are not counted.
 
 <ExampleBlock source={SketchingTimeSource}>
   <SketchingTime />

@@ -13,16 +13,16 @@ import OnlyMouseSource from "../../../examples/OnlyMouse.tsx?raw";
 import OnlyTouch from "../../../examples/OnlyTouch";
 import OnlyTouchSource from "../../../examples/OnlyTouch.tsx?raw";
 
-By default, `ReactSketchCanvas` accepts every pointer type the browser reports. That is the right default for most cases. Production interfaces often need tighter control — for example, a stylus-first note app may want to ignore finger touches so users can rest their hand on a tablet.
+By default, `ReactSketchCanvas` accepts every pointer type the browser reports. That is the right default for most cases. Production interfaces often need tighter control; for example, a stylus-first note app may want to ignore finger touches so users can rest their hand on a tablet.
 
 Use the `allowOnlyPointerType` prop to restrict input.
 
 ## Options
 
-- `all` (default) — every pointer device draws.
-- `pen` — only pen input, including stylus, Apple Pencil, Wacom, Surface Pen.
-- `mouse` — only mouse input.
-- `touch` — only finger touch.
+- `all` (default): every pointer device draws.
+- `pen`: only pen input, including stylus, Apple Pencil, Wacom, Surface Pen.
+- `mouse`: only mouse input.
+- `touch`: only finger touch.
 
 ## Try each mode
 

@@ -114,7 +114,7 @@ Set `exportWithBackgroundImage` on the canvas to include the configured `backgro
 
 ## Raster quality and pixel ratio
 
-`exportImage()` accepts an optional `{ width, height }` second argument. With no second argument, the output is scaled by `window.devicePixelRatio` so it stays sharp on high-DPI screens. With explicit dimensions, the result is exactly that many pixels — which is what you want for fixed-size assets like thumbnails, social cards, or print previews.
+`exportImage()` accepts an optional `{ width, height }` second argument. With no second argument, the output is scaled by `window.devicePixelRatio` so it stays sharp on high-DPI screens. With explicit dimensions, the result is exactly that many pixels, which is what you want for fixed-size assets like thumbnails, social cards, or print previews.
 
 <ExampleBlock source={RasterExportQualitySource}>
   <RasterExportQuality />

@@ -4,14 +4,14 @@ description: A React component for freehand vector drawing with SVG.
 ---
 
 
-import { HomePageDemo } from "../../components/HomePageDemo";
 import { HomePageHero } from "../../components/HomePageHero";
+import HomePageDemo from "../../examples/HomePageDemo";
 
 <HomePageHero />
 
-React Sketch Canvas gives you the familiar feel of a drawing canvas while keeping every stroke as SVG path data. That makes it useful for signatures, annotations, teaching tools, whiteboards, and any UI where you need to save, replay, or export what someone drew.
+React Sketch Canvas gives you a drawing surface that stores every stroke as SVG path data, so signatures, annotations, whiteboards, and review screens can be saved, replayed, scaled, and exported cleanly.
 
-The component stays intentionally small: you render a canvas, pass the drawing props you care about, and build the surrounding toolbar in React. The canvas handles pointer input and stroke history; your app decides how drawing fits into the product.
+You render a canvas, pass the drawing props you care about, and build the surrounding toolbar in React. The canvas handles pointer input and stroke history; your app decides how drawing fits into the product.
 
 <HomePageDemo />
 
@@ -47,7 +47,7 @@ Start with the smallest useful setup, then add the parts most production drawing
   </Card>
 </CardGrid>
 
-## What can you build?
+## Common use cases
 
 - Signature capture for forms, approvals, and consent flows.
 - Image annotation tools for screenshots, photos, documents, and maps.
@@ -55,36 +55,15 @@ Start with the smallest useful setup, then add the parts most production drawing
 - Review screens where a saved drawing should be visible but not editable.
 - Drawing inputs that must prefer a stylus, ignore touch, or support every pointer device.
 
-## Features
-
-<CardGrid>
-  <Card title="Multi input support" icon="input">
-    Accept mouse, touch, pen, Apple Pencil, Wacom, Surface Pen, and other pointer devices. You can also restrict drawing to one input type when your product needs tighter control.
-  </Card>
-  <Card title="Vector-first drawing" icon="signature">
-    Capture freehand strokes as paths, then export the result as SVG, PNG, or JPEG when you need to store or share the drawing.
-  </Card>
-  <Card title="Build your own toolbar" icon="pencil">
-    Use refs for undo, redo, erase mode, reset, export, and sketching time. The library provides the drawing surface without forcing a specific UI.
-  </Card>
-  <Card title="Works with real app flows" icon="api">
-    Load existing paths, render read-only drawings, place images behind the canvas, or collect timing data for review and analytics workflows.
-  </Card>
-</CardGrid>
-
 ## Using AI assistants
 
 If you are pairing with Claude, Cursor, Copilot, Codex, or any other LLM-powered editor, point it at the machine-readable docs so it pulls the right APIs the first time.
 
-- [`/llms.txt`](/llms.txt) — site map of every docs page.
-- [`/llms-full.txt`](/llms-full.txt) — the full documentation bundled into a single file.
+- [`/llms.txt`](/llms.txt): site map of every docs page.
+- [`/llms-full.txt`](/llms-full.txt): the full documentation bundled into a single file.
 
 See the [AI assistants guide](/agentic-tools) for tool-specific setup.
 
 ---
 
-## Disclaimer on Agentic Engineering
-
-Version 8 was built with the help of AI coding assistants — most of the implementation was done by Claude Code (Opus 4.7) and Codex (GPT-5.5). I reviewed and tested everything that landed, but want to be upfront that the bulk of the code was authored by the models rather than typed by hand.
-
-If you are curious about the workflow, Simon Willison has a great write-up on the patterns I followed: [Agentic Engineering Patterns](https://simonwillison.net/guides/agentic-engineering-patterns/).
+ReactSketchCanvas v8 was also developed using AI coding assistants. See the [AI assistants guide](/agentic-tools#project-note) for the project note and workflow references.

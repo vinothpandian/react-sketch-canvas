@@ -14,7 +14,7 @@ export function HomePageHero() {
 					</h1>
 					<p className="mt-5 max-w-xl text-balance text-base leading-7 text-fd-muted-foreground md:text-lg">
 						<span>
-							Freehand vector drawing component for React using SVG as canvas
+							A freehand React vector drawing component using SVG as canvas
 						</span>
 					</p>
 					<div className="mt-7 flex flex-wrap items-center justify-center gap-3 md:justify-start">
@@ -38,8 +38,8 @@ export function HomePageHero() {
 				</div>
 				<div className="flex justify-center md:justify-end">
 					<img
-						alt=""
-						className="h-auto w-44 max-w-full md:w-60 lg:w-72 p-4"
+						alt="React Sketch Canvas logo"
+						className="h-auto w-44 max-w-full p-4 md:w-60 lg:w-72"
 						src={logo}
 					/>
 				</div>

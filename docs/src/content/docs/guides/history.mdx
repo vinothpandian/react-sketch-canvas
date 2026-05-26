@@ -4,6 +4,8 @@ description: Wire undo, redo, clear, and reset into your own toolbar.
 ---
 
 import ExampleBlock from "../../../components/ExampleBlock";
+import HistoryScrubber from "../../../examples/HistoryScrubber";
+import HistoryScrubberSource from "../../../examples/HistoryScrubber.tsx?raw";
 import UndoRedo from "../../../examples/UndoRedo";
 import UndoRedoSource from "../../../examples/UndoRedo.tsx?raw";
 
@@ -13,10 +15,20 @@ The canvas exposes these as ref methods. Your toolbar stays as ordinary React UI
 
 ## Undo and redo
 
-`undo()` removes the most recent stroke. `redo()` puts it back. Both are safe to call when there's nothing to undo or redo — they are no-ops.
+`undo()` removes the most recent stroke. `redo()` puts it back. Both are safe to call when there's nothing to undo or redo; they are no-ops.
 
 <ExampleBlock source={UndoRedoSource}>
   <UndoRedo />
+</ExampleBlock>
+
+## Scrub through saved strokes
+
+`exportPaths()` returns an ordered list of strokes. If you save that list, you can replay the drawing by loading the first stroke, then the first two strokes, and so on.
+
+This example loads the paths from `initialSketch.json` and uses a slider to choose how many saved strokes are visible.
+
+<ExampleBlock source={HistoryScrubberSource}>
+  <HistoryScrubber />
 </ExampleBlock>
 
 ## Clear vs reset
@@ -26,7 +38,7 @@ These two methods look similar but differ in one important way.
 - `clearCanvas()` removes the visible paths while keeping the canvas ready for more drawing. Undo can still bring strokes back.
 - `resetCanvas()` returns the canvas to its initial state. Use it when you have loaded paths or a preconfigured example and want a true blank slate.
 
-When replacing a drawing loaded with `loadPaths()`, call `resetCanvas()` first — see [Exporting & saving](/guides/exporting/#save-and-load).
+When replacing a drawing loaded with `loadPaths()`, call `resetCanvas()` first. See [Exporting & saving](/guides/exporting/#save-and-load).
 
 <Callout type="warn">
   `resetCanvas()` is destructive. The history is cleared, so undo will not bring strokes back after a reset. Prompt the user if losing the drawing would be unexpected.

@@ -17,7 +17,7 @@ These three demos cover the layout patterns most likely to cause coordinate drif
 
 ## Scrollable parent
 
-A common layout puts the canvas inside an `overflow-y: auto` container — a side panel, a fixed-height annotation viewport. Whenever that container scrolls, `clientX/clientY` and `getBoundingClientRect()` both reflect the new viewport position, so the canvas-relative point stays correct.
+A common layout puts the canvas inside an `overflow-y: auto` container (a side panel, a fixed-height annotation viewport). Whenever that container scrolls, `clientX/clientY` and `getBoundingClientRect()` both reflect the new viewport position, so the canvas-relative point stays correct.
 
 Scroll the container, then draw. Every stroke lands exactly where the pointer is, including immediately after a scroll.
 
@@ -27,7 +27,7 @@ Scroll the container, then draw. Every stroke lands exactly where the pointer is
 
 ## Nested scroll containers
 
-Real layouts often have more than one scroll axis — a horizontally scrolling panel inside a vertically scrolling page. Reading viewport-relative coordinates makes the canvas immune to any number of scrolling ancestors: only the immediate `getBoundingClientRect()` matters, and the browser already accounts for every ancestor in that rectangle.
+Real layouts often have more than one scroll axis (a horizontally scrolling panel inside a vertically scrolling page). Reading viewport-relative coordinates makes the canvas immune to any number of scrolling ancestors: only the immediate `getBoundingClientRect()` matters, and the browser already accounts for every ancestor in that rectangle.
 
 Scroll the outer container horizontally and the inner container vertically, then draw. Strokes land on the pointer regardless of either scroll position.
 

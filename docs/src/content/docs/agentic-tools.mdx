@@ -11,9 +11,15 @@ If you are pairing with an AI assistant, giving it the docs up front saves a lot
 
 `llms.txt` is a small convention for making documentation easy for LLMs to consume. A site exposes two files at well-known paths:
 
-- [`/llms.txt`](/llms.txt) — a short, structured index of every docs page with links.
-- [`/llms-full.txt`](/llms-full.txt) — the full text of the docs concatenated into one file, ready to drop into a context window.
+- [`/llms.txt`](/llms.txt): a short, structured index of every docs page with links.
+- [`/llms-full.txt`](/llms-full.txt): the full text of the docs concatenated into one file, ready to drop into a context window.
 
 Most assistants will follow the links in `llms.txt` themselves; for tools without web access, paste `llms-full.txt` once and the assistant has the whole reference.
 
 Learn more at [llmstxt.org](https://llmstxt.org/), the community-curated directory at [github.com/AnswerDotAI/llms-txt](https://github.com/AnswerDotAI/llms-txt), and the [llms.txt getting-started guide on llmstxthub](https://llmstxthub.com/guides/getting-started-llms-txt).
+
+## Project note
+
+Version 8 of React Sketch Canvas was built with help from AI coding assistants, including Claude Code and Codex. I reviewed, tested, and shipped the changes, but the workflow leaned heavily on model-generated implementation work.
+
+If you are curious about that style of development, Simon Willison's [Agentic Engineering Patterns](https://simonwillison.net/guides/agentic-engineering-patterns/) is a useful overview.
