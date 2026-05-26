@@ -108,6 +108,9 @@ export default function App() {
 		canvasRef.current?.loadPaths(addedPaths);
 		setStrokeCount(safeStrokeCount);
 		setPointsPerStroke(safePointsPerStroke);
+
+		// Resetting to ink for continued drawing
+		canvasRef.current?.eraseMode(false);
 	};
 
 	const handleReset = () => {
@@ -240,7 +243,7 @@ export default function App() {
 					ref={canvasRef}
 					withViewBox
 					onChange={updateTotals}
-					strokeColor="var(--color-fd-primary)"
+					strokeColor="#000000" // Dark stroke color for better visibility on top of ink paths
 					canvasColor="transparent"
 				/>
 			</div>
