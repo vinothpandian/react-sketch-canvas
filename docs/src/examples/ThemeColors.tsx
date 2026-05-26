@@ -9,7 +9,6 @@ type Theme = "light" | "dark";
 
 export default function App() {
 	const canvasRef = useRef<ReactSketchCanvasRef>(null);
-	const [theme, setTheme] = useState<Theme>("light");
 	const [eraseMode, setEraseMode] = useState(false);
 	const [eraserMode, setEraserMode] = useState<EraserMode>("mask");
 	const [strokeWidth, setStrokeWidth] = useState(5);
@@ -38,56 +37,9 @@ export default function App() {
 	};
 
 	return (
-		<section className="rsc-theme-example grid gap-3" data-theme={theme}>
-			<style>
-				{`
-					.rsc-theme-example,
-					.rsc-theme-example[data-theme="light"] {
-						--rsc-theme-border: #cbd5e1;
-						--rsc-theme-canvas: #ffffff;
-						--rsc-theme-stroke: #2563eb;
-					}
-
-					.rsc-theme-example[data-theme="dark"] {
-						--rsc-theme-border: #334155;
-						--rsc-theme-canvas: #020617;
-						--rsc-theme-stroke: #38bdf8;
-					}
-
-					@media (prefers-color-scheme: dark) {
-						.rsc-theme-example:not([data-theme]) {
-							--rsc-theme-border: #334155;
-							--rsc-theme-canvas: #020617;
-							--rsc-theme-stroke: #38bdf8;
-						}
-					}
-				`}
-			</style>
-
+		<section className="grid gap-3">
 			<h1>Tools</h1>
 			<div className="grid! gap-4 rounded-md border bg-fd-card p-4 text-fd-card-foreground grid-cols-[repeat(auto-fit,minmax(10rem,1fr))]">
-				<fieldset className="grid min-w-0 gap-2 border-0 p-0">
-					<legend className="p-0 font-semibold text-fd-muted-foreground text-sm">
-						Canvas theme
-					</legend>
-					<div className="flex flex-wrap gap-2">
-						<button
-							type="button"
-							disabled={theme === "light"}
-							onClick={() => setTheme("light")}
-						>
-							Light
-						</button>
-						<button
-							type="button"
-							disabled={theme === "dark"}
-							onClick={() => setTheme("dark")}
-						>
-							Dark
-						</button>
-					</div>
-				</fieldset>
-
 				<fieldset className="grid min-w-0 gap-2 border-0 p-0">
 					<legend className="p-0 font-semibold text-fd-muted-foreground text-sm">
 						Mode
@@ -173,7 +125,22 @@ export default function App() {
 			</div>
 
 			<h1>Canvas</h1>
-			<div className="rounded-md border p-4">
+			<div className="canvas-wrapper rounded-md border p-4">
+				<style>
+					{`
+					.canvas-wrapper {
+						--rsc-theme-canvas: #ffffff;
+						--rsc-theme-stroke: #2563eb;
+					}
+
+					@media (prefers-color-scheme: dark) {
+						.canvas-wrapper {
+							--rsc-theme-canvas: #020617;
+							--rsc-theme-stroke: #38bdf8;
+						}
+					}
+				`}
+				</style>
 				<ReactSketchCanvas
 					ref={canvasRef}
 					width="100%"
