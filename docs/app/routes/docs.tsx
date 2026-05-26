@@ -28,8 +28,8 @@ export async function loader({ params }: Route.LoaderArgs) {
 	return {
 		path: page.path,
 		url: page.url,
-		markdownUrl: `${withDocsBasePath(page.url)}.mdx`,
-		githubUrl: `${githubUrl}/blob/main/docs/src/content/docs/${page.path}`,
+		markdownurl: `${withDocsBasePath(page.url)}.mdx`,
+		githuburl: `${githubUrl}/blob/main/docs/src/content/docs/${page.path}`,
 		pageTree: await source.serializePageTree(source.getPageTree()),
 	};
 }
@@ -37,7 +37,7 @@ export async function loader({ params }: Route.LoaderArgs) {
 const clientLoader = browserCollections.docs.createClientLoader({
 	component(
 		{ toc, frontmatter, default: MDXContent },
-		props: { className?: string; markdownUrl: string; githubUrl: string },
+		props: { className?: string; markdownurl: string; githuburl: string },
 	) {
 		return (
 			<DocsPage toc={toc} {...props}>
@@ -50,10 +50,10 @@ const clientLoader = browserCollections.docs.createClientLoader({
 					<DocsDescription>{frontmatter.description}</DocsDescription>
 				) : null}
 				<div className="flex flex-row gap-2 items-center border-b pt-2 pb-6">
-					<MarkdownCopyButton markdownUrl={props.markdownUrl} />
+					<MarkdownCopyButton markdownUrl={props.markdownurl} />
 					<ViewOptionsPopover
-						markdownUrl={props.markdownUrl}
-						githubUrl={props.githubUrl}
+						markdownUrl={props.markdownurl}
+						githubUrl={props.githuburl}
 					/>
 				</div>
 				<DocsBody>
@@ -65,12 +65,15 @@ const clientLoader = browserCollections.docs.createClientLoader({
 });
 
 export default function Page({ loaderData }: Route.ComponentProps) {
-	const { path, pageTree, markdownUrl, githubUrl } =
+	const { path, pageTree, markdownurl, githuburl } =
 		useFumadocsLoader(loaderData);
 
 	return (
 		<DocsLayout {...baseOptions()} tree={pageTree}>
-			{clientLoader.useContent(path, { markdownUrl, githubUrl })}
+			{clientLoader.useContent(path, {
+				markdownurl,
+				githuburl,
+			})}
 		</DocsLayout>
 	);
 }
