@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/experimental-ct-react";
 import { drawLine } from "../commands";
-import { WithSizedExportButton } from "../stories/WithSizedExportButton.story";
+import { WithSizedExportButton } from "../fixtures/WithSizedExportButton.fixture";
 
 test.use({ viewport: { width: 500, height: 500 } });
 

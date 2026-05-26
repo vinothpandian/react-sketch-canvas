@@ -1,9 +1,9 @@
 import { expect, test } from "@playwright/experimental-ct-react";
 import { type CanvasPath, ReactSketchCanvas } from "../../src";
 import { drawLine, getCanvasIds } from "../commands";
-import { WithEraserButton } from "../stories/WithEraserButton.story";
-import { WithExportPathsButton } from "../stories/WithExportPathsButton.story";
-import { WithUndoRedoButtons } from "../stories/WithUndoRedoButtons";
+import { WithEraserButton } from "../fixtures/WithEraserButton.fixture";
+import { WithExportPathsButton } from "../fixtures/WithExportPathsButton.fixture";
+import { WithUndoRedoButtons } from "../fixtures/WithUndoRedoButtons.fixture";
 
 test.use({ viewport: { width: 500, height: 500 } });
 

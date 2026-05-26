@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/experimental-ct-react";
 import type { Locator } from "playwright/test";
 import { ReactSketchCanvas } from "../../src";
 import { drawLine, drawPoint, drawSquares, getCanvasIds } from "../commands";
-import { WithEraserButton } from "../stories/WithEraserButton.story";
+import { WithEraserButton } from "../fixtures/WithEraserButton.fixture";
 
 test.use({ viewport: { width: 500, height: 500 } });
 

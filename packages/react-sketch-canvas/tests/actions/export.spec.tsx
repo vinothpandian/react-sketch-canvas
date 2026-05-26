@@ -6,7 +6,7 @@ import {
 import type { Locator, Page } from "playwright/test";
 import type { ExportImageType, ReactSketchCanvasProps } from "../../src";
 import { drawSquares, getCanvasIds } from "../commands";
-import { WithExportButton } from "../stories/WithExportButton.story";
+import { WithExportButton } from "../fixtures/WithExportButton.fixture";
 
 test.use({ viewport: { width: 500, height: 500 } });
 

@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/experimental-ct-react";
 import { getCanvasIds } from "../commands";
 import penAndEraserStrokes from "../fixtures/penAndEraserStroke.json";
 import penStrokes from "../fixtures/penStroke.json";
-import { WithLoadPathsButton } from "../stories/WithLoadPathsButton.story";
+import { WithLoadPathsButton } from "../fixtures/WithLoadPathsButton.fixture";
 
 test.use({ viewport: { width: 500, height: 500 } });
 
