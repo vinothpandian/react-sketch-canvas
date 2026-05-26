@@ -1,4 +1,5 @@
 import {
+	Check,
 	Copy,
 	Download,
 	ExternalLink,
@@ -62,6 +63,13 @@ export default function App() {
 	const [exportAtFixedSize, setExportAtFixedSize] = useState(false);
 	const [exportResult, setExportResult] = useState<ExportResult | null>(null);
 	const [svgViewerUrl, setSvgViewerUrl] = useState("");
+	const [copied, setCopied] = useState(false);
+
+	useEffect(() => {
+		if (!copied) return;
+		const timer = setTimeout(() => setCopied(false), 2000);
+		return () => clearTimeout(timer);
+	}, [copied]);
 
 	useEffect(() => {
 		canvasRef.current?.resetCanvas();
@@ -130,6 +138,7 @@ export default function App() {
 		if (exportResult?.format !== "svg") return;
 
 		await navigator.clipboard.writeText(exportResult.value);
+		setCopied(true);
 	};
 
 	const backgroundImage = backgroundSources[backgroundSource];
@@ -274,7 +283,14 @@ export default function App() {
 
 			{/* Conditionally Rendered Output Panel */}
 			{exportResult && (
-				<div className="flex flex-col gap-3 p-4 rounded-lg border border-fd-border bg-fd-card shadow-sm text-fd-foreground">
+				<div className="relative flex flex-col gap-3 p-4 rounded-lg border border-fd-border bg-fd-card shadow-sm text-fd-foreground">
+					{/* Toast Notification */}
+					{copied && (
+						<div className="absolute top-4 right-4 flex items-center gap-1.5 rounded-md bg-emerald-500/10 dark:bg-emerald-500/20 px-2.5 py-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 dark:border-emerald-500/35 shadow-sm animate-in fade-in slide-in-from-top-1 duration-200">
+							<Check className="w-3.5 h-3.5 text-emerald-500" />
+							Copied to clipboard!
+						</div>
+					)}
 					<span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-fd-muted-foreground border-b border-fd-border/50 pb-2">
 						<Image className="w-3.5 h-3.5 text-fd-primary" />
 						Export Output ({exportResult.format.toUpperCase()})

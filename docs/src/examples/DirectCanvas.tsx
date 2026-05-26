@@ -1,4 +1,5 @@
 import {
+	Check,
 	Copy,
 	Download,
 	ExternalLink,
@@ -81,6 +82,14 @@ export default function App() {
 	const [selectedPoint, setSelectedPoint] = useState<Point | null>(null);
 	const [exportedSvg, setExportedSvg] = useState("");
 	const [svgViewerUrl, setSvgViewerUrl] = useState("");
+	const [copied, setCopied] = useState(false);
+
+	useEffect(() => {
+		if (!copied) return;
+		const timer = setTimeout(() => setCopied(false), 2000);
+		return () => clearTimeout(timer);
+	}, [copied]);
+
 	const paths = useMemo(
 		() => highlightedPaths(selectedPathIndex),
 		[selectedPathIndex],
@@ -117,6 +126,7 @@ export default function App() {
 		if (!exportedSvg) return;
 
 		await navigator.clipboard.writeText(exportedSvg);
+		setCopied(true);
 	};
 
 	return (
@@ -188,7 +198,14 @@ export default function App() {
 
 			{/* Conditionally Rendered Output Panel */}
 			{exportedSvg && (
-				<div className="flex flex-col gap-3 p-4 rounded-lg border border-fd-border bg-fd-card shadow-sm text-fd-foreground">
+				<div className="relative flex flex-col gap-3 p-4 rounded-lg border border-fd-border bg-fd-card shadow-sm text-fd-foreground">
+					{/* Toast Notification */}
+					{copied && (
+						<div className="absolute top-4 right-4 flex items-center gap-1.5 rounded-md bg-emerald-500/10 dark:bg-emerald-500/20 px-2.5 py-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 dark:border-emerald-500/35 shadow-sm animate-in fade-in slide-in-from-top-1 duration-200">
+							<Check className="w-3.5 h-3.5 text-emerald-500" />
+							Copied to clipboard!
+						</div>
+					)}
 					<span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-fd-muted-foreground border-b border-fd-border/50 pb-2">
 						<Layers className="w-3.5 h-3.5 text-fd-primary" />
 						Exported CAD SVG Code

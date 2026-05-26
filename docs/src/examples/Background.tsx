@@ -19,22 +19,26 @@ type SomePreserveAspectRatio = (typeof somePreserveAspectRatio)[number];
 
 const PRESETS = [
 	{
-		name: "Scenic",
-		url: "https://images.pexels.com/photos/1193743/pexels-photo-1193743.jpeg?cs=srgb&fm=jpg",
+		name: "Chalkboard",
+		url: "https://images.pexels.com/photos/164005/pexels-photo-164005.jpeg",
 	},
 	{
-		name: "Drafting Grid",
-		url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' fill='%23f1f5f9'/%3E%3Cpath d='M0 40 L40 40 M40 0 L40 40' stroke='%23cbd5e1' stroke-width='0.5'/%3E%3C/svg%3E",
+		name: "Wood Grain",
+		url: "https://images.pexels.com/photos/172277/pexels-photo-172277.jpeg",
 	},
 	{
-		name: "Blueprint",
-		url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3E%3Crect width='30' height='30' fill='%230f172a'/%3E%3Cpath d='M 0 30 L 30 30 M 30 0 L 30 30' stroke='%231e293b' stroke-width='1'/%3E%3C/svg%3E",
+		name: "Crumpled Paper",
+		url: "https://images.pexels.com/photos/1103970/pexels-photo-1103970.jpeg",
+	},
+	{
+		name: "Starry Sky",
+		url: "https://images.pexels.com/photos/956999/pexels-photo-956999.jpeg",
 	},
 ];
 
 export default function App() {
 	const [backgroundImage, setBackgroundImage] = useState(
-		"https://images.pexels.com/photos/1193743/pexels-photo-1193743.jpeg?cs=srgb&fm=jpg",
+		"https://images.pexels.com/photos/164005/pexels-photo-164005.jpeg",
 	);
 	const [preserveAspectRatio, setPreserveAspectRatio] =
 		useState<SomePreserveAspectRatio>("none");
