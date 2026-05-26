@@ -33,14 +33,4 @@ function Paths({ id, paths }: PathProps): React.JSX.Element {
 	);
 }
 
-/**
- * Geometry helpers are exported for focused unit tests and custom path
- * rendering experiments.
- */
-export { bezierCommand, line } from "./geometry";
-/**
- * Props used by the internal SVG path renderer.
- */
-export type { SvgPathProps } from "./SvgPath";
-export { SvgPath };
 export default Paths;

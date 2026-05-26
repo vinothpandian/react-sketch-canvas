@@ -53,11 +53,26 @@ export default function App() {
 		useState(true);
 	const [exportAtFixedSize, setExportAtFixedSize] = useState(false);
 	const [exportResult, setExportResult] = useState<ExportResult | null>(null);
+	const [svgViewerUrl, setSvgViewerUrl] = useState("");
 
 	useEffect(() => {
 		canvasRef.current?.resetCanvas();
 		canvasRef.current?.loadPaths(initialPaths);
 	}, []);
+
+	useEffect(() => {
+		if (exportResult?.format !== "svg") {
+			setSvgViewerUrl("");
+			return;
+		}
+
+		const url = URL.createObjectURL(
+			new Blob([exportResult.value], { type: "image/svg+xml" }),
+		);
+		setSvgViewerUrl(url);
+
+		return () => URL.revokeObjectURL(url);
+	}, [exportResult]);
 
 	const handleBackgroundSourceChange = (
 		event: ChangeEvent<HTMLSelectElement>,
@@ -101,6 +116,12 @@ export default function App() {
 
 	const handleClearOutputClick = () => {
 		setExportResult(null);
+	};
+
+	const handleCopySvgClick = async () => {
+		if (exportResult?.format !== "svg") return;
+
+		await navigator.clipboard.writeText(exportResult.value);
 	};
 
 	const backgroundImage = backgroundSources[backgroundSource];
@@ -217,12 +238,33 @@ export default function App() {
 				<section>
 					<h1>Export output</h1>
 					{exportResult.format === "svg" ? (
-						<textarea
-							className="form-control font-monospace"
-							readOnly
-							rows={6}
-							value={exportResult.value}
-						/>
+						<div className="d-flex flex-column gap-2">
+							<div className="d-flex flex-wrap gap-2">
+								<button
+									type="button"
+									className="btn btn-sm btn-outline-secondary"
+									onClick={handleCopySvgClick}
+								>
+									Copy SVG
+								</button>
+								{svgViewerUrl ? (
+									<a
+										className="btn btn-sm btn-outline-secondary"
+										href={svgViewerUrl}
+										target="_blank"
+										rel="noreferrer"
+									>
+										View SVG
+									</a>
+								) : null}
+							</div>
+							<textarea
+								className="form-control font-monospace"
+								readOnly
+								rows={8}
+								value={exportResult.value}
+							/>
+						</div>
 					) : (
 						<img
 							className="img-fluid border rounded"

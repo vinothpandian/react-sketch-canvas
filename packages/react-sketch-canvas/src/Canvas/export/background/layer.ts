@@ -4,10 +4,7 @@ import { createSvgBackgroundLayer } from "../svg/backgroundLayer";
 import { normalizeSvgDataUriDimensions } from "../svg/dataUri";
 import { drawDirectImageLayer } from "./directImageLayer";
 import { backgroundLoadErrorMessage } from "./errors";
-import { type BackgroundLayerPlan, resolveBackgroundLayerPlan } from "./plan";
-
-export type { BackgroundLayerPlan };
-export { resolveBackgroundLayerPlan };
+import type { BackgroundLayerPlan } from "./plan";
 
 type LoadBackgroundLayerReturns = Promise<HTMLImageElement | null>;
 

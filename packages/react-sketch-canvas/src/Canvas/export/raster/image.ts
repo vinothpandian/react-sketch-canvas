@@ -1,10 +1,7 @@
 import type * as React from "react";
 import type { ExportImageOptions, ExportImageType } from "../../../types";
-import {
-	drawBackgroundLayer,
-	loadBackgroundLayer,
-	resolveBackgroundLayerPlan,
-} from "../background/layer";
+import { drawBackgroundLayer, loadBackgroundLayer } from "../background/layer";
+import { resolveBackgroundLayerPlan } from "../background/plan";
 import { encodeSvgDataUrl } from "../core/encoding";
 import { loadImage } from "../core/imageLoader";
 import { prepareSvgForExport, removeBackgroundImageFromSvg } from "../svg/svg";

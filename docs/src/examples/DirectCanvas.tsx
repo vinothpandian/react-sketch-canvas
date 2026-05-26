@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
 	Canvas,
 	type CanvasPath,
@@ -73,10 +73,25 @@ export default function App() {
 	const [selectedPathIndex, setSelectedPathIndex] = useState(0);
 	const [selectedPoint, setSelectedPoint] = useState<Point | null>(null);
 	const [exportedSvg, setExportedSvg] = useState("");
+	const [svgViewerUrl, setSvgViewerUrl] = useState("");
 	const paths = useMemo(
 		() => highlightedPaths(selectedPathIndex),
 		[selectedPathIndex],
 	);
+
+	useEffect(() => {
+		if (!exportedSvg) {
+			setSvgViewerUrl("");
+			return;
+		}
+
+		const url = URL.createObjectURL(
+			new Blob([exportedSvg], { type: "image/svg+xml" }),
+		);
+		setSvgViewerUrl(url);
+
+		return () => URL.revokeObjectURL(url);
+	}, [exportedSvg]);
 
 	const handlePointerDown = (point: Point) => {
 		const nextSelection = nearestPathIndex(point);
@@ -88,7 +103,13 @@ export default function App() {
 
 	const handleExportSvg = async () => {
 		const svg = await canvasRef.current?.exportSvg();
-		setExportedSvg(svg ? `${svg.slice(0, 140)}...` : "");
+		setExportedSvg(svg ?? "");
+	};
+
+	const handleCopySvg = async () => {
+		if (!exportedSvg) return;
+
+		await navigator.clipboard.writeText(exportedSvg);
 	};
 
 	return (
@@ -127,9 +148,30 @@ export default function App() {
 				withViewBox
 			/>
 			{exportedSvg ? (
-				<pre className="overflow-auto rounded-md border bg-fd-muted p-3 text-xs">
-					{exportedSvg}
-				</pre>
+				<section className="grid gap-2">
+					<div className="flex flex-wrap items-center gap-2">
+						<button
+							type="button"
+							onClick={handleCopySvg}
+							className="inline-flex h-9 items-center rounded-md border bg-fd-background px-3 font-medium text-sm"
+						>
+							Copy SVG
+						</button>
+						{svgViewerUrl ? (
+							<a
+								href={svgViewerUrl}
+								target="_blank"
+								rel="noreferrer"
+								className="inline-flex h-9 items-center rounded-md border bg-fd-background px-3 font-medium text-sm"
+							>
+								View SVG
+							</a>
+						) : null}
+					</div>
+					<pre className="max-h-80 overflow-auto rounded-md border bg-fd-muted p-3 text-xs">
+						{exportedSvg}
+					</pre>
+				</section>
 			) : null}
 		</div>
 	);

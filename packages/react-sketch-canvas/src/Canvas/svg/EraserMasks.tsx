@@ -1,5 +1,5 @@
 import type * as React from "react";
-import { SvgPath } from "../../Paths";
+import { SvgPath } from "../../Paths/SvgPath";
 import { ERASER_MASK_STROKE_COLOR } from "../../ReactSketchCanvas/constants";
 import type { CanvasPath } from "../../types";
 
