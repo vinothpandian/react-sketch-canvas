@@ -7,6 +7,23 @@ import {
 } from "react-sketch-canvas";
 import paths from "../assets/initialSketch.json";
 
+interface ColorPreset {
+	name: string;
+	canvas: string;
+	stroke: string;
+}
+
+const PRESETS: ColorPreset[] = [
+	{ name: "Pine Forest", canvas: "#f4f8f6", stroke: "#106358" },
+	{ name: "Terminal", canvas: "#090d16", stroke: "#10b981" },
+];
+
+const toolButtonClass =
+	"inline-flex size-10 shrink-0 items-center justify-center rounded-md text-fd-muted-foreground transition-colors duration-150 hover:bg-fd-accent hover:text-fd-foreground aria-pressed:bg-fd-primary aria-pressed:text-fd-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fd-primary";
+
+const panelButtonClass =
+	"h-9 rounded-md border border-fd-border bg-fd-card px-2 text-xs font-medium transition-colors duration-150 hover:bg-fd-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fd-primary";
+
 export default function HomePageDemo() {
 	const [eraser, setEraser] = useState(false);
 	const ref = useRef<ReactSketchCanvasRef>(null);
@@ -93,185 +110,224 @@ export default function HomePageDemo() {
 		setEraserMode(mode);
 	};
 
+	const applyPreset = (preset: ColorPreset) => {
+		setCanvasColor(preset.canvas);
+		setStrokeColor(preset.stroke);
+	};
+
 	return (
-		<div className="not-prose grid w-full gap-4 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-stretch">
-			<div className="min-h-[260px] rounded-lg border border-fd-border bg-fd-card text-fd-foreground shadow-sm sm:min-h-[340px] lg:sticky lg:top-20 lg:min-h-[520px]">
-				<div className="grid h-full grid-cols-[2.75rem_1fr]">
-					<div className="grid h-full content-start gap-1 border-fd-border border-r bg-fd-muted p-1.5">
-						<button
-							type="button"
-							aria-label="Use pen"
-							aria-pressed={!eraser}
-							className="inline-flex size-8 items-center justify-center rounded-md text-fd-muted-foreground transition-colors duration-150 hover:bg-fd-accent hover:text-fd-foreground aria-pressed:bg-fd-primary aria-pressed:text-fd-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fd-primary"
-							title="Pen"
-							onClick={handlePencilClick}
-						>
-							<Pencil className="size-3.5" />
-						</button>
-						<button
-							type="button"
-							aria-label="Use eraser"
-							aria-pressed={eraser}
-							className="inline-flex size-8 items-center justify-center rounded-md text-fd-muted-foreground transition-colors duration-150 hover:bg-fd-accent hover:text-fd-foreground aria-pressed:bg-fd-primary aria-pressed:text-fd-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fd-primary"
-							title="Eraser"
-							onClick={handleEraserClick}
-						>
-							<Eraser className="size-3.5" />
-						</button>
-						<button
-							type="button"
-							className="inline-flex size-8 items-center justify-center rounded-md text-fd-muted-foreground transition-colors duration-150 hover:bg-fd-accent hover:text-fd-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fd-primary"
-							title="Undo"
-							aria-label="Undo"
-							onClick={handleUndoClick}
-						>
-							<Undo2 className="size-3.5" />
-						</button>
-						<button
-							type="button"
-							className="inline-flex size-8 items-center justify-center rounded-md text-fd-muted-foreground transition-colors duration-150 hover:bg-fd-accent hover:text-fd-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fd-primary"
-							title="Redo"
-							aria-label="Redo"
-							onClick={handleRedoClick}
-						>
-							<Redo2 className="size-3.5" />
-						</button>
-						<button
-							type="button"
-							className="inline-flex size-8 items-center justify-center rounded-md text-fd-muted-foreground transition-colors duration-150 hover:bg-fd-accent hover:text-fd-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fd-primary"
-							title="Export PNG"
-							aria-label="Export PNG"
-							onClick={handleExportClick}
-						>
-							<Download className="size-3.5" />
-						</button>
-					</div>
-					<div className="grid h-full content-start gap-2 p-2.5">
-						<div className="flex items-center justify-between gap-2">
-							<span className="rounded border border-fd-border bg-fd-muted px-1.5 py-0.5 font-medium text-[11px] text-fd-muted-foreground">
-								{eraser ? "Eraser" : "Pen"}
-							</span>
-							<div className="inline-flex rounded-md border border-fd-border bg-fd-muted p-0.5">
-								<button
-									type="button"
-									aria-pressed={eraserMode === "mask"}
-									className="h-7 rounded px-2 text-[11px] font-medium transition-colors duration-150 hover:bg-fd-accent aria-pressed:bg-fd-primary aria-pressed:text-fd-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fd-primary disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:bg-transparent"
-									disabled={!eraser}
-									onClick={() => handleEraserModeClick("mask")}
-								>
-									Mask
-								</button>
-								<button
-									type="button"
-									aria-pressed={eraserMode === "stroke"}
-									className="h-7 rounded px-2 text-[11px] font-medium transition-colors duration-150 hover:bg-fd-accent aria-pressed:bg-fd-primary aria-pressed:text-fd-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fd-primary disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:bg-transparent"
-									disabled={!eraser}
-									onClick={() => handleEraserModeClick("stroke")}
-								>
-									Stroke
-								</button>
-							</div>
-						</div>
-
-						<label
-							className={`grid gap-1 ${eraser ? "opacity-40" : "opacity-100"}`}
-							htmlFor="home-v3-stroke-width"
-						>
-							<span className="flex items-center justify-between text-[11px] font-medium text-fd-muted-foreground">
-								Stroke
-								<span className="font-mono text-fd-foreground">
-									{strokeWidth}px
-								</span>
-							</span>
-							<input
-								className="h-7 w-full cursor-pointer accent-fd-primary disabled:cursor-not-allowed"
-								disabled={eraser}
-								id="home-v3-stroke-width"
-								max="20"
-								min="1"
-								step="1"
-								type="range"
-								value={strokeWidth}
-								onChange={onStrokeWidthChange}
-							/>
-						</label>
-						<label
-							className={`grid gap-1 ${eraser ? "opacity-100" : "opacity-40"}`}
-							htmlFor="home-v3-eraser-width"
-						>
-							<span className="flex items-center justify-between text-[11px] font-medium text-fd-muted-foreground">
-								Eraser
-								<span className="font-mono text-fd-foreground">
-									{eraserWidth}px
-								</span>
-							</span>
-							<input
-								className="h-7 w-full cursor-pointer accent-fd-primary disabled:cursor-not-allowed"
+		<div className="not-prose grid w-full overflow-hidden rounded-lg border border-fd-border bg-fd-card text-fd-foreground shadow-sm md:grid-cols-[minmax(13.5rem,16rem)_minmax(0,1fr)]">
+			<aside className="grid border-fd-border border-b bg-fd-card md:grid-cols-[3.25rem_minmax(0,1fr)] md:border-r md:border-b-0">
+				<div className="flex gap-1 overflow-x-auto border-fd-border border-b bg-fd-muted p-1.5 md:grid md:content-start md:overflow-visible md:border-r md:border-b-0">
+					<button
+						type="button"
+						aria-label="Use pen"
+						aria-pressed={!eraser}
+						className={toolButtonClass}
+						title="Pen"
+						onClick={handlePencilClick}
+					>
+						<Pencil className="size-4" />
+					</button>
+					<button
+						type="button"
+						aria-label="Use eraser"
+						aria-pressed={eraser}
+						className={toolButtonClass}
+						title="Eraser"
+						onClick={handleEraserClick}
+					>
+						<Eraser className="size-4" />
+					</button>
+					<button
+						type="button"
+						className={toolButtonClass}
+						title="Undo"
+						aria-label="Undo"
+						onClick={handleUndoClick}
+					>
+						<Undo2 className="size-4" />
+					</button>
+					<button
+						type="button"
+						className={toolButtonClass}
+						title="Redo"
+						aria-label="Redo"
+						onClick={handleRedoClick}
+					>
+						<Redo2 className="size-4" />
+					</button>
+					<button
+						type="button"
+						className={toolButtonClass}
+						title="Export PNG"
+						aria-label="Export PNG"
+						onClick={handleExportClick}
+					>
+						<Download className="size-4" />
+					</button>
+				</div>
+				<div className="grid content-start gap-3 p-3">
+					<div className="flex min-w-0 items-center justify-between gap-2">
+						<span className="rounded border border-fd-border bg-fd-muted px-1.5 py-0.5 font-medium text-[11px] text-fd-muted-foreground">
+							{eraser ? "Eraser" : "Pen"}
+						</span>
+						<div className="inline-flex rounded-md border border-fd-border bg-fd-muted p-0.5">
+							<button
+								type="button"
+								aria-pressed={eraserMode === "mask"}
+								className="h-8 rounded px-2 text-[11px] font-medium transition-colors duration-150 hover:bg-fd-accent aria-pressed:bg-fd-primary aria-pressed:text-fd-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fd-primary disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:bg-transparent"
 								disabled={!eraser}
-								id="home-v3-eraser-width"
-								max="40"
-								min="4"
-								step="1"
-								type="range"
-								value={eraserWidth}
-								onChange={onEraserWidthChange}
+								onClick={() => handleEraserModeClick("mask")}
+							>
+								Mask
+							</button>
+							<button
+								type="button"
+								aria-pressed={eraserMode === "stroke"}
+								className="h-8 rounded px-2 text-[11px] font-medium transition-colors duration-150 hover:bg-fd-accent aria-pressed:bg-fd-primary aria-pressed:text-fd-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fd-primary disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:bg-transparent"
+								disabled={!eraser}
+								onClick={() => handleEraserModeClick("stroke")}
+							>
+								Stroke
+							</button>
+						</div>
+					</div>
+
+					<label
+						className={`grid gap-1 ${eraser ? "opacity-40" : "opacity-100"}`}
+						htmlFor="home-v3-stroke-width"
+					>
+						<span className="flex items-center justify-between text-[11px] font-medium text-fd-muted-foreground">
+							Stroke
+							<span className="font-mono text-fd-foreground">
+								{strokeWidth}px
+							</span>
+						</span>
+						<input
+							className="h-8 w-full cursor-pointer accent-fd-primary disabled:cursor-not-allowed"
+							disabled={eraser}
+							id="home-v3-stroke-width"
+							max="20"
+							min="1"
+							step="1"
+							type="range"
+							value={strokeWidth}
+							onChange={onStrokeWidthChange}
+						/>
+					</label>
+					<label
+						className={`grid gap-1 ${eraser ? "opacity-100" : "opacity-40"}`}
+						htmlFor="home-v3-eraser-width"
+					>
+						<span className="flex items-center justify-between text-[11px] font-medium text-fd-muted-foreground">
+							Eraser
+							<span className="font-mono text-fd-foreground">
+								{eraserWidth}px
+							</span>
+						</span>
+						<input
+							className="h-8 w-full cursor-pointer accent-fd-primary disabled:cursor-not-allowed"
+							disabled={!eraser}
+							id="home-v3-eraser-width"
+							max="40"
+							min="4"
+							step="1"
+							type="range"
+							value={eraserWidth}
+							onChange={onEraserWidthChange}
+						/>
+					</label>
+
+					<div className="grid grid-cols-2 gap-1.5">
+						<label
+							className="inline-flex h-9 items-center justify-between rounded-md border border-fd-border bg-fd-muted px-2 text-xs font-medium"
+							title="Ink color"
+						>
+							Ink
+							<input
+								aria-label="Ink color"
+								className="size-5 cursor-pointer rounded border border-fd-border bg-transparent p-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fd-primary"
+								title="Ink color"
+								type="color"
+								value={strokeColor}
+								onChange={onStrokeColorChange}
 							/>
 						</label>
-
-						<div className="grid grid-cols-2 gap-1.5">
-							<label
-								className="inline-flex h-8 items-center justify-between rounded-md border border-fd-border bg-fd-muted px-2 text-[11px] font-medium"
-								title="Ink color"
-							>
-								Ink
-								<input
-									aria-label="Ink color"
-									className="size-5 cursor-pointer rounded border border-fd-border bg-transparent p-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fd-primary"
-									title="Ink color"
-									type="color"
-									value={strokeColor}
-									onChange={onStrokeColorChange}
-								/>
-							</label>
-							<label
-								className="inline-flex h-8 items-center justify-between rounded-md border border-fd-border bg-fd-muted px-2 text-[11px] font-medium"
+						<label
+							className="inline-flex h-9 items-center justify-between rounded-md border border-fd-border bg-fd-muted px-2 text-xs font-medium"
+							title="Canvas color"
+						>
+							Background
+							<input
+								aria-label="Canvas color"
+								className="size-5 cursor-pointer rounded border border-fd-border bg-transparent p-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fd-primary"
 								title="Canvas color"
-							>
-								BG
-								<input
-									aria-label="Canvas color"
-									className="size-5 cursor-pointer rounded border border-fd-border bg-transparent p-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fd-primary"
-									title="Canvas color"
-									type="color"
-									value={canvasColor}
-									onChange={onCanvasColorChange}
-								/>
-							</label>
-						</div>
+								type="color"
+								value={canvasColor}
+								onChange={onCanvasColorChange}
+							/>
+						</label>
+					</div>
 
+					<div className="grid gap-1.5">
+						<span className="text-[11px] font-medium text-fd-muted-foreground">
+							Presets
+						</span>
 						<div className="grid grid-cols-2 gap-1.5">
-							<button
-								type="button"
-								className="h-8 rounded-md border border-fd-border bg-fd-card text-[11px] font-medium transition-colors duration-150 hover:bg-fd-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fd-primary"
-								title="Clear"
-								onClick={handleClearClick}
-							>
-								Clear
-							</button>
-							<button
-								type="button"
-								className="h-8 rounded-md border border-fd-border bg-fd-card text-[11px] font-medium transition-colors duration-150 hover:bg-fd-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fd-primary"
-								title="Reset"
-								onClick={handleResetClick}
-							>
-								Reset
-							</button>
+							{PRESETS.map((preset) => {
+								const isActive =
+									canvasColor.toLowerCase() === preset.canvas.toLowerCase() &&
+									strokeColor.toLowerCase() === preset.stroke.toLowerCase();
+
+								return (
+									<button
+										key={preset.name}
+										type="button"
+										aria-pressed={isActive}
+										className="inline-flex h-9 min-w-0 items-center gap-1.5 rounded-md border border-fd-border bg-fd-card px-2 text-left text-[11px] font-medium text-fd-muted-foreground transition-colors duration-150 hover:bg-fd-accent hover:text-fd-foreground aria-pressed:border-fd-primary aria-pressed:bg-fd-primary/10 aria-pressed:text-fd-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fd-primary"
+										title={preset.name}
+										onClick={() => applyPreset(preset)}
+									>
+										<span className="flex shrink-0 -space-x-1">
+											<span
+												className="size-3 rounded-full border border-fd-border"
+												style={{ backgroundColor: preset.stroke }}
+											/>
+											<span
+												className="size-3 rounded-full border border-fd-border"
+												style={{ backgroundColor: preset.canvas }}
+											/>
+										</span>
+										<span className="min-w-0 truncate">{preset.name}</span>
+									</button>
+								);
+							})}
 						</div>
+					</div>
+
+					<div className="grid grid-cols-2 gap-1.5">
+						<button
+							type="button"
+							className={panelButtonClass}
+							title="Clear"
+							onClick={handleClearClick}
+						>
+							Clear
+						</button>
+						<button
+							type="button"
+							className={panelButtonClass}
+							title="Reset"
+							onClick={handleResetClick}
+						>
+							Reset
+						</button>
 					</div>
 				</div>
-			</div>
+			</aside>
 
-			<div className="relative h-full min-h-[260px] overflow-hidden rounded-lg border border-fd-border bg-fd-card shadow-sm sm:min-h-[340px] lg:col-start-1 lg:row-start-1 lg:min-h-[520px]">
+			<div className="relative min-h-[300px] overflow-hidden bg-fd-card sm:min-h-[380px] lg:min-h-[520px]">
 				<ReactSketchCanvas
 					ref={ref}
 					canvasColor={canvasColor}
