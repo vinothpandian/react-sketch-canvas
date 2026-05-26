@@ -1,4 +1,14 @@
-import { Download, Eraser, Pencil, Redo2, Undo2 } from "lucide-react";
+import {
+	Download,
+	Eraser,
+	FileCode2,
+	ImageDown,
+	Pencil,
+	Redo2,
+	RotateCcw,
+	Trash2,
+	Undo2,
+} from "lucide-react";
 import { type ChangeEvent, useEffect, useRef, useState } from "react";
 import {
 	type EraserMode,
@@ -24,9 +34,27 @@ const toolButtonClass =
 const panelButtonClass =
 	"h-9 rounded-md border border-fd-border bg-fd-card px-2 text-xs font-medium transition-colors duration-150 hover:bg-fd-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fd-primary";
 
+const downloadDrawing = (contents: string, filename: string, type?: string) => {
+	const anchor = document.createElement("a");
+	const url = type
+		? URL.createObjectURL(new Blob([contents], { type }))
+		: contents;
+
+	anchor.href = url;
+	anchor.download = filename;
+	document.body.append(anchor);
+	anchor.click();
+	anchor.remove();
+
+	if (type) {
+		window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+	}
+};
+
 export default function HomePageDemo() {
 	const [eraser, setEraser] = useState(false);
 	const ref = useRef<ReactSketchCanvasRef>(null);
+	const exportStatusTimeoutRef = useRef<number | null>(null);
 	const [strokeColor, setStrokeColor] = useState("#6497eb");
 	// impeccable-ignore-colors: the kitchen-sink demo exposes the literal white canvas default through a color picker.
 	const [canvasColor, setCanvasColor] = useState("#ffffff");
@@ -39,6 +67,14 @@ export default function HomePageDemo() {
 		if (ref.current) {
 			ref.current.loadPaths(paths);
 		}
+	}, []);
+
+	useEffect(() => {
+		return () => {
+			if (exportStatusTimeoutRef.current !== null) {
+				window.clearTimeout(exportStatusTimeoutRef.current);
+			}
+		};
 	}, []);
 
 	const handleEraserClick = () => {
@@ -54,7 +90,6 @@ export default function HomePageDemo() {
 	const handleResetClick = () => {
 		setEraser(false);
 		ref.current?.resetCanvas();
-		window.requestAnimationFrame(() => ref.current?.loadPaths(paths));
 	};
 
 	const handleClearClick = () => {
@@ -69,21 +104,50 @@ export default function HomePageDemo() {
 		ref.current?.redo();
 	};
 
-	const handleExportClick = async () => {
-		const image = await ref.current?.exportImage("png");
-
-		if (!image) {
-			return;
+	const showExportStatus = (message: string) => {
+		if (exportStatusTimeoutRef.current !== null) {
+			window.clearTimeout(exportStatusTimeoutRef.current);
 		}
 
-		const anchor = document.createElement("a");
-		anchor.href = image;
-		anchor.download = "react-sketch-canvas-demo.png";
-		document.body.append(anchor);
-		anchor.click();
-		anchor.remove();
-		setExportStatus("PNG saved");
-		window.setTimeout(() => setExportStatus(""), 1600);
+		setExportStatus(message);
+		exportStatusTimeoutRef.current = window.setTimeout(() => {
+			setExportStatus("");
+			exportStatusTimeoutRef.current = null;
+		}, 1600);
+	};
+
+	const handleExportPngClick = async () => {
+		try {
+			const image = await ref.current?.exportImage("png");
+
+			if (!image) {
+				return;
+			}
+
+			downloadDrawing(image, "react-sketch-canvas-demo.png");
+			showExportStatus("PNG downloaded");
+		} catch {
+			showExportStatus("PNG export failed");
+		}
+	};
+
+	const handleExportSvgClick = async () => {
+		try {
+			const svg = await ref.current?.exportSvg();
+
+			if (!svg) {
+				return;
+			}
+
+			downloadDrawing(
+				svg,
+				"react-sketch-canvas-demo.svg",
+				"image/svg+xml;charset=utf-8",
+			);
+			showExportStatus("SVG downloaded");
+		} catch {
+			showExportStatus("SVG export failed");
+		}
 	};
 
 	const onStrokeColorChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -116,7 +180,7 @@ export default function HomePageDemo() {
 	};
 
 	return (
-		<div className="not-prose grid w-full overflow-hidden rounded-lg border border-fd-border bg-fd-card text-fd-foreground shadow-sm md:grid-cols-[minmax(13.5rem,16rem)_minmax(0,1fr)]">
+		<div className="not-prose grid w-full overflow-hidden rounded-lg border border-fd-border bg-fd-card text-fd-foreground shadow-sm md:grid-cols-[minmax(13.5rem,20rem)_minmax(0,1fr)]">
 			<aside className="grid border-fd-border border-b bg-fd-card md:grid-cols-[3.25rem_minmax(0,1fr)] md:border-r md:border-b-0">
 				<div className="flex gap-1 overflow-x-auto border-fd-border border-b bg-fd-muted p-1.5 md:grid md:content-start md:overflow-visible md:border-r md:border-b-0">
 					<button
@@ -160,11 +224,20 @@ export default function HomePageDemo() {
 					<button
 						type="button"
 						className={toolButtonClass}
-						title="Export PNG"
-						aria-label="Export PNG"
-						onClick={handleExportClick}
+						title="Clear canvas"
+						aria-label="Clear canvas"
+						onClick={handleClearClick}
 					>
-						<Download className="size-4" />
+						<Trash2 className="size-4" />
+					</button>
+					<button
+						type="button"
+						className={toolButtonClass}
+						title="Reset demo"
+						aria-label="Reset demo"
+						onClick={handleResetClick}
+					>
+						<RotateCcw className="size-4" />
 					</button>
 				</div>
 				<div className="grid content-start gap-3 p-3">
@@ -306,23 +379,33 @@ export default function HomePageDemo() {
 						</div>
 					</div>
 
-					<div className="grid grid-cols-2 gap-1.5">
-						<button
-							type="button"
-							className={panelButtonClass}
-							title="Clear"
-							onClick={handleClearClick}
-						>
-							Clear
-						</button>
-						<button
-							type="button"
-							className={panelButtonClass}
-							title="Reset"
-							onClick={handleResetClick}
-						>
-							Reset
-						</button>
+					<div className="grid gap-1.5 border-fd-border border-t pt-3">
+						<span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-fd-muted-foreground">
+							<Download className="size-3.5" />
+							Download
+						</span>
+						<div className="grid grid-cols-2 gap-1.5">
+							<button
+								type="button"
+								className="inline-flex h-9 items-center justify-center gap-1.5 rounded-md bg-fd-primary px-2 text-xs font-medium text-fd-primary-foreground transition-colors duration-150 hover:bg-fd-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fd-primary"
+								title="Download drawing as SVG"
+								onClick={handleExportSvgClick}
+							>
+								<FileCode2 className="size-3.5" />
+								SVG
+							</button>
+							<button
+								type="button"
+								className={panelButtonClass}
+								title="Download drawing as PNG"
+								onClick={handleExportPngClick}
+							>
+								<span className="inline-flex items-center justify-center gap-1.5">
+									<ImageDown className="size-3.5" />
+									PNG
+								</span>
+							</button>
+						</div>
 					</div>
 				</div>
 			</aside>
@@ -337,12 +420,13 @@ export default function HomePageDemo() {
 					strokeColor={strokeColor}
 					strokeWidth={strokeWidth}
 				/>
-				<p
-					aria-live="polite"
-					className="absolute right-3 bottom-3 min-h-5 rounded-md border border-fd-border bg-fd-card px-2 py-1 text-fd-muted-foreground text-xs"
-				>
-					{exportStatus}
-				</p>
+				<div aria-live="polite" className="absolute right-3 bottom-3">
+					{exportStatus ? (
+						<p className="rounded-md border border-fd-border bg-fd-card px-2 py-1 text-fd-muted-foreground text-xs">
+							{exportStatus}
+						</p>
+					) : null}
+				</div>
 			</div>
 		</div>
 	);
