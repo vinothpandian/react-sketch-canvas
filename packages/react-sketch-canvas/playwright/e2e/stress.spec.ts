@@ -29,6 +29,22 @@ test("renders a dense eraser mask workload", async ({ page }) => {
 	await page.goto("/");
 
 	await page.locator("#load-eraser-stress-paths-button").click();
+	await expect(page.locator("#path-count")).toHaveText("100");
+
+	const canvasBox = await page.locator("#rsc").boundingBox();
+	expect(canvasBox).not.toBeNull();
+
+	if (!canvasBox) return;
+
+	for (let index = 0; index < 100; index += 1) {
+		const x = canvasBox.x + 10 + (index % 30);
+		const y = canvasBox.y + 12 + index * 2;
+
+		await page.mouse.move(x, y - 4);
+		await page.mouse.down();
+		await page.mouse.move(x, y + 4);
+		await page.mouse.up();
+	}
 
 	await expect(page.locator("#path-count")).toHaveText("200");
 	await expect(

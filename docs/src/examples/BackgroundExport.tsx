@@ -51,7 +51,7 @@ export default function App() {
 	const [exportFormat, setExportFormat] = useState<ExportFormat>("png");
 	const [exportWithBackgroundImage, setExportWithBackgroundImage] =
 		useState(true);
-	const [useFixedSize, setUseFixedSize] = useState(false);
+	const [exportAtFixedSize, setExportAtFixedSize] = useState(false);
 	const [exportResult, setExportResult] = useState<ExportResult | null>(null);
 
 	useEffect(() => {
@@ -79,7 +79,7 @@ export default function App() {
 	};
 
 	const handleFixedSizeChange = (event: ChangeEvent<HTMLInputElement>) => {
-		setUseFixedSize(event.target.checked);
+		setExportAtFixedSize(event.target.checked);
 		setExportResult(null);
 	};
 
@@ -94,7 +94,7 @@ export default function App() {
 
 		const image = await canvasRef.current.exportImage(
 			exportFormat,
-			useFixedSize ? { width: 320, height: 180 } : undefined,
+			exportAtFixedSize ? { width: 320, height: 180 } : undefined,
 		);
 		setExportResult({ format: exportFormat, value: image });
 	};
@@ -162,14 +162,14 @@ export default function App() {
 						</div>
 						<div className="form-check">
 							<input
-								id="useFixedSize"
+								id="exportAtFixedSize"
 								className="form-check-input"
 								type="checkbox"
-								checked={useFixedSize}
+								checked={exportAtFixedSize}
 								disabled={exportFormat === "svg"}
 								onChange={handleFixedSizeChange}
 							/>
-							<label htmlFor="useFixedSize" className="form-check-label">
+							<label htmlFor="exportAtFixedSize" className="form-check-label">
 								Export raster as 320 x 180
 							</label>
 						</div>

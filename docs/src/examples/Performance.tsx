@@ -15,7 +15,6 @@ export type CreatePerformancePathsParams = {
 	strokeCount: number;
 	pointsPerStroke: number;
 	tool: PerformanceTool;
-	random?: () => number;
 };
 
 export type PerformanceTotals = {
@@ -38,10 +37,10 @@ export function clampPerformanceControlValue(
 	);
 }
 
-function createStrokePoints(pointsPerStroke: number, random: () => number) {
+function createStrokePoints(pointsPerStroke: number) {
 	return Array.from({ length: pointsPerStroke }, () => ({
-		x: 12 + Math.round(random() * 620),
-		y: 12 + Math.round(random() * 360),
+		x: 12 + Math.round(Math.random() * 620),
+		y: 12 + Math.round(Math.random() * 360),
 	}));
 }
 
@@ -49,7 +48,6 @@ export function createPerformancePaths({
 	strokeCount,
 	pointsPerStroke,
 	tool,
-	random = Math.random,
 }: CreatePerformancePathsParams): CanvasPath[] {
 	const safeStrokeCount = clampPerformanceControlValue(
 		strokeCount,
@@ -65,7 +63,7 @@ export function createPerformancePaths({
 		drawMode,
 		strokeColor: drawMode ? "#2563eb" : "#000000",
 		strokeWidth: drawMode ? 1 : 12,
-		paths: createStrokePoints(safePointsPerStroke, random),
+		paths: createStrokePoints(safePointsPerStroke),
 	}));
 }
 
@@ -105,6 +103,7 @@ export default function App() {
 			tool,
 		});
 
+		canvasRef.current?.eraseMode(tool === "eraser");
 		canvasRef.current?.loadPaths(addedPaths);
 		setStrokeCount(safeStrokeCount);
 		setPointsPerStroke(safePointsPerStroke);

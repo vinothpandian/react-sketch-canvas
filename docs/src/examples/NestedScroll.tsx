@@ -37,6 +37,11 @@ export default function App() {
 		canvasRef.current?.clearCanvas();
 	};
 
+	const roundedOuterLeft = Math.round(outerScroll.left);
+	const roundedOuterTop = Math.round(outerScroll.top);
+	const roundedInnerLeft = Math.round(innerScroll.left);
+	const roundedInnerTop = Math.round(innerScroll.top);
+
 	return (
 		<div>
 			<h1>Tools</h1>
@@ -57,9 +62,8 @@ export default function App() {
 					Clear canvas
 				</button>
 				<span>
-					Outer: ({Math.round(outerScroll.left)}, {Math.round(outerScroll.top)}
-					)px · Inner: ({Math.round(innerScroll.left)},{" "}
-					{Math.round(innerScroll.top)})px
+					Outer: ({roundedOuterLeft}, {roundedOuterTop})px · Inner: (
+					{roundedInnerLeft}, {roundedInnerTop})px
 				</span>
 			</div>
 			<h1>Canvas</h1>

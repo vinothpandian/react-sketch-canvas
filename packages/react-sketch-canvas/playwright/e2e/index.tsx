@@ -25,31 +25,20 @@ function createStressPaths(): CanvasPath[] {
 	}));
 }
 
-function createEraserStressPaths(): CanvasPath[] {
+function createEraserStressDrawPaths(): CanvasPath[] {
 	return Array.from({ length: ERASER_STRESS_PAIR_COUNT }, (_, index) => {
 		const y = 12 + index * 2;
 
-		return [
-			{
-				drawMode: true,
-				strokeColor: "red",
-				strokeWidth: 4,
-				paths: [
-					{ x: 10, y },
-					{ x: 400, y },
-				],
-			},
-			{
-				drawMode: false,
-				strokeColor: "#000000",
-				strokeWidth: 8,
-				paths: [
-					{ x: 10 + (index % 30), y: y - 4 },
-					{ x: 10 + (index % 30), y: y + 4 },
-				],
-			},
-		] satisfies CanvasPath[];
-	}).flat();
+		return {
+			drawMode: true,
+			strokeColor: "red",
+			strokeWidth: 4,
+			paths: [
+				{ x: 10, y },
+				{ x: 400, y },
+			],
+		} satisfies CanvasPath;
+	});
 }
 
 function createViewBoxPaths(): CanvasPath[] {
@@ -85,6 +74,12 @@ function App() {
 	const handleExportSvg = async () => {
 		const svg = await canvasRef.current?.exportSvg();
 		setExportedSvg(svg ?? "");
+	};
+
+	const handleLoadEraserStressPaths = () => {
+		canvasRef.current?.resetCanvas();
+		canvasRef.current?.loadPaths(createEraserStressDrawPaths());
+		canvasRef.current?.eraseMode(true);
 	};
 
 	return (
@@ -160,9 +155,7 @@ function App() {
 				<button
 					type="button"
 					id="load-eraser-stress-paths-button"
-					onClick={() =>
-						canvasRef.current?.loadPaths(createEraserStressPaths())
-					}
+					onClick={handleLoadEraserStressPaths}
 				>
 					Load Eraser Stress Paths
 				</button>
