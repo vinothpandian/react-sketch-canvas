@@ -44,31 +44,66 @@ body {
 
 .docs-home {
 	background:
-		radial-gradient(circle at 15% 10%, hsla(176, 48%, 76%, 0.2), transparent 28rem),
-		radial-gradient(circle at 85% 8%, hsla(188, 44%, 72%, 0.16), transparent 30rem),
+		radial-gradient(
+			circle at 15% 10%,
+			hsla(176, 48%, 76%, 0.2),
+			transparent 28rem
+		),
+		radial-gradient(
+			circle at 85% 8%,
+			hsla(188, 44%, 72%, 0.16),
+			transparent 30rem
+		),
 		var(--color-fd-background);
 }
 
 .dark .docs-home {
 	background:
-		radial-gradient(circle at 15% 10%, hsla(176, 58%, 42%, 0.14), transparent 28rem),
-		radial-gradient(circle at 85% 8%, hsla(188, 48%, 45%, 0.12), transparent 30rem),
+		radial-gradient(
+			circle at 15% 10%,
+			hsla(176, 58%, 42%, 0.14),
+			transparent 28rem
+		),
+		radial-gradient(
+			circle at 85% 8%,
+			hsla(188, 48%, 45%, 0.12),
+			transparent 30rem
+		),
 		var(--color-fd-background);
 }
 
 .prose :where(a):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
 	color: var(--color-fd-primary);
-	text-decoration-color: color-mix(in oklab, var(--color-fd-primary) 45%, transparent);
+	text-decoration-color: color-mix(
+		in oklab,
+		var(--color-fd-primary) 45%,
+		transparent
+	);
 }
 
-.prose :where(code):not(:where(pre *, [class~="not-prose"], [class~="not-prose"] *)) {
+.prose
+	:where(code):not(
+		:where(pre *, [class~="not-prose"], [class~="not-prose"] *)
+	) {
 	color: hsl(180, 48%, 28%);
-	background-color: color-mix(in oklab, var(--color-fd-accent) 42%, transparent);
+	background-color: color-mix(
+		in oklab,
+		var(--color-fd-accent) 42%,
+		transparent
+	);
 }
 
-.dark .prose :where(code):not(:where(pre *, [class~="not-prose"], [class~="not-prose"] *)) {
+.dark
+	.prose
+	:where(code):not(
+		:where(pre *, [class~="not-prose"], [class~="not-prose"] *)
+	) {
 	color: hsl(176, 46%, 78%);
-	background-color: color-mix(in oklab, var(--color-fd-accent) 45%, transparent);
+	background-color: color-mix(
+		in oklab,
+		var(--color-fd-accent) 45%,
+		transparent
+	);
 }
 
 .example-preview {
