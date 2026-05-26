@@ -38,7 +38,7 @@ export default function App() {
 	};
 
 	return (
-		<section className="rsc-theme-example" data-theme={theme}>
+		<section className="rsc-theme-example grid gap-3" data-theme={theme}>
 			<style>
 				{`
 					.rsc-theme-example,
@@ -46,14 +46,12 @@ export default function App() {
 						--rsc-theme-border: #cbd5e1;
 						--rsc-theme-canvas: #ffffff;
 						--rsc-theme-stroke: #2563eb;
-						color-scheme: light;
 					}
 
 					.rsc-theme-example[data-theme="dark"] {
 						--rsc-theme-border: #334155;
 						--rsc-theme-canvas: #020617;
 						--rsc-theme-stroke: #38bdf8;
-						color-scheme: dark;
 					}
 
 					@media (prefers-color-scheme: dark) {
@@ -61,17 +59,18 @@ export default function App() {
 							--rsc-theme-border: #334155;
 							--rsc-theme-canvas: #020617;
 							--rsc-theme-stroke: #38bdf8;
-							color-scheme: dark;
 						}
 					}
 				`}
 			</style>
 
 			<h1>Tools</h1>
-			<div>
-				<fieldset>
-					<legend>Canvas theme</legend>
-					<div>
+			<div className="grid! gap-4 rounded-md border bg-fd-card p-4 text-fd-card-foreground grid-cols-[repeat(auto-fit,minmax(10rem,1fr))]">
+				<fieldset className="grid min-w-0 gap-2 border-0 p-0">
+					<legend className="p-0 font-semibold text-fd-muted-foreground text-sm">
+						Canvas theme
+					</legend>
+					<div className="flex flex-wrap gap-2">
 						<button
 							type="button"
 							disabled={theme === "light"}
@@ -89,9 +88,11 @@ export default function App() {
 					</div>
 				</fieldset>
 
-				<fieldset>
-					<legend>Mode</legend>
-					<div>
+				<fieldset className="grid min-w-0 gap-2 border-0 p-0">
+					<legend className="p-0 font-semibold text-fd-muted-foreground text-sm">
+						Mode
+					</legend>
+					<div className="flex flex-wrap gap-2">
 						<button
 							type="button"
 							disabled={!eraseMode}
@@ -109,9 +110,11 @@ export default function App() {
 					</div>
 				</fieldset>
 
-				<div>
-					<label htmlFor="strokeWidth">
-						<span>Stroke width</span>
+				<div className="grid min-w-0 gap-3">
+					<label className="grid gap-1 text-sm" htmlFor="strokeWidth">
+						<span className="font-semibold text-fd-muted-foreground">
+							Stroke width
+						</span>
 						<input
 							disabled={eraseMode}
 							type="range"
@@ -123,8 +126,10 @@ export default function App() {
 							onChange={handleStrokeWidthChange}
 						/>
 					</label>
-					<label htmlFor="eraserWidth">
-						<span>Eraser width</span>
+					<label className="grid gap-1 text-sm" htmlFor="eraserWidth">
+						<span className="font-semibold text-fd-muted-foreground">
+							Eraser width
+						</span>
 						<input
 							disabled={!eraseMode}
 							type="range"
@@ -138,10 +143,12 @@ export default function App() {
 					</label>
 				</div>
 
-				<fieldset>
-					<legend>Eraser mode</legend>
-					<div>
-						<label>
+				<fieldset className="grid min-w-0 gap-2 border-0 p-0">
+					<legend className="p-0 font-semibold text-fd-muted-foreground text-sm">
+						Eraser mode
+					</legend>
+					<div className="flex flex-wrap gap-3">
+						<label className="flex items-center gap-1">
 							<input
 								type="radio"
 								name="eraserMode"
@@ -151,7 +158,7 @@ export default function App() {
 							/>
 							Mask
 						</label>
-						<label>
+						<label className="flex items-center gap-1">
 							<input
 								type="radio"
 								name="eraserMode"
@@ -166,7 +173,7 @@ export default function App() {
 			</div>
 
 			<h1>Canvas</h1>
-			<div className="rsc-theme-example__surface">
+			<div className="rounded-md border p-4">
 				<ReactSketchCanvas
 					ref={canvasRef}
 					width="100%"
