@@ -15,25 +15,25 @@ const somePreserveAspectRatio = [
 	"xMaxYMax",
 ] as const;
 
-const redPixelPngDataUri =
-	"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADUlEQVR42mP8z8BQDwAFgwJ/lG9qkgAAAABJRU5ErkJggg==";
+const roseSquarePngDataUri =
+	"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAJUlEQVR4nGP4s3Tpf1pihlELRi0YtWDUglELRi0YtWDUgqFhAQDbxFuqIVYqkAAAAABJRU5ErkJggg==";
 
-const gridPatternDataUri =
-	"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Crect width='20' height='20' fill='%23f8fafc'/%3E%3Cpath d='M0 20 L20 20 M20 0 L20 20' stroke='%23e2e8f0' stroke-width='0.5'/%3E%3C/svg%3E";
+const blueCirclePngDataUri =
+	"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAUklEQVR4nO3NywkAIAxEwfR/tSbLEm1AYzYfIZKFvb4h+n6tj8k9LGyC0DiEaOMixBq/IqGAV/yIFFBAAsAT2cafAB4IG7ciorgWgeIIpA6n2QI8UFEt+WgukgAAAABJRU5ErkJggg==";
 
-const stripesDataUri =
-	"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' fill='%23f1f5f9'/%3E%3Cpath d='M-10 10 L30 -30 M0 40 L40 0 M30 50 L50 30' stroke='%23e2e8f0' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E";
+const purpleRectPngDataUri =
+	"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAJklEQVR4nGNgGAWjgGrgQMuf/9TEoxaMWjBqwagF5FgwCkYB2QAAlIoLPraPCW0AAAAASUVORK5CYII=";
 
 type SomePreserveAspectRatio = (typeof somePreserveAspectRatio)[number];
 
 const PRESETS = [
-	{ name: "Red Pixel", uri: redPixelPngDataUri },
-	{ name: "Grid Sheet", uri: gridPatternDataUri },
-	{ name: "Stripes Slate", uri: stripesDataUri },
+	{ name: "Rose Square (24x24)", uri: roseSquarePngDataUri },
+	{ name: "Blue Circle (24x24)", uri: blueCirclePngDataUri },
+	{ name: "Purple Rectangle (24x24)", uri: purpleRectPngDataUri },
 ];
 
 export default function App() {
-	const [bgDataURI, setBgDataURI] = useState(gridPatternDataUri);
+	const [bgDataURI, setBgDataURI] = useState(blueCirclePngDataUri);
 	const [preserveAspectRatio, setPreserveAspectRatio] =
 		useState<SomePreserveAspectRatio>("xMidYMid");
 
