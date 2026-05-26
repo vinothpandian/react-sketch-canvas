@@ -30,8 +30,7 @@ test("should update backgroundImage from props", async ({ mount }) => {
 		<ReactSketchCanvas id={canvasId} backgroundImage={backgroundImageUrl} />,
 	);
 
-	const { canvasBackgroundId, backgroundImagePatternId } =
-		getCanvasIds(canvasId);
+	const { canvasBackgroundId, backgroundImagePatternId } = getCanvasIds();
 	const backgroundPattern = component.locator('pattern[id$="__background"]');
 	const backgroundPatternId = await backgroundPattern.getAttribute("id");
 
@@ -91,7 +90,7 @@ test("should update preserveAspectRatio of the background image from props", asy
 		/>,
 	);
 
-	const { backgroundImagePatternId } = getCanvasIds(canvasId);
+	const { backgroundImagePatternId } = getCanvasIds();
 
 	await expect(component.locator(backgroundImagePatternId)).toHaveAttribute(
 		"preserveAspectRatio",
@@ -109,7 +108,7 @@ test("should update stroke width", async ({ mount }) => {
 
 	await drawLine(component, { length: 100, originX: 100, originY: 100 });
 
-	const { firstStrokeGroupId } = getCanvasIds(canvasId);
+	const { firstStrokeGroupId } = getCanvasIds();
 
 	await expect(
 		component.locator(firstStrokeGroupId).locator("path").last(),
@@ -141,7 +140,7 @@ test("should update eraser width", async ({ mount }) => {
 	// Erase the line
 	await drawLine(canvas, { length: 5, originX: 100, originY: 100 });
 
-	const { firstStrokeGroupId, eraserStrokeGroupId } = getCanvasIds(canvasId);
+	const { firstStrokeGroupId, eraserStrokeGroupId } = getCanvasIds();
 
 	await expect(
 		canvas.locator(firstStrokeGroupId).locator("path").first(),
@@ -162,7 +161,7 @@ test("should update stroke color", async ({ mount }) => {
 
 	await drawLine(component, { length: 100, originX: 100, originY: 100 });
 
-	const { firstStrokeGroupId } = getCanvasIds(canvasId);
+	const { firstStrokeGroupId } = getCanvasIds();
 
 	await expect(
 		component.locator(firstStrokeGroupId).locator("path").last(),
@@ -177,7 +176,7 @@ test("should update canvas color", async ({ mount }) => {
 		<ReactSketchCanvas id={canvasId} canvasColor={canvasColor} />,
 	);
 
-	const { canvasBackgroundId } = getCanvasIds(canvasId);
+	const { canvasBackgroundId } = getCanvasIds();
 
 	await expect(component.locator(canvasBackgroundId)).toHaveAttribute(
 		"fill",

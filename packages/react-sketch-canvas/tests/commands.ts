@@ -1,8 +1,7 @@
 import type { Locator } from "playwright/test";
 import type { DrawLineArgs, DrawPointArgs, DrawSquareArgs } from "./types";
 
-export function getCanvasIds(id: string) {
-	void id;
+export function getCanvasIds() {
 	const canvasBackgroundId = '[id$="__canvas-background"]';
 	const backgroundImagePatternId = 'pattern[id$="__background"] image';
 	const firstStrokeGroupId = '[id$="__stroke-group-0"]';

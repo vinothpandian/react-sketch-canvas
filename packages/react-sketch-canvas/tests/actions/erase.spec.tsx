@@ -77,7 +77,7 @@ test.describe("eraser", () => {
 			firstStrokeGroupId,
 			secondStrokeGroupId,
 			secondEraserMask,
-		} = getCanvasIds(canvasId);
+		} = getCanvasIds();
 
 		const canvas = component.locator(`#${canvasId}`);
 		const eraserButton = component.locator(`#${eraserButtonId}`);
@@ -164,7 +164,7 @@ test.describe("eraser", () => {
 
 		const component = await mount(<ReactSketchCanvas id={canvasId} />);
 
-		const { firstStrokeGroupId } = getCanvasIds(canvasId);
+		const { firstStrokeGroupId } = getCanvasIds();
 
 		const canvas = component.locator(`#${canvasId}`);
 
@@ -201,7 +201,7 @@ test.describe("eraser", () => {
 			/>,
 		);
 
-		const { firstStrokeGroupId, secondStrokeGroupId } = getCanvasIds(canvasId);
+		const { firstStrokeGroupId, secondStrokeGroupId } = getCanvasIds();
 
 		const canvas = component.locator(`#${canvasId}`);
 		const eraserButton = component.locator(`#${eraserButtonId}`);
@@ -238,7 +238,7 @@ test.describe("eraser", () => {
 		const canvas = await mount(<ReactSketchCanvas id={canvasId} />);
 
 		const { eraserStrokeGroupId, firstEraserMask, firstStrokeGroupId } =
-			getCanvasIds(canvasId);
+			getCanvasIds();
 
 		// First stroke
 		await drawLine(canvas, {
@@ -318,8 +318,7 @@ test.describe("eraser", () => {
 			);
 
 			const canvas = component.locator(`#${canvasId}`);
-			const { firstStrokeGroupId, eraserStrokeGroupId } =
-				getCanvasIds(canvasId);
+			const { firstStrokeGroupId, eraserStrokeGroupId } = getCanvasIds();
 
 			await drawLine(canvas, { length: 50, originX: 0, originY: 10 });
 			await drawLine(canvas, { length: 50, originX: 0, originY: 80 });
@@ -356,7 +355,7 @@ test.describe("eraser", () => {
 			);
 
 			const canvas = component.locator(`#${canvasId}`);
-			const { firstStrokeGroupId } = getCanvasIds(canvasId);
+			const { firstStrokeGroupId } = getCanvasIds();
 
 			await drawLine(canvas, { length: 50, originX: 0, originY: 10 });
 			await drawLine(canvas, {
@@ -425,8 +424,7 @@ test.describe("eraser", () => {
 			const canvas = await mount(
 				<ReactSketchCanvas id={canvasId} eraserMode="stroke" />,
 			);
-			const { firstStrokeGroupId, eraserStrokeGroupId } =
-				getCanvasIds(canvasId);
+			const { firstStrokeGroupId, eraserStrokeGroupId } = getCanvasIds();
 
 			await drawLine(canvas, {
 				length: 50,

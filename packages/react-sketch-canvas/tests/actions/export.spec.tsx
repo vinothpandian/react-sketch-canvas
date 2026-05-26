@@ -238,7 +238,7 @@ async function drawSquaresAndWaitForStroke(canvas: Locator) {
 }
 
 async function drawSquaresAndWaitForEraser(canvas: Locator) {
-	const { firstEraserStrokeId, firstEraserMask } = getCanvasIds(canvasId);
+	const { firstEraserStrokeId, firstEraserMask } = getCanvasIds();
 
 	await drawSquares(canvas);
 	await expect(canvas.locator(firstEraserStrokeId)).toHaveCount(1);
@@ -563,7 +563,7 @@ test.describe("export SVG", () => {
 				handleExportSVG,
 			});
 
-			const { firstStrokePathId } = getCanvasIds(canvasId);
+			const { firstStrokePathId } = getCanvasIds();
 
 			await exportSVGButton.click();
 			expect(svg).not.toContain(exportedIdFragment(firstStrokePathId));
@@ -586,7 +586,7 @@ test.describe("export SVG", () => {
 					handleExportSVG,
 				});
 
-			const { firstStrokePathId, firstEraserStrokeId } = getCanvasIds(canvasId);
+			const { firstStrokePathId, firstEraserStrokeId } = getCanvasIds();
 
 			await exportSVGButton.click();
 			expect(svg).not.toContain(exportedIdFragment(firstStrokePathId));
@@ -620,7 +620,7 @@ test.describe("export SVG", () => {
 				exportWithBackgroundImage: true,
 			});
 
-			const { canvasBackgroundId, firstStrokePathId } = getCanvasIds(canvasId);
+			const { canvasBackgroundId, firstStrokePathId } = getCanvasIds();
 
 			await exportSVGButton.click();
 			expect(svg).toContain(backgroundUrl);
@@ -650,7 +650,7 @@ test.describe("export SVG", () => {
 				});
 
 			const { canvasBackgroundId, firstStrokePathId, firstEraserStrokeId } =
-				getCanvasIds(canvasId);
+				getCanvasIds();
 
 			await exportSVGButton.click();
 			expect(svg).toContain(backgroundUrl);
@@ -690,7 +690,7 @@ test.describe("export SVG", () => {
 				exportWithBackgroundImage: false,
 			});
 
-			const { canvasBackgroundId, firstStrokePathId } = getCanvasIds(canvasId);
+			const { canvasBackgroundId, firstStrokePathId } = getCanvasIds();
 
 			await exportSVGButton.click();
 			expect(svg).not.toContain(backgroundUrl);
@@ -719,7 +719,7 @@ test.describe("export SVG", () => {
 				});
 
 			const { canvasBackgroundId, firstStrokePathId, firstEraserStrokeId } =
-				getCanvasIds(canvasId);
+				getCanvasIds();
 
 			await exportSVGButton.click();
 			expect(svg).not.toContain(backgroundUrl);

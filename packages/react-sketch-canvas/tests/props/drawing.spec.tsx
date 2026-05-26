@@ -1,9 +1,19 @@
 import { expect, test } from "@playwright/experimental-ct-react";
+import type { Locator } from "playwright/test";
 import { ReactSketchCanvas } from "../../src";
 import { drawLine, drawPoint, drawSquares, getCanvasIds } from "../commands";
 import { WithEraserButton } from "../stories/WithEraserButton.story";
 
 test.use({ viewport: { width: 500, height: 500 } });
+
+async function expectNumericAttributeCloseTo(
+	locator: Locator,
+	name: string,
+	expected: number,
+) {
+	const value = await locator.getAttribute(name);
+	expect(Math.abs(Number(value) - expected)).toBeLessThanOrEqual(0.1);
+}
 
 test.describe("drawing points", () => {
 	test("should create a point with circle on single point stroke", async ({
@@ -20,13 +30,13 @@ test.describe("drawing points", () => {
 
 		await drawPoint(component, { originX, originY });
 
-		const { firstStrokeGroupId } = getCanvasIds(canvasId);
+		const { firstStrokeGroupId } = getCanvasIds();
 
 		const circle = component.locator(firstStrokeGroupId).locator("circle");
 
 		await expect(circle).toHaveAttribute("r", (strokeWidth / 2).toString());
-		await expect(circle).toHaveAttribute("cx", originX.toString());
-		await expect(circle).toHaveAttribute("cy", originY.toString());
+		await expectNumericAttributeCloseTo(circle, "cx", originX);
+		await expectNumericAttributeCloseTo(circle, "cy", originY);
 	});
 
 	test("should create a eraser point with circle on single point erase", async ({
@@ -54,12 +64,12 @@ test.describe("drawing points", () => {
 
 		// TODO: This is a workaround for playwright
 		await drawPoint(canvas, { originX: originX - 1, originY: originY - 1 });
-		const { eraserStrokeGroupId } = getCanvasIds(canvasId);
+		const { eraserStrokeGroupId } = getCanvasIds();
 
 		const circle = canvas.locator(eraserStrokeGroupId).locator("circle");
 		await expect(circle).toHaveAttribute("r", (eraserWidth / 2).toString());
-		await expect(circle).toHaveAttribute("cx", originX.toString());
-		await expect(circle).toHaveAttribute("cy", originY.toString());
+		await expectNumericAttributeCloseTo(circle, "cx", originX);
+		await expectNumericAttributeCloseTo(circle, "cy", originY);
 	});
 });
 

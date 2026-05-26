@@ -13,7 +13,7 @@ const clearCanvasButtonId = "clear-canvas-button";
 const resetCanvasButtonId = "reset-canvas-button";
 const loadPathsButtonId = "load-paths-button";
 
-const { firstStrokeGroupId, eraserStrokeGroupId } = getCanvasIds(canvasId);
+const { firstStrokeGroupId, eraserStrokeGroupId } = getCanvasIds();
 
 test.describe("undo", () => {
 	test("should undo a stroke", async ({ mount }) => {

@@ -8,7 +8,7 @@ test.use({ viewport: { width: 500, height: 500 } });
 
 const canvasId = "rsc";
 const loadPathsButtonId = "load-paths";
-const { firstStrokeGroupId, eraserStrokeGroupId } = getCanvasIds(canvasId);
+const { firstStrokeGroupId, eraserStrokeGroupId } = getCanvasIds();
 
 test.describe("loadPaths", () => {
 	test("should load path with only pen", async ({ mount }) => {
