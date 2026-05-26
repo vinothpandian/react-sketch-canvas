@@ -31,20 +31,43 @@ test("renders a dense eraser mask workload", async ({ page }) => {
 	await page.locator("#load-eraser-stress-paths-button").click();
 	await expect(page.locator("#path-count")).toHaveText("100");
 
-	const canvasBox = await page.locator("#rsc").boundingBox();
-	expect(canvasBox).not.toBeNull();
+	await page.locator("#rsc").evaluate(async (svg) => {
+		const bounds = svg.getBoundingClientRect();
+		const nextFrame = () =>
+			new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+		const dispatchPointerEvent = (
+			type: "pointerdown" | "pointermove" | "pointerup",
+			pointerId: number,
+			offsetX: number,
+			offsetY: number,
+		) => {
+			svg.dispatchEvent(
+				new PointerEvent(type, {
+					bubbles: true,
+					cancelable: true,
+					pointerId,
+					pointerType: "pen",
+					button: 0,
+					buttons: type === "pointerup" ? 0 : 1,
+					clientX: bounds.left + offsetX,
+					clientY: bounds.top + offsetY,
+				}),
+			);
+		};
 
-	if (!canvasBox) return;
+		for (let index = 0; index < 100; index += 1) {
+			const pointerId = 900 + index;
+			const x = 10 + (index % 30);
+			const y = 12 + index * 2;
 
-	for (let index = 0; index < 100; index += 1) {
-		const x = canvasBox.x + 10 + (index % 30);
-		const y = canvasBox.y + 12 + index * 2;
+			dispatchPointerEvent("pointerdown", pointerId, x, y - 4);
+			await nextFrame();
+			dispatchPointerEvent("pointermove", pointerId, x, y + 4);
+			dispatchPointerEvent("pointerup", pointerId, x, y + 4);
+		}
 
-		await page.mouse.move(x, y - 4);
-		await page.mouse.down();
-		await page.mouse.move(x, y + 4);
-		await page.mouse.up();
-	}
+		await nextFrame();
+	});
 
 	await expect(page.locator("#path-count")).toHaveText("200");
 	await expect(

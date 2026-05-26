@@ -5,6 +5,12 @@ import { withDocsBasePath } from "~/lib/site-paths";
 import stylesheet from "./styles.css?url";
 
 export const links: LinksFunction = () => [
+	{ rel: "icon", href: withDocsBasePath("/favicon.ico"), sizes: "any" },
+	{
+		rel: "icon",
+		href: withDocsBasePath("/favicon.svg"),
+		type: "image/svg+xml",
+	},
 	{ rel: "stylesheet", href: stylesheet },
 ];
 
