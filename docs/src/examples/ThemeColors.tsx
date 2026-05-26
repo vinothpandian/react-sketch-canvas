@@ -5,8 +5,6 @@ import {
 	type ReactSketchCanvasRef,
 } from "react-sketch-canvas";
 
-type Theme = "light" | "dark";
-
 export default function App() {
 	const canvasRef = useRef<ReactSketchCanvasRef>(null);
 	const [eraseMode, setEraseMode] = useState(false);
@@ -128,18 +126,16 @@ export default function App() {
 			<div className="canvas-wrapper rounded-md border p-4">
 				<style>
 					{`
-					.canvas-wrapper {
-						--rsc-theme-canvas: #ffffff;
-						--rsc-theme-stroke: #2563eb;
-					}
-
-					@media (prefers-color-scheme: dark) {
 						.canvas-wrapper {
-							--rsc-theme-canvas: #020617;
-							--rsc-theme-stroke: #38bdf8;
+							--rsc-theme-canvas: white;
+							--rsc-theme-stroke: blue;
 						}
-					}
-				`}
+
+						.dark .canvas-wrapper {
+							--rsc-theme-canvas: black;
+							--rsc-theme-stroke: red;
+						}
+					`}
 				</style>
 				<ReactSketchCanvas
 					ref={canvasRef}
