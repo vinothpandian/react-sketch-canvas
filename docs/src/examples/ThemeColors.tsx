@@ -32,6 +32,10 @@ export default function App() {
 	};
 
 	const handleEraserModeChange = (mode: EraserMode) => {
+		if (!eraseMode) {
+			return;
+		}
+
 		setEraserMode(mode);
 	};
 
@@ -40,7 +44,7 @@ export default function App() {
 			{/* Tools Panel */}
 			<div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 rounded-lg border border-fd-border bg-fd-card shadow-sm text-fd-foreground">
 				{/* Active Tool */}
-				<div className="flex flex-col gap-2 min-w-[12rem]">
+				<div className="inline-flex flex-col gap-2">
 					<span className="text-xs font-semibold uppercase tracking-wider text-fd-muted-foreground">
 						Active Tool
 					</span>
@@ -122,31 +126,27 @@ export default function App() {
 				</div>
 
 				{/* Eraser Mode */}
-				<div className="flex flex-col gap-2 min-w-[12rem]">
+				<div className="inline-flex flex-col gap-2">
 					<span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-fd-muted-foreground">
 						<Settings2 className="w-3.5 h-3.5" />
 						Eraser Mode
 					</span>
-					<div className="inline-flex rounded-md p-1 bg-fd-muted border border-fd-border w-fit">
+					<div className="inline-flex w-fit rounded-md border border-fd-border bg-fd-muted p-1">
 						<button
 							type="button"
+							disabled={!eraseMode}
+							aria-pressed={eraserMode === "mask"}
 							onClick={() => handleEraserModeChange("mask")}
-							className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-200 ${
-								eraserMode === "mask"
-									? "bg-fd-card text-fd-foreground border border-fd-border/30 shadow-sm"
-									: "text-fd-muted-foreground hover:text-fd-foreground"
-							}`}
+							className="inline-flex items-center rounded-md px-2 py-1.5 text-xs font-medium transition-all duration-200 hover:bg-fd-accent aria-pressed:bg-fd-primary aria-pressed:text-fd-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fd-primary disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:bg-transparent"
 						>
 							Mask
 						</button>
 						<button
 							type="button"
+							disabled={!eraseMode}
+							aria-pressed={eraserMode === "stroke"}
 							onClick={() => handleEraserModeChange("stroke")}
-							className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-200 ${
-								eraserMode === "stroke"
-									? "bg-fd-card text-fd-foreground border border-fd-border/30 shadow-sm"
-									: "text-fd-muted-foreground hover:text-fd-foreground"
-							}`}
+							className="inline-flex items-center rounded-md px-2 py-1.5 text-xs font-medium transition-all duration-200 hover:bg-fd-accent aria-pressed:bg-fd-primary aria-pressed:text-fd-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fd-primary disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:bg-transparent"
 						>
 							Stroke
 						</button>
