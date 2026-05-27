@@ -1,0 +1,46 @@
+---
+title: Layout
+description: Place the canvas inside scrolling and transformed containers without coordinate drift.
+---
+
+import ExampleBlock from "../../../components/ExampleBlock";
+import ScrollableParent from "../../../examples/ScrollableParent";
+import ScrollableParentSource from "../../../examples/ScrollableParent.tsx?raw";
+import NestedScroll from "../../../examples/NestedScroll";
+import NestedScrollSource from "../../../examples/NestedScroll.tsx?raw";
+import ScaledCanvas from "../../../examples/ScaledCanvas";
+import ScaledCanvasSource from "../../../examples/ScaledCanvas.tsx?raw";
+
+`ReactSketchCanvas` reads pointer events in viewport-relative coordinates and subtracts the canvas's own `getBoundingClientRect()`. Both values update together when the page scrolls. They also update when an ancestor element scrolls or a CSS transform moves the canvas. Strokes land where the pointer is, no matter how the canvas is laid out.
+
+These three demos cover the layout patterns most likely to cause coordinate drift in other canvas libraries.
+
+## Scrollable parent
+
+A common layout puts the canvas inside an `overflow-y: auto` container (a side panel, a fixed-height annotation viewport). Whenever that container scrolls, `clientX/clientY` and `getBoundingClientRect()` both reflect the new viewport position, so the canvas-relative point stays correct.
+
+Scroll the container, then draw. Every stroke lands exactly where the pointer is, including immediately after a scroll.
+
+<ExampleBlock source={ScrollableParentSource}>
+  <ScrollableParent />
+</ExampleBlock>
+
+## Nested scroll containers
+
+Real layouts often have more than one scroll axis (a horizontally scrolling panel inside a vertically scrolling page). Reading viewport-relative coordinates makes the canvas immune to any number of scrolling ancestors: only the immediate `getBoundingClientRect()` matters, and the browser already accounts for every ancestor in that rectangle.
+
+Scroll the outer container horizontally and the inner container vertically, then draw. Strokes land on the pointer regardless of either scroll position.
+
+<ExampleBlock source={NestedScrollSource}>
+  <NestedScroll />
+</ExampleBlock>
+
+## Scaled parent
+
+When an ancestor uses `transform: scale()`, the canvas renders at the scaled size. Its on-screen position still comes from `getBoundingClientRect()`, which reports the post-transform rectangle. Pointer events arrive in the same post-transform space, so the visible stroke stays under the pointer at any zoom level.
+
+Drag the slider to scale the wrapper between 0.5× and 1.5×, then draw at each size.
+
+<ExampleBlock source={ScaledCanvasSource}>
+  <ScaledCanvas />
+</ExampleBlock>

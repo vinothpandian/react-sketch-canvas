@@ -1,0 +1,84 @@
+import * as React from "react";
+import type { ExportImageOptions, ExportImageType } from "../../types";
+import { getCanvasWithViewBox } from "../export/core/dom";
+import { exportImageFromSvg } from "../export/raster/image";
+import { prepareSvgForExport } from "../export/svg/svg";
+import type { CanvasProps, CanvasRef } from "../types";
+
+type UseCanvasExportHandleParams = Required<Pick<CanvasProps, "id">> &
+	Pick<
+		CanvasProps,
+		| "canvasColor"
+		| "backgroundImage"
+		| "exportWithBackgroundImage"
+		| "preserveBackgroundImageAspectRatio"
+	> & {
+		canvasRef: React.RefObject<HTMLDivElement | null>;
+	};
+
+type UseCanvasExportHandleReturns = ReturnType<() => void>;
+
+/**
+ * Expose export methods from the low-level `Canvas` ref.
+ *
+ * @remarks
+ * The hook centralizes all DOM cloning and SVG/image export wiring so the
+ * component can stay focused on rendering and pointer handlers.
+ */
+export function useCanvasExportHandle(
+	ref: React.ForwardedRef<CanvasRef>,
+	{
+		canvasRef,
+		id,
+		canvasColor,
+		backgroundImage,
+		exportWithBackgroundImage,
+		preserveBackgroundImageAspectRatio,
+	}: UseCanvasExportHandleParams,
+): UseCanvasExportHandleReturns {
+	React.useImperativeHandle(ref, () => ({
+		exportImage: async (
+			imageType: ExportImageType,
+			options?: ExportImageOptions,
+		): Promise<string> => {
+			const canvas = canvasRef.current;
+
+			if (!canvas) {
+				throw new Error(
+					"Cannot export: the canvas is not ready yet. Wait until the component has mounted before calling exportImage().",
+				);
+			}
+
+			const { svgCanvas, width, height } = getCanvasWithViewBox(canvas);
+
+			return exportImageFromSvg({
+				id,
+				svgCanvas,
+				svgWidth: width,
+				svgHeight: height,
+				imageType,
+				canvasColor,
+				backgroundImage,
+				exportWithBackgroundImage,
+				preserveBackgroundImageAspectRatio,
+				options,
+			});
+		},
+		exportSvg: async (): Promise<string> => {
+			const canvas = canvasRef.current;
+
+			if (!canvas) {
+				throw new Error(
+					"Cannot export: the canvas is not ready yet. Wait until the component has mounted before calling exportSvg().",
+				);
+			}
+
+			const { svgCanvas } = getCanvasWithViewBox(canvas);
+			return prepareSvgForExport(svgCanvas, {
+				id,
+				canvasColor,
+				exportWithBackgroundImage,
+			}).outerHTML;
+		},
+	}));
+}

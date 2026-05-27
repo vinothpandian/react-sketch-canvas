@@ -1,0 +1,36 @@
+---
+title: Backgrounds
+description: Draw on top of an image background.
+---
+
+import ExampleBlock from "../../../components/ExampleBlock";
+import Background from "../../../examples/Background";
+import BackgroundSource from "../../../examples/Background.tsx?raw";
+import BackgroundDataURI from "../../../examples/BackgroundDataURI";
+import BackgroundDataURISource from "../../../examples/BackgroundDataURI.tsx?raw";
+
+A background image turns the canvas into an annotation surface: mark up a photo, trace over a template, or take notes on top of an existing asset. The image stays separate from the user's strokes, so you can preserve the source and export the combined result later.
+
+## URL image
+
+Pass any image URL to `backgroundImage`. Use `preserveBackgroundImageAspectRatio` to control how the image fits the canvas; the same values accepted by SVG's `preserveAspectRatio` attribute work here.
+
+<ExampleBlock source={BackgroundSource}>
+  <Background />
+</ExampleBlock>
+
+## Data URI
+
+The same prop also accepts a data URI. This is useful when the image lives in memory: an uploaded file, an API response, or a generated asset. The canvas API stays the same; only the shape of the value changes.
+
+<ExampleBlock source={BackgroundDataURISource}>
+  <BackgroundDataURI />
+</ExampleBlock>
+
+<Callout type="warn">
+  `backgroundImage` is treated as trusted. The library loads it directly into an SVG `<image>` element, and for SVG data URIs it is parsed with `DOMParser` to read the embedded `viewBox`. Do not pass attacker-controlled strings here without validating them first.
+</Callout>
+
+## See also
+
+- [Exporting & saving](/guides/exporting/#exporting-with-a-background): include the background image in raster exports.

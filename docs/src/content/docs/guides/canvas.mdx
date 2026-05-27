@@ -1,0 +1,101 @@
+---
+title: Direct Canvas usage
+description: Use the low-level Canvas component when you want to own drawing state.
+---
+
+import ExampleBlock from "../../../components/ExampleBlock";
+import DirectCanvas from "../../../examples/DirectCanvas";
+import DirectCanvasSource from "../../../examples/DirectCanvas.tsx?raw";
+
+`ReactSketchCanvas` is the default component for most apps. It owns the active stroke, undo/redo history, eraser mode, and exported path state.
+
+Use `Canvas` directly when you need to control those pieces yourself. That is useful for collaborative editors, synced external state, custom history stacks, or tools where the app decides how each pointer event becomes a `CanvasPath`.
+
+## Controlled path inspection
+
+`Canvas` can render paths owned by your app and report normalized pointer points without creating a new stroke. That makes it useful for review tools, annotation inspectors, multiplayer cursors, or any surface where pointer input selects existing data instead of drawing.
+
+<ExampleBlock source={DirectCanvasSource}>
+  <DirectCanvas />
+</ExampleBlock>
+
+## External state machines
+
+Because the component is controlled, you can route pointer events through a reducer, store, CRDT, or command bus before rendering paths.
+
+```tsx twoslash title="External state machine"
+import React from "react";
+import { Canvas, type CanvasPath, type Point } from "react-sketch-canvas";
+
+type EditorState = {
+  activeTool: "pen" | "eraser" | null;
+  paths: CanvasPath[];
+};
+
+type EditorAction =
+  | { type: "stroke.started"; point: Point; isEraser: boolean }
+  | { type: "stroke.moved"; point: Point }
+  | { type: "stroke.finished" };
+
+declare const editorState: EditorState;
+declare const dispatch: (action: EditorAction) => void;
+
+// ---cut---
+export function StateMachineCanvas() {
+  return (
+    <Canvas
+      paths={editorState.paths} // [!code highlight]
+      isDrawing={editorState.activeTool !== null} // [!code highlight]
+      onPointerDown={(point, isEraser) => // [!code highlight]
+        dispatch({ type: "stroke.started", point, isEraser: isEraser ?? false }) // [!code highlight]
+      } // [!code highlight]
+      onPointerMove={(point) => dispatch({ type: "stroke.moved", point })} // [!code highlight]
+      onPointerUp={() => dispatch({ type: "stroke.finished" })} // [!code highlight]
+      allowOnlyPointerType="all"
+      backgroundImage=""
+      canvasColor="white"
+      exportWithBackgroundImage={false}
+      width="100%"
+      height="480px"
+      style={{ border: "1px solid #d4d4d8" }}
+      svgStyle={{}}
+    />
+  );
+}
+```
+
+## Read-only or custom export surfaces
+
+You can also render `Canvas` as a read-only preview while another part of your app owns editing. The ref still exposes export methods, so preview panes and review screens can export the same controlled paths without enabling pointer input.
+
+```tsx twoslash title="Read-only export preview"
+import React, { useRef } from "react";
+import { Canvas, type CanvasPath, type CanvasRef } from "react-sketch-canvas";
+
+declare const approvedPaths: CanvasPath[];
+
+// ---cut---
+export function ExportPreview() {
+  const previewRef = useRef<CanvasRef>(null);
+
+  return (
+    <Canvas
+      ref={previewRef}
+      paths={approvedPaths}
+      isDrawing={false}
+      onPointerDown={() => undefined}
+      onPointerMove={() => undefined}
+      onPointerUp={() => undefined}
+      allowOnlyPointerType="all"
+      backgroundImage=""
+      canvasColor="white"
+      exportWithBackgroundImage={false}
+      width="100%"
+      height="320px"
+      readOnly // [!code highlight]
+      style={{ border: "1px solid #d4d4d8" }}
+      svgStyle={{}}
+    />
+  );
+}
+```

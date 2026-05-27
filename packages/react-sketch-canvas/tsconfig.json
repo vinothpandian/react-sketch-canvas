@@ -1,8 +1,42 @@
 {
-  "extends": "tsconfig/react-library.json",
-  "include": ["src", "src/types"],
-  "exclude": ["dist", "build", "node_modules"],
-  "compilerOptions": {
-    "rootDir": "./src"
-  }
+	"$schema": "https://json.schemastore.org/tsconfig",
+	"compilerOptions": {
+		"ignoreDeprecations": "6.0",
+		"target": "ES6",
+		"module": "ESNext",
+		"lib": ["DOM", "ESNext"],
+		"importHelpers": true,
+		"declaration": true,
+		"sourceMap": true,
+		"strict": true,
+		"noImplicitReturns": true,
+		"noFallthroughCasesInSwitch": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"moduleResolution": "bundler",
+		"jsx": "react-jsx",
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"noEmit": true,
+		"resolveJsonModule": true,
+		"rootDir": ".",
+		"types": ["node", "vitest/globals"]
+	},
+	"include": [
+		"src",
+		"tests",
+		"playwright",
+		"playwright-ct.config.ts",
+		"playwright-e2e.config.ts",
+		"vitest.config.ts"
+	],
+	"exclude": [
+		"dist",
+		"build",
+		"node_modules",
+		"playwright-report",
+		"test-results",
+		"coverage"
+	]
 }

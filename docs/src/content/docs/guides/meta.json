@@ -1,0 +1,17 @@
+{
+	"title": "Guides",
+	"pages": [
+		"installation",
+		"drawing-and-erasing",
+		"canvas",
+		"colors-and-theming",
+		"read-only",
+		"history",
+		"pointer-input",
+		"backgrounds",
+		"exporting",
+		"layout",
+		"sketching-time",
+		"performance"
+	]
+}

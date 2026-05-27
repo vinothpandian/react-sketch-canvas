@@ -1,0 +1,78 @@
+---
+title: Installation
+description: Install react-sketch-canvas and render your first canvas.
+---
+
+import { Step, Steps } from "fumadocs-ui/components/steps";
+import ExampleBlock from "../../../components/ExampleBlock";
+import BasicExample from "../../../examples/BasicExample";
+import BasicExampleSource from "../../../examples/BasicExample.tsx?raw";
+
+`react-sketch-canvas` is a single npm package. It renders an SVG drawing surface, so there is no extra canvas runtime or browser plugin to configure.
+
+## Install
+
+<Tabs items={["npm", "yarn", "pnpm"]}>
+  <Tab value="npm">
+    ```sh
+    npm install react-sketch-canvas
+    ```
+  </Tab>
+  <Tab value="yarn">
+    ```sh
+    yarn add react-sketch-canvas
+    ```
+  </Tab>
+  <Tab value="pnpm">
+    ```sh
+    pnpm add react-sketch-canvas
+    ```
+  </Tab>
+</Tabs>
+
+## Quick start
+
+<Steps>
+  <Step>
+    ### Import the component
+
+    ```tsx twoslash
+    import { ReactSketchCanvas } from "react-sketch-canvas";
+    ```
+  </Step>
+  <Step>
+    ### Render it with the props you care about
+
+    Width, height, stroke color, and canvas color are the most common starting props.
+
+    ```tsx twoslash title="App.tsx"
+    import React from "react";
+    import { ReactSketchCanvas } from "react-sketch-canvas";
+
+    // ---cut---
+    export function App() {
+      return (
+        <ReactSketchCanvas
+          width="100%" // [!code highlight]
+          height="150px" // [!code highlight]
+          canvasColor="transparent" // [!code highlight]
+          strokeColor="#a855f7" // [!code highlight]
+        />
+      );
+    }
+    ```
+  </Step>
+  <Step>
+    ### Try it
+
+    <ExampleBlock source={BasicExampleSource}>
+      <BasicExample />
+    </ExampleBlock>
+  </Step>
+</Steps>
+
+## What's next
+
+- Build a toolbar that switches between drawing and erasing. See [Drawing & erasing](/guides/drawing-and-erasing/).
+- Wire undo, redo, clear, and reset to your own controls. See [History](/guides/history/).
+- Export the drawing or save it for later. See [Exporting & saving](/guides/exporting/).

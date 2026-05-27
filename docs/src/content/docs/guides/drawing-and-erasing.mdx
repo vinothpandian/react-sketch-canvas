@@ -1,0 +1,106 @@
+---
+title: Drawing & erasing
+description: Switch between drawing and erasing from your own toolbar.
+---
+
+import ExampleBlock from "../../../components/ExampleBlock";
+import Drawing from "../../../examples/Drawing";
+import DrawingSource from "../../../examples/Drawing.tsx?raw";
+
+Most drawing tools need at least two modes: adding ink and removing it. `ReactSketchCanvas` exposes that switch through its ref, so your toolbar can stay in React while the canvas handles pointer input.
+
+## Switching modes
+
+Call `eraseMode(true)` on the canvas ref to start erasing, and `eraseMode(false)` to return to drawing. Keep the active mode in component state so your toolbar can render the correct button as selected and show the right width control.
+
+<ExampleBlock source={DrawingSource}>
+  <Drawing />
+</ExampleBlock>
+
+```tsx twoslash title="DrawingToolbar.tsx"
+import React, { useRef, useState } from "react";
+import {
+  ReactSketchCanvas,
+  type ReactSketchCanvasRef,
+} from "react-sketch-canvas";
+
+// ---cut---
+export function DrawingToolbar() {
+  const canvasRef = useRef<ReactSketchCanvasRef>(null);
+  const [mode, setMode] = useState<"draw" | "erase">("draw");
+
+  return (
+    <>
+      <ReactSketchCanvas ref={canvasRef} />
+      <button
+        type="button"
+        onClick={() => {
+          canvasRef.current?.eraseMode(false); // [!code highlight]
+          setMode("draw");
+        }}
+        aria-pressed={mode === "draw"}
+      >
+        Draw
+      </button>
+      <button
+        type="button"
+        onClick={() => {
+          canvasRef.current?.eraseMode(true); // [!code highlight]
+          setMode("erase");
+        }}
+        aria-pressed={mode === "erase"}
+      >
+        Erase
+      </button>
+    </>
+  );
+}
+```
+
+## Eraser mode: `mask` vs `stroke`
+
+The `eraserMode` prop controls how eraser gestures are stored.
+
+- `eraserMode="mask"` (default) stores each eraser gesture as a mask path. The original strokes are not changed, so undo and redo replay the exact visual state.
+- `eraserMode="stroke"` deletes any drawing stroke the eraser touches. There is no eraser path in the saved state.
+
+<Callout type="info">
+  `mask` is the default for backward compatibility. Pick `stroke` only when you want erased strokes to be removed from the path list; for example, when the result will be re-serialized and edited later.
+</Callout>
+
+```tsx twoslash {1} title="Choose eraser behavior"
+import React, { useState } from "react";
+import {
+  ReactSketchCanvas,
+  type EraserMode,
+} from "react-sketch-canvas";
+
+// ---cut---
+export function CanvasWithEraserModeChoice() {
+  const [eraserMode, setEraserMode] = useState<EraserMode>("mask");
+
+  return (
+    <>
+      <ReactSketchCanvas eraserMode={eraserMode} />
+      //                 ^?
+      <select
+        aria-label="Eraser mode"
+        value={eraserMode}
+        onChange={(event) => setEraserMode(event.target.value as EraserMode)}
+      >
+        <option value="mask">Mask</option>
+        <option value="stroke">Stroke</option>
+      </select>
+    </>
+  );
+}
+```
+
+## Stroke width
+
+`strokeWidth` and `eraserWidth` are independent. Expose two sliders if your toolbar lets users change both. If you only show one width control, swap which prop it drives based on the current mode.
+
+## See also
+
+- [Colors & theming](/guides/colors-and-theming/): change stroke and canvas colors.
+- [History](/guides/history/): undo, redo, clear, and reset.

@@ -12,8 +12,6 @@
 ![npm](https://img.shields.io/npm/v/react-sketch-canvas?style=flat-square) &nbsp;&nbsp; ![NPM](https://img.shields.io/npm/l/react-sketch-canvas?style=flat-square) &nbsp;&nbsp; ![npm](https://img.shields.io/npm/dm/react-sketch-canvas?style=flat-square) <br/>
 ![npm bundle size](https://img.shields.io/bundlephobia/min/react-sketch-canvas?style=flat-square) &nbsp;&nbsp; ![npm bundle size](https://img.shields.io/bundlephobia/minzip/react-sketch-canvas?style=flat-square) <br/>
 [![codecov](https://codecov.io/gh/vinothpandian/react-sketch-canvas/branch/master/graph/badge.svg?token=NJcqGRgbSa)](https://codecov.io/gh/vinothpandian/react-sketch-canvas)
-<br/>
-This project was built using [Turborepo](https://turbo.build/).
 
 </div>
 
@@ -26,7 +24,7 @@ This project was built using [Turborepo](https://turbo.build/).
 
 ### Requirements
 
-- **<span style="color:red">**Requires React >= 16.8**</span>**
+- **<span style="color:red">**Requires React >= 18.0.0**</span>**
 
 ### Wanna test React Sketch Canvas before using it?
 
@@ -40,10 +38,10 @@ If you use npm
 npm i react-sketch-canvas
 ```
 
-or with yarn
+or with pnpm
 
 ```sh
-yarn add react-sketch-canvas
+pnpm add react-sketch-canvas
 ```
 
 ## Example
@@ -180,6 +178,14 @@ interface CanvasPath {
 
 - Philipp Spiess' [tutorial][based-on]
 - Draws smooth curves, thanks to François Romain's [tutorial][smooth-curve-tutorial]
+
+---
+
+## Disclaimer on Agentic Engineering
+
+Version 8 was built with the help of AI coding assistants. I made the plans, decisions, and reviews, then manually tested as much as I could. Most of the implementation was done by Claude Code (Opus 4.7) and Codex (GPT-5.5), so I want to be upfront that the bulk of the code was authored by the models rather than typed by hand.
+
+If you are curious about the workflow, Simon Willison has a great write-up on the patterns I followed: [Agentic Engineering Patterns](https://simonwillison.net/guides/agentic-engineering-patterns/).
 
 ---
 

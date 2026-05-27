@@ -1,34 +1,38 @@
 {
-  "name": "@vinothpandian/react-sketch-canvas",
-  "version": "0.0.0",
-  "private": true,
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
-  "scripts": {
-    "build": "turbo run build",
-    "dev": "turbo run dev --parallel --no-cache",
-    "preview": "turbo run preview",
-    "lint": "turbo run lint",
-    "test": "turbo run build test",
-    "ci:test": "turbo run build ci:test",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "ci:build": "cp README.md packages/react-sketch-canvas/ && pnpm --filter react-sketch-canvas ci:build",
-    "release": "pnpm test && pnpm ci:build && changeset version && changeset publish",
-    "pre-release": "pnpm ci:test && pnpm ci:build && changeset && changeset publish"
-  },
-  "devDependencies": {
-    "eslint-config-custom": "workspace:*",
-    "prettier": "^3.2.5",
-    "turbo": "^1.12.4"
-  },
-  "engines": {
-    "node": ">=18.0.0",
-    "pnpm": ">=8.0.0"
-  },
-  "packageManager": "pnpm@10.10.0",
-  "dependencies": {
-    "@changesets/cli": "^2.27.1"
-  }
+	"name": "@vinothpandian/react-sketch-canvas",
+	"version": "0.0.0",
+	"private": true,
+	"workspaces": [
+		"docs",
+		"packages/react-sketch-canvas"
+	],
+	"scripts": {
+		"build": "pnpm --filter react-sketch-canvas build && pnpm --filter documentation build",
+		"dev": "pnpm --filter documentation dev",
+		"preview": "pnpm --filter documentation preview",
+		"lint": "biome check .",
+		"format": "biome format --write .",
+		"test:unit": "pnpm --filter react-sketch-canvas test:unit",
+		"test:watch": "pnpm --filter react-sketch-canvas test:watch",
+		"test:ct": "pnpm --filter react-sketch-canvas test:ct",
+		"test:e2e": "pnpm --filter react-sketch-canvas test:e2e",
+		"test": "pnpm --filter react-sketch-canvas test",
+		"ci:test": "pnpm lint && pnpm build && pnpm test",
+		"ci:build": "pnpm --filter react-sketch-canvas ci:build",
+		"changeset:version": "node scripts/changeset-version.mjs",
+		"release": "pnpm ci:test && pnpm ci:build && pnpm changeset:version && changeset publish",
+		"pre-release": "pnpm ci:test && pnpm ci:build && changeset && changeset publish"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.4.15",
+		"lefthook": "^2.1.6"
+	},
+	"engines": {
+		"node": ">=22.13.0",
+		"pnpm": ">=11.0.0"
+	},
+	"packageManager": "pnpm@11.1.2",
+	"dependencies": {
+		"@changesets/cli": "^2.31.0"
+	}
 }
