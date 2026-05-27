@@ -12,11 +12,13 @@ const packageAssets = [
 		name: "README",
 		rootPath: join(repoRoot, "README.md"),
 		packagePath: join(packageRoot, "README.md"),
+		removeAfterPack: true,
 	},
 	{
 		name: "CHANGELOG",
 		rootPath: join(repoRoot, "CHANGELOG.md"),
 		packagePath: join(packageRoot, "CHANGELOG.md"),
+		removeAfterPack: false,
 	},
 ];
 
@@ -65,6 +67,10 @@ async function prepack() {
 
 async function postpack() {
 	for (const asset of packageAssets) {
+		if (!asset.removeAfterPack) {
+			continue;
+		}
+
 		const rootContent = await readRootAsset(asset);
 
 		if (!existsSync(asset.packagePath)) {
