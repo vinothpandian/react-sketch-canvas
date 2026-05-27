@@ -12,13 +12,13 @@ const packageAssets = [
 		name: "README",
 		rootPath: join(repoRoot, "README.md"),
 		packagePath: join(packageRoot, "README.md"),
-		removeAfterPack: true,
+		removeAfterPublish: true,
 	},
 	{
 		name: "CHANGELOG",
 		rootPath: join(repoRoot, "CHANGELOG.md"),
 		packagePath: join(packageRoot, "CHANGELOG.md"),
-		removeAfterPack: false,
+		removeAfterPublish: false,
 	},
 ];
 
@@ -67,7 +67,23 @@ async function prepack() {
 
 async function postpack() {
 	for (const asset of packageAssets) {
-		if (!asset.removeAfterPack) {
+		const rootContent = await readRootAsset(asset);
+
+		if (!existsSync(asset.packagePath)) {
+			continue;
+		}
+
+		if (await packageAssetDiffersFrom(asset, rootContent)) {
+			throw new Error(
+				`Package ${asset.name} at ${asset.packagePath} differs from root ${asset.name} ${asset.rootPath}.`,
+			);
+		}
+	}
+}
+
+async function postpublish() {
+	for (const asset of packageAssets) {
+		if (!asset.removeAfterPublish) {
 			continue;
 		}
 
@@ -88,12 +104,15 @@ async function postpack() {
 }
 
 const commands = {
+	postpublish,
 	prepack,
 	postpack,
 };
 
 if (!(command in commands)) {
-	console.error("Usage: node scripts/package-assets.mjs <prepack|postpack>");
+	console.error(
+		"Usage: node scripts/package-assets.mjs <prepack|postpack|postpublish>",
+	);
 	process.exitCode = 1;
 } else {
 	try {
