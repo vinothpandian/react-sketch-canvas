@@ -2,6 +2,7 @@ import { reactRouter } from "@react-router/dev/vite";
 import tailwindcss from "@tailwindcss/vite";
 import mdx from "fumadocs-mdx/vite";
 import { defineConfig } from "vite";
+import { flattenPagesBuild } from "./scripts/flatten-pages-build.mjs";
 import { generateApiDocs } from "./scripts/generate-api-docs.mjs";
 import { generateMarkdownPages } from "./scripts/generate-markdown-pages.mjs";
 import * as MdxConfig from "./source.config";
@@ -34,6 +35,14 @@ export default defineConfig({
 		mdx(MdxConfig),
 		tailwindcss(),
 		reactRouter(),
+		{
+			name: "react-sketch-canvas:flatten-pages-build",
+			apply: "build",
+			enforce: "post",
+			async closeBundle() {
+				await flattenPagesBuild();
+			},
+		},
 	],
 	resolve: {
 		tsconfigPaths: true,
