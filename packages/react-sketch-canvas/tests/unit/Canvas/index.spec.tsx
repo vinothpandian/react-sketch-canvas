@@ -51,4 +51,49 @@ describe("Canvas", () => {
 		);
 		getBoundingClientRect.mockRestore();
 	});
+
+	it("expands viewBox to include loaded paths outside the rendered canvas", async () => {
+		const getBoundingClientRect = vi
+			.spyOn(HTMLElement.prototype, "getBoundingClientRect")
+			.mockReturnValue({
+				left: 0,
+				top: 0,
+				width: 320,
+				height: 180,
+			} as DOMRect);
+		const offCanvasPath: CanvasPath = {
+			...loadedPath,
+			paths: [
+				{ x: -10, y: 20 },
+				{ x: 400, y: 200 },
+			],
+		};
+
+		render(
+			<Canvas
+				paths={[offCanvasPath]}
+				isDrawing={false}
+				onPointerDown={vi.fn()}
+				onPointerMove={vi.fn()}
+				onPointerUp={vi.fn()}
+				allowOnlyPointerType="all"
+				backgroundImage=""
+				canvasColor="white"
+				exportWithBackgroundImage={false}
+				height="180px"
+				preserveBackgroundImageAspectRatio="none"
+				style={{}}
+				svgStyle={{}}
+				width="320px"
+				withViewBox
+			/>,
+		);
+
+		await Promise.resolve();
+
+		expect(document.querySelector("svg")?.getAttribute("viewBox")).toBe(
+			"-12 0 414 202",
+		);
+		getBoundingClientRect.mockRestore();
+	});
 });
