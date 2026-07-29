@@ -22,6 +22,15 @@ type ElementSizeLike = {
 	offsetHeight: number;
 };
 
+type SvgTransformPoint = Point & {
+	matrixTransform: (matrix: DOMMatrix) => Point;
+};
+
+type SvgScreenTransformElement = {
+	getScreenCTM: () => DOMMatrix | null;
+	createSVGPoint?: () => SvgTransformPoint;
+};
+
 type UseCanvasPointerHandlersParams = Pick<
 	CanvasProps,
 	| "isDrawing"
@@ -103,6 +112,43 @@ export const getCanvasPoint = (
 	};
 };
 
+export const getCanvasPointFromSvgTransform = (
+	pointerEvent: PointerLike,
+	svgCanvas: SvgScreenTransformElement | null,
+): Point | null => {
+	const screenMatrix = svgCanvas?.getScreenCTM();
+
+	if (!screenMatrix) return null;
+
+	try {
+		const PointConstructor = globalThis.DOMPoint;
+		const point =
+			svgCanvas.createSVGPoint?.() ??
+			(typeof PointConstructor === "undefined" ? null : new PointConstructor());
+
+		if (!point) return null;
+
+		point.x = pointerEvent.clientX;
+		point.y = pointerEvent.clientY;
+
+		const transformedPoint = point.matrixTransform(screenMatrix.inverse());
+
+		if (
+			!Number.isFinite(transformedPoint.x) ||
+			!Number.isFinite(transformedPoint.y)
+		) {
+			return null;
+		}
+
+		return {
+			x: transformedPoint.x,
+			y: transformedPoint.y,
+		};
+	} catch {
+		return null;
+	}
+};
+
 /**
  * Build stable pointer handlers for the low-level canvas.
  *
@@ -128,6 +174,11 @@ export function useCanvasPointerHandlers({
 			if (!canvas || !boundingArea) {
 				return { x: 0, y: 0 };
 			}
+
+			const svgCanvas = canvas.querySelector("svg");
+			const svgPoint = getCanvasPointFromSvgTransform(pointerEvent, svgCanvas);
+
+			if (svgPoint) return svgPoint;
 
 			return getCanvasPoint(pointerEvent, boundingArea, canvas);
 		},

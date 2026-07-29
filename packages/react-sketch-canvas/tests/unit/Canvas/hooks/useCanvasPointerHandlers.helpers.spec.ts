@@ -1,12 +1,17 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import {
 	getCanvasPoint,
+	getCanvasPointFromSvgTransform,
 	isAllowedPointerType,
 	isPenEraser,
 	shouldHandlePointerButton,
 } from "../../../../src/Canvas/hooks/useCanvasPointerHandlers";
 
 describe("canvas pointer helpers", () => {
+	afterEach(() => {
+		vi.unstubAllGlobals();
+	});
+
 	it("allows all pointer types when configured as all", () => {
 		expect(isAllowedPointerType("all", "mouse")).toBe(true);
 		expect(isAllowedPointerType("all", "pen")).toBe(true);
@@ -83,5 +88,129 @@ describe("canvas pointer helpers", () => {
 		);
 
 		expect(fallback).toEqual({ x: 30, y: 40 });
+	});
+
+	it("uses the SVG screen transform matrix for rotated canvas coordinates", () => {
+		type PointLike = {
+			x: number;
+			y: number;
+		};
+
+		type MatrixLike = {
+			transformPoint: (point: PointLike) => PointLike;
+		};
+
+		const svgCanvas = {
+			getScreenCTM: () => ({
+				inverse: () => ({
+					transformPoint: (point: PointLike) => ({
+						x: point.y - 50,
+						y: 100 - point.x,
+					}),
+				}),
+			}),
+			createSVGPoint: () => ({
+				x: 0,
+				y: 0,
+				matrixTransform(matrix: MatrixLike): PointLike {
+					return matrix.transformPoint(this);
+				},
+			}),
+		} as unknown as SVGSVGElement;
+
+		const point = getCanvasPointFromSvgTransform(
+			{ clientX: 75, clientY: 90 },
+			svgCanvas,
+		);
+
+		expect(point).toEqual({ x: 40, y: 25 });
+	});
+
+	it("falls back to DOMPoint when createSVGPoint is unavailable", () => {
+		type PointLike = {
+			x: number;
+			y: number;
+		};
+
+		type MatrixLike = {
+			transformPoint: (point: PointLike) => PointLike;
+		};
+
+		class FakeDOMPoint {
+			constructor(
+				public x = 0,
+				public y = 0,
+			) {}
+
+			matrixTransform(matrix: MatrixLike): PointLike {
+				return matrix.transformPoint(this);
+			}
+		}
+
+		vi.stubGlobal("DOMPoint", FakeDOMPoint);
+
+		const svgCanvas = {
+			getScreenCTM: () => ({
+				inverse: () => ({
+					transformPoint: (point: PointLike) => ({
+						x: point.x + 10,
+						y: point.y + 20,
+					}),
+				}),
+			}),
+		} as unknown as SVGSVGElement;
+
+		const point = getCanvasPointFromSvgTransform(
+			{ clientX: 30, clientY: 40 },
+			svgCanvas,
+		);
+
+		expect(point).toEqual({ x: 40, y: 60 });
+	});
+
+	it("returns null when an SVG screen transform is unavailable", () => {
+		expect(
+			getCanvasPointFromSvgTransform(
+				{ clientX: 40, clientY: 60 },
+				{
+					getScreenCTM: () => null,
+				},
+			),
+		).toBeNull();
+	});
+
+	it("returns null when the SVG screen transform cannot be inverted", () => {
+		const svgCanvas = {
+			getScreenCTM: () => ({
+				inverse: () => {
+					throw new Error("Matrix is not invertible");
+				},
+			}),
+			createSVGPoint: () => ({
+				x: 0,
+				y: 0,
+				matrixTransform: () => ({ x: 0, y: 0 }),
+			}),
+		} as unknown as SVGSVGElement;
+
+		expect(
+			getCanvasPointFromSvgTransform({ clientX: 40, clientY: 60 }, svgCanvas),
+		).toBeNull();
+	});
+
+	it("returns null when no transform point API is available", () => {
+		vi.stubGlobal("DOMPoint", undefined);
+
+		const svgCanvas = {
+			getScreenCTM: () => ({
+				inverse: () => ({
+					transformPoint: (point: { x: number; y: number }) => point,
+				}),
+			}),
+		} as unknown as SVGSVGElement;
+
+		expect(
+			getCanvasPointFromSvgTransform({ clientX: 40, clientY: 60 }, svgCanvas),
+		).toBeNull();
 	});
 });
