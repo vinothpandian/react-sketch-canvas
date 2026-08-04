@@ -22,7 +22,9 @@ type ElementSizeLike = {
 	offsetHeight: number;
 };
 
-type SvgTransformPoint = Point & {
+type SvgTransformPoint = {
+	x: number;
+	y: number;
 	matrixTransform: (matrix: DOMMatrix) => Point;
 };
 
@@ -116,7 +118,9 @@ export const getCanvasPointFromSvgTransform = (
 	pointerEvent: PointerLike,
 	svgCanvas: SvgScreenTransformElement | null,
 ): Point | null => {
-	const screenMatrix = svgCanvas?.getScreenCTM();
+	if (!svgCanvas) return null;
+
+	const screenMatrix = svgCanvas.getScreenCTM();
 
 	if (!screenMatrix) return null;
 
