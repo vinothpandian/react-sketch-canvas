@@ -62,8 +62,7 @@ test.describe("drawing points", () => {
 
 		await component.locator(`#${eraserButtonId}`).click();
 
-		// TODO: This is a workaround for playwright
-		await drawPoint(canvas, { originX: originX - 1, originY: originY - 1 });
+		await drawPoint(canvas, { originX, originY });
 		const { eraserStrokeGroupId } = getCanvasIds();
 
 		const circle = canvas.locator(eraserStrokeGroupId).locator("circle");

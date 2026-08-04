@@ -33,6 +33,8 @@ type SvgScreenTransformElement = {
 	createSVGPoint?: () => SvgTransformPoint;
 };
 
+type CanvasOriginOffset = Pick<Point, "x" | "y">;
+
 type UseCanvasPointerHandlersParams = Pick<
 	CanvasProps,
 	| "isDrawing"
@@ -117,6 +119,7 @@ export const getCanvasPoint = (
 export const getCanvasPointFromSvgTransform = (
 	pointerEvent: PointerLike,
 	svgCanvas: SvgScreenTransformElement | null,
+	canvasOriginOffset: CanvasOriginOffset = { x: 0, y: 0 },
 ): Point | null => {
 	if (!svgCanvas) return null;
 
@@ -145,8 +148,8 @@ export const getCanvasPointFromSvgTransform = (
 		}
 
 		return {
-			x: transformedPoint.x,
-			y: transformedPoint.y,
+			x: transformedPoint.x + canvasOriginOffset.x,
+			y: transformedPoint.y + canvasOriginOffset.y,
 		};
 	} catch {
 		return null;
@@ -180,7 +183,15 @@ export function useCanvasPointerHandlers({
 			}
 
 			const svgCanvas = canvas.querySelector("svg");
-			const svgPoint = getCanvasPointFromSvgTransform(pointerEvent, svgCanvas);
+			const canvasOriginOffset =
+				pointerEvent.target === canvas
+					? { x: canvas.clientLeft, y: canvas.clientTop }
+					: undefined;
+			const svgPoint = getCanvasPointFromSvgTransform(
+				pointerEvent,
+				svgCanvas,
+				canvasOriginOffset,
+			);
 
 			if (svgPoint) return svgPoint;
 

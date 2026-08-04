@@ -168,6 +168,43 @@ describe("canvas pointer helpers", () => {
 		expect(point).toEqual({ x: 40, y: 60 });
 	});
 
+	it("preserves the canvas wrapper origin offset after SVG transformation", () => {
+		type PointLike = {
+			x: number;
+			y: number;
+		};
+
+		type MatrixLike = {
+			transformPoint: (point: PointLike) => PointLike;
+		};
+
+		const svgCanvas = {
+			getScreenCTM: () => ({
+				inverse: () => ({
+					transformPoint: (point: PointLike) => ({
+						x: point.x + 10,
+						y: point.y + 20,
+					}),
+				}),
+			}),
+			createSVGPoint: () => ({
+				x: 0,
+				y: 0,
+				matrixTransform(matrix: MatrixLike): PointLike {
+					return matrix.transformPoint(this);
+				},
+			}),
+		} as unknown as SVGSVGElement;
+
+		const point = getCanvasPointFromSvgTransform(
+			{ clientX: 30, clientY: 40 },
+			svgCanvas,
+			{ x: 1, y: 2 },
+		);
+
+		expect(point).toEqual({ x: 41, y: 62 });
+	});
+
 	it("returns null when an SVG screen transform is unavailable", () => {
 		expect(
 			getCanvasPointFromSvgTransform(
