@@ -16,7 +16,7 @@ describe("ReactSketchCanvas", () => {
 			"height: 180px",
 		);
 		expect(canvas?.parentElement?.getAttribute("style")).toContain(
-			"touch-action: none",
+			"touch-action: pinch-zoom",
 		);
 		expect(canvas?.parentElement?.getAttribute("style")).toContain(
 			"user-select: none",

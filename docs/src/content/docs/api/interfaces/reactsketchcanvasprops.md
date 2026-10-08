@@ -22,6 +22,38 @@ internally by the component.
 
 ## Properties
 
+### allowMultiTouchScroll?
+
+> `optional` **allowMultiTouchScroll?**: `boolean`
+
+Defined in: [Canvas/types.ts:227](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L227)
+
+Lets two-finger touch gestures scroll or zoom the page while one finger
+keeps drawing.
+
+#### Remarks
+
+When enabled, a touch-drawing canvas uses `touch-action: pinch-zoom`
+instead of `"none"`. A single finger still draws, but when a second finger
+lands the browser takes over: the active stroke ends and the gesture
+scrolls or pinch-zooms the surrounding page, so a tall canvas no longer
+traps the user. Pen and mouse input are unaffected. Set this to `false` to
+keep the canvas from ever handing a touch gesture to the browser.
+
+Ignored when [CanvasProps.touchAction](/api/interfaces/canvasprops/#touchaction) is set.
+
+#### Default Value
+
+```ts
+true
+```
+
+#### Inherited from
+
+[`CanvasProps`](/api/interfaces/canvasprops/).[`allowMultiTouchScroll`](/api/interfaces/canvasprops/#allowmultitouchscroll)
+
+***
+
 ### allowOnlyPointerType?
 
 > `optional` **allowOnlyPointerType?**: [`AllowOnlyPointerType`](/api/type-aliases/allowonlypointertype/)
@@ -322,7 +354,7 @@ See the MDN reference for accepted values:
 
 > `optional` **readOnly?**: `boolean`
 
-Defined in: [Canvas/types.ts:209](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L209)
+Defined in: [Canvas/types.ts:210](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L210)
 
 Whether pointer drawing is disabled.
 
@@ -385,16 +417,17 @@ Eraser strokes use `eraserWidth` instead.
 
 > `optional` **style?**: `CSSProperties`
 
-Defined in: [Canvas/types.ts:173](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L173)
+Defined in: [Canvas/types.ts:174](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L174)
 
 Inline styles applied to the outer canvas wrapper.
 
 #### Remarks
 
 The component sets `userSelect: "none"` to avoid browser selection
-highlights while drawing. It sets `touchAction: "none"` for touch drawing,
-and `touchAction: "pan-x pan-y pinch-zoom"` in pen-only mode so touch can
-still scroll parent containers.
+highlights while drawing. It sets `touchAction: "pinch-zoom"` for touch
+drawing (`"none"` when `allowMultiTouchScroll` is `false`), and
+`touchAction: "pan-x pan-y pinch-zoom"` in pen-only mode so touch can still
+scroll parent containers.
 
 #### Default Value
 
@@ -412,7 +445,7 @@ The package default canvas border style.
 
 > `optional` **svgStyle?**: `CSSProperties`
 
-Defined in: [Canvas/types.ts:179](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L179)
+Defined in: [Canvas/types.ts:180](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L180)
 
 Inline styles applied to the internal SVG element.
 
@@ -430,22 +463,23 @@ Inline styles applied to the internal SVG element.
 
 > `optional` **touchAction?**: `TouchAction`
 
-Defined in: [Canvas/types.ts:223](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L223)
+Defined in: [Canvas/types.ts:242](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L242)
 
 CSS `touch-action` applied to the canvas wrapper.
 
 #### Remarks
 
-The default is `"none"` when the canvas accepts touch drawing, so single
-finger gestures draw rather than scroll. Override this when you need the
-surrounding page to remain scrollable; for example, set `"pan-y"` to let
-users scroll vertically while still drawing with one finger. The browser
-will start a native pan only when the gesture matches the configured
-axis, so single-finger drawing continues to work.
+The default is `"pinch-zoom"` when the canvas accepts touch drawing, so a
+single finger draws while two fingers scroll or zoom the page (see
+[CanvasProps.allowMultiTouchScroll](/api/interfaces/canvasprops/#allowmultitouchscroll)). Override this when you need
+different behavior; for example, set `"pan-y"` to let users scroll
+vertically with one finger, or `"none"` to disable all browser touch
+gestures. The browser will start a native pan only when the gesture matches
+the configured axis, so single-finger drawing continues to work.
 
 #### Default Value
 
-`"none"` for touch-drawing modes; `"pan-x pan-y pinch-zoom"` for pen / mouse only modes.
+`"pinch-zoom"` for touch-drawing modes (`"none"` when `allowMultiTouchScroll` is `false`); `"pan-x pan-y pinch-zoom"` for pen / mouse only modes.
 
 #### Inherited from
 
@@ -457,7 +491,7 @@ axis, so single-finger drawing continues to work.
 
 > `optional` **width?**: `string`
 
-Defined in: [Canvas/types.ts:200](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L200)
+Defined in: [Canvas/types.ts:201](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L201)
 
 CSS width of the canvas wrapper.
 
@@ -502,7 +536,7 @@ false
 
 > `optional` **withViewBox?**: `boolean`
 
-Defined in: [Canvas/types.ts:190](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L190)
+Defined in: [Canvas/types.ts:191](https://github.com/vinothpandian/react-sketch-canvas/blob/main/packages/react-sketch-canvas/src/Canvas/types.ts#L191)
 
 Whether the internal SVG should include a viewBox based on the latest
 measured canvas size.

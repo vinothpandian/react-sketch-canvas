@@ -52,6 +52,7 @@ export const ReactSketchCanvas = React.forwardRef<
 		withViewBox = false,
 		readOnly = false,
 		touchAction,
+		allowMultiTouchScroll = true,
 	} = props;
 
 	const svgCanvas = React.useRef<CanvasRef>(null);
@@ -111,6 +112,7 @@ export const ReactSketchCanvas = React.forwardRef<
 			withViewBox={withViewBox}
 			readOnly={readOnly}
 			touchAction={touchAction}
+			allowMultiTouchScroll={allowMultiTouchScroll}
 		/>
 	);
 });
