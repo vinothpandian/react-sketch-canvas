@@ -164,9 +164,10 @@ export interface CanvasProps {
 	 *
 	 * @remarks
 	 * The component sets `userSelect: "none"` to avoid browser selection
-	 * highlights while drawing. It sets `touchAction: "none"` for touch drawing,
-	 * and `touchAction: "pan-x pan-y pinch-zoom"` in pen-only mode so touch can
-	 * still scroll parent containers.
+	 * highlights while drawing. It sets `touchAction: "pinch-zoom"` for touch
+	 * drawing (`"none"` when `allowMultiTouchScroll` is `false`), and
+	 * `touchAction: "pan-x pan-y pinch-zoom"` in pen-only mode so touch can still
+	 * scroll parent containers.
 	 *
 	 * @defaultValue The package default canvas border style.
 	 */
@@ -208,17 +209,35 @@ export interface CanvasProps {
 	 */
 	readOnly?: boolean;
 	/**
+	 * Lets two-finger touch gestures scroll or zoom the page while one finger
+	 * keeps drawing.
+	 *
+	 * @remarks
+	 * When enabled, a touch-drawing canvas uses `touch-action: pinch-zoom`
+	 * instead of `"none"`. A single finger still draws, but when a second finger
+	 * lands the browser takes over: the active stroke ends and the gesture
+	 * scrolls or pinch-zooms the surrounding page, so a tall canvas no longer
+	 * traps the user. Pen and mouse input are unaffected. Set this to `false` to
+	 * keep the canvas from ever handing a touch gesture to the browser.
+	 *
+	 * Ignored when {@link CanvasProps.touchAction} is set.
+	 *
+	 * @defaultValue true
+	 */
+	allowMultiTouchScroll?: boolean;
+	/**
 	 * CSS `touch-action` applied to the canvas wrapper.
 	 *
 	 * @remarks
-	 * The default is `"none"` when the canvas accepts touch drawing, so single
-	 * finger gestures draw rather than scroll. Override this when you need the
-	 * surrounding page to remain scrollable; for example, set `"pan-y"` to let
-	 * users scroll vertically while still drawing with one finger. The browser
-	 * will start a native pan only when the gesture matches the configured
-	 * axis, so single-finger drawing continues to work.
+	 * The default is `"pinch-zoom"` when the canvas accepts touch drawing, so a
+	 * single finger draws while two fingers scroll or zoom the page (see
+	 * {@link CanvasProps.allowMultiTouchScroll}). Override this when you need
+	 * different behavior; for example, set `"pan-y"` to let users scroll
+	 * vertically with one finger, or `"none"` to disable all browser touch
+	 * gestures. The browser will start a native pan only when the gesture matches
+	 * the configured axis, so single-finger drawing continues to work.
 	 *
-	 * @defaultValue `"none"` for touch-drawing modes; `"pan-x pan-y pinch-zoom"` for pen / mouse only modes.
+	 * @defaultValue `"pinch-zoom"` for touch-drawing modes (`"none"` when `allowMultiTouchScroll` is `false`); `"pan-x pan-y pinch-zoom"` for pen / mouse only modes.
 	 */
 	touchAction?: React.CSSProperties["touchAction"];
 }

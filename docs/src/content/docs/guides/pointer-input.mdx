@@ -57,6 +57,16 @@ Use the `allowOnlyPointerType` prop to restrict input.
   </Tab>
 </Tabs>
 
+## Scrolling past a canvas on touch screens
+
+When a canvas accepts touch, one finger draws and two fingers scroll or pinch-zoom the surrounding page. As soon as a second finger lands, the active stroke ends and the browser takes over the gesture, so a tall canvas never traps someone on a phone or tablet. Pen and mouse input are not affected.
+
+Set `allowMultiTouchScroll={false}` if you want the canvas to keep every touch gesture for itself, or pass `touchAction` to choose the exact CSS `touch-action` value.
+
+```tsx
+<ReactSketchCanvas allowMultiTouchScroll={false} />
+```
+
 <Callout type="info">
   The browser decides which pointer type each event belongs to. Some devices report pen events that look like mouse events, and vice versa. Test on real hardware before shipping a restricted canvas to production.
 </Callout>

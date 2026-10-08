@@ -90,6 +90,10 @@ function App() {
 				width={`${canvasSize.width}px`}
 				height={`${canvasSize.height}px`}
 				withViewBox
+				allowMultiTouchScroll={
+					new URLSearchParams(location.search).get("multiTouchScroll") !==
+					"false"
+				}
 				onChange={(updatedPaths) => setPaths([...updatedPaths])}
 			/>
 			<nav aria-label="Canvas controls">
