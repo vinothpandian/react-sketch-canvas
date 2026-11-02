@@ -22,6 +22,20 @@ type ElementSizeLike = {
 	offsetHeight: number;
 };
 
+type ScreenMatrixLike = {
+	a: number;
+	b: number;
+	c: number;
+	d: number;
+	e: number;
+	f: number;
+};
+
+type ViewBoxSvgLike = {
+	hasAttribute: (name: string) => boolean;
+	getScreenCTM?: () => ScreenMatrixLike | null;
+};
+
 type UseCanvasPointerHandlersParams = Pick<
 	CanvasProps,
 	| "isDrawing"
@@ -104,6 +118,42 @@ export const getCanvasPoint = (
 };
 
 /**
+ * Convert a viewport-relative pointer coordinate into the SVG's viewBox space.
+ *
+ * @remarks
+ * When `withViewBox` expands the viewBox to fit off-canvas paths, the SVG
+ * scales, offsets, and may letterbox its content, so wrapper-relative pixels
+ * no longer match SVG user units. Inverting the SVG's screen matrix maps the
+ * pointer back into user units, including any ancestor CSS transforms.
+ * Returns `null` when the SVG has no viewBox or no invertible screen matrix.
+ */
+export const getSvgViewBoxPoint = (
+	pointerEvent: PointerLike,
+	svg: ViewBoxSvgLike,
+): Point | null => {
+	if (!svg.hasAttribute("viewBox") || typeof svg.getScreenCTM !== "function") {
+		return null;
+	}
+
+	const matrix = svg.getScreenCTM();
+
+	if (!matrix) return null;
+
+	const { a, b, c, d, e, f } = matrix;
+	const determinant = a * d - b * c;
+
+	if (!Number.isFinite(determinant) || determinant === 0) return null;
+
+	const dx = pointerEvent.clientX - e;
+	const dy = pointerEvent.clientY - f;
+
+	return {
+		x: (d * dx - c * dy) / determinant,
+		y: (a * dy - b * dx) / determinant,
+	};
+};
+
+/**
  * Build stable pointer handlers for the low-level canvas.
  *
  * @remarks
@@ -129,7 +179,13 @@ export function useCanvasPointerHandlers({
 				return { x: 0, y: 0 };
 			}
 
-			return getCanvasPoint(pointerEvent, boundingArea, canvas);
+			const svg = canvas.firstElementChild;
+			const svgPoint =
+				svg instanceof SVGSVGElement
+					? getSvgViewBoxPoint(pointerEvent, svg)
+					: null;
+
+			return svgPoint ?? getCanvasPoint(pointerEvent, boundingArea, canvas);
 		},
 		[canvasRef],
 	);

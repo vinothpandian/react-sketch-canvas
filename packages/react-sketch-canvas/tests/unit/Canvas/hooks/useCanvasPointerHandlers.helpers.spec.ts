@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
 	getCanvasPoint,
+	getSvgViewBoxPoint,
 	isAllowedPointerType,
 	isPenEraser,
 	shouldHandlePointerButton,
@@ -83,5 +84,61 @@ describe("canvas pointer helpers", () => {
 		);
 
 		expect(fallback).toEqual({ x: 30, y: 40 });
+	});
+
+	it("maps pointer coordinates into an offset and scaled viewBox", () => {
+		const hasViewBox = () => true;
+		// 614-unit wide viewBox starting at x=-12 rendered into 500px, letterboxed
+		// vertically and offset by the canvas position on screen.
+		const scale = 500 / 614;
+		const letterbox = (500 - 500 * scale) / 2;
+		const svg = {
+			hasAttribute: hasViewBox,
+			getScreenCTM: () => ({
+				a: scale,
+				b: 0,
+				c: 0,
+				d: scale,
+				e: 100 + 12 * scale,
+				f: 200 + letterbox,
+			}),
+		};
+
+		const point = getSvgViewBoxPoint({ clientX: 350, clientY: 450 }, svg);
+
+		expect(point?.x).toBeCloseTo(295);
+		expect(point?.y).toBeCloseTo(250);
+	});
+
+	it("skips viewBox mapping without a viewBox or invertible matrix", () => {
+		const identity = { a: 1, b: 0, c: 0, d: 1, e: 0, f: 0 };
+
+		expect(
+			getSvgViewBoxPoint(
+				{ clientX: 1, clientY: 1 },
+				{ hasAttribute: () => false, getScreenCTM: () => identity },
+			),
+		).toBeNull();
+		expect(
+			getSvgViewBoxPoint(
+				{ clientX: 1, clientY: 1 },
+				{ hasAttribute: () => true },
+			),
+		).toBeNull();
+		expect(
+			getSvgViewBoxPoint(
+				{ clientX: 1, clientY: 1 },
+				{ hasAttribute: () => true, getScreenCTM: () => null },
+			),
+		).toBeNull();
+		expect(
+			getSvgViewBoxPoint(
+				{ clientX: 1, clientY: 1 },
+				{
+					hasAttribute: () => true,
+					getScreenCTM: () => ({ ...identity, a: 0 }),
+				},
+			),
+		).toBeNull();
 	});
 });

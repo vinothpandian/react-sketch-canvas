@@ -48,10 +48,7 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
 	} = props;
 
 	const canvasRef = React.useRef<HTMLDivElement>(null);
-	const [canvasSize, setCanvasSize] = React.useState<{
-		width: number;
-		height: number;
-	} | null>(null);
+	const [canvasSize, setCanvasSize] = React.useState<CanvasSize | null>(null);
 	const reactId = React.useId();
 	const internalId = React.useMemo(
 		() => `${id}__${reactId.replaceAll(":", "")}`,
@@ -111,10 +108,13 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
 		touchActionProp ??
 		(acceptsTouchDrawing ? "none" : "pan-x pan-y pinch-zoom");
 
-	const viewBox =
-		withViewBox && canvasSize !== null
-			? `0 0 ${canvasSize.width} ${canvasSize.height}`
-			: undefined;
+	const viewBox = React.useMemo(
+		() =>
+			withViewBox && canvasSize !== null
+				? getViewBox(canvasSize, paths)
+				: undefined,
+		[canvasSize, paths, withViewBox],
+	);
 
 	return (
 		<div
@@ -150,3 +150,35 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
 });
 
 Canvas.displayName = "@react-sketch-canvas/Canvas";
+
+type CanvasSize = {
+	width: number;
+	height: number;
+};
+
+function getViewBox(
+	canvasSize: CanvasSize,
+	paths: CanvasProps["paths"],
+): string {
+	let minX = 0;
+	let minY = 0;
+	let maxX = canvasSize.width;
+	let maxY = canvasSize.height;
+
+	for (const path of paths) {
+		const radius = Number.isFinite(path.strokeWidth)
+			? Math.max(0, path.strokeWidth) / 2
+			: 0;
+
+		for (const point of path.paths) {
+			if (!Number.isFinite(point.x) || !Number.isFinite(point.y)) continue;
+
+			minX = Math.min(minX, point.x - radius);
+			minY = Math.min(minY, point.y - radius);
+			maxX = Math.max(maxX, point.x + radius);
+			maxY = Math.max(maxY, point.y + radius);
+		}
+	}
+
+	return `${minX} ${minY} ${maxX - minX} ${maxY - minY}`;
+}
