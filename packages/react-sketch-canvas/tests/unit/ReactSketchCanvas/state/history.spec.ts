@@ -64,6 +64,18 @@ describe("history state", () => {
 		expect(redoState(atLatestHistory)).toBe(atLatestHistory);
 	});
 
+	it("does not redo after a new stroke is drawn over undone history", () => {
+		const state = {
+			...createInitialSketchState(),
+			history: [[], [path("red")], [path("red"), path("blue")]],
+			historyPos: 1,
+			currentPaths: [path("green")],
+			historySynced: false,
+		};
+
+		expect(redoState(state)).toBe(state);
+	});
+
 	it("clear appends an empty history entry", () => {
 		const state = {
 			...createInitialSketchState(),
