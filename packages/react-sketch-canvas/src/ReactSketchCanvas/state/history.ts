@@ -78,8 +78,8 @@ export function undoState(state: SketchState): SketchState {
  * Move the state one step forward in history.
  */
 export function redoState(state: SketchState): SketchState {
-	if (state.historyPos >= state.history.length - 1) return state;
 	const synced = addLastStrokeToHistory(state);
+	if (synced.historyPos >= synced.history.length - 1) return state;
 
 	return {
 		...synced,
