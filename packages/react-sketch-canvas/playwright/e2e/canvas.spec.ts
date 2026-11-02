@@ -148,3 +148,92 @@ test("renders erased pixels as canvas background in Firefox-compatible SVG masks
 
 	expect(erasedPixel).toEqual([255, 255, 255, 255]);
 });
+
+test.describe("touch gestures", () => {
+	test.use({ hasTouch: true });
+	test.skip(
+		({ browserName }) => browserName !== "chromium",
+		"Touch gestures are dispatched through the Chromium DevTools protocol",
+	);
+
+	type TouchPoint = { x: number; y: number; id: number };
+
+	async function dragTouches(
+		page: Page,
+		fingers: number,
+		{ x, y }: { x: number; y: number },
+	) {
+		const cdp = await page.context().newCDPSession(page);
+		const pointsAt = (dy: number): TouchPoint[] =>
+			Array.from({ length: fingers }, (_, id) => ({
+				x: x + id * 40,
+				y: y + dy,
+				id,
+			}));
+
+		await cdp.send("Input.dispatchTouchEvent", {
+			type: "touchStart",
+			touchPoints: pointsAt(0),
+		});
+		for (let dy = -10; dy >= -120; dy -= 10) {
+			await cdp.send("Input.dispatchTouchEvent", {
+				type: "touchMove",
+				touchPoints: pointsAt(dy),
+			});
+		}
+		await cdp.send("Input.dispatchTouchEvent", {
+			type: "touchEnd",
+			touchPoints: [],
+		});
+	}
+
+	async function openTallPage(page: Page, search = "") {
+		await page.goto(`/${search}`);
+		await page.evaluate(() => {
+			document.body.style.paddingBottom = "3000px";
+		});
+
+		const box = await page.locator("#rsc").boundingBox();
+
+		if (!box) {
+			throw new Error("Canvas has no bounding box");
+		}
+
+		return { x: box.x + 60, y: box.y + box.height - 40 };
+	}
+
+	test("one finger draws without scrolling the page", async ({ page }) => {
+		const start = await openTallPage(page);
+
+		await dragTouches(page, 1, start);
+
+		await expect(page.locator("#rsc path")).toHaveCount(1);
+		expect(await page.evaluate(() => window.scrollY)).toBe(0);
+	});
+
+	test("two fingers scroll the page instead of drawing", async ({ page }) => {
+		const start = await openTallPage(page);
+
+		await dragTouches(page, 2, start);
+
+		await expect
+			.poll(() => page.evaluate(() => window.scrollY))
+			.toBeGreaterThan(0);
+
+		// The canvas keeps working once the second finger lifts.
+		await page.evaluate(() => window.scrollTo(0, 0));
+		const before = await page.locator("#rsc path").count();
+		await dragTouches(page, 1, start);
+		await expect(page.locator("#rsc path")).toHaveCount(before + 1);
+	});
+
+	test("allowMultiTouchScroll={false} keeps two fingers from scrolling", async ({
+		page,
+	}) => {
+		const start = await openTallPage(page, "?multiTouchScroll=false");
+
+		await dragTouches(page, 2, start);
+
+		expect(await page.evaluate(() => window.scrollY)).toBe(0);
+	});
+});

@@ -45,6 +45,7 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
 		withViewBox = false,
 		readOnly = false,
 		touchAction: touchActionProp,
+		allowMultiTouchScroll = true,
 	} = props;
 
 	const canvasRef = React.useRef<HTMLDivElement>(null);
@@ -107,9 +108,12 @@ export const Canvas = React.forwardRef<CanvasRef, CanvasProps>((props, ref) => {
 		});
 	const acceptsTouchDrawing =
 		allowOnlyPointerType === "all" || allowOnlyPointerType === "touch";
+	// `pinch-zoom` lets the browser take over once a second finger lands, which
+	// also cancels the active stroke, while a single finger still draws.
+	const drawingTouchAction = allowMultiTouchScroll ? "pinch-zoom" : "none";
 	const touchAction =
 		touchActionProp ??
-		(acceptsTouchDrawing ? "none" : "pan-x pan-y pinch-zoom");
+		(acceptsTouchDrawing ? drawingTouchAction : "pan-x pan-y pinch-zoom");
 
 	const viewBox =
 		withViewBox && canvasSize !== null
