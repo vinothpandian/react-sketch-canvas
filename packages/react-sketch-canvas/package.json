@@ -64,7 +64,7 @@
 		"@types/node": "^25.8.0",
 		"@types/react": "^19.2.14",
 		"@types/react-dom": "^19.2.3",
-		"happy-dom": "^20.9.0",
+		"happy-dom": "^21.0.4",
 		"playwright": "^1.60.0",
 		"react": "^19.2.6",
 		"react-dom": "^19.2.6",
