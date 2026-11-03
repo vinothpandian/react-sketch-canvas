@@ -7,3 +7,5 @@ allowBuilds:
   esbuild: true
   lefthook: true
   sharp: true
+overrides:
+  glob@>=9.0.0 <=14.0.1: ^14.0.2
